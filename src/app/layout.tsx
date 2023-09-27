@@ -1,8 +1,6 @@
 import React from "react";
 import { Inter } from "next/font/google";
 
-import HeaderLayout from "@/components/Header";
-
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
@@ -12,7 +10,7 @@ export const metadata = {
 
 const RootLayout = ({ children }: React.PropsWithChildren) => (
   <html lang="en">
-    <body className={inter.className}>
+    <body className={inter.className} style={{ display: "contents" }}>
       <>{children}</>
     </body>
   </html>
