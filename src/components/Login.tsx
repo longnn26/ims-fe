@@ -11,7 +11,7 @@ const LoginComponent: React.FC = () => {
 
   return (
     <Row justify="center" align="middle" style={{ minHeight: "90vh" }}>
-      <Col span={6}>
+      <Col span={12}>
         <Card className={styles["login-card"]}>
           <h1 style={{ textAlign: "center" }}>LOGIN</h1>
           <Form
