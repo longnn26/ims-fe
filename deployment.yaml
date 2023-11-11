@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cms-fe
+  labels:
+    app: cms-fe
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cms-fe
+  template:
+    metadata:
+      labels:
+        app: cms-fe
+    spec:
+      containers:
+      - name: cms-frontend
+        #image: jenkins153.hisoft.vn/online_marketplace_system-frontend/frontend:latest 
+        image: lieusolocode/cms-frontend:latest
+        env:
+        - name: NEXTAUTH_URL
+          value: "https://cms.hisoft.vn"
+        - name: NEXTAUTH_URL_INTERNAL
+          value: "http://cms-fe"
+        - name: NODE_TLS_REJECT_UNAUTHORIZED
+          value: "0"
+        resources:
+          requests:
+            memory: "1Gi"
+            cpu: "1200m"
+          limits:
+            memory: "3Gi"
+            cpu: "2000m"
+        ports:
+        - containerPort: 3000
+      nodeName: c2-workder83
+      imagePullSecrets:
+      - name: solocode-auth

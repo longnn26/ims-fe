@@ -1,0 +1,79 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.ant-btn-primary {
+    background-color: #1677ff !important;
+}
+
+.ant-drawer-content-wrapper {
+    width: 90% !important;
+}
+
+.ant-menu-overflow {
+    width: 100% !important;
+}
+
+.ant-select-selector {
+    height: auto !important;
+    padding-top: 2px !important;
+    padding-bottom: 2px !important;
+    border: none !important;
+}
+
+@layer components {
+    .btn-submit {
+        background-color: #0d7490;
+        color: white;
+        font-weight: 500;
+        border-radius: 0.5rem;
+        font-size: 0.875rem
+            /* 14px */
+        ;
+        line-height: 1.25rem
+            /* 20px */
+        ;
+        padding-left: 1.25rem
+            /* 20px */
+        ;
+        padding-right: 1.25rem
+            /* 20px */
+        ;
+        padding-top: 0.625rem
+            /* 10px */
+        ;
+        padding-bottom: 0.625rem
+            /* 10px */
+        ;
+        text-align: center;
+        display: inline-flex;
+        align-items: center;
+        margin-right: 0.5rem
+            /* 8px */
+        ;
+    }
+
+    .btn-submit:hover {
+        background-color: rgb(13 116 144 / 0.9);
+        color: white !important;
+
+    }
+}
+
+.swiper {
+    width: 100%;
+    padding-top: 50px;
+    padding-bottom: 50px;
+  }
+  
+  .swiper-slide {
+    background-position: center;
+    background-size: cover;
+    width: 300px;
+    height: 300px;
+  }
+  
+  .swiper-slide img {
+    display: block;
+    width: 100%;
+  }
