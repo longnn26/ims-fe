@@ -3,6 +3,7 @@ import dynamic from "next/dynamic";
 import { useEffect } from "react";
 import signalR from "../../signalR/hub";
 import { useSession } from "next-auth/react";
+import React from "react";
 const AntdLayoutNoSSR = dynamic(() => import("../../layout/AntdLayout"), {
   ssr: false,
 });
@@ -13,7 +14,7 @@ const Customer: React.FC = () => {
   useEffect(() => {
     if (session != null) {
       const newConnection = signalR.connectionServer(
-        session?.user.access_token!
+        session.user.access_token
       );
       newConnection
         .start()
