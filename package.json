@@ -24,8 +24,6 @@
     "dayjs": "^1.11.9",
     "eslint": "8.45.0",
     "eslint-config-next": "13.4.12",
-    "flowbite": "^1.7.0",
-    "flowbite-react": "^0.5.0",
     "html-react-parser": "^4.2.0",
     "moment": "^2.29.4",
     "next": "13.4.12",
@@ -41,11 +39,8 @@
     "redux": "^4.2.1",
     "redux-persist": "^6.0.0",
     "redux-thunk": "^2.4.2",
-    "suneditor": "^2.45.1",
-    "suneditor-react": "^3.6.1",
     "swiper": "^10.1.0",
     "tailwindcss": "3.3.3",
-    "typescript": "5.1.6",
-    "zod": "^3.21.4"
+    "typescript": "5.1.6"
   }
 }

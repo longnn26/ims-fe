@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 .ant-btn-primary {
-    background-color: #1677ff !important;
+    background-color: #ee4623 !important;
 }
 
 .ant-drawer-content-wrapper {
@@ -23,8 +23,8 @@
 
 @layer components {
     .btn-submit {
-        background-color: #0d7490;
-        color: white;
+        /* background-color: #ee4623; */
+        /* color: white; */
         font-weight: 500;
         border-radius: 0.5rem;
         font-size: 0.875rem
@@ -54,7 +54,7 @@
     }
 
     .btn-submit:hover {
-        background-color: rgb(13 116 144 / 0.9);
+        background-color: #ee4623;
         color: white !important;
 
     }

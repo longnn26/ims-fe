@@ -10,6 +10,7 @@ import { PersistGate } from "redux-persist/integration/react";
 import { persistStore } from "redux-persist";
 import { Provider } from "react-redux";
 import store from "@store/index";
+import { ConfigProvider } from "antd";
 
 let persistor = persistStore(store);
 export default function App({
@@ -17,26 +18,38 @@ export default function App({
   pageProps: { session, ...pageProps },
 }: AppProps) {
   return (
-    <SessionProvider session={session}>
-      <ToastContainer
-        position="top-right"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light"
-      />
-      {/* Same as */}
-      <ToastContainer />
-      <Provider store={store}>
-        {/* <PersistGate persistor={persistor} loading={null}> */}
-        <Component {...pageProps} />
-        {/* </PersistGate> */}
-      </Provider>
-    </SessionProvider>
+    <ConfigProvider
+      theme={{
+        token: {
+          // Seed Token
+          colorPrimary: "#ee4623",
+          borderRadius: 2,
+          // Alias Token
+          // colorBgContainer: "#f6ffed",
+        },
+      }}
+    >
+      <SessionProvider session={session}>
+        <ToastContainer
+          position="top-right"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+        />
+        {/* Same as */}
+        <ToastContainer />
+        <Provider store={store}>
+          {/* <PersistGate persistor={persistor} loading={null}> */}
+          <Component {...pageProps} />
+          {/* </PersistGate> */}
+        </Provider>
+      </SessionProvider>
+    </ConfigProvider>
   );
 }

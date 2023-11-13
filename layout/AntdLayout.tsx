@@ -23,7 +23,6 @@ const AntdLayout: React.FC<Props> = (props) => {
         <Content
           style={{
             margin: "10px",
-            // minHeight: 280,
             background: colorBgContainer,
           }}
         >

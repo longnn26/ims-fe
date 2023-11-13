@@ -87,12 +87,12 @@ const HeaderComponent: React.FC<Props> = (props) => {
         <div className="max-w-screen-xl inline-block flex-wrap items-center justify-between p-4">
           <div className="flex items-center">
             <img
-              src="https://images.saasworthy.com/tr:w-200,h-0/aiwriter_4457_logo_1571311648_bn4hx.png"
-              className="h-8 mr-3"
+              src="https://telecom.qtsc.com.vn/Common/img/QTSClogo.png"
+              className="h-10 mr-3"
               alt="FlowBite Logo"
             />
             <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">
-              CMS
+              IMS
             </span>
           </div>
         </div>
