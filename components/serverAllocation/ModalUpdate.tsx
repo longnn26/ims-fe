@@ -1,20 +1,23 @@
-import React, { useRef, useState } from "react";
-import { Button, Input, Modal } from "antd";
+import React, { useEffect, useRef, useState } from "react";
+import { Button, Input, Modal, Select } from "antd";
 import { Form } from "antd";
-import { SACreateModel } from "@models/serverAllocation";
+import {
+  SAUpdateModel,
+  ServerAllocation,
+} from "@models/serverAllocation";
+import { optionStatus } from "@utils/constants";
 const { confirm } = Modal;
 
 interface Props {
-  open: boolean;
+  serverAllocation: ServerAllocation;
   onClose: () => void;
-  // loadingSubmit: boolean;
-  onSubmit: (saCreateModel: SACreateModel) => void;
+  onSubmit: (saCreateModel: SAUpdateModel) => void;
 }
 
-const ModalCreate: React.FC<Props> = (props) => {
+const ModalUpdate: React.FC<Props> = (props) => {
   const formRef = useRef(null);
   const [form] = Form.useForm();
-  const { onSubmit, open, onClose } = props;
+  const { onSubmit, serverAllocation, onClose } = props;
 
   const [confirmLoading, setConfirmLoading] = useState(false);
 
@@ -28,17 +31,39 @@ const ModalCreate: React.FC<Props> = (props) => {
     return result;
   };
 
+  const setFieldsValueInitial = () => {
+    if (formRef.current)
+      form.setFieldsValue({
+        id: serverAllocation.id,
+        expectedSize: serverAllocation.expectedSize,
+        note: serverAllocation.note,
+        inspectorNote: serverAllocation.inspectorNote,
+        status: serverAllocation?.status
+          ? {
+              value: serverAllocation?.status,
+              label: serverAllocation?.status,
+            }
+          : undefined,
+      });
+  };
+
+  useEffect(() => {
+    // refresh after submit for fileList
+    if (serverAllocation) {
+      setFieldsValueInitial();
+    }
+  }, [serverAllocation]);
+
   return (
     <>
       <Modal
         title={
-          <span className="inline-block m-auto">Create server allocation</span>
+          <span className="inline-block m-auto">Update server allocation</span>
         }
-        open={open}
+        open={Boolean(serverAllocation)}
         confirmLoading={confirmLoading}
         onCancel={() => {
           onClose();
-          form.resetFields();
         }}
         footer={[
           <Button
@@ -51,10 +76,12 @@ const ModalCreate: React.FC<Props> = (props) => {
                   title: "Do you want to save?",
                   async onOk() {
                     onSubmit({
+                      id: form.getFieldValue("id"),
+                      status: form.getFieldValue("status").value,
                       expectedSize: form.getFieldValue("expectedSize"),
                       note: form.getFieldValue("note"),
-                      customerId: form.getFieldValue("customerId"),
-                    } as SACreateModel);
+                      inspectorNote: form.getFieldValue("inspectorNote"),
+                    } as SAUpdateModel);
                     form.resetFields();
                   },
                   onCancel() {},
@@ -83,13 +110,16 @@ const ModalCreate: React.FC<Props> = (props) => {
             <Form.Item name="note" label="Note">
               <Input placeholder="Note" allowClear />
             </Form.Item>
+            <Form.Item name="inspectorNote" label="Inspector Note">
+              <Input placeholder="Inspector Note" allowClear />
+            </Form.Item>
             <Form.Item
-              name="customerId"
-              label="Customer Id"
+              name="status"
+              label="Status"
               labelAlign="right"
-              rules={[{ required: true }]}
+              rules={[{ required: true, message: "Status not empty" }]}
             >
-              <Input placeholder="Customer Id" allowClear />
+              <Select labelInValue allowClear options={optionStatus} />
             </Form.Item>
           </Form>
         </div>
@@ -98,4 +128,4 @@ const ModalCreate: React.FC<Props> = (props) => {
   );
 };
 
-export default ModalCreate;
+export default ModalUpdate;

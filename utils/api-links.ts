@@ -1,5 +1,4 @@
 export const url = "https://imsapi.hisoft.vn";
-// export const url = "http://192.168.40.83:8001";
 export const urlServerSide = "http://192.168.40.83:8001";
 // export const urlServerSide = "https://imsapi.hisoft.vn";
 
@@ -11,6 +10,8 @@ const apiLinks = {
   serverAllocation: {
     get: `${url}/api/ServerAllocation`,
     create: `${url}/api/ServerAllocation`,
+    update: `${url}/api/ServerAllocation`,
+    delete: `${url}/api/ServerAllocation`,
   },
 };
 

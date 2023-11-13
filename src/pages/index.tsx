@@ -9,16 +9,20 @@ import useSelector from "@hooks/use-selector";
 import { getServerAllocationData } from "@slices/serverAllocation";
 import {
   SACreateModel,
+  SAUpdateModel,
   ServerAllocation,
   ServerAllocationData,
 } from "@models/serverAllocation";
-import { Button, Pagination, message } from "antd";
+import { Button, Pagination, message, Modal, Alert } from "antd";
 import ServerAllocationTable from "@components/serverAllocation/ServerAllocationTable";
 import ModalCreate from "@components/serverAllocation/ModalCreate";
 import serverAllocationService from "@services/serverAllocation";
+import ModalUpdate from "@components/serverAllocation/ModalUpdate";
 const AntdLayoutNoSSR = dynamic(() => import("../../layout/AntdLayout"), {
   ssr: false,
 });
+
+const { confirm } = Modal;
 
 const Customer: React.FC = () => {
   const dispatch = useDispatch();
@@ -32,7 +36,7 @@ const Customer: React.FC = () => {
     PageSize: 10,
   } as ParamGet);
   const [loadingSubmit, setLoadingSubmit] = useState<boolean>(false);
-  const [serverAllocationEdit, setServerAllocationEdit] = useState<
+  const [serverAllocationUpdate, setServerAllocationUpdate] = useState<
     ServerAllocation | undefined
   >(undefined);
   const [openModalCreate, setOpenModalCreate] = useState<boolean>(false);
@@ -55,7 +59,7 @@ const Customer: React.FC = () => {
     await serverAllocationService
       .createServerAllocation(session?.user.access_token!, data)
       .then((res) => {
-        message.success("Create successfull!");
+        message.success("Create successful!");
         getData();
       })
       .catch((errors) => {
@@ -64,6 +68,51 @@ const Customer: React.FC = () => {
       .finally(() => {
         setOpenModalCreate(false);
       });
+  };
+
+  const updateData = async (data: SAUpdateModel) => {
+    await serverAllocationService
+      .updateServerAllocation(session?.user.access_token!, data)
+      .then((res) => {
+        message.success("Update successful!");
+        getData();
+      })
+      .catch((errors) => {
+        message.error(errors.message);
+      })
+      .finally(() => {
+        setServerAllocationUpdate(undefined);
+      });
+  };
+
+  const deleteServerAllocation = (serverAllocation: ServerAllocation) => {
+    confirm({
+      title: "Delete",
+      content: (
+        <Alert
+          message={`Do you want to delete with Id ${serverAllocation.id}?`}
+          // description={`${serverAllocation.id}`}
+          type="warning"
+        />
+      ),
+      async onOk() {
+        setLoadingSubmit(true);
+        await serverAllocationService
+          .deleteServerAllocation(
+            session?.user.access_token!,
+            serverAllocation.id.toString()
+          )
+          .then(() => {
+            getData();
+            message.success(`Delete server allocation successful`);
+          })
+          .catch((errors) => {
+            message.error(errors.message ?? "Delete allocation failed");
+            setLoadingSubmit(false);
+          });
+      },
+      onCancel() {},
+    });
   };
 
   useEffect(() => {
@@ -93,10 +142,10 @@ const Customer: React.FC = () => {
           </div>
           <ServerAllocationTable
             onEdit={(record) => {
-              setServerAllocationEdit(record);
+              setServerAllocationUpdate(record);
             }}
             onDelete={async (record) => {
-              // deleteLanguage(record);
+              // deleteServerAllocation(record);
             }}
           />
 
@@ -105,6 +154,13 @@ const Customer: React.FC = () => {
             onClose={() => setOpenModalCreate(false)}
             onSubmit={(data: SACreateModel) => {
               createData(data);
+            }}
+          />
+          <ModalUpdate
+            serverAllocation={serverAllocationUpdate!}
+            onClose={() => setServerAllocationUpdate(undefined)}
+            onSubmit={(data: SAUpdateModel) => {
+              updateData(data);
             }}
           />
           {serverAllocationData.totalPage > 0 && (

@@ -6,21 +6,6 @@
     background-color: #ee4623 !important;
 }
 
-.ant-drawer-content-wrapper {
-    width: 90% !important;
-}
-
-.ant-menu-overflow {
-    width: 100% !important;
-}
-
-.ant-select-selector {
-    height: auto !important;
-    padding-top: 2px !important;
-    padding-bottom: 2px !important;
-    border: none !important;
-}
-
 @layer components {
     .btn-submit {
         /* background-color: #ee4623; */

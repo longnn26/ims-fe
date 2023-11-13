@@ -17,9 +17,11 @@ interface Props {
 interface DataType {
   key: React.Key;
   id: number;
+  expectedSize: number;
   note: string;
   inspectorNote: string;
   dateCreated: string;
+  dateUpdated: string;
   status: string;
 }
 
@@ -31,9 +33,15 @@ const ServerAllocationTable: React.FC<Props> = (props) => {
 
   const columns: TableColumnsType<DataType> = [
     { title: "Id", dataIndex: "id", key: "id" },
+    { title: "Expected Size", dataIndex: "expectedSize", key: "expectedSize" },
     { title: "Note", dataIndex: "note", key: "note" },
-    { title: "Inspector Note", dataIndex: "inspectorNote", key: "inspectorNote" },
+    {
+      title: "Inspector Note",
+      dataIndex: "inspectorNote",
+      key: "inspectorNote",
+    },
     { title: "Date Created", dataIndex: "dateCreated", key: "dateCreated" },
+    { title: "Date Updated", dataIndex: "dateUpdated", key: "dateUpdated" },
     { title: "Status", dataIndex: "status", key: "status" },
     {
       title: "Action",
@@ -61,9 +69,13 @@ const ServerAllocationTable: React.FC<Props> = (props) => {
       key: serverAllocationData?.data[i].id,
       id: serverAllocationData?.data[i].id,
       note: serverAllocationData?.data[i].note,
+      expectedSize: serverAllocationData?.data[i].expectedSize,
       inspectorNote: serverAllocationData?.data[i].inspectorNote,
       status: serverAllocationData?.data[i].status,
       dateCreated: moment(serverAllocationData?.data[i].dateCreated).format(
+        dateAdvFormat
+      ),
+      dateUpdated: moment(serverAllocationData?.data[i].dateUpdated).format(
         dateAdvFormat
       ),
     });

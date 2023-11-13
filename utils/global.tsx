@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
 import { GrNotes, GrLanguage } from "react-icons/gr";
-import { FaHome } from "react-icons/fa";
 import { MdCategory } from "react-icons/md";
+import { BiServer } from "react-icons/bi";
 
 export interface SliderMenuItem {
   key: string;
@@ -12,7 +12,7 @@ export interface SliderMenuItem {
 export const sliderMenu = [
   {
     key: "server-allocation",
-    icon: <FaHome />,
+    icon: <BiServer />,
     label: "Server Allocation",
   },
   {

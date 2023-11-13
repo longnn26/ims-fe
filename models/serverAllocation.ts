@@ -19,3 +19,11 @@ export interface SACreateModel {
   note: string;
   customerId: number;
 }
+
+export interface SAUpdateModel {
+  id: number;
+  status: string;
+  expectedSize: number;
+  note: string;
+  inspectorNote: string;
+}

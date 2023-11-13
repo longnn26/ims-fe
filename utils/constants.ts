@@ -50,19 +50,27 @@ export const optionAccess = [
 
 export const optionStatus = [
   {
-    value: "UnPublished",
-    label: "UnPublished",
+    value: "Incomplete",
+    label: "Incomplete",
   },
   {
-    value: "Published",
-    label: "Published",
+    value: "Pending",
+    label: "Pending",
   },
   {
-    value: "Archived",
-    label: "Archived",
+    value: "Accepted",
+    label: "Accepted",
   },
   {
-    value: "Trashed",
-    label: "Trashed",
+    value: "Denied",
+    label: "Denied",
+  },
+  {
+    value: "Stopped",
+    label: "Stopped",
+  },
+  {
+    value: "Ended",
+    label: "Ended",
   },
 ];
