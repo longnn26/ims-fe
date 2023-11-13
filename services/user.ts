@@ -3,13 +3,13 @@ import apiLinks from "@utils/api-links";
 import httpClient from "@utils/http-client";
 
 const login = async (
-  email: string,
+  username: string,
   password: string
 ): Promise<LoginResponse> => {
   const response = await httpClient.post({
     url: apiLinks.user.login,
     data: {
-      email: email,
+      username: username,
       password: password,
     },
   });

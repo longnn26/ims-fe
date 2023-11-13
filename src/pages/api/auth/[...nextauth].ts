@@ -8,12 +8,12 @@ export default NextAuth({
     CredentialsProvider({
       name: "Credentials",
       credentials: {
-        email: { label: "Email", type: "text" },
+        username: { label: "Username", type: "text" },
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
         var result = await userService.login(
-          credentials?.email!,
+          credentials?.username!,
           credentials?.password!
         );
 
@@ -22,7 +22,7 @@ export default NextAuth({
             id: result.userId,
             name: result.userName,
             access_token: result.access_token,
-            expiresIn: result.expiresIn,
+            expiresIn: result.expires_in,
             loginDate: moment().format(),
             userId: result.userId,
             userName: result.userName,

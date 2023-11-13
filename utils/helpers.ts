@@ -3,7 +3,7 @@ import { dateAdvFormat } from "./constants";
 import dayjs from "dayjs";
 
 export const isExpiredTimeToken = (loginDate: string, exp: number): boolean => {
-  const tokenExpiredTime = moment(loginDate).add(exp, "seconds").toDate();
+  const tokenExpiredTime = moment(loginDate).add(exp, "minute").toDate();
   const currentDate = moment().toDate();
   return tokenExpiredTime > currentDate;
 };

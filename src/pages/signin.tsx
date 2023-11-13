@@ -27,7 +27,7 @@ const Signin: React.FC<Props> = (props) => {
   const onFinish = async (values) => {
     const res: any = await signIn("credentials", {
       redirect: false,
-      email: values.email,
+      username: values.username,
       password: values.password,
     });
     if (res.error) {
@@ -56,18 +56,18 @@ const Signin: React.FC<Props> = (props) => {
             autoComplete="off"
           >
             <Form.Item
-              name="email"
-              label="Email"
-              rules={[{ required: true }, { type: "email" }]}
+              name="username"
+              label="Username"
+              rules={[{ required: true }, { type: "string" }]}
             >
-              <Input placeholder="quangtrung@gmail.com" className="h-9" />
+              <Input placeholder="username" className="h-9" />
             </Form.Item>
             <Form.Item
               name="password"
               label="Password"
               rules={[{ required: true }, { type: "string", min: 6, max: 32 }]}
             >
-              <Input placeholder="password" className="h-9" />
+              <Input placeholder="password" type="password" className="h-9" />
             </Form.Item>
             <Form.Item>
               <Button

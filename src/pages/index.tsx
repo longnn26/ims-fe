@@ -9,33 +9,33 @@ const AntdLayoutNoSSR = dynamic(() => import("../../layout/AntdLayout"), {
 });
 
 const Customer: React.FC = () => {
-  const { data: session } = useSession();
+  // const { data: session } = useSession();
 
-  useEffect(() => {
-    if (session != null) {
-      const newConnection = signalR.connectionServer(
-        session.user.access_token
-      );
-      newConnection
-        .start()
-        .then(() => {
-          newConnection.on("newNotify", async (data: any) => {
-            console.log(data);
-          });
+  // useEffect(() => {
+  //   if (session != null) {
+  //     const newConnection = signalR.connectionServer(
+  //       session.user.access_token
+  //     );
+  //     newConnection
+  //       .start()
+  //       .then(() => {
+  //         newConnection.on("newNotify", async (data: any) => {
+  //           console.log(data);
+  //         });
 
-          newConnection.on("newNotifyCount", async (data: number) => {
-            console.log(data);
-          });
-        })
-        .catch((err) => console.log(err));
-      return () => {
-        newConnection
-          .stop()
-          .then(() => {})
-          .catch(() => {});
-      };
-    }
-  }, [session]);
+  //         newConnection.on("newNotifyCount", async (data: number) => {
+  //           console.log(data);
+  //         });
+  //       })
+  //       .catch((err) => console.log(err));
+  //     return () => {
+  //       newConnection
+  //         .stop()
+  //         .then(() => {})
+  //         .catch(() => {});
+  //     };
+  //   }
+  // }, [session]);
   return (
     <AntdLayoutNoSSR
       content={
