@@ -4,6 +4,12 @@ export interface Base {
   dateUpdated: string;
 }
 
+export interface BaseWithIdNumber {
+  id: number;
+  dateCreated: string;
+  dateUpdated: string;
+}
+
 export interface PagingModel {
   pageIndex: number;
   pageSize: number;

@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 import React, { useEffect } from "react";
 import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
@@ -38,7 +39,7 @@ const HeaderComponent: React.FC<Props> = (props) => {
       label: (
         <span
           onClick={() => {
-            dispatch(setSliderMenuItemSelectedKey("customer"));
+            dispatch(setSliderMenuItemSelectedKey("server-allocation"));
             signOut();
           }}
         >
@@ -52,7 +53,7 @@ const HeaderComponent: React.FC<Props> = (props) => {
   useEffect(() => {
     switch (router.pathname) {
       case "/":
-        dispatch(setSliderMenuItemSelectedKey("customer"));
+        dispatch(setSliderMenuItemSelectedKey("server-allocation"));
         break;
       case "/ticket":
         dispatch(setSliderMenuItemSelectedKey("ticket"));

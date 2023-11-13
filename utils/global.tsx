@@ -11,9 +11,9 @@ export interface SliderMenuItem {
 
 export const sliderMenu = [
   {
-    key: "customer",
+    key: "server-allocation",
     icon: <FaHome />,
-    label: "Customer",
+    label: "Server Allocation",
   },
   {
     key: "ticket",

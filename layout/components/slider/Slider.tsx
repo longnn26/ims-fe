@@ -32,7 +32,7 @@ const SliderComponent: React.FC = () => {
         items={sliderMenu}
         onSelect={async (info) => {
           dispatch(setSliderMenuItemSelectedKey(info.key));
-          router.push(` ${info.key === "customer" ? `/` : `/${info.key}`}`);
+          router.push(` ${info.key === "server-allocation" ? `/` : `/${info.key}`}`);
         }}
       />
     </Sider>
