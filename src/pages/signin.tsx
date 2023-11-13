@@ -41,7 +41,7 @@ const Signin: React.FC<Props> = (props) => {
   return (
     <>
       <main className="p-4 md:p-10 mx-auto max-w-7xl">
-        <div className="m-auto max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+        <div className="m-auto max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow">
           <div className="flex justify-center">
             <img
               src="https://telecom.qtsc.com.vn/Common/img/QTSClogo.png"
