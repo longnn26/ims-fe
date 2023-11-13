@@ -1,7 +1,7 @@
-export const url = "https://wms.hisoft.vn";
-// export const url = "http://192.168.40.83:8003";
-// export const urlServerSide = "http://192.168.40.83:8002";
-export const urlServerSide = "https://wmsapi.hisoft.vn";
+// export const url = "https://wms.hisoft.vn";
+export const url = "http://192.168.40.83:8003";
+export const urlServerSide = "http://192.168.40.83:8002";
+// export const urlServerSide = "https://wmsapi.hisoft.vn";
 
 const apiLinks = {
   user: {
