@@ -109,7 +109,7 @@ const Customer: React.FC = () => {
             message.success(`Delete server allocation successful`);
           })
           .catch((errors) => {
-            message.error(errors.message ?? "Delete allocation failed");
+            message.error(errors.message ?? "Delete server allocation failed");
             setLoadingSubmit(false);
           });
       },

@@ -99,10 +99,10 @@ const Customer: React.FC = () => {
           .deleteComponent(session?.user.access_token!, serverAllocation.id)
           .then(() => {
             getData();
-            message.success(`Delete server allocation successful!`);
+            message.success(`Delete component successful!`);
           })
           .catch((errors) => {
-            message.error(errors.message ?? "Delete allocation failed");
+            message.error(errors.message ?? "Delete component failed");
             setLoadingSubmit(false);
           });
       },

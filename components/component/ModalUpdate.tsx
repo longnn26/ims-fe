@@ -33,6 +33,7 @@ const ModalUpdate: React.FC<Props> = (props) => {
       form.setFieldsValue({
         id: component.id,
         description: component.description,
+        name: component.name,
         unit: component.unit,
         type: component.type,
       });
@@ -49,7 +50,6 @@ const ModalUpdate: React.FC<Props> = (props) => {
 
   return (
     <>
-      ß
       <Modal
         title={<span className="inline-block m-auto">Update component</span>}
         open={Boolean(component)}

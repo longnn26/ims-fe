@@ -21,6 +21,7 @@ interface DataType {
   unit: string;
   name: string;
   description: string;
+  type: string;
   dateCreated: string;
   dateUpdated: string;
 }
@@ -51,6 +52,7 @@ const ComponentTable: React.FC<Props> = (props) => {
     },
     { title: "Name", dataIndex: "name", key: "name" },
     { title: "Unit", dataIndex: "unit", key: "unit" },
+    { title: "Type", dataIndex: "type", key: "type" },
     {
       title: "Description",
       dataIndex: "description",
@@ -86,6 +88,7 @@ const ComponentTable: React.FC<Props> = (props) => {
       name: componentData?.data[i].name,
       description: componentData?.data[i].description,
       unit: componentData?.data[i].unit,
+      type: componentData?.data[i].type,
       dateCreated: moment(componentData?.data[i].dateCreated).format(
         dateAdvFormat
       ),
