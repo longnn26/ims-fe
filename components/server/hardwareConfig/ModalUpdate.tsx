@@ -37,8 +37,8 @@ const ModalUpdate: React.FC<Props> = (props) => {
         id: serverHardwareConfig.id,
         description: serverHardwareConfig.description,
         capacity: serverHardwareConfig.capacity,
-        componentId : serverHardwareConfig.componentId,
-        serverAllocationId : serverHardwareConfig.serverAllocationId,
+        componentId: serverHardwareConfig.componentId,
+        serverAllocationId: serverHardwareConfig.serverAllocationId,
       });
   };
 
@@ -47,13 +47,14 @@ const ModalUpdate: React.FC<Props> = (props) => {
     if (serverHardwareConfig) {
       setFieldsValueInitial();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [serverHardwareConfig]);
 
   return (
     <>
       <Modal
         title={
-          <span className="inline-block m-auto">Update server allocation</span>
+          <span className="inline-block m-auto">Update hardware config</span>
         }
         open={Boolean(serverHardwareConfig)}
         confirmLoading={confirmLoading}
@@ -73,7 +74,8 @@ const ModalUpdate: React.FC<Props> = (props) => {
                     onSubmit({
                       id: form.getFieldValue("id"),
                       componentId: form.getFieldValue("componentId"),
-                      serverAllocationId: form.getFieldValue("serverAllocationId"),
+                      serverAllocationId:
+                        form.getFieldValue("serverAllocationId"),
                       description: form.getFieldValue("description"),
                       capacity: form.getFieldValue("capacity"),
                     } as SHCUpdateModel);

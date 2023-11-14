@@ -92,7 +92,7 @@ const HeaderComponent: React.FC<Props> = (props) => {
               className="h-10 mr-3"
               alt="FlowBite Logo"
             />
-            <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">
+            <span className="self-center text-2xl font-semibold whitespace-nowrap">
               IMS
             </span>
           </div>
@@ -100,7 +100,7 @@ const HeaderComponent: React.FC<Props> = (props) => {
       </div>
 
       <div className="flex w-1/3 justify-center">
-        <span className="self-center text-xl font-semibold whitespace-nowrap dark:text-white">
+        <span className="self-center text-xl font-semibold whitespace-nowrap">
           {item?.label}
         </span>
       </div>
