@@ -8,6 +8,7 @@ import { BiEdit } from "react-icons/bi";
 import { AiFillDelete } from "react-icons/ai";
 import moment from "moment";
 import { ServerAllocation } from "@models/serverAllocation";
+import { useRouter } from "next/router";
 
 interface Props {
   onEdit: (data: ServerAllocation) => void;
@@ -27,12 +28,28 @@ interface DataType {
 
 const ServerAllocationTable: React.FC<Props> = (props) => {
   const { onEdit, onDelete } = props;
+  const router = useRouter();
   const { serverAllocationDataLoading, serverAllocationData } = useSelector(
     (state) => state.serverAllocation
   );
 
   const columns: TableColumnsType<DataType> = [
-    { title: "Id", dataIndex: "id", key: "id" },
+    {
+      title: "Id",
+      dataIndex: "id",
+      key: "id",
+      fixed: "left",
+      render: (text) => (
+        <a className="text-[#b75c3c] hover:text-[#ee4623]">{text}</a>
+      ),
+      onCell: (record, rowIndex) => {
+        return {
+          onClick: (ev) => {
+            router.push(`/server/${record.id}/hardwareConfig`);
+          },
+        };
+      },
+    },
     { title: "Expected Size", dataIndex: "expectedSize", key: "expectedSize" },
     { title: "Note", dataIndex: "note", key: "note" },
     {

@@ -9,9 +9,17 @@ const apiLinks = {
 
   serverAllocation: {
     get: `${url}/api/ServerAllocation`,
+    getById: `${url}/api/ServerAllocation`,
     create: `${url}/api/ServerAllocation`,
     update: `${url}/api/ServerAllocation`,
     delete: `${url}/api/ServerAllocation`,
+  },
+
+  serverHardwareConfig: {
+    get: `${url}/api/ServerHardwareConfig`,
+    create: `${url}/api/ServerHardwareConfig`,
+    update: `${url}/api/ServerHardwareConfig`,
+    delete: `${url}/api/ServerHardwareConfig`,
   },
 };
 

@@ -11,7 +11,7 @@ export interface SliderMenuItem {
 
 export const sliderMenu = [
   {
-    key: "server-allocation",
+    key: "server",
     icon: <BiServer />,
     label: "Server Allocation",
   },

@@ -52,8 +52,8 @@ const HeaderComponent: React.FC<Props> = (props) => {
 
   useEffect(() => {
     switch (router.pathname) {
-      case "/":
-        dispatch(setSliderMenuItemSelectedKey("server-allocation"));
+      case "/server":
+        dispatch(setSliderMenuItemSelectedKey("server"));
         break;
       case "/ticket":
         dispatch(setSliderMenuItemSelectedKey("ticket"));

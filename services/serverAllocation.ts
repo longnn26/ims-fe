@@ -2,6 +2,7 @@ import { ParamGet } from "@models/base";
 import {
   SACreateModel,
   SAUpdateModel,
+  ServerAllocation,
   ServerAllocationData,
 } from "@models/serverAllocation";
 import apiLinks from "@utils/api-links";
@@ -15,6 +16,17 @@ const getServerAllocationData = async (
     token: token,
     url: apiLinks.serverAllocation.get,
     params: params,
+  });
+  return response.data;
+};
+
+const getServerAllocationById = async (
+  token: string,
+  id: string,
+): Promise<ServerAllocation> => {
+  const response = await httpClient.get({
+    url: apiLinks.serverAllocation.get + `/${id}`,
+    token: token,
   });
   return response.data;
 };
@@ -45,7 +57,7 @@ const updateServerAllocation = async (
 
 const deleteServerAllocation = async (
   token: string,
-  id: string
+  id: number
 ): Promise<any> => {
   const response = await httpClient.delete({
     url: apiLinks.serverAllocation.delete + `/${id}`,
@@ -58,7 +70,8 @@ const serverAllocation = {
   getServerAllocationData,
   createServerAllocation,
   deleteServerAllocation,
-  updateServerAllocation
+  updateServerAllocation,
+  getServerAllocationById,
 };
 
 export default serverAllocation;
