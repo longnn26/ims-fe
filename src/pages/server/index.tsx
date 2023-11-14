@@ -34,7 +34,7 @@ const Customer: React.FC = () => {
 
   const [paramGet, setParamGet] = useState<ParamGet>({
     PageIndex: 1,
-    PageSize: 10,
+    PageSize: 7,
   } as ParamGet);
   const [loadingSubmit, setLoadingSubmit] = useState<boolean>(false);
   const [serverAllocationUpdate, setServerAllocationUpdate] = useState<
@@ -105,7 +105,7 @@ const Customer: React.FC = () => {
           )
           .then(() => {
             getData();
-            message.success(`Delete server allocation successful`);
+            message.success(`Delete server allocation successful!`);
           })
           .catch((errors) => {
             message.error(errors.message ?? "Delete allocation failed");
@@ -146,7 +146,7 @@ const Customer: React.FC = () => {
               setServerAllocationUpdate(record);
             }}
             onDelete={async (record) => {
-              // deleteServerAllocation(record);
+              deleteServerAllocation(record);
             }}
           />
 
