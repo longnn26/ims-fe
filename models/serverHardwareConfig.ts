@@ -15,6 +15,16 @@ export interface ServerHardwareConfigData extends PagingModel {
   data: ServerHardwareConfig[];
 }
 
-export interface SHCCreateModel {}
-
-export interface SHCUpdateModel {}
+export interface SHCCreateModel {
+  description: string;
+  capacity: number;
+  serverAllocationId: number;
+  componentId: number;
+}
+export interface SHCUpdateModel {
+  id: number;
+  description: string;
+  capacity: number;
+  componentId: number;
+  serverAllocationId: number;
+}

@@ -48,7 +48,7 @@ const deleteServerHardwareConfig = async (
   id: string
 ): Promise<any> => {
   const response = await httpClient.delete({
-    url: apiLinks.serverAllocation.delete + `/${id}`,
+    url: apiLinks.serverHardwareConfig.delete + `/${id}`,
     token: token,
   });
   return response.data;

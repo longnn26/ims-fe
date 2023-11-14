@@ -30,7 +30,10 @@ import serverAllocationService from "@services/serverAllocation";
 import { useRouter } from "next/router";
 import { ServerAllocation } from "@models/serverAllocation";
 import { dateAdvFormat } from "@utils/constants";
+import { AppstoreAddOutlined } from "@ant-design/icons";
 import moment from "moment";
+import ModalCreate from "@components/server/hardwareConfig/ModalCreate";
+import ModalUpdate from "@components/server/hardwareConfig/ModalUpdate";
 const AntdLayoutNoSSR = dynamic(() => import("../../../../layout/AntdLayout"), {
   ssr: false,
 });
@@ -47,7 +50,7 @@ const Customer: React.FC = () => {
   const [paramGet, setParamGet] = useState<SHCParamGet>({
     PageIndex: 1,
     PageSize: 10,
-    ServerAllocationId: router.query.serverAllocationId,
+    ServerAllocationId: router.query.serverAllocationId ?? -1,
   } as unknown as SHCParamGet);
   const [loadingSubmit, setLoadingSubmit] = useState<boolean>(false);
   const [serverHardwareConfigUpdate, setServerHardwareConfigUpdate] = useState<
@@ -143,9 +146,7 @@ const Customer: React.FC = () => {
       });
   };
 
-  const deleteServerAllocation = (
-    serverHardwareConfig: ServerHardwareConfig
-  ) => {
+  const deleteData = (serverHardwareConfig: ServerHardwareConfig) => {
     confirm({
       title: "Delete",
       content: (
@@ -164,10 +165,10 @@ const Customer: React.FC = () => {
           )
           .then(() => {
             getData();
-            message.success(`Delete server allocation successful`);
+            message.success(`Delete hardware config successful`);
           })
           .catch((errors) => {
-            message.error(errors.message ?? "Delete allocation failed");
+            message.error(errors.message ?? "Delete hardware config failed");
             setLoadingSubmit(false);
           });
       },
@@ -176,7 +177,12 @@ const Customer: React.FC = () => {
   };
 
   useEffect(() => {
-    session && getData();
+    if (router.query.serverAllocationId && session) {
+      paramGet.ServerAllocationId = parseInt(
+        router.query.serverAllocationId!.toString()
+      );
+      getData();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session, paramGet]);
 
@@ -192,11 +198,12 @@ const Customer: React.FC = () => {
             <Button
               type="primary"
               htmlType="submit"
+              icon={<AppstoreAddOutlined />}
               onClick={() => {
                 setOpenModalCreate(true);
               }}
             >
-              Create
+              Hardware Config
             </Button>
             {/* <SearchComponent
               placeholder="Search Name, Description..."
@@ -205,6 +212,23 @@ const Customer: React.FC = () => {
               }
             /> */}
           </div>
+          <ModalUpdate
+            serverHardwareConfig={serverHardwareConfigUpdate!}
+            onClose={() => setServerHardwareConfigUpdate(undefined)}
+            onSubmit={(data: SHCUpdateModel) => {
+              updateData(data);
+            }}
+          />
+          <ModalCreate
+            open={openModalCreate}
+            onClose={() => setOpenModalCreate(false)}
+            onSubmit={(data: SHCCreateModel) => {
+              data.serverAllocationId = parseInt(
+                router.query!.serverAllocationId!.toString()
+              );
+              createData(data);
+            }}
+          />
           <Divider orientation="left" plain>
             <h3>Server Information</h3>
           </Divider>{" "}
@@ -214,7 +238,7 @@ const Customer: React.FC = () => {
               setServerHardwareConfigUpdate(record);
             }}
             onDelete={async (record) => {
-              // deleteServerAllocation(record);
+              deleteData(record);
             }}
           />
           {serverHardwareConfigData.totalPage > 0 && (
@@ -233,8 +257,6 @@ const Customer: React.FC = () => {
             />
           )}
         </>
-
-        
       }
     />
   );
