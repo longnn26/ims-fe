@@ -9,7 +9,7 @@ export async function middleware(req: NextRequest) {
     secret: process.env.NEXTAUTH_SECRET,
   })) as any;
 
-  if (req.url.endsWith(`/hardwareConfig`)) {
+  if (req.url.includes(`/server`)) {
     if (!token || !isExpiredTimeToken(token.loginDate, token.expiresIn)) {
       return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/signin`);
     }
@@ -25,10 +25,5 @@ export async function middleware(req: NextRequest) {
       } else {
         return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/server`);
       }
-    case "/server":
-      if (!token || !isExpiredTimeToken(token.loginDate, token.expiresIn)) {
-        return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/signin`);
-      }
-      break;
   }
 }

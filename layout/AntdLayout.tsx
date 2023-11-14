@@ -26,7 +26,7 @@ const AntdLayout: React.FC<Props> = (props) => {
             background: colorBgContainer,
           }}
         >
-          <div className="h-screen">{content}</div>
+          <div className="">{content}</div>
         </Content>
       </Layout>
     </Layout>
