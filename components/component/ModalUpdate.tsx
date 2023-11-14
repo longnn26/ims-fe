@@ -43,10 +43,13 @@ const ModalUpdate: React.FC<Props> = (props) => {
     if (component) {
       setFieldsValueInitial();
     }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [component]);
 
   return (
     <>
+      ß
       <Modal
         title={<span className="inline-block m-auto">Update component</span>}
         open={Boolean(component)}

@@ -52,6 +52,7 @@ const ModalUpdate: React.FC<Props> = (props) => {
     if (serverAllocation) {
       setFieldsValueInitial();
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [serverAllocation]);
 
   return (
