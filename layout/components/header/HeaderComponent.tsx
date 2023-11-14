@@ -10,6 +10,7 @@ import { sliderMenu } from "@utils/global";
 import { signOut, useSession } from "next-auth/react";
 import { Dropdown, Space, Avatar, MenuProps } from "antd";
 import { useRouter } from "next/router";
+import Head from "next/head";
 
 const { Header } = Layout;
 
@@ -74,6 +75,9 @@ const HeaderComponent: React.FC<Props> = (props) => {
       style={{ padding: 0, background: colorBgContainer }}
       className="flex justify-between"
     >
+      <Head>
+        <title>{item?.label}</title>
+      </Head>
       <div className="flex w-1/3 justify-start">
         <Button
           type="text"

@@ -31,9 +31,7 @@ const ModalCreate: React.FC<Props> = (props) => {
   return (
     <>
       <Modal
-        title={
-          <span className="inline-block m-auto">Create server allocation</span>
-        }
+        title={<span className="inline-block m-auto">Create component</span>}
         open={open}
         confirmLoading={confirmLoading}
         onCancel={() => {
@@ -51,9 +49,10 @@ const ModalCreate: React.FC<Props> = (props) => {
                   title: "Do you want to save?",
                   async onOk() {
                     onSubmit({
-                      // expectedSize: form.getFieldValue("expectedSize"),
-                      // note: form.getFieldValue("note"),
-                      // customerId: form.getFieldValue("customerId"),
+                      name: form.getFieldValue("name"),
+                      description: form.getFieldValue("description"),
+                      unit: form.getFieldValue("unit"),
+                      type: form.getFieldValue("type"),
                     } as ComponentCreateModel);
                     form.resetFields();
                   },
@@ -73,23 +72,17 @@ const ModalCreate: React.FC<Props> = (props) => {
             wrapperCol={{ span: 16 }}
             style={{ width: "100%" }}
           >
-            <Form.Item
-              name="expectedSize"
-              label="Expected Size"
-              rules={[{ required: true }]}
-            >
-              <Input placeholder="Expected Size" allowClear />
+            <Form.Item name="name" label="Name" rules={[{ required: true }]}>
+              <Input placeholder="Name" allowClear />
             </Form.Item>
-            <Form.Item name="note" label="Note">
-              <Input placeholder="Note" allowClear />
+            <Form.Item name="description" label="Description">
+              <Input placeholder="Description" allowClear />
             </Form.Item>
-            <Form.Item
-              name="customerId"
-              label="Customer Id"
-              labelAlign="right"
-              rules={[{ required: true }]}
-            >
-              <Input placeholder="Customer Id" allowClear />
+            <Form.Item name="unit" label="Unit" rules={[{ required: true }]}>
+              <Input placeholder="Unit" allowClear />
+            </Form.Item>
+            <Form.Item name="type" label="Type" rules={[{ required: true }]}>
+              <Input placeholder="Type" allowClear />
             </Form.Item>
           </Form>
         </div>

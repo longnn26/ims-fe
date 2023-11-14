@@ -18,19 +18,18 @@ interface Props {
 interface DataType {
   key: React.Key;
   id: number;
-  expectedSize: number;
-  note: string;
-  inspectorNote: string;
+  unit: string;
+  name: string;
+  description: string;
   dateCreated: string;
   dateUpdated: string;
-  status: string;
 }
 
 const ComponentTable: React.FC<Props> = (props) => {
   const { onEdit, onDelete } = props;
   const router = useRouter();
-  const { serverAllocationDataLoading, serverAllocationData } = useSelector(
-    (state) => state.serverAllocation
+  const { componentDataLoading, componentData } = useSelector(
+    (state) => state.component
   );
 
   const columns: TableColumnsType<DataType> = [
@@ -50,16 +49,15 @@ const ComponentTable: React.FC<Props> = (props) => {
         };
       },
     },
-    { title: "Expected Size", dataIndex: "expectedSize", key: "expectedSize" },
-    { title: "Note", dataIndex: "note", key: "note" },
+    { title: "Name", dataIndex: "name", key: "name" },
+    { title: "Unit", dataIndex: "unit", key: "unit" },
     {
-      title: "Inspector Note",
-      dataIndex: "inspectorNote",
-      key: "inspectorNote",
+      title: "Description",
+      dataIndex: "description",
+      key: "description",
     },
     { title: "Date Created", dataIndex: "dateCreated", key: "dateCreated" },
     { title: "Date Updated", dataIndex: "dateUpdated", key: "dateUpdated" },
-    { title: "Status", dataIndex: "status", key: "status" },
     {
       title: "Action",
       key: "operation",
@@ -81,18 +79,17 @@ const ComponentTable: React.FC<Props> = (props) => {
   ];
 
   const data: DataType[] = [];
-  for (let i = 0; i < serverAllocationData?.data?.length; ++i) {
+  for (let i = 0; i < componentData?.data?.length; ++i) {
     data.push({
-      key: serverAllocationData?.data[i].id,
-      id: serverAllocationData?.data[i].id,
-      note: serverAllocationData?.data[i].note,
-      expectedSize: serverAllocationData?.data[i].expectedSize,
-      inspectorNote: serverAllocationData?.data[i].inspectorNote,
-      status: serverAllocationData?.data[i].status,
-      dateCreated: moment(serverAllocationData?.data[i].dateCreated).format(
+      key: componentData?.data[i].id,
+      id: componentData?.data[i].id,
+      name: componentData?.data[i].name,
+      description: componentData?.data[i].description,
+      unit: componentData?.data[i].unit,
+      dateCreated: moment(componentData?.data[i].dateCreated).format(
         dateAdvFormat
       ),
-      dateUpdated: moment(serverAllocationData?.data[i].dateUpdated).format(
+      dateUpdated: moment(componentData?.data[i].dateUpdated).format(
         dateAdvFormat
       ),
     });
@@ -101,7 +98,7 @@ const ComponentTable: React.FC<Props> = (props) => {
   return (
     <>
       <Table
-        loading={serverAllocationDataLoading}
+        loading={componentDataLoading}
         columns={columns}
         dataSource={data}
         scroll={{ x: 1300 }}

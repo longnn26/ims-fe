@@ -31,16 +31,10 @@ const ModalUpdate: React.FC<Props> = (props) => {
   const setFieldsValueInitial = () => {
     if (formRef.current)
       form.setFieldsValue({
-        // id: serverAllocation.id,
-        // expectedSize: serverAllocation.expectedSize,
-        // note: serverAllocation.note,
-        // inspectorNote: serverAllocation.inspectorNote,
-        // status: serverAllocation?.status
-        //   ? {
-        //       value: serverAllocation?.status,
-        //       label: serverAllocation?.status,
-        //     }
-        //   : undefined,
+        id: component.id,
+        description: component.description,
+        unit: component.unit,
+        type: component.type,
       });
   };
 
@@ -54,9 +48,7 @@ const ModalUpdate: React.FC<Props> = (props) => {
   return (
     <>
       <Modal
-        title={
-          <span className="inline-block m-auto">Update server allocation</span>
-        }
+        title={<span className="inline-block m-auto">Update component</span>}
         open={Boolean(component)}
         confirmLoading={confirmLoading}
         onCancel={() => {
@@ -73,11 +65,11 @@ const ModalUpdate: React.FC<Props> = (props) => {
                   title: "Do you want to save?",
                   async onOk() {
                     onSubmit({
-                      // id: form.getFieldValue("id"),
-                      // status: form.getFieldValue("status").value,
-                      // expectedSize: form.getFieldValue("expectedSize"),
-                      // note: form.getFieldValue("note"),
-                      // inspectorNote: form.getFieldValue("inspectorNote"),
+                      id: form.getFieldValue("id"),
+                      name: form.getFieldValue("name"),
+                      description: form.getFieldValue("description"),
+                      unit: form.getFieldValue("unit"),
+                      type: form.getFieldValue("type"),
                     } as ComponentUpdateModel);
                     form.resetFields();
                   },
@@ -97,26 +89,17 @@ const ModalUpdate: React.FC<Props> = (props) => {
             wrapperCol={{ span: 16 }}
             style={{ width: "100%" }}
           >
-            <Form.Item
-              name="expectedSize"
-              label="Expected Size"
-              rules={[{ required: true }]}
-            >
-              <Input placeholder="Expected Size" allowClear />
+            <Form.Item name="name" label="Name" rules={[{ required: true }]}>
+              <Input placeholder="Name" allowClear />
             </Form.Item>
-            <Form.Item name="note" label="Note">
-              <Input placeholder="Note" allowClear />
+            <Form.Item name="description" label="Description">
+              <Input placeholder="Description" allowClear />
             </Form.Item>
-            <Form.Item name="inspectorNote" label="Inspector Note">
-              <Input placeholder="Inspector Note" allowClear />
+            <Form.Item name="unit" label="Unit" rules={[{ required: true }]}>
+              <Input placeholder="Unit" allowClear />
             </Form.Item>
-            <Form.Item
-              name="status"
-              label="Status"
-              labelAlign="right"
-              rules={[{ required: true, message: "Status not empty" }]}
-            >
-              <Select labelInValue allowClear options={optionStatus} />
+            <Form.Item name="type" label="Type" rules={[{ required: true }]}>
+              <Input placeholder="Type" allowClear />
             </Form.Item>
           </Form>
         </div>

@@ -14,11 +14,9 @@ import {
   ComponentData,
 } from "@models/component";
 import { Button, Pagination, message, Modal, Alert } from "antd";
-import ServerAllocationTable from "@components/server/ServerAllocationTable";
 import ModalCreate from "@components/component/ModalCreate";
 import componentService from "@services/component";
 import ModalUpdate from "@components/component/ModalUpdate";
-import { useRouter } from "next/router";
 import ComponentTable from "@components/component/ComponentTable";
 const AntdLayoutNoSSR = dynamic(() => import("../../layout/AntdLayout"), {
   ssr: false,

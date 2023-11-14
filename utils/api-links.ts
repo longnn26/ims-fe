@@ -21,6 +21,13 @@ const apiLinks = {
     update: `${url}/api/ServerHardwareConfig`,
     delete: `${url}/api/ServerHardwareConfig`,
   },
+
+  component: {
+    get: `${url}/api/component`,
+    create: `${url}/api/component`,
+    update: `${url}/api/component`,
+    delete: `${url}/api/component`,
+  },
 };
 
 export default apiLinks;
