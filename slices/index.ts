@@ -3,6 +3,7 @@ import serverAllocation from "@slices/serverAllocation";
 import serverHardwareConfig from "@slices/serverHardwareConfig";
 import component from "@slices/component";
 import customer from "@slices/customer";
+import requestUpgrade from "@slices/requestUpgrade";
 
 // eslint-disable-next-line import/no-anonymous-default-export
 export default {
@@ -11,4 +12,5 @@ export default {
   serverHardwareConfig,
   component,
   customer,
+  requestUpgrade,
 };

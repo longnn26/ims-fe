@@ -45,7 +45,7 @@ const ServerAllocationTable: React.FC<Props> = (props) => {
       onCell: (record, rowIndex) => {
         return {
           onClick: (ev) => {
-            router.push(`/server/${record.id}/detail`);
+            router.push(`/server/${record.id}`);
           },
         };
       },

@@ -21,6 +21,8 @@ import {
   Alert,
   Descriptions,
   Divider,
+  FloatButton,
+  Breadcrumb,
 } from "antd";
 import type { DescriptionsProps } from "antd";
 import { CaretLeftOutlined } from "@ant-design/icons";
@@ -30,14 +32,17 @@ import serverAllocationService from "@services/serverAllocation";
 import { useRouter } from "next/router";
 import { ServerAllocation } from "@models/serverAllocation";
 import { dateAdvFormat } from "@utils/constants";
-import { AppstoreAddOutlined } from "@ant-design/icons";
+import { AppstoreAddOutlined, SendOutlined } from "@ant-design/icons";
 import moment from "moment";
 import ModalCreate from "@components/server/hardwareConfig/ModalCreate";
 import ModalUpdate from "@components/server/hardwareConfig/ModalUpdate";
+import { ItemType } from "antd/es/breadcrumb/Breadcrumb";
+import BreadcrumbComponent from "@components/BreadcrumbComponent";
 const AntdLayoutNoSSR = dynamic(() => import("../../../../layout/AntdLayout"), {
   ssr: false,
 });
 var itemDetails: DescriptionsProps["items"] = [];
+var itemBreadcrumbs: ItemType[] = [];
 const { confirm } = Modal;
 const Customer: React.FC = () => {
   const dispatch = useDispatch();
@@ -176,12 +181,26 @@ const Customer: React.FC = () => {
     });
   };
 
+  const handleBreadCumb = () => {
+    itemBreadcrumbs = [];
+    var items = router.asPath.split("/").filter((_) => _ != "");
+    var path = "";
+    items.forEach((element) => {
+      path += `/${element}`;
+      itemBreadcrumbs.push({
+        href: path,
+        title: element,
+      });
+    });
+  };
+
   useEffect(() => {
     if (router.query.serverAllocationId && session) {
       paramGet.ServerAllocationId = parseInt(
         router.query.serverAllocationId!.toString()
       );
       getData();
+      handleBreadCumb();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session, paramGet]);
@@ -191,10 +210,7 @@ const Customer: React.FC = () => {
       content={
         <>
           <div className="flex justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
-            <Button
-              icon={<CaretLeftOutlined />}
-              onClick={() => history.back()}
-            />
+            <BreadcrumbComponent itemBreadcrumbs={itemBreadcrumbs} />
             <Button
               type="primary"
               htmlType="submit"
@@ -256,6 +272,16 @@ const Customer: React.FC = () => {
               }}
             />
           )}
+          <FloatButton
+            type="primary"
+            tooltip="Request upgrade"
+            icon={<SendOutlined />}
+            style={{ top: 300 }}
+            // className="top-[100]"
+            onClick={() =>
+              router.push(`/server/${itemDetails![0].children}/requestUpgrade`)
+            }
+          />
         </>
       }
     />
