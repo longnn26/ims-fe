@@ -3,6 +3,7 @@ import React, { ReactNode } from "react";
 import { Layout, theme } from "antd";
 import HeaderComponent from "@layout/components/header/HeaderComponent";
 import SliderComponent from "@layout/components/slider/Slider";
+import { Footer } from "antd/es/layout/layout";
 
 const { Content } = Layout;
 
@@ -16,19 +17,22 @@ const AntdLayout: React.FC<Props> = (props) => {
     token: { colorBgContainer },
   } = theme.useToken();
   return (
-    <Layout>
+    <Layout className="h-screen">
       <HeaderComponent />
       <Layout>
         <SliderComponent />
         <Content
           style={{
-            margin: "10px",
+            marginTop: "10px",
+            marginLeft: "10px",
+            marginRight: "10px",
             background: colorBgContainer,
           }}
         >
-          <div className="h-screen">{content}</div>
+          <div>{content}</div>
         </Content>
       </Layout>
+      <Footer style={{ textAlign: "center" }}>Copyright © 2023 QTSC</Footer>
     </Layout>
   );
 };
