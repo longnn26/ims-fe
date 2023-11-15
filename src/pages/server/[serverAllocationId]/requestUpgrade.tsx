@@ -5,14 +5,14 @@ import { useSession } from "next-auth/react";
 import React from "react";
 import useDispatch from "@hooks/use-dispatch";
 import useSelector from "@hooks/use-selector";
-import { getserverHardwareConfigData } from "@slices/serverHardwareConfig";
+import { getRequestUpgradeData } from "@slices/requestUpgrade";
 import {
-  SHCCreateModel,
-  SHCParamGet,
-  SHCUpdateModel,
-  ServerHardwareConfig,
-  ServerHardwareConfigData,
-} from "@models/serverHardwareConfig";
+  RequestUpgradeCreateModel,
+  RequestUpgrade,
+  RequestUpgradeData,
+  RequestUpgradeUpdateModel,
+  RUParamGet,
+} from "@models/requestUpgrade";
 import {
   Button,
   Pagination,
@@ -24,37 +24,38 @@ import {
 } from "antd";
 import type { DescriptionsProps } from "antd";
 import { CaretLeftOutlined } from "@ant-design/icons";
-import ServerHardwareConfigTable from "@components/server/hardwareConfig/ServerHardwareConfigTable";
-import serverHardwareConfigService from "@services/serverHardwareConfig";
+import requestUpgradeService from "@services/requestUpgrade";
 import serverAllocationService from "@services/serverAllocation";
 import { useRouter } from "next/router";
 import { ServerAllocation } from "@models/serverAllocation";
 import { dateAdvFormat } from "@utils/constants";
-import { AppstoreAddOutlined } from "@ant-design/icons";
+import { IoIosSend } from "react-icons/io";
 import moment from "moment";
-import ModalCreate from "@components/server/hardwareConfig/ModalCreate";
-import ModalUpdate from "@components/server/hardwareConfig/ModalUpdate";
+import ModalCreate from "@components/server/requestUpgrade/ModalCreate";
+import ModalUpdate from "@components/server/requestUpgrade/ModalUpdate";
+import RequestUpgradeTable from "@components/server/requestUpgrade/RequestUpgradeTable";
+import { ItemType } from "antd/es/breadcrumb/Breadcrumb";
+import BreadcrumbComponent from "@components/BreadcrumbComponent";
 const AntdLayoutNoSSR = dynamic(() => import("../../../../layout/AntdLayout"), {
   ssr: false,
 });
 var itemDetails: DescriptionsProps["items"] = [];
+var itemBreadcrumbs: ItemType[] = [];
 const { confirm } = Modal;
-const Customer: React.FC = () => {
+const RequestUpgrade: React.FC = () => {
   const dispatch = useDispatch();
   const router = useRouter();
   const { data: session } = useSession();
-  const { serverHardwareConfigData } = useSelector(
-    (state) => state.serverHardwareConfig
-  );
+  const { requestUpgradeData } = useSelector((state) => state.requestUpgrade);
 
-  const [paramGet, setParamGet] = useState<SHCParamGet>({
+  const [paramGet, setParamGet] = useState<RUParamGet>({
     PageIndex: 1,
     PageSize: 10,
     ServerAllocationId: router.query.serverAllocationId ?? -1,
-  } as unknown as SHCParamGet);
+  } as unknown as RUParamGet);
   const [loadingSubmit, setLoadingSubmit] = useState<boolean>(false);
-  const [serverHardwareConfigUpdate, setServerHardwareConfigUpdate] = useState<
-    ServerHardwareConfig | undefined
+  const [requestUpgradeUpdate, setRequestUpgradeUpdate] = useState<
+    RequestUpgrade | undefined
   >(undefined);
   const [openModalCreate, setOpenModalCreate] = useState<boolean>(false);
   const [serverAllocationDetail, setServerAllocationDetail] =
@@ -104,21 +105,21 @@ const Customer: React.FC = () => {
         });
       });
     dispatch(
-      getserverHardwareConfigData({
+      getRequestUpgradeData({
         token: session?.user.access_token!,
         paramGet: { ...paramGet },
       })
     ).then(({ payload }) => {
-      var res = payload as ServerHardwareConfigData;
-      if (res.totalPage < paramGet.PageIndex && res.totalPage != 0) {
+      var res = payload as RequestUpgradeData;
+      if (res?.totalPage < paramGet.PageIndex && res.totalPage != 0) {
         setParamGet({ ...paramGet, PageIndex: res.totalPage });
       }
     });
   };
 
-  const createData = async (data: SHCCreateModel) => {
-    await serverHardwareConfigService
-      .createServerHardwareConfig(session?.user.access_token!, data)
+  const createData = async (data: RequestUpgradeCreateModel) => {
+    await requestUpgradeService
+      .createData(session?.user.access_token!, data)
       .then((res) => {
         message.success("Create successful!");
         getData();
@@ -131,9 +132,9 @@ const Customer: React.FC = () => {
       });
   };
 
-  const updateData = async (data: SHCUpdateModel) => {
-    await serverHardwareConfigService
-      .updateServerHardwareConfig(session?.user.access_token!, data)
+  const updateData = async (data: RequestUpgradeUpdateModel) => {
+    await requestUpgradeService
+      .updateData(session?.user.access_token!, data)
       .then((res) => {
         message.success("Update successful!");
         getData();
@@ -142,37 +143,47 @@ const Customer: React.FC = () => {
         message.error(errors.message);
       })
       .finally(() => {
-        setServerHardwareConfigUpdate(undefined);
+        setRequestUpgradeUpdate(undefined);
       });
   };
 
-  const deleteData = (serverHardwareConfig: ServerHardwareConfig) => {
+  const deleteData = (requestUpgrade: RequestUpgrade) => {
     confirm({
       title: "Delete",
       content: (
         <Alert
-          message={`Do you want to delete with Id ${serverHardwareConfig.id}?`}
+          message={`Do you want to delete with Id ${requestUpgrade.id}?`}
           // description={`${serverAllocation.id}`}
           type="warning"
         />
       ),
       async onOk() {
         setLoadingSubmit(true);
-        await serverHardwareConfigService
-          .deleteServerHardwareConfig(
-            session?.user.access_token!,
-            serverHardwareConfig.id.toString()
-          )
+        await requestUpgradeService
+          .deleteData(session?.user.access_token!, requestUpgrade.id.toString())
           .then(() => {
             getData();
-            message.success(`Delete hardware config successful`);
+            message.success(`Delete request upgrade successful`);
           })
           .catch((errors) => {
-            message.error(errors.message ?? "Delete hardware config failed");
+            message.error(errors.message ?? "Delete request upgrade failed");
             setLoadingSubmit(false);
           });
       },
       onCancel() {},
+    });
+  };
+
+  const handleBreadCumb = () => {
+    itemBreadcrumbs = [];
+    var items = router.asPath.split("/").filter((_) => _ != "");
+    var path = "";
+    items.forEach((element) => {
+      path += `/${element}`;
+      itemBreadcrumbs.push({
+        href: path,
+        title: element,
+      });
     });
   };
 
@@ -182,6 +193,7 @@ const Customer: React.FC = () => {
         router.query.serverAllocationId!.toString()
       );
       getData();
+      handleBreadCumb();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session, paramGet]);
@@ -190,21 +202,19 @@ const Customer: React.FC = () => {
     <AntdLayoutNoSSR
       content={
         <>
-          <div className="flex justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
-            <Button
-              icon={<CaretLeftOutlined />}
-              onClick={() => history.back()}
-            />
+          <div className="flex flex-wrap items-center justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
+            <BreadcrumbComponent itemBreadcrumbs={itemBreadcrumbs} />
             <Button
               type="primary"
               htmlType="submit"
-              icon={<AppstoreAddOutlined />}
+              icon={<IoIosSend />}
               onClick={() => {
                 setOpenModalCreate(true);
               }}
             >
-              Hardware Config
+              Request upgrade
             </Button>
+
             {/* <SearchComponent
               placeholder="Search Name, Description..."
               setSearchValue={(value) =>
@@ -213,16 +223,16 @@ const Customer: React.FC = () => {
             /> */}
           </div>
           <ModalUpdate
-            serverHardwareConfig={serverHardwareConfigUpdate!}
-            onClose={() => setServerHardwareConfigUpdate(undefined)}
-            onSubmit={(data: SHCUpdateModel) => {
+            requestUpgrade={requestUpgradeUpdate!}
+            onClose={() => setRequestUpgradeUpdate(undefined)}
+            onSubmit={(data: RequestUpgradeUpdateModel) => {
               updateData(data);
             }}
           />
           <ModalCreate
             open={openModalCreate}
             onClose={() => setOpenModalCreate(false)}
-            onSubmit={(data: SHCCreateModel) => {
+            onSubmit={(data: RequestUpgradeCreateModel) => {
               data.serverAllocationId = parseInt(
                 router.query!.serverAllocationId!.toString()
               );
@@ -230,23 +240,23 @@ const Customer: React.FC = () => {
             }}
           />
           <Divider orientation="left" plain>
-            <h3>Server Information</h3>
+            <h3>Server </h3>
           </Divider>{" "}
           <Descriptions className="p-5" items={itemDetails} />
-          <ServerHardwareConfigTable
+          <RequestUpgradeTable
             onEdit={(record) => {
-              setServerHardwareConfigUpdate(record);
+              setRequestUpgradeUpdate(record);
             }}
             onDelete={async (record) => {
               deleteData(record);
             }}
           />
-          {serverHardwareConfigData.totalPage > 0 && (
+          {requestUpgradeData.totalPage > 0 && (
             <Pagination
               className="text-end m-4"
-              current={paramGet.PageIndex}
-              pageSize={serverHardwareConfigData.pageSize ?? 10}
-              total={serverHardwareConfigData.totalSize}
+              current={paramGet?.PageIndex}
+              pageSize={requestUpgradeData?.pageSize ?? 10}
+              total={requestUpgradeData?.totalSize}
               onChange={(page, pageSize) => {
                 setParamGet({
                   ...paramGet,
@@ -262,4 +272,4 @@ const Customer: React.FC = () => {
   );
 };
 
-export default Customer;
+export default RequestUpgrade;
