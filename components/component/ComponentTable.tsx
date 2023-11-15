@@ -39,16 +39,6 @@ const ComponentTable: React.FC<Props> = (props) => {
       dataIndex: "id",
       key: "id",
       fixed: "left",
-      render: (text) => (
-        <a className="text-[#b75c3c] hover:text-[#ee4623]">{text}</a>
-      ),
-      onCell: (record, rowIndex) => {
-        return {
-          onClick: (ev) => {
-            router.push(`/server/${record.id}/detail`);
-          },
-        };
-      },
     },
     { title: "Name", dataIndex: "name", key: "name" },
     { title: "Unit", dataIndex: "unit", key: "unit" },
