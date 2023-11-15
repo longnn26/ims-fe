@@ -1,6 +1,5 @@
 import { ReactNode } from "react";
-import { GrNotes, GrLanguage } from "react-icons/gr";
-import { MdCategory } from "react-icons/md";
+import { FaUser } from "react-icons/fa";
 import { BiServer, BiSolidComponent } from "react-icons/bi";
 
 export interface SliderMenuItem {
@@ -19,5 +18,10 @@ export const sliderMenu = [
     key: "component",
     icon: <BiSolidComponent />,
     label: "Component",
+  },
+  {
+    key: "customer",
+    icon: <FaUser />,
+    label: "Customer",
   },
 ] as SliderMenuItem[];

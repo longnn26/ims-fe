@@ -23,10 +23,17 @@ const apiLinks = {
   },
 
   component: {
-    get: `${url}/api/component`,
-    create: `${url}/api/component`,
-    update: `${url}/api/component`,
-    delete: `${url}/api/component`,
+    get: `${url}/api/Component`,
+    create: `${url}/api/Component`,
+    update: `${url}/api/Component`,
+    delete: `${url}/api/Component`,
+  },
+
+  customer: {
+    get: `${url}/api/Customer`,
+    create: `${url}/api/Customer`,
+    update: `${url}/api/Customer`,
+    delete: `${url}/api/Customer`,
   },
 };
 
