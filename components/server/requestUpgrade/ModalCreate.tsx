@@ -32,7 +32,7 @@ const ModalCreate: React.FC<Props> = (props) => {
     <>
       <Modal
         title={
-          <span className="inline-block m-auto">Create hardware config</span>
+          <span className="inline-block m-auto">Create request upgrade</span>
         }
         open={open}
         confirmLoading={confirmLoading}
