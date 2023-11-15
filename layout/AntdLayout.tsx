@@ -17,7 +17,7 @@ const AntdLayout: React.FC<Props> = (props) => {
     token: { colorBgContainer },
   } = theme.useToken();
   return (
-    <Layout className="h-screen">
+    <Layout>
       <HeaderComponent />
       <Layout>
         <SliderComponent />
@@ -29,7 +29,7 @@ const AntdLayout: React.FC<Props> = (props) => {
             background: colorBgContainer,
           }}
         >
-          <div>{content}</div>
+          <div className="h-screen">{content}</div>
         </Content>
       </Layout>
       <Footer style={{ textAlign: "center" }}>Copyright © 2023 QTSC</Footer>
