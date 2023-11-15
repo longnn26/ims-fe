@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import { FaUser } from "react-icons/fa";
+import { FaUser, FaChartArea } from "react-icons/fa";
 import { BiServer, BiSolidComponent } from "react-icons/bi";
 
 export interface SliderMenuItem {
@@ -23,5 +23,10 @@ export const sliderMenu = [
     key: "customer",
     icon: <FaUser />,
     label: "Customer",
+  },
+  {
+    key: "area",
+    icon: <FaChartArea />,
+    label: "Area",
   },
 ] as SliderMenuItem[];

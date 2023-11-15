@@ -36,7 +36,7 @@ import ModalUpdate from "@components/server/requestUpgrade/ModalUpdate";
 import RequestUpgradeTable from "@components/server/requestUpgrade/RequestUpgradeTable";
 import { ItemType } from "antd/es/breadcrumb/Breadcrumb";
 import BreadcrumbComponent from "@components/BreadcrumbComponent";
-const AntdLayoutNoSSR = dynamic(() => import("../../../../layout/AntdLayout"), {
+const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
 });
 var itemDetails: DescriptionsProps["items"] = [];

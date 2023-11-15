@@ -42,6 +42,13 @@ const apiLinks = {
     update: `${url}/api/RequestUpgrade`,
     delete: `${url}/api/RequestUpgrade`,
   },
+
+  area: {
+    get: `${url}/api/Area`,
+    create: `${url}/api/Area`,
+    update: `${url}/api/Area`,
+    delete: `${url}/api/Area`,
+  },
 };
 
 export default apiLinks;

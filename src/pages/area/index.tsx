@@ -6,19 +6,13 @@ import React from "react";
 import { ParamGet } from "@models/base";
 import useDispatch from "@hooks/use-dispatch";
 import useSelector from "@hooks/use-selector";
-import { getServerAllocationData } from "@slices/serverAllocation";
-import {
-  SACreateModel,
-  SAUpdateModel,
-  ServerAllocation,
-  ServerAllocationData,
-} from "@models/serverAllocation";
+import { getAreaData } from "@slices/area";
+import { AreaCreateModel, AreaUpdateModel, Area, AreaData } from "@models/area";
 import { Button, Pagination, message, Modal, Alert } from "antd";
-import ServerAllocationTable from "@components/server/ServerAllocationTable";
-import ModalCreate from "@components/server/ModalCreate";
-import serverAllocationService from "@services/serverAllocation";
-import ModalUpdate from "@components/server/ModalUpdate";
-import { useRouter } from "next/router";
+import ModalCreate from "@components/area/ModalCreate";
+import areaService from "@services/area";
+import ModalUpdate from "@components/area/ModalUpdate";
+import AreaTable from "@components/area/AreaTable";
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
 });
@@ -28,37 +22,33 @@ const { confirm } = Modal;
 const Customer: React.FC = () => {
   const dispatch = useDispatch();
   const { data: session } = useSession();
-  const { serverAllocationData } = useSelector(
-    (state) => state.serverAllocation
-  );
+  const { customerData } = useSelector((state) => state.customer);
 
   const [paramGet, setParamGet] = useState<ParamGet>({
     PageIndex: 1,
     PageSize: 7,
   } as ParamGet);
   const [loadingSubmit, setLoadingSubmit] = useState<boolean>(false);
-  const [serverAllocationUpdate, setServerAllocationUpdate] = useState<
-    ServerAllocation | undefined
-  >(undefined);
+  const [areaUpdate, setAreaUpdate] = useState<Area | undefined>(undefined);
   const [openModalCreate, setOpenModalCreate] = useState<boolean>(false);
 
   const getData = async () => {
     dispatch(
-      getServerAllocationData({
+      getAreaData({
         token: session?.user.access_token!,
         paramGet: { ...paramGet },
       })
     ).then(({ payload }) => {
-      var res = payload as ServerAllocationData;
+      var res = payload as AreaData;
       if (res.totalPage < paramGet.PageIndex && res.totalPage != 0) {
         setParamGet({ ...paramGet, PageIndex: res.totalPage });
       }
     });
   };
 
-  const createData = async (data: SACreateModel) => {
-    await serverAllocationService
-      .createServerAllocation(session?.user.access_token!, data)
+  const createData = async (data: AreaCreateModel) => {
+    await areaService
+      .createData(session?.user.access_token!, data)
       .then((res) => {
         message.success("Create successful!");
         getData();
@@ -71,9 +61,9 @@ const Customer: React.FC = () => {
       });
   };
 
-  const updateData = async (data: SAUpdateModel) => {
-    await serverAllocationService
-      .updateServerAllocation(session?.user.access_token!, data)
+  const updateData = async (data: AreaUpdateModel) => {
+    await areaService
+      .updateData(session?.user.access_token!, data)
       .then((res) => {
         message.success("Update successful!");
         getData();
@@ -82,33 +72,30 @@ const Customer: React.FC = () => {
         message.error(errors.message);
       })
       .finally(() => {
-        setServerAllocationUpdate(undefined);
+        setAreaUpdate(undefined);
       });
   };
 
-  const deleteServerAllocation = (serverAllocation: ServerAllocation) => {
+  const deleteComponent = (area: Area) => {
     confirm({
       title: "Delete",
       content: (
         <Alert
-          message={`Do you want to delete with Id ${serverAllocation.id}?`}
+          message={`Do you want to delete with Id ${area.id}?`}
           // description={`${serverAllocation.id}`}
           type="warning"
         />
       ),
       async onOk() {
         setLoadingSubmit(true);
-        await serverAllocationService
-          .deleteServerAllocation(
-            session?.user.access_token!,
-            serverAllocation.id
-          )
+        await areaService
+          .deleteData(session?.user.access_token!, area.id)
           .then(() => {
             getData();
-            message.success(`Delete server allocation successful!`);
+            message.success(`Delete area successful!`);
           })
           .catch((errors) => {
-            message.error(errors.message ?? "Delete allocation failed");
+            message.error(errors.message ?? "Delete area failed");
             setLoadingSubmit(false);
           });
       },
@@ -141,35 +128,35 @@ const Customer: React.FC = () => {
               }
             /> */}
           </div>
-          <ServerAllocationTable
+          <AreaTable
             onEdit={(record) => {
-              setServerAllocationUpdate(record);
+              setAreaUpdate(record);
             }}
             onDelete={async (record) => {
-              deleteServerAllocation(record);
+              deleteComponent(record);
             }}
           />
 
           <ModalCreate
             open={openModalCreate}
             onClose={() => setOpenModalCreate(false)}
-            onSubmit={(data: SACreateModel) => {
+            onSubmit={(data: AreaCreateModel) => {
               createData(data);
             }}
           />
           <ModalUpdate
-            serverAllocation={serverAllocationUpdate!}
-            onClose={() => setServerAllocationUpdate(undefined)}
-            onSubmit={(data: SAUpdateModel) => {
+            area={areaUpdate!}
+            onClose={() => setAreaUpdate(undefined)}
+            onSubmit={(data: AreaUpdateModel) => {
               updateData(data);
             }}
           />
-          {serverAllocationData.totalPage > 0 && (
+          {customerData.totalPage > 0 && (
             <Pagination
               className="text-end m-4"
               current={paramGet.PageIndex}
-              pageSize={serverAllocationData.pageSize ?? 10}
-              total={serverAllocationData.totalSize}
+              pageSize={customerData.pageSize ?? 10}
+              total={customerData.totalSize}
               onChange={(page, pageSize) => {
                 setParamGet({
                   ...paramGet,

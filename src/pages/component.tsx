@@ -18,7 +18,7 @@ import ModalCreate from "@components/component/ModalCreate";
 import componentService from "@services/component";
 import ModalUpdate from "@components/component/ModalUpdate";
 import ComponentTable from "@components/component/ComponentTable";
-const AntdLayoutNoSSR = dynamic(() => import("../../layout/AntdLayout"), {
+const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
 });
 
