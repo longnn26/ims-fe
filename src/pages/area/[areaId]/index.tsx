@@ -3,30 +3,29 @@ import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import React from "react";
-import { ParamGet } from "@models/base";
 import useDispatch from "@hooks/use-dispatch";
-import useSelector from "@hooks/use-selector";
-import { getAreaData } from "@slices/area";
-import { AreaCreateModel, AreaUpdateModel, Area, AreaData } from "@models/area";
+import { getRackData } from "@slices/area";
+import { Area } from "@models/area";
 import {
-  Button,
-  Pagination,
   message,
   Modal,
   Alert,
   DescriptionsProps,
   Divider,
   Descriptions,
+  Button,
 } from "antd";
-import ModalCreate from "@components/area/ModalCreate";
+import ModalCreate from "@components/area/rack/ModalCreate";
 import areaService from "@services/area";
-import ModalUpdate from "@components/area/ModalUpdate";
-import AreaTable from "@components/area/AreaTable";
+import rackService from "@services/rack";
+import ModalUpdate from "@components/area/rack/ModalUpdate";
 import { useRouter } from "next/router";
 import moment from "moment";
 import { dateAdvFormat } from "@utils/constants";
 import { ItemType } from "antd/es/breadcrumb/Breadcrumb";
 import BreadcrumbComponent from "@components/BreadcrumbComponent";
+import RackTable from "@components/area/rack/RackRender";
+import { Rack, RackCreateModel, RackUpdateModel } from "@models/rack";
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
 });
@@ -37,14 +36,9 @@ const AreaDetail: React.FC = () => {
   const dispatch = useDispatch();
   const { data: session } = useSession();
   const router = useRouter();
-  const { customerData } = useSelector((state) => state.customer);
-
-  const [paramGet, setParamGet] = useState<ParamGet>({
-    PageIndex: 1,
-    PageSize: 7,
-  } as ParamGet);
   const [loadingSubmit, setLoadingSubmit] = useState<boolean>(false);
-  const [areaUpdate, setAreaUpdate] = useState<Area | undefined>(undefined);
+  const [areaDetail, setAreaDetail] = useState<Area | undefined>(undefined);
+  const [rackUpdate, setRackUpdate] = useState<Rack>();
   const [openModalCreate, setOpenModalCreate] = useState<boolean>(false);
   const [itemDetails, setItemDetails] = useState<DescriptionsProps["items"]>(
     []
@@ -54,6 +48,7 @@ const AreaDetail: React.FC = () => {
     await areaService
       .getDataById(session?.user.access_token!, router.query.areaId + "")
       .then((res) => {
+        setAreaDetail(res);
         var items = [] as DescriptionsProps["items"];
         items?.push({
           key: "1",
@@ -87,21 +82,16 @@ const AreaDetail: React.FC = () => {
         });
         setItemDetails(items);
       });
-    // dispatch(
-    //   getAreaData({
-    //     token: session?.user.access_token!,
-    //     paramGet: { ...paramGet },
-    //   })
-    // ).then(({ payload }) => {
-    //   var res = payload as AreaData;
-    //   if (res.totalPage < paramGet.PageIndex && res.totalPage != 0) {
-    //     setParamGet({ ...paramGet, PageIndex: res.totalPage });
-    //   }
-    // });
+    dispatch(
+      getRackData({
+        token: session?.user.access_token!,
+        id: router.query.areaId + "",
+      })
+    );
   };
 
-  const createData = async (data: AreaCreateModel) => {
-    await areaService
+  const createData = async (data: RackCreateModel) => {
+    await rackService
       .createData(session?.user.access_token!, data)
       .then((res) => {
         message.success("Create successful!");
@@ -115,8 +105,8 @@ const AreaDetail: React.FC = () => {
       });
   };
 
-  const updateData = async (data: AreaUpdateModel) => {
-    await areaService
+  const updateData = async (data: RackUpdateModel) => {
+    await rackService
       .updateData(session?.user.access_token!, data)
       .then((res) => {
         message.success("Update successful!");
@@ -126,7 +116,7 @@ const AreaDetail: React.FC = () => {
         message.error(errors.message);
       })
       .finally(() => {
-        setAreaUpdate(undefined);
+        setRackUpdate(undefined);
       });
   };
 
@@ -142,14 +132,14 @@ const AreaDetail: React.FC = () => {
       ),
       async onOk() {
         setLoadingSubmit(true);
-        await areaService
+        await rackService
           .deleteData(session?.user.access_token!, area.id)
           .then(() => {
             getData();
-            message.success(`Delete area successful!`);
+            message.success(`Delete rack successful!`);
           })
           .catch((errors) => {
-            message.error(errors.message ?? "Delete area failed");
+            message.error(errors.message ?? "Delete rack failed");
             setLoadingSubmit(false);
           });
       },
@@ -172,9 +162,6 @@ const AreaDetail: React.FC = () => {
 
   useEffect(() => {
     if (router.query.areaId && session) {
-      // paramGet.ServerAllocationId = parseInt(
-      //   router.query.serverAllocationId!.toString()
-      // );
       getData();
       handleBreadCumb();
     }
@@ -186,7 +173,7 @@ const AreaDetail: React.FC = () => {
         <>
           <div className="flex justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
             <BreadcrumbComponent itemBreadcrumbs={itemBreadcrumbs} />
-            {/* <Button
+            <Button
               type="primary"
               htmlType="submit"
               onClick={() => {
@@ -194,7 +181,7 @@ const AreaDetail: React.FC = () => {
               }}
             >
               Create
-            </Button> */}
+            </Button>
             {/* <SearchComponent
               placeholder="Search Name, Description..."
               setSearchValue={(value) =>
@@ -206,43 +193,26 @@ const AreaDetail: React.FC = () => {
             <h3>Area Information</h3>
           </Divider>{" "}
           <Descriptions className="p-5" items={itemDetails} />
-          {/* <AreaTable
+          <RackTable
+            area={areaDetail!}
             onEdit={(record) => {
-              setAreaUpdate(record);
+              setRackUpdate(record!);
             }}
-            onDelete={async (record) => {
-              deleteComponent(record);
-            }}
-          /> */}
+          />
           <ModalCreate
             open={openModalCreate}
             onClose={() => setOpenModalCreate(false)}
-            onSubmit={(data: AreaCreateModel) => {
+            onSubmit={(data: RackCreateModel) => {
               createData(data);
             }}
           />
           <ModalUpdate
-            area={areaUpdate!}
-            onClose={() => setAreaUpdate(undefined)}
-            onSubmit={(data: AreaUpdateModel) => {
+            rack={rackUpdate!}
+            onClose={() => setRackUpdate(undefined)}
+            onSubmit={(data: RackUpdateModel) => {
               updateData(data);
             }}
           />
-          {/* {customerData.totalPage > 0 && (
-            <Pagination
-              className="text-end m-4"
-              current={paramGet.PageIndex}
-              pageSize={customerData.pageSize ?? 10}
-              total={customerData.totalSize}
-              onChange={(page, pageSize) => {
-                setParamGet({
-                  ...paramGet,
-                  PageIndex: page,
-                  PageSize: pageSize,
-                });
-              }}
-            />
-          )} */}
         </>
       }
     />

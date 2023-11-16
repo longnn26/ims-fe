@@ -1,41 +1,24 @@
 import { ParamGet } from "@models/base";
-import { AreaCreateModel, AreaUpdateModel, AreaData, Area } from "@models/area";
 import apiLinks from "@utils/api-links";
 import httpClient from "@utils/http-client";
-import { Rack, RackData } from "@models/rack";
+import { RackCreateModel, RackUpdateModel, RackData } from "@models/rack";
 
-const getData = async (token: string, params: ParamGet): Promise<AreaData> => {
+const getData = async (token: string, params: ParamGet): Promise<RackData> => {
   const response = await httpClient.get({
     token: token,
-    url: apiLinks.area.get,
+    url: apiLinks.rack.get,
     params: params,
-  });
-  return response.data;
-};
-
-const getDataById = async (token: string, id: string): Promise<Area> => {
-  const response = await httpClient.get({
-    url: apiLinks.area.get + `/${id}`,
-    token: token,
-  });
-  return response.data;
-};
-
-const getRackDataById = async (token: string, id: string): Promise<Rack[]> => {
-  const response = await httpClient.get({
-    url: apiLinks.area.get + `/${id}/Rack`,
-    token: token,
   });
   return response.data;
 };
 
 const createData = async (
   token: string,
-  data: AreaCreateModel
+  data: RackCreateModel
 ): Promise<any> => {
   const response = await httpClient.post({
     token: token,
-    url: apiLinks.area.create,
+    url: apiLinks.rack.create,
     data: data,
   });
   return response.data;
@@ -43,11 +26,11 @@ const createData = async (
 
 const updateData = async (
   token: string,
-  data: AreaUpdateModel
+  data: RackUpdateModel
 ): Promise<any> => {
   const response = await httpClient.put({
     token: token,
-    url: apiLinks.area.update,
+    url: apiLinks.rack.update,
     data: data,
   });
   return response.data;
@@ -55,7 +38,7 @@ const updateData = async (
 
 const deleteData = async (token: string, id: number): Promise<any> => {
   const response = await httpClient.delete({
-    url: apiLinks.area.delete + `/${id}`,
+    url: apiLinks.rack.delete + `/${id}`,
     token: token,
   });
   return response.data;
@@ -63,8 +46,6 @@ const deleteData = async (token: string, id: number): Promise<any> => {
 
 const area = {
   getData,
-  getDataById,
-  getRackDataById,
   updateData,
   deleteData,
   createData,
