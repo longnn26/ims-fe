@@ -12,7 +12,7 @@ export const sliderMenu = [
   {
     key: "server",
     icon: <BiServer />,
-    label: "Server Allocation",
+    label: "Server",
   },
   {
     key: "component",
