@@ -4,6 +4,7 @@ import serverHardwareConfig from "@slices/serverHardwareConfig";
 import component from "@slices/component";
 import customer from "@slices/customer";
 import requestUpgrade from "@slices/requestUpgrade";
+import area from "@slices/area";
 
 // eslint-disable-next-line import/no-anonymous-default-export
 export default {
@@ -13,4 +14,5 @@ export default {
   component,
   customer,
   requestUpgrade,
+  area,
 };

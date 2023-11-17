@@ -22,10 +22,8 @@ import {
   Descriptions,
   Divider,
   FloatButton,
-  Breadcrumb,
 } from "antd";
 import type { DescriptionsProps } from "antd";
-import { CaretLeftOutlined } from "@ant-design/icons";
 import ServerHardwareConfigTable from "@components/server/hardwareConfig/ServerHardwareConfigTable";
 import serverHardwareConfigService from "@services/serverHardwareConfig";
 import serverAllocationService from "@services/serverAllocation";
@@ -38,7 +36,7 @@ import ModalCreate from "@components/server/hardwareConfig/ModalCreate";
 import ModalUpdate from "@components/server/hardwareConfig/ModalUpdate";
 import { ItemType } from "antd/es/breadcrumb/Breadcrumb";
 import BreadcrumbComponent from "@components/BreadcrumbComponent";
-const AntdLayoutNoSSR = dynamic(() => import("../../../../layout/AntdLayout"), {
+const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
 });
 var itemDetails: DescriptionsProps["items"] = [];

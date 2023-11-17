@@ -56,14 +56,14 @@ const HeaderComponent: React.FC<Props> = (props) => {
       case "/server":
         dispatch(setSliderMenuItemSelectedKey("server"));
         break;
-      case "/ticket":
-        dispatch(setSliderMenuItemSelectedKey("ticket"));
+      case "/component":
+        dispatch(setSliderMenuItemSelectedKey("component"));
         break;
-      case "/inspect-contract":
-        dispatch(setSliderMenuItemSelectedKey("inspect-contract"));
+      case "/customer":
+        dispatch(setSliderMenuItemSelectedKey("customer"));
         break;
-      case "/my-account":
-        dispatch(setSliderMenuItemSelectedKey("my-account"));
+      case "/area":
+        dispatch(setSliderMenuItemSelectedKey("area"));
         break;
       default:
         break;

@@ -19,7 +19,7 @@ import ModalCreate from "@components/server/ModalCreate";
 import serverAllocationService from "@services/serverAllocation";
 import ModalUpdate from "@components/server/ModalUpdate";
 import { useRouter } from "next/router";
-const AntdLayoutNoSSR = dynamic(() => import("../../layout/AntdLayout"), {
+const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
 });
 
