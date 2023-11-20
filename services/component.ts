@@ -3,6 +3,7 @@ import {
   ComponentCreateModel,
   ComponentUpdateModel,
   ComponentData,
+  ComponentObj,
 } from "@models/component";
 import apiLinks from "@utils/api-links";
 import httpClient from "@utils/http-client";
@@ -15,6 +16,14 @@ const getComponentData = async (
     token: token,
     url: apiLinks.component.get,
     params: params,
+  });
+  return response.data;
+};
+
+const getComponentAll = async (token: string): Promise<ComponentObj[]> => {
+  const response = await httpClient.get({
+    token: token,
+    url: apiLinks.component.getAll,
   });
   return response.data;
 };
@@ -53,6 +62,7 @@ const deleteComponent = async (token: string, id: number): Promise<any> => {
 
 const component = {
   getComponentData,
+  getComponentAll,
   createComponent,
   updateComponent,
   deleteComponent,

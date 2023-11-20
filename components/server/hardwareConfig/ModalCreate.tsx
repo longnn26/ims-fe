@@ -1,7 +1,9 @@
 import React, { useRef, useState } from "react";
-import { Button, Input, Modal } from "antd";
+import { Button, Input, Modal, Select } from "antd";
 import { Form } from "antd";
 import { SHCCreateModel } from "@models/serverHardwareConfig";
+import useSelector from "@hooks/use-selector";
+const { Option } = Select;
 const { confirm } = Modal;
 
 interface Props {
@@ -17,6 +19,7 @@ const ModalCreate: React.FC<Props> = (props) => {
   const { onSubmit, open, onClose } = props;
 
   const [confirmLoading, setConfirmLoading] = useState(false);
+  const { componentOptions } = useSelector((state) => state.component);
 
   const disabled = async () => {
     var result = false;
@@ -53,7 +56,7 @@ const ModalCreate: React.FC<Props> = (props) => {
                     onSubmit({
                       description: form.getFieldValue("description"),
                       capacity: form.getFieldValue("capacity"),
-                      componentId: form.getFieldValue("componentId"),
+                      componentId: form.getFieldValue("component").value,
                     } as SHCCreateModel);
                     form.resetFields();
                   },
@@ -88,11 +91,27 @@ const ModalCreate: React.FC<Props> = (props) => {
               <Input placeholder="Capacity" allowClear />
             </Form.Item>
             <Form.Item
-              name="componentId"
-              label="Component Id"
+              name="component"
+              label="Component"
               rules={[{ required: true }]}
             >
-              <Input placeholder="Component Id" allowClear />
+              <Select
+                allowClear
+                onSelect={(value, option) => {
+                  form.setFieldsValue({
+                    component: {
+                      value: value,
+                      label: option.label,
+                    },
+                  });
+                }}
+              >
+                {componentOptions.map((l, index) => (
+                  <Option value={l.id} label={l?.name} key={index}>
+                    {l.name}
+                  </Option>
+                ))}
+              </Select>
             </Form.Item>
           </Form>
         </div>

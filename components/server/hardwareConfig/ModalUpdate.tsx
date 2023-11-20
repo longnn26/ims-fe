@@ -5,7 +5,8 @@ import {
   SHCUpdateModel,
   ServerHardwareConfig,
 } from "@models/serverHardwareConfig";
-import { optionStatus } from "@utils/constants";
+import useSelector from "@hooks/use-selector";
+const { Option } = Select;
 const { confirm } = Modal;
 
 interface Props {
@@ -20,6 +21,7 @@ const ModalUpdate: React.FC<Props> = (props) => {
   const { onSubmit, serverHardwareConfig, onClose } = props;
 
   const [confirmLoading, setConfirmLoading] = useState(false);
+  const { componentOptions } = useSelector((state) => state.component);
 
   const disabled = async () => {
     var result = false;
@@ -32,12 +34,20 @@ const ModalUpdate: React.FC<Props> = (props) => {
   };
 
   const setFieldsValueInitial = () => {
+    var component = componentOptions.find(
+      (_) => _.id === serverHardwareConfig.componentId
+    );
     if (formRef.current)
       form.setFieldsValue({
         id: serverHardwareConfig.id,
         description: serverHardwareConfig.description,
         capacity: serverHardwareConfig.capacity,
-        componentId: serverHardwareConfig.componentId,
+        component: component
+          ? {
+              value: component?.id!,
+              label: component.name!,
+            }
+          : undefined,
         serverAllocationId: serverHardwareConfig.serverAllocationId,
       });
   };
@@ -73,7 +83,9 @@ const ModalUpdate: React.FC<Props> = (props) => {
                   async onOk() {
                     onSubmit({
                       id: form.getFieldValue("id"),
-                      componentId: form.getFieldValue("componentId"),
+                      componentId:
+                        form.getFieldValue("component").value ||
+                        form.getFieldValue("component"),
                       serverAllocationId:
                         form.getFieldValue("serverAllocationId"),
                       description: form.getFieldValue("description"),
@@ -110,6 +122,19 @@ const ModalUpdate: React.FC<Props> = (props) => {
               rules={[{ required: true }]}
             >
               <Input placeholder="Capacity" allowClear />
+            </Form.Item>
+            <Form.Item
+              name="component"
+              label="Component"
+              rules={[{ required: true }]}
+            >
+              <Select allowClear>
+                {componentOptions.map((l, index) => (
+                  <Option value={l.id} label={l?.name} key={index}>
+                    {l.name}
+                  </Option>
+                ))}
+              </Select>
             </Form.Item>
           </Form>
         </div>

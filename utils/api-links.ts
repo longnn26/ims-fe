@@ -1,6 +1,6 @@
 export const url = "https://imsapi.hisoft.vn";
-export const urlServerSide = "http://192.168.40.83:8001";
-// export const urlServerSide = "https://imsapi.hisoft.vn";
+// export const urlServerSide = "http://192.168.40.83:8001";
+export const urlServerSide = "https://imsapi.hisoft.vn";
 
 const apiLinks = {
   user: {
@@ -24,6 +24,7 @@ const apiLinks = {
 
   component: {
     get: `${url}/api/Component`,
+    getAll: `${url}/api/Component/All`,
     create: `${url}/api/Component`,
     update: `${url}/api/Component`,
     delete: `${url}/api/Component`,

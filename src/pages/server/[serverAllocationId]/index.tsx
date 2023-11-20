@@ -36,6 +36,7 @@ import ModalCreate from "@components/server/hardwareConfig/ModalCreate";
 import ModalUpdate from "@components/server/hardwareConfig/ModalUpdate";
 import { ItemType } from "antd/es/breadcrumb/Breadcrumb";
 import BreadcrumbComponent from "@components/BreadcrumbComponent";
+import { getComponentAll } from "@slices/component";
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
 });
@@ -117,6 +118,7 @@ const Customer: React.FC = () => {
         setParamGet({ ...paramGet, PageIndex: res.totalPage });
       }
     });
+    dispatch(getComponentAll({ token: session?.user.access_token! }));
   };
 
   const createData = async (data: SHCCreateModel) => {
