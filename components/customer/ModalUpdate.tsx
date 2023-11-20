@@ -2,7 +2,8 @@ import React, { useEffect, useRef, useState } from "react";
 import { Button, Input, Modal, Select } from "antd";
 import { Form } from "antd";
 import { CustomerUpdateModel, Customer } from "@models/customer";
-import { optionStatus } from "@utils/constants";
+import useSelector from "@hooks/use-selector";
+const { Option } = Select;
 const { confirm } = Modal;
 
 interface Props {
@@ -17,6 +18,7 @@ const ModalUpdate: React.FC<Props> = (props) => {
   const { onSubmit, customer, onClose } = props;
 
   const [confirmLoading, setConfirmLoading] = useState(false);
+  const { companyTypeList } = useSelector((state) => state.companyType);
 
   const disabled = async () => {
     var result = false;
@@ -29,6 +31,9 @@ const ModalUpdate: React.FC<Props> = (props) => {
   };
 
   const setFieldsValueInitial = () => {
+    var componentType = companyTypeList.find(
+      (_) => _.id === customer.companyTypeId
+    );
     if (formRef.current)
       form.setFieldsValue({
         id: customer.id,
@@ -38,7 +43,12 @@ const ModalUpdate: React.FC<Props> = (props) => {
         email: customer.email,
         phoneNumber: customer.phoneNumber,
         customerName: customer.customerName,
-        companyTypeId: customer.companyTypeId,
+        companyType: componentType
+          ? {
+              value: componentType?.id!,
+              label: componentType.name!,
+            }
+          : undefined,
       });
   };
 
@@ -78,7 +88,9 @@ const ModalUpdate: React.FC<Props> = (props) => {
                       email: form.getFieldValue("email"),
                       phoneNumber: form.getFieldValue("phoneNumber"),
                       customerName: form.getFieldValue("customerName"),
-                      companyTypeId: form.getFieldValue("companyTypeId"),
+                      companyTypeId:
+                        form.getFieldValue("companyType").value ||
+                        form.getFieldValue("companyType"),
                     } as Customer);
                     form.resetFields();
                   },
@@ -137,11 +149,17 @@ const ModalUpdate: React.FC<Props> = (props) => {
               <Input placeholder="Customer name" allowClear />
             </Form.Item>
             <Form.Item
-              name="companyTypeId"
-              label="Company type id"
+              name="companyType"
+              label="Company type"
               rules={[{ required: true }]}
             >
-              <Input placeholder="Company type id" allowClear />
+              <Select allowClear>
+                {companyTypeList.map((l, index) => (
+                  <Option value={l.id} label={l?.name} key={index}>
+                    {l.name}
+                  </Option>
+                ))}
+              </Select>
             </Form.Item>
           </Form>
         </div>

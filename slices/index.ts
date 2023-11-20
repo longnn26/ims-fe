@@ -5,6 +5,7 @@ import component from "@slices/component";
 import customer from "@slices/customer";
 import requestUpgrade from "@slices/requestUpgrade";
 import area from "@slices/area";
+import companyType from "@slices/companyType";
 
 // eslint-disable-next-line import/no-anonymous-default-export
 export default {
@@ -15,4 +16,5 @@ export default {
   customer,
   requestUpgrade,
   area,
+  companyType,
 };

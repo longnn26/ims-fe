@@ -57,6 +57,10 @@ const apiLinks = {
     update: `${url}/api/Rack`,
     delete: `${url}/api/Rack`,
   },
+
+  companyType: {
+    get: `${url}/api/CompanyType`,
+  },
 };
 
 export default apiLinks;

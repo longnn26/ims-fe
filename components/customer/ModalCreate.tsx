@@ -1,7 +1,9 @@
 import React, { useRef, useState } from "react";
-import { Button, Input, Modal } from "antd";
+import { Button, Input, Modal, Select } from "antd";
 import { Form } from "antd";
 import { CustomerCreateModel } from "@models/customer";
+import useSelector from "@hooks/use-selector";
+const { Option } = Select;
 const { confirm } = Modal;
 
 interface Props {
@@ -17,6 +19,7 @@ const ModalCreate: React.FC<Props> = (props) => {
   const { onSubmit, open, onClose } = props;
 
   const [confirmLoading, setConfirmLoading] = useState(false);
+  const { companyTypeList } = useSelector((state) => state.companyType);
 
   const disabled = async () => {
     var result = false;
@@ -55,7 +58,7 @@ const ModalCreate: React.FC<Props> = (props) => {
                       email: form.getFieldValue("email"),
                       phoneNumber: form.getFieldValue("phoneNumber"),
                       customerName: form.getFieldValue("customerName"),
-                      companyTypeId: form.getFieldValue("companyTypeId"),
+                      companyTypeId: form.getFieldValue("companyType").value,
                     } as CustomerCreateModel);
                     form.resetFields();
                   },
@@ -114,11 +117,27 @@ const ModalCreate: React.FC<Props> = (props) => {
               <Input placeholder="Customer name" allowClear />
             </Form.Item>
             <Form.Item
-              name="companyTypeId"
-              label="Company type id"
+              name="companyType"
+              label="Company type"
               rules={[{ required: true }]}
             >
-              <Input placeholder="Company type id" allowClear />
+              <Select
+                allowClear
+                onSelect={(value) => {
+                  form.setFieldsValue({
+                    companyType: {
+                      value: value,
+                      label: value,
+                    },
+                  });
+                }}
+              >
+                {companyTypeList.map((l, index) => (
+                  <Option value={l.id} label={l?.name} key={index}>
+                    {l.name}
+                  </Option>
+                ))}
+              </Select>{" "}
             </Form.Item>
           </Form>
         </div>
