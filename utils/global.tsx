@@ -16,6 +16,11 @@ export const sliderMenu = [
     label: "Server",
   },
   {
+    key: "requestUpgrade",
+    icon: <GoGitPullRequest />,
+    label: "Request Upgrade",
+  },
+  {
     key: "component",
     icon: <BiSolidComponent />,
     label: "Component",
@@ -29,10 +34,5 @@ export const sliderMenu = [
     key: "area",
     icon: <FaChartArea />,
     label: "Area",
-  },
-  {
-    key: "request",
-    icon: <GoGitPullRequest />,
-    label: "Request Upgrade",
   },
 ] as SliderMenuItem[];

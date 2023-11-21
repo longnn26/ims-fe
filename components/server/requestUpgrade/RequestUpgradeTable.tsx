@@ -12,6 +12,7 @@ import { useRouter } from "next/router";
 
 interface Props {
   serverAllocationId?: string;
+  urlOncell?: string;
   onEdit: (data: RequestUpgrade) => void;
   onDelete: (data: RequestUpgrade) => void;
 }
@@ -29,7 +30,7 @@ interface DataType {
 }
 
 const RequestUpgradeTable: React.FC<Props> = (props) => {
-  const { onEdit, onDelete, serverAllocationId } = props;
+  const { onEdit, onDelete, urlOncell } = props;
   const router = useRouter();
   const { requestUpgradeDataLoading, requestUpgradeData } = useSelector(
     (state) => state.requestUpgrade
@@ -46,9 +47,7 @@ const RequestUpgradeTable: React.FC<Props> = (props) => {
       onCell: (record, rowIndex) => {
         return {
           onClick: (ev) => {
-            router.push(
-              `/server/${serverAllocationId}/requestUpgrade/${record.id}`
-            );
+            router.push(`${urlOncell}/requestUpgrade/${record.id}`);
           },
         };
       },

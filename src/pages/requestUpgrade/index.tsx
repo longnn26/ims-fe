@@ -1,5 +1,4 @@
 "use client";
-import RequestTable from "@components/request/RequestTable";
 import RequestUpgradeTable from "@components/server/requestUpgrade/RequestUpgradeTable";
 import useDispatch from "@hooks/use-dispatch";
 import useSelector from "@hooks/use-selector";
@@ -46,7 +45,8 @@ const Customer: React.FC = () => {
       content={
         <>
           <div className="flex justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50"></div>
-          <RequestTable
+          <RequestUpgradeTable
+            urlOncell=""
             onEdit={(record) => {}}
             onDelete={async (record) => {}}
           />

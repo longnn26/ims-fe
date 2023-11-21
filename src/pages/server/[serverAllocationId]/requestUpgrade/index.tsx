@@ -211,6 +211,7 @@ const RequestUpgrade: React.FC = () => {
             serverAllocationDetail={serverAllocationDetail!}
           ></ServerDetail>
           <RequestUpgradeTable
+            urlOncell={`/server/${serverAllocationDetail?.id}`}
             serverAllocationId={serverAllocationDetail?.id.toString()}
             onEdit={(record) => {
               setRequestUpgradeUpdate(record);
