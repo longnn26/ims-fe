@@ -27,7 +27,7 @@ const RequestUpgradeDetailInfor: React.FC<Props> = (props) => {
           {requestUpgradeDetail?.status}
         </Descriptions.Item>
         <Descriptions.Item label="Component" span={4}>
-          {requestUpgradeDetail?.componentId}
+          {requestUpgradeDetail?.component.name}
         </Descriptions.Item>
         <Descriptions.Item label="Date Created" span={4}>
           {moment(requestUpgradeDetail?.dateCreated).format(dateAdvFormat)}
