@@ -64,6 +64,10 @@ const apiLinks = {
   companyType: {
     get: `${url}/api/CompanyType`,
   },
+
+  appointment: {
+    get: `${url}/api/Appointment`,
+  },
 };
 
 export default apiLinks;
