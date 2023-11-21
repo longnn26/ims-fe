@@ -36,24 +36,9 @@ const Appoinment: React.FC = () => {
     );
   };
 
-  const handleBreadCumb = () => {
-    var itemBrs = [] as ItemType[];
-    var items = router.asPath.split("/").filter((_) => _ != "");
-    var path = "";
-    items.forEach((element) => {
-      path += `/${element}`;
-      itemBrs.push({
-        href: path,
-        title: element,
-      });
-    });
-    setItemBreadcrumbs(itemBrs);
-  };
-
   useEffect(() => {
     if (session) {
       getData();
-      handleBreadCumb();
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -63,10 +48,6 @@ const Appoinment: React.FC = () => {
     <AntdLayoutNoSSR
       content={
         <>
-          <div className="flex flex-wrap items-center justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
-            <BreadcrumbComponent itemBreadcrumbs={itemBreadcrumbs} />
-          </div>
-
           <AppointmentTable
             typeGet="All"
             onEdit={(record) => {}}
