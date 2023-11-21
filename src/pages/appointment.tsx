@@ -1,15 +1,10 @@
 "use client";
 import BreadcrumbComponent from "@components/BreadcrumbComponent";
-import ServerDetail from "@components/server/ServerDetail";
 import AppointmentTable from "@components/server/requestUpgrade/AppointmentTable";
-import RequestUpgradeDetailInfor from "@components/server/requestUpgrade/RequestUpgradeDetail";
 import useDispatch from "@hooks/use-dispatch";
 import useSelector from "@hooks/use-selector";
-import { RUAppointmentParamGet, RequestUpgrade } from "@models/requestUpgrade";
-import { ServerAllocation } from "@models/serverAllocation";
-import requestUpgradeService from "@services/requestUpgrade";
-import serverAllocationService from "@services/serverAllocation";
-import { getAppointmentData } from "@slices/requestUpgrade";
+import { RUAppointmentParamGet } from "@models/requestUpgrade";
+import { getListAppointment } from "@slices/appointment";
 import { Pagination } from "antd";
 import { ItemType } from "antd/es/breadcrumb/Breadcrumb";
 import { useSession } from "next-auth/react";
@@ -19,40 +14,26 @@ import React, { useEffect, useState } from "react";
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
 });
-const RequestDetail: React.FC = () => {
+const Appoinment: React.FC = () => {
   const dispatch = useDispatch();
   const router = useRouter();
   const { data: session } = useSession();
-  const { appointmentData } = useSelector((state) => state.requestUpgrade);
-
-  const [serverAllocationDetail, setServerAllocationDetail] =
-    useState<ServerAllocation>();
-
-  const [requestUpgradeDetail, setRequestUpgradeDetail] =
-    useState<RequestUpgrade>();
+  const { listAppointmentData } = useSelector((state) => state.appointment);
 
   const [itemBreadcrumbs, setItemBreadcrumbs] = useState<ItemType[]>([]);
   const [rUAppointmentParamGet, setRUAppointmentParamGet] =
     useState<RUAppointmentParamGet>({
       PageIndex: 1,
       PageSize: 10,
-      RequestUpgradeId: router.query.requestId ?? -1,
     } as unknown as RUAppointmentParamGet);
 
   const getData = async () => {
-    await requestUpgradeService
-      .getDetail(session?.user.access_token!, router.query.requestId + "")
-      .then(async (res) => {
-        await serverAllocationService
-          .getServerAllocationById(
-            session?.user.access_token!,
-            res.serverAllocationId + ""
-          )
-          .then((res) => {
-            setServerAllocationDetail(res);
-          });
-        setRequestUpgradeDetail(res);
-      });
+    await dispatch(
+      getListAppointment({
+        token: session?.user.access_token!,
+        paramGet: { ...rUAppointmentParamGet },
+      })
+    );
   };
 
   const handleBreadCumb = () => {
@@ -70,24 +51,11 @@ const RequestDetail: React.FC = () => {
   };
 
   useEffect(() => {
-    if (router.query.requestId && session) {
+    if (session) {
       getData();
       handleBreadCumb();
     }
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [session]);
-
-  useEffect(() => {
-    if (router.query.requestId && session) {
-      rUAppointmentParamGet.Id = parseInt(router.query.requestId!.toString());
-      dispatch(
-        getAppointmentData({
-          token: session?.user.access_token!,
-          paramGet: { ...rUAppointmentParamGet },
-        })
-      );
-    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session, rUAppointmentParamGet]);
 
@@ -98,25 +66,18 @@ const RequestDetail: React.FC = () => {
           <div className="flex flex-wrap items-center justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
             <BreadcrumbComponent itemBreadcrumbs={itemBreadcrumbs} />
           </div>
-          <div className="md:flex">
-            <ServerDetail
-              serverAllocationDetail={serverAllocationDetail!}
-            ></ServerDetail>
-            <RequestUpgradeDetailInfor
-              requestUpgradeDetail={requestUpgradeDetail!}
-            />
-          </div>
+
           <AppointmentTable
-            typeGet="ByRequestUpgradeId"
+            typeGet="All"
             onEdit={(record) => {}}
             onDelete={async (record) => {}}
           />
-          {appointmentData?.totalPage > 0 && (
+          {listAppointmentData?.totalPage > 0 && (
             <Pagination
               className="text-end m-4"
               current={rUAppointmentParamGet?.PageIndex}
-              pageSize={appointmentData?.pageSize ?? 10}
-              total={appointmentData?.totalSize}
+              pageSize={listAppointmentData?.pageSize ?? 10}
+              total={listAppointmentData?.totalSize}
               onChange={(page, pageSize) => {
                 setRUAppointmentParamGet({
                   ...rUAppointmentParamGet,
@@ -132,4 +93,4 @@ const RequestDetail: React.FC = () => {
   );
 };
 
-export default RequestDetail;
+export default Appoinment;

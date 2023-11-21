@@ -35,4 +35,9 @@ export const sliderMenu = [
     icon: <FaChartArea />,
     label: "Area",
   },
+  {
+    key: "appointment",
+    icon: <FaChartArea />,
+    label: "Appointment",
+  },
 ] as SliderMenuItem[];

@@ -1,32 +1,21 @@
 "use client";
-import dynamic from "next/dynamic";
-import { useEffect, useState } from "react";
-import { useSession } from "next-auth/react";
-import React from "react";
+import BreadcrumbComponent from "@components/BreadcrumbComponent";
+import ServerDetail from "@components/server/ServerDetail";
+import AppointmentTable from "@components/server/requestUpgrade/AppointmentTable";
+import RequestUpgradeDetailInfor from "@components/server/requestUpgrade/RequestUpgradeDetail";
 import useDispatch from "@hooks/use-dispatch";
 import useSelector from "@hooks/use-selector";
-import {
-  getAppointmentData,
-  getRequestUpgradeData,
-} from "@slices/requestUpgrade";
 import { RUAppointmentParamGet, RequestUpgrade } from "@models/requestUpgrade";
-import { Descriptions, Divider, Pagination } from "antd";
-import type { DescriptionsProps } from "antd";
+import { ServerAllocation } from "@models/serverAllocation";
 import requestUpgradeService from "@services/requestUpgrade";
 import serverAllocationService from "@services/serverAllocation";
-import { useRouter } from "next/router";
-import { ServerAllocation } from "@models/serverAllocation";
-import { dateAdvFormat } from "@utils/constants";
-import { IoIosSend } from "react-icons/io";
-import moment from "moment";
-import ModalCreate from "@components/server/requestUpgrade/ModalCreate";
-import ModalUpdate from "@components/server/requestUpgrade/ModalUpdate";
-import RequestUpgradeTable from "@components/server/requestUpgrade/RequestUpgradeTable";
+import { getAppointmentData } from "@slices/requestUpgrade";
+import { Pagination } from "antd";
 import { ItemType } from "antd/es/breadcrumb/Breadcrumb";
-import BreadcrumbComponent from "@components/BreadcrumbComponent";
-import AppointmentTable from "@components/server/requestUpgrade/AppointmentTable";
-import ServerDetail from "@components/server/ServerDetail";
-import RequestUpgradeDetailInfor from "@components/server/requestUpgrade/RequestUpgradeDetail";
+import { useSession } from "next-auth/react";
+import dynamic from "next/dynamic";
+import { useRouter } from "next/router";
+import React, { useEffect, useState } from "react";
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
 });
@@ -122,6 +111,7 @@ const RequestUpgradeDetail: React.FC = () => {
             />
           </div>
           <AppointmentTable
+            typeGet="ByRequestUpgradeId"
             onEdit={(record) => {}}
             onDelete={async (record) => {}}
           />

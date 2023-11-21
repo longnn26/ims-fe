@@ -1,17 +1,14 @@
 "use client";
 
 import useSelector from "@hooks/use-selector";
-import { dateAdvFormat } from "@utils/constants";
-import { Divider, TableColumnsType } from "antd";
-import { Button, Space, Table, Tooltip } from "antd";
-import { BiEdit } from "react-icons/bi";
-import { AiFillDelete } from "react-icons/ai";
-import moment from "moment";
-import { RequestUpgrade } from "@models/requestUpgrade";
-import { useRouter } from "next/router";
 import { Appointment } from "@models/appointment";
+import { dateAdvFormat } from "@utils/constants";
+import { Divider, Table, TableColumnsType } from "antd";
+import moment from "moment";
+import { useRouter } from "next/router";
 
 interface Props {
+  typeGet?: string;
   onEdit: (data: Appointment) => void;
   onDelete: (data: Appointment) => void;
 }
@@ -33,9 +30,17 @@ interface DataType {
 }
 
 const AppointmentTable: React.FC<Props> = (props) => {
-  const { onEdit, onDelete } = props;
+  const { onEdit, onDelete, typeGet } = props;
   const router = useRouter();
   const { appointmentData } = useSelector((state) => state.requestUpgrade);
+  const { listAppointmentData } = useSelector((state) => state.appointment);
+
+  var listData =
+    typeGet == "All"
+      ? listAppointmentData
+      : typeGet == "ByRequestUpgradeId"
+      ? appointmentData
+      : listAppointmentData;
 
   const columns: TableColumnsType<DataType> = [
     {
@@ -89,31 +94,27 @@ const AppointmentTable: React.FC<Props> = (props) => {
   ];
 
   const data: DataType[] = [];
-  for (let i = 0; i < appointmentData?.data?.length; ++i) {
+  for (let i = 0; i < listData?.data?.length; ++i) {
     data.push({
-      key: appointmentData?.data[i].id,
-      id: appointmentData?.data[i].id,
-      appointedCustomer: appointmentData?.data[i].appointedCustomer,
-      dateAppointed: moment(appointmentData?.data[i].dateAppointed).format(
+      key: listData?.data[i].id,
+      id: listData?.data[i].id,
+      appointedCustomer: listData?.data[i].appointedCustomer,
+      dateAppointed: moment(listData?.data[i].dateAppointed).format(
         dateAdvFormat
       ),
-      dateCheckedIn: moment(appointmentData?.data[i].dateCheckedIn).format(
+      dateCheckedIn: moment(listData?.data[i].dateCheckedIn).format(
         dateAdvFormat
       ),
-      dateCheckedOut: moment(appointmentData?.data[i].dateCheckedOut).format(
+      dateCheckedOut: moment(listData?.data[i].dateCheckedOut).format(
         dateAdvFormat
       ),
-      status: appointmentData?.data[i].status,
-      reason: appointmentData?.data[i].reason,
-      note: appointmentData?.data[i].note,
-      techNote: appointmentData?.data[i].techNote,
-      isCorrectPerson: appointmentData?.data[i].isCorrectPerson,
-      dateCreated: moment(appointmentData?.data[i].dateCreated).format(
-        dateAdvFormat
-      ),
-      dateUpdated: moment(appointmentData?.data[i].dateUpdated).format(
-        dateAdvFormat
-      ),
+      status: listData?.data[i].status,
+      reason: listData?.data[i].reason,
+      note: listData?.data[i].note,
+      techNote: listData?.data[i].techNote,
+      isCorrectPerson: listData?.data[i].isCorrectPerson,
+      dateCreated: moment(listData?.data[i].dateCreated).format(dateAdvFormat),
+      dateUpdated: moment(listData?.data[i].dateUpdated).format(dateAdvFormat),
     });
   }
 
