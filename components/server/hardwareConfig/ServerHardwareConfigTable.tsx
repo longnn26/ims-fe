@@ -79,7 +79,7 @@ const ServerHardwareConfigTable: React.FC<Props> = (props) => {
   }
 
   return (
-    <>
+    <div className="shadow m-5">
       <Divider orientation="left" plain>
         <h3>Hardware Config</h3>
       </Divider>
@@ -91,7 +91,7 @@ const ServerHardwareConfigTable: React.FC<Props> = (props) => {
         pagination={false}
         className="cursor-pointer"
       />
-    </>
+    </div>
   );
 };
 

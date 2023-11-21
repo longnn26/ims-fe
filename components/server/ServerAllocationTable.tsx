@@ -99,7 +99,7 @@ const ServerAllocationTable: React.FC<Props> = (props) => {
   }
 
   return (
-    <>
+    <div className="shadow m-5">
       <Table
         loading={serverAllocationDataLoading}
         columns={columns}
@@ -107,7 +107,7 @@ const ServerAllocationTable: React.FC<Props> = (props) => {
         scroll={{ x: 1300 }}
         pagination={false}
       />
-    </>
+    </div>
   );
 };
 
