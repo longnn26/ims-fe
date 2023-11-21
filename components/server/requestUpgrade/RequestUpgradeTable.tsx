@@ -8,8 +8,10 @@ import { BiEdit } from "react-icons/bi";
 import { AiFillDelete } from "react-icons/ai";
 import moment from "moment";
 import { RequestUpgrade } from "@models/requestUpgrade";
+import { useRouter } from "next/router";
 
 interface Props {
+  serverAllocationId?: string;
   onEdit: (data: RequestUpgrade) => void;
   onDelete: (data: RequestUpgrade) => void;
 }
@@ -18,6 +20,7 @@ interface DataType {
   key: React.Key;
   id: number;
   description: string;
+  status: string;
   capacity: number;
   serverAllocationId: number;
   componentId: number;
@@ -26,7 +29,8 @@ interface DataType {
 }
 
 const RequestUpgradeTable: React.FC<Props> = (props) => {
-  const { onEdit, onDelete } = props;
+  const { onEdit, onDelete, serverAllocationId } = props;
+  const router = useRouter();
   const { requestUpgradeDataLoading, requestUpgradeData } = useSelector(
     (state) => state.requestUpgrade
   );
@@ -36,9 +40,22 @@ const RequestUpgradeTable: React.FC<Props> = (props) => {
       title: "Id",
       dataIndex: "id",
       key: "id",
+      render: (text) => (
+        <a className="text-[#b75c3c] hover:text-[#ee4623]">{text}</a>
+      ),
+      onCell: (record, rowIndex) => {
+        return {
+          onClick: (ev) => {
+            router.push(
+              `/server/${serverAllocationId}/requestUpgrade/${record.id}`
+            );
+          },
+        };
+      },
     },
     { title: "Description", dataIndex: "description", key: "description" },
     { title: "Capacity", dataIndex: "capacity", key: "capacity" },
+    { title: "Status", dataIndex: "status", key: "status" },
     { title: "Date Created", dataIndex: "dateCreated", key: "dateCreated" },
     { title: "Date Updated", dataIndex: "dateUpdated", key: "dateUpdated" },
     {
@@ -70,6 +87,7 @@ const RequestUpgradeTable: React.FC<Props> = (props) => {
       capacity: requestUpgradeData?.data[i].capacity,
       serverAllocationId: requestUpgradeData?.data[i].serverAllocationId,
       componentId: requestUpgradeData?.data[i].componentId,
+      status: requestUpgradeData?.data[i].status,
       dateCreated: moment(requestUpgradeData?.data[i].dateCreated).format(
         dateAdvFormat
       ),

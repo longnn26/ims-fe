@@ -2,6 +2,7 @@ import { BaseWithIdNumber, PagingModel, ParamGet } from "./base";
 
 export interface RequestUpgrade extends BaseWithIdNumber {
   description: string;
+  status: string;
   capacity: number;
   componentId: number;
   serverAllocationId: number;

@@ -3,6 +3,7 @@ import {
   RequestUpgradeCreateModel,
   RequestUpgradeUpdateModel,
   RequestUpgradeData,
+  RequestUpgrade,
 } from "@models/requestUpgrade";
 import apiLinks from "@utils/api-links";
 import httpClient from "@utils/http-client";
@@ -15,6 +16,17 @@ const getData = async (
     token: token,
     url: apiLinks.requestUpgrade.get,
     params: params,
+  });
+  return response.data;
+};
+
+const getDetail = async (
+  token: string,
+  id: string
+): Promise<RequestUpgrade> => {
+  const response = await httpClient.get({
+    url: apiLinks.requestUpgrade.getById + `/${id}`,
+    token: token,
   });
   return response.data;
 };
@@ -56,6 +68,7 @@ const requestUpgrade = {
   createData,
   updateData,
   deleteData,
+  getDetail,
 };
 
 export default requestUpgrade;
