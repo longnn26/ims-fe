@@ -1,6 +1,7 @@
 import { ReactNode } from "react";
 import { FaUser, FaChartArea } from "react-icons/fa";
 import { BiServer, BiSolidComponent } from "react-icons/bi";
+import { GoGitPullRequest } from "react-icons/go";
 
 export interface SliderMenuItem {
   key: string;
@@ -28,5 +29,10 @@ export const sliderMenu = [
     key: "area",
     icon: <FaChartArea />,
     label: "Area",
+  },
+  {
+    key: "request",
+    icon: <GoGitPullRequest />,
+    label: "Request Upgrade",
   },
 ] as SliderMenuItem[];

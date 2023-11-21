@@ -65,6 +65,9 @@ const HeaderComponent: React.FC<Props> = (props) => {
       case "/area":
         dispatch(setSliderMenuItemSelectedKey("area"));
         break;
+      case "/request":
+        dispatch(setSliderMenuItemSelectedKey("request"));
+        break;
       default:
         break;
     }
