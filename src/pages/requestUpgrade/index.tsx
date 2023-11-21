@@ -9,7 +9,7 @@ import {
   RequestUpgradeUpdateModel,
 } from "@models/requestUpgrade";
 import { getRequestUpgradeData } from "@slices/requestUpgrade";
-import { Pagination, message } from "antd";
+import { Alert, Modal, Pagination, message } from "antd";
 import { useSession } from "next-auth/react";
 import requestUpgradeService from "@services/requestUpgrade";
 import ModalUpdate from "@components/server/requestUpgrade/ModalUpdate";
@@ -18,6 +18,7 @@ import React, { useEffect, useState } from "react";
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
 });
+const { confirm } = Modal;
 
 const Customer: React.FC = () => {
   const dispatch = useDispatch();
@@ -60,6 +61,31 @@ const Customer: React.FC = () => {
       });
   };
 
+  const deleteData = (requestUpgrade: RequestUpgrade) => {
+    confirm({
+      title: "Delete",
+      content: (
+        <Alert
+          message={`Do you want to delete with Id ${requestUpgrade.id}?`}
+          // description={`${serverAllocation.id}`}
+          type="warning"
+        />
+      ),
+      async onOk() {
+        await requestUpgradeService
+          .deleteData(session?.user.access_token!, requestUpgrade.id.toString())
+          .then(() => {
+            getData();
+            message.success(`Delete request upgrade successful`);
+          })
+          .catch((errors) => {
+            message.error(errors.message ?? "Delete request upgrade failed");
+          });
+      },
+      onCancel() {},
+    });
+  };
+
   useEffect(() => {
     session && getData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -80,8 +106,12 @@ const Customer: React.FC = () => {
 
           <RequestUpgradeTable
             urlOncell=""
-            onEdit={(record) => {setRequestUpgradeUpdate(record)}}
-            onDelete={async (record) => {}}
+            onEdit={(record) => {
+              setRequestUpgradeUpdate(record);
+            }}
+            onDelete={async (record) => {
+              deleteData(record);
+            }}
           />
 
           {requestUpgradeData.totalPage > 0 && (
