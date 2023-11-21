@@ -37,6 +37,7 @@ import ModalUpdate from "@components/server/hardwareConfig/ModalUpdate";
 import { ItemType } from "antd/es/breadcrumb/Breadcrumb";
 import BreadcrumbComponent from "@components/BreadcrumbComponent";
 import { getComponentAll } from "@slices/component";
+import ServerDetail from "@components/server/ServerDetail";
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
 });
@@ -211,36 +212,9 @@ const Customer: React.FC = () => {
               createData(data);
             }}
           />
-          <Divider orientation="left" plain>
-            <h3>Server Information</h3>
-          </Divider>{" "}
-          <Descriptions className="p-5">
-            <Descriptions.Item label="Id">
-              {serverAllocationDetail?.id}
-            </Descriptions.Item>
-            <Descriptions.Item label="Note">
-              {serverAllocationDetail?.note}
-            </Descriptions.Item>
-            <Descriptions.Item label="Expected Size">
-              {serverAllocationDetail?.expectedSize}
-            </Descriptions.Item>
-            <Descriptions.Item label="Status">
-              {serverAllocationDetail?.status}
-            </Descriptions.Item>
-            <Descriptions.Item label="Inspector Note">
-              {serverAllocationDetail?.inspectorNote}
-            </Descriptions.Item>
-            <Descriptions.Item label="Date Created">
-              {moment(serverAllocationDetail?.dateCreated).format(
-                dateAdvFormat
-              )}
-            </Descriptions.Item>
-            <Descriptions.Item label="Date Updated">
-              {moment(serverAllocationDetail?.dateUpdated).format(
-                dateAdvFormat
-              )}
-            </Descriptions.Item>
-          </Descriptions>{" "}
+          <ServerDetail
+            serverAllocationDetail={serverAllocationDetail!}
+          ></ServerDetail>
           <ServerHardwareConfigTable
             onEdit={(record) => {
               setServerHardwareConfigUpdate(record);

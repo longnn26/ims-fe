@@ -36,6 +36,7 @@ import ModalUpdate from "@components/server/requestUpgrade/ModalUpdate";
 import RequestUpgradeTable from "@components/server/requestUpgrade/RequestUpgradeTable";
 import { ItemType } from "antd/es/breadcrumb/Breadcrumb";
 import BreadcrumbComponent from "@components/BreadcrumbComponent";
+import ServerDetail from "@components/server/ServerDetail";
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
 });
@@ -206,36 +207,9 @@ const RequestUpgrade: React.FC = () => {
               createData(data);
             }}
           />
-          <Divider orientation="left" plain>
-            <h3>Server </h3>
-          </Divider>{" "}
-          <Descriptions className="p-5">
-            <Descriptions.Item label="Id">
-              {serverAllocationDetail?.id}
-            </Descriptions.Item>
-            <Descriptions.Item label="Note">
-              {serverAllocationDetail?.note}
-            </Descriptions.Item>
-            <Descriptions.Item label="Expected Size">
-              {serverAllocationDetail?.expectedSize}
-            </Descriptions.Item>
-            <Descriptions.Item label="Status">
-              {serverAllocationDetail?.status}
-            </Descriptions.Item>
-            <Descriptions.Item label="Inspector Note">
-              {serverAllocationDetail?.inspectorNote}
-            </Descriptions.Item>
-            <Descriptions.Item label="Date Created">
-              {moment(serverAllocationDetail?.dateCreated).format(
-                dateAdvFormat
-              )}
-            </Descriptions.Item>
-            <Descriptions.Item label="Date Updated">
-              {moment(serverAllocationDetail?.dateUpdated).format(
-                dateAdvFormat
-              )}
-            </Descriptions.Item>
-          </Descriptions>{" "}
+          <ServerDetail
+            serverAllocationDetail={serverAllocationDetail!}
+          ></ServerDetail>
           <RequestUpgradeTable
             serverAllocationId={serverAllocationDetail?.id.toString()}
             onEdit={(record) => {

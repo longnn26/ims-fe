@@ -25,6 +25,8 @@ import RequestUpgradeTable from "@components/server/requestUpgrade/RequestUpgrad
 import { ItemType } from "antd/es/breadcrumb/Breadcrumb";
 import BreadcrumbComponent from "@components/BreadcrumbComponent";
 import AppointmentTable from "@components/server/requestUpgrade/AppointmentTable";
+import ServerDetail from "@components/server/ServerDetail";
+import RequestUpgradeDetailInfor from "@components/server/requestUpgrade/RequestUpgradeDetail";
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
 });
@@ -111,60 +113,14 @@ const RequestUpgradeDetail: React.FC = () => {
           <div className="flex flex-wrap items-center justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
             <BreadcrumbComponent itemBreadcrumbs={itemBreadcrumbs} />
           </div>
-          {/* Server Information */}
-          <Divider orientation="left" plain>
-            <h3>Server </h3>
-          </Divider>{" "}
-          <Descriptions className="p-5">
-            <Descriptions.Item label="Id">
-              {serverAllocationDetail?.id}
-            </Descriptions.Item>
-            <Descriptions.Item label="Note">
-              {serverAllocationDetail?.note}
-            </Descriptions.Item>
-            <Descriptions.Item label="Expected Size">
-              {serverAllocationDetail?.expectedSize}
-            </Descriptions.Item>
-            <Descriptions.Item label="Status">
-              {serverAllocationDetail?.status}
-            </Descriptions.Item>
-            <Descriptions.Item label="Inspector Note">
-              {serverAllocationDetail?.inspectorNote}
-            </Descriptions.Item>
-            <Descriptions.Item label="Date Created">
-              {moment(serverAllocationDetail?.dateCreated).format(
-                dateAdvFormat
-              )}
-            </Descriptions.Item>
-            <Descriptions.Item label="Date Updated">
-              {moment(serverAllocationDetail?.dateUpdated).format(
-                dateAdvFormat
-              )}
-            </Descriptions.Item>
-          </Descriptions>
-          {/* Request upgrade information */}
-          <Divider orientation="left" plain>
-            <h3>Request upgrade information </h3>
-          </Divider>{" "}
-          <Descriptions className="p-5">
-            <Descriptions.Item label="Id">
-              {requestUpgradeDetail?.id}
-            </Descriptions.Item>
-            <Descriptions.Item label="Capacity">
-              {requestUpgradeDetail?.capacity}
-            </Descriptions.Item>
-            <Descriptions.Item label="Status">
-              {requestUpgradeDetail?.status}
-            </Descriptions.Item>
-            <Descriptions.Item label="Component">
-              {requestUpgradeDetail?.componentId}
-            </Descriptions.Item>
-            <Descriptions.Item label="Date Created">
-              {moment(serverAllocationDetail?.dateCreated).format(
-                dateAdvFormat
-              )}
-            </Descriptions.Item>
-          </Descriptions>
+          <div className="md:flex">
+            <ServerDetail
+              serverAllocationDetail={serverAllocationDetail!}
+            ></ServerDetail>
+            <RequestUpgradeDetailInfor
+              requestUpgradeDetail={requestUpgradeDetail!}
+            />
+          </div>
           <AppointmentTable
             onEdit={(record) => {}}
             onDelete={async (record) => {}}
