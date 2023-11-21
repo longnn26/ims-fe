@@ -40,6 +40,7 @@ const apiLinks = {
   requestUpgrade: {
     get: `${url}/api/RequestUpgrade`,
     getById: `${url}/api/RequestUpgrade`,
+    getAppointmentsById: `${url}/api/RequestUpgrade`,
     create: `${url}/api/RequestUpgrade`,
     update: `${url}/api/RequestUpgrade`,
     delete: `${url}/api/RequestUpgrade`,

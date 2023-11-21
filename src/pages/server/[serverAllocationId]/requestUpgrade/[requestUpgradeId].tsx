@@ -5,9 +5,12 @@ import { useSession } from "next-auth/react";
 import React from "react";
 import useDispatch from "@hooks/use-dispatch";
 import useSelector from "@hooks/use-selector";
-import { getRequestUpgradeData } from "@slices/requestUpgrade";
-import { RequestUpgrade } from "@models/requestUpgrade";
-import { Descriptions, Divider } from "antd";
+import {
+  getAppointmentData,
+  getRequestUpgradeData,
+} from "@slices/requestUpgrade";
+import { RUAppointmentParamGet, RequestUpgrade } from "@models/requestUpgrade";
+import { Descriptions, Divider, Pagination } from "antd";
 import type { DescriptionsProps } from "antd";
 import requestUpgradeService from "@services/requestUpgrade";
 import serverAllocationService from "@services/serverAllocation";
@@ -21,6 +24,7 @@ import ModalUpdate from "@components/server/requestUpgrade/ModalUpdate";
 import RequestUpgradeTable from "@components/server/requestUpgrade/RequestUpgradeTable";
 import { ItemType } from "antd/es/breadcrumb/Breadcrumb";
 import BreadcrumbComponent from "@components/BreadcrumbComponent";
+import AppointmentTable from "@components/server/requestUpgrade/AppointmentTable";
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
 });
@@ -28,6 +32,7 @@ const RequestUpgradeDetail: React.FC = () => {
   const dispatch = useDispatch();
   const router = useRouter();
   const { data: session } = useSession();
+  const { appointmentData } = useSelector((state) => state.requestUpgrade);
 
   const [serverAllocationDetail, setServerAllocationDetail] =
     useState<ServerAllocation>();
@@ -36,6 +41,12 @@ const RequestUpgradeDetail: React.FC = () => {
     useState<RequestUpgrade>();
 
   const [itemBreadcrumbs, setItemBreadcrumbs] = useState<ItemType[]>([]);
+  const [rUAppointmentParamGet, setRUAppointmentParamGet] =
+    useState<RUAppointmentParamGet>({
+      PageIndex: 1,
+      PageSize: 10,
+      RequestUpgradeId: router.query.requestUpgradeId ?? -1,
+    } as unknown as RUAppointmentParamGet);
   const getData = async () => {
     await serverAllocationService
       .getServerAllocationById(
@@ -77,6 +88,21 @@ const RequestUpgradeDetail: React.FC = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session]);
+
+  useEffect(() => {
+    if (router.query.requestUpgradeId && session) {
+      rUAppointmentParamGet.Id = parseInt(
+        router.query.requestUpgradeId!.toString()
+      );
+      dispatch(
+        getAppointmentData({
+          token: session?.user.access_token!,
+          paramGet: { ...rUAppointmentParamGet },
+        })
+      );
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [session, rUAppointmentParamGet]);
 
   return (
     <AntdLayoutNoSSR
@@ -139,6 +165,25 @@ const RequestUpgradeDetail: React.FC = () => {
               )}
             </Descriptions.Item>
           </Descriptions>
+          <AppointmentTable
+            onEdit={(record) => {}}
+            onDelete={async (record) => {}}
+          />
+          {appointmentData.totalPage > 0 && (
+            <Pagination
+              className="text-end m-4"
+              current={rUAppointmentParamGet?.PageIndex}
+              pageSize={appointmentData?.pageSize ?? 10}
+              total={appointmentData?.totalSize}
+              onChange={(page, pageSize) => {
+                setRUAppointmentParamGet({
+                  ...rUAppointmentParamGet,
+                  PageIndex: page,
+                  PageSize: pageSize,
+                });
+              }}
+            />
+          )}
         </>
       }
     />

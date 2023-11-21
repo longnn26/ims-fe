@@ -30,3 +30,7 @@ export interface RequestUpgradeUpdateModel {
   componentId: number;
   serverAllocationId: number;
 }
+
+export interface RUAppointmentParamGet extends ParamGet {
+  Id: number;
+}

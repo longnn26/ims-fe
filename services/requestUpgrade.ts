@@ -1,9 +1,11 @@
+import { AppointmentData } from "@models/appointment";
 import { ParamGet } from "@models/base";
 import {
   RequestUpgradeCreateModel,
   RequestUpgradeUpdateModel,
   RequestUpgradeData,
   RequestUpgrade,
+  RUAppointmentParamGet,
 } from "@models/requestUpgrade";
 import apiLinks from "@utils/api-links";
 import httpClient from "@utils/http-client";
@@ -26,6 +28,18 @@ const getDetail = async (
 ): Promise<RequestUpgrade> => {
   const response = await httpClient.get({
     url: apiLinks.requestUpgrade.getById + `/${id}`,
+    token: token,
+  });
+  return response.data;
+};
+
+const getAppointmentsById = async (
+  token: string,
+  params: RUAppointmentParamGet
+): Promise<AppointmentData> => {
+  const response = await httpClient.get({
+    url:
+      apiLinks.requestUpgrade.getAppointmentsById + `/${params.Id}/Appointment`,
     token: token,
   });
   return response.data;
@@ -65,6 +79,7 @@ const deleteData = async (token: string, id: string): Promise<any> => {
 
 const requestUpgrade = {
   getData,
+  getAppointmentsById,
   createData,
   updateData,
   deleteData,
