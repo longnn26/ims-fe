@@ -169,7 +169,7 @@ const RequestUpgradeDetail: React.FC = () => {
             onEdit={(record) => {}}
             onDelete={async (record) => {}}
           />
-          {appointmentData.totalPage > 0 && (
+          {appointmentData?.totalPage > 0 && (
             <Pagination
               className="text-end m-4"
               current={rUAppointmentParamGet?.PageIndex}
