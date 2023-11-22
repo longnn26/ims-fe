@@ -108,6 +108,7 @@ const RequestDetail: React.FC = () => {
           </div>
           <AppointmentTable
             typeGet="ByRequestUpgradeId"
+            urlOncell=""
             onEdit={(record) => {}}
             onDelete={async (record) => {}}
           />

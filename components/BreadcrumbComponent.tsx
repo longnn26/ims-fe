@@ -19,6 +19,9 @@ const BreadcrumbComponent: React.FC<Props> = (props) => {
       case "area":
         element.title = "Area";
         break;
+      case "appointment":
+        element.title = "Appointment";
+        break;
     }
   });
   return (

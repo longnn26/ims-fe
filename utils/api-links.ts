@@ -67,6 +67,7 @@ const apiLinks = {
 
   appointment: {
     get: `${url}/api/Appointment`,
+    getById: `${url}/api/Appointment`,
   },
 };
 

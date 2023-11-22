@@ -1,4 +1,4 @@
-import { AppointmentData } from "@models/appointment";
+import { Appointment, AppointmentData } from "@models/appointment";
 import { RUAppointmentParamGet } from "@models/requestUpgrade";
 import apiLinks from "@utils/api-links";
 import httpClient from "@utils/http-client";
@@ -15,6 +15,14 @@ const getListAppointments = async (
   return response.data;
 };
 
-const appointment = { getListAppointments };
+const getDetail = async (token: string, id: string): Promise<Appointment> => {
+  const response = await httpClient.get({
+    url: apiLinks.appointment.getById + `/${id}`,
+    token: token,
+  });
+  return response.data;
+};
+
+const appointment = { getListAppointments, getDetail };
 
 export default appointment;

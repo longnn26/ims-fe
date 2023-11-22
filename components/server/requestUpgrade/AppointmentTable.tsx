@@ -9,6 +9,7 @@ import { useRouter } from "next/router";
 
 interface Props {
   typeGet?: string;
+  urlOncell?: string;
   onEdit: (data: Appointment) => void;
   onDelete: (data: Appointment) => void;
 }
@@ -30,7 +31,7 @@ interface DataType {
 }
 
 const AppointmentTable: React.FC<Props> = (props) => {
-  const { onEdit, onDelete, typeGet } = props;
+  const { onEdit, onDelete, typeGet, urlOncell } = props;
   const router = useRouter();
   const { appointmentData } = useSelector((state) => state.requestUpgrade);
   const { listAppointmentData } = useSelector((state) => state.appointment);
@@ -47,6 +48,16 @@ const AppointmentTable: React.FC<Props> = (props) => {
       title: "Id",
       dataIndex: "id",
       key: "id",
+      render: (text) => (
+        <a className="text-[#b75c3c] hover:text-[#ee4623]">{text}</a>
+      ),
+      onCell: (record, rowIndex) => {
+        return {
+          onClick: (ev) => {
+            router.push(`${urlOncell}/appointment/${record.id}`);
+          },
+        };
+      },
     },
     {
       title: "Customer",

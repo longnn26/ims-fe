@@ -1,5 +1,4 @@
 "use client";
-import BreadcrumbComponent from "@components/BreadcrumbComponent";
 import AppointmentTable from "@components/server/requestUpgrade/AppointmentTable";
 import useDispatch from "@hooks/use-dispatch";
 import useSelector from "@hooks/use-selector";
@@ -50,6 +49,7 @@ const Appoinment: React.FC = () => {
         <>
           <AppointmentTable
             typeGet="All"
+            urlOncell=""
             onEdit={(record) => {}}
             onDelete={async (record) => {}}
           />
