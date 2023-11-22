@@ -46,8 +46,18 @@ const ServerDetail: React.FC<Props> = (props) => {
         <Descriptions.Item label="Created">
           {moment(appointmentDetail?.dateCreated).format(dateAdvFormat)}
         </Descriptions.Item>
-        <Descriptions.Item label="Updated">
+        <Descriptions.Item label="Updated" span={2}>
           {moment(appointmentDetail?.dateUpdated).format(dateAdvFormat)}
+        </Descriptions.Item>
+        <Descriptions.Item label="Inspection report file" span={4}>
+          <a href={`${appointmentDetail?.inspectionReportFilePath}`}>
+            {appointmentDetail?.inspectionReportFilePath}
+          </a>{" "}
+        </Descriptions.Item>
+        <Descriptions.Item label="Receipt of recipient file" span={4}>
+          <a href={`${appointmentDetail?.receiptOfRecipientFilePath}`}>
+            {appointmentDetail?.receiptOfRecipientFilePath}
+          </a>
         </Descriptions.Item>
       </Descriptions>
     </div>

@@ -23,6 +23,20 @@ const getDetail = async (token: string, id: string): Promise<Appointment> => {
   return response.data;
 };
 
-const appointment = { getListAppointments, getDetail };
+const uploadDocument = async (
+  token: string,
+  id: string,
+  data: FormData
+): Promise<any> => {
+  const response = await httpClient.post({
+    contentType: "multipart/form-data",
+    url: apiLinks.appointment.upload + `/${id}/Document`,
+    token: token,
+    data: data,
+  });
+  return response.data;
+};
+
+const appointment = { getListAppointments, getDetail, uploadDocument };
 
 export default appointment;

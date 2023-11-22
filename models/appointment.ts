@@ -11,6 +11,8 @@ export interface Appointment extends BaseWithIdNumber {
   isCorrectPerson: boolean;
   status: string;
   serverAllocationId: number;
+  inspectionReportFilePath: string;
+  receiptOfRecipientFilePath: string;
 }
 
 export interface AppointmentData extends PagingModel {
