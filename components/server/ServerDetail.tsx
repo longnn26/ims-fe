@@ -20,18 +20,18 @@ const ServerDetail: React.FC<Props> = (props) => {
         <Descriptions.Item label="Id">
           {serverAllocationDetail?.id}
         </Descriptions.Item>
-        <Descriptions.Item label="Expected Size">
+        {/* <Descriptions.Item label="Expected Size">
           {serverAllocationDetail?.expectedSize}
-        </Descriptions.Item>
+        </Descriptions.Item> */}
         <Descriptions.Item label="Status">
           {serverAllocationDetail?.status}
         </Descriptions.Item>
         <Descriptions.Item label="Note" span={4}>
           {serverAllocationDetail?.note}
         </Descriptions.Item>
-        <Descriptions.Item label="Inspector Note" span={4}>
+        {/* <Descriptions.Item label="Inspector Note" span={4}>
           {serverAllocationDetail?.inspectorNote}
-        </Descriptions.Item>
+        </Descriptions.Item> */}
 
         <Descriptions.Item label="Date Created" span={4}>
           {moment(serverAllocationDetail?.dateCreated).format(dateAdvFormat)}

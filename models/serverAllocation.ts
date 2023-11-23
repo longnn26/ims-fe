@@ -1,12 +1,11 @@
 import { BaseWithIdNumber, PagingModel } from "./base";
 
 export interface ServerAllocation extends BaseWithIdNumber {
-  expectedSize: number;
   status: string;
+  power: number;
+  name: string;
+  serialNumber: string;
   note: string;
-  inspectorNote: string;
-  inspectionRecordFilePath: string;
-  receiptOfRecipientFilePath: string;
   customerId: number;
 }
 
@@ -15,15 +14,16 @@ export interface ServerAllocationData extends PagingModel {
 }
 
 export interface SACreateModel {
-  expectedSize: number;
+  name: string;
+  serialNumber: string;
+  power: number;
   note: string;
   customerId: number;
 }
 
 export interface SAUpdateModel {
   id: number;
-  status: string;
-  expectedSize: number;
+  name: string;
+  power: number;
   note: string;
-  inspectorNote: string;
 }

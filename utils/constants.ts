@@ -75,3 +75,20 @@ export const optionStatus = [
   },
 ];
 
+export const serverAllocationStatus = [
+  {
+    value: "Working",
+    label: "Working",
+    color: "#19bcf1",
+  },
+  {
+    value: "Pausing",
+    label: "Pausing",
+    color: "#dba50f",
+  },
+  {
+    value: "Removed",
+    label: "Removed",
+    color: "#ed1c24",
+  },
+];

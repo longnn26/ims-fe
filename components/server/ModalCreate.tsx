@@ -51,7 +51,9 @@ const ModalCreate: React.FC<Props> = (props) => {
                   title: "Do you want to save?",
                   async onOk() {
                     onSubmit({
-                      expectedSize: form.getFieldValue("expectedSize"),
+                      name: form.getFieldValue("name"),
+                      serialNumber: form.getFieldValue("serialNumber"),
+                      power: form.getFieldValue("power"),
                       note: form.getFieldValue("note"),
                       customerId: form.getFieldValue("customerId"),
                     } as SACreateModel);
@@ -74,11 +76,33 @@ const ModalCreate: React.FC<Props> = (props) => {
             style={{ width: "100%" }}
           >
             <Form.Item
-              name="expectedSize"
-              label="Expected Size"
+              name="name"
+              label="Server Name"
               rules={[{ required: true }]}
             >
-              <Input placeholder="Expected Size" allowClear />
+              <Input placeholder="Server Name" allowClear />
+            </Form.Item>
+            <Form.Item
+              name="serialNumber"
+              label="Serial Number"
+              rules={[{ required: true }]}
+            >
+              <Input placeholder="Serial Number" allowClear />
+            </Form.Item>
+            <Form.Item
+              name="power"
+              label="Power"
+              rules={[
+                {
+                  required: true,
+                },
+                {
+                  pattern: new RegExp(/^[0-9]+$/),
+                  message: "Power must be a number",
+                },
+              ]}
+            >
+              <Input placeholder="Power" allowClear />
             </Form.Item>
             <Form.Item name="note" label="Note">
               <Input placeholder="Note" allowClear />
