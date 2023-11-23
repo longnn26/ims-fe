@@ -1,14 +1,15 @@
 "use client";
 
 import useSelector from "@hooks/use-selector";
-import { dateAdvFormat } from "@utils/constants";
-import { Divider, TableColumnsType } from "antd";
+import { dateAdvFormat, requestUpgradeStatus } from "@utils/constants";
+import { Divider, TableColumnsType, Tag } from "antd";
 import { Button, Space, Table, Tooltip } from "antd";
-import { BiEdit } from "react-icons/bi";
+import { BiEdit, BiSolidCommentDetail } from "react-icons/bi";
 import { AiFillDelete } from "react-icons/ai";
 import moment from "moment";
 import { RequestUpgrade } from "@models/requestUpgrade";
 import { useRouter } from "next/router";
+import { ComponentObj } from "@models/component";
 
 interface Props {
   serverAllocationId?: string;
@@ -20,11 +21,12 @@ interface Props {
 interface DataType {
   key: React.Key;
   id: number;
-  description: string;
+  information: string;
   status: string;
   capacity: number;
   serverAllocationId: number;
   componentId: number;
+  component: ComponentObj;
   dateCreated: string;
   dateUpdated: string;
 }
@@ -42,19 +44,40 @@ const RequestUpgradeTable: React.FC<Props> = (props) => {
       dataIndex: "id",
       key: "id",
       render: (text) => (
-        <a className="text-[#b75c3c] hover:text-[#ee4623]">{text}</a>
+        <p className="text-[#b75c3c] hover:text-[#ee4623]">{text}</p>
       ),
-      onCell: (record, rowIndex) => {
-        return {
-          onClick: (ev) => {
-            router.push(`${urlOncell}/requestUpgrade/${record.id}`);
-          },
-        };
-      },
+      // onCell: (record, rowIndex) => {
+      //   return {
+      //     onClick: (ev) => {
+      //       router.push(`${urlOncell}/requestUpgrade/${record.id}`);
+      //     },
+      //   };
+      // },
+    },
+    {
+      title: "Component",
+      key: "component",
+      render: (record: RequestUpgrade) => (
+        <p>{`${record.component?.name} - ${record.component?.unit} - ${record.component?.type}`}</p>
+      ),
     },
     { title: "Description", dataIndex: "description", key: "description" },
     { title: "Capacity", dataIndex: "capacity", key: "capacity" },
-    { title: "Status", dataIndex: "status", key: "status" },
+    {
+      title: "Status",
+      // dataIndex: "status",
+      key: "status",
+      render: (record: RequestUpgrade) => {
+        var statusData = requestUpgradeStatus.find(
+          (_) => _.value === record.status
+        );
+        return (
+          <Tag className=" w-4/5 text-center" color={statusData?.color}>
+            {statusData?.value}
+          </Tag>
+        );
+      },
+    },
     { title: "Date Created", dataIndex: "dateCreated", key: "dateCreated" },
     { title: "Date Updated", dataIndex: "dateUpdated", key: "dateUpdated" },
     {
@@ -62,6 +85,15 @@ const RequestUpgradeTable: React.FC<Props> = (props) => {
       key: "operation",
       render: (record: RequestUpgrade) => (
         <Space wrap>
+          <Tooltip title="View detail" color={"black"}>
+            <Button
+              onClick={() =>
+                router.push(`${urlOncell}/requestUpgrade/${record.id}`)
+              }
+            >
+              <BiSolidCommentDetail />
+            </Button>
+          </Tooltip>
           <Tooltip title="Edit" color={"black"}>
             <Button onClick={() => onEdit(record)}>
               <BiEdit />
@@ -82,7 +114,8 @@ const RequestUpgradeTable: React.FC<Props> = (props) => {
     data.push({
       key: requestUpgradeData?.data[i].id,
       id: requestUpgradeData?.data[i].id,
-      description: requestUpgradeData?.data[i].description,
+      information: requestUpgradeData?.data[i].information,
+      component: requestUpgradeData?.data[i].component,
       capacity: requestUpgradeData?.data[i].capacity,
       serverAllocationId: requestUpgradeData?.data[i].serverAllocationId,
       componentId: requestUpgradeData?.data[i].componentId,

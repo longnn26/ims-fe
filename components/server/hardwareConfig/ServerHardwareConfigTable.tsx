@@ -18,7 +18,7 @@ interface Props {
 interface DataType {
   key: React.Key;
   id: number;
-  description: string;
+  information: string;
   capacity: number;
   serverAllocationId: number;
   componentId: number;
@@ -74,7 +74,7 @@ const ServerHardwareConfigTable: React.FC<Props> = (props) => {
     data.push({
       key: serverHardwareConfigData?.data[i].id,
       id: serverHardwareConfigData?.data[i].id,
-      description: serverHardwareConfigData?.data[i].description,
+      information: serverHardwareConfigData?.data[i].information,
       capacity: serverHardwareConfigData?.data[i].capacity,
       serverAllocationId: serverHardwareConfigData?.data[i].serverAllocationId,
       componentId: serverHardwareConfigData?.data[i].componentId,

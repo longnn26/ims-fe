@@ -40,7 +40,7 @@ const ModalUpdate: React.FC<Props> = (props) => {
     if (formRef.current)
       form.setFieldsValue({
         id: serverHardwareConfig.id,
-        description: serverHardwareConfig.description,
+        information: serverHardwareConfig.information,
         capacity: serverHardwareConfig.capacity,
         component: component
           ? {
@@ -88,7 +88,7 @@ const ModalUpdate: React.FC<Props> = (props) => {
                         form.getFieldValue("component"),
                       serverAllocationId:
                         form.getFieldValue("serverAllocationId"),
-                      description: form.getFieldValue("description"),
+                      information: form.getFieldValue("information"),
                       capacity: form.getFieldValue("capacity"),
                     } as SHCUpdateModel);
                     form.resetFields();
@@ -110,16 +110,22 @@ const ModalUpdate: React.FC<Props> = (props) => {
             style={{ width: "100%" }}
           >
             <Form.Item
-              name="description"
-              label="Description"
-              // rules={[{ required: true }]}
+              name="information"
+              label="Information"
+              rules={[{ required: true }]}
             >
-              <Input placeholder="Description" allowClear />
+              <Input placeholder="information" allowClear />
             </Form.Item>
             <Form.Item
               name="capacity"
               label="Capacity"
-              rules={[{ required: true }]}
+              rules={[
+                { required: true },
+                {
+                  pattern: new RegExp(/^[0-9]+$/),
+                  message: "Capacity must be a number greater than 0",
+                },
+              ]}
             >
               <Input placeholder="Capacity" allowClear />
             </Form.Item>
@@ -131,7 +137,7 @@ const ModalUpdate: React.FC<Props> = (props) => {
               <Select allowClear>
                 {componentOptions.map((l, index) => (
                   <Option value={l.id} label={l?.name} key={index}>
-                    {l.name}
+                    {`${l.name} - ${l.unit} - ${l.type}`}
                   </Option>
                 ))}
               </Select>

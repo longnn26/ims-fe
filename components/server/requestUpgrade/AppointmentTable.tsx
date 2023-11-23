@@ -2,8 +2,8 @@
 
 import useSelector from "@hooks/use-selector";
 import { Appointment } from "@models/appointment";
-import { dateAdvFormat } from "@utils/constants";
-import { Divider, Table, TableColumnsType } from "antd";
+import { dateAdvFormat, requestUpgradeStatus } from "@utils/constants";
+import { Divider, Table, TableColumnsType, Tag } from "antd";
 import moment from "moment";
 import { useRouter } from "next/router";
 
@@ -60,16 +60,32 @@ const AppointmentTable: React.FC<Props> = (props) => {
       },
     },
     {
-      title: "Customer",
-      dataIndex: "appointedCustomer",
-      key: "appointedCustomer",
-    },
-    {
       title: "Date Appointed",
       dataIndex: "dateAppointed",
       key: "dateAppointed",
     },
-    { title: "Status", dataIndex: "status", key: "status" },
+    {
+      title: "Visiter",
+      dataIndex: "appointedCustomer",
+      key: "appointedCustomer",
+    },
+    { title: "Reason", dataIndex: "reason", key: "reason" },
+    {
+      title: "Status",
+      // dataIndex: "status",
+      key: "status",
+      render: (record: Appointment) => {
+        var statusData = requestUpgradeStatus.find(
+          (_) => _.value === record.status
+        );
+        return (
+          <Tag className="w-full text-center" color={statusData?.color}>
+            {statusData?.value}
+          </Tag>
+        );
+      },
+    },
+    { title: "Note", dataIndex: "note", key: "note" },
     {
       title: "Date CheckedIn",
       dataIndex: "dateCheckedIn",
@@ -80,8 +96,6 @@ const AppointmentTable: React.FC<Props> = (props) => {
       dataIndex: "dateCheckedOut",
       key: "dateCheckedOut",
     },
-    { title: "Reason", dataIndex: "reason", key: "reason" },
-    { title: "Note", dataIndex: "note", key: "note" },
     { title: "Date Created", dataIndex: "dateCreated", key: "dateCreated" },
     { title: "Date Updated", dataIndex: "dateUpdated", key: "dateUpdated" },
     // {

@@ -2,7 +2,7 @@ import { BaseWithIdNumber, PagingModel, ParamGet } from "./base";
 import { ComponentObj } from "./component";
 
 export interface RequestUpgrade extends BaseWithIdNumber {
-  description: string;
+  information: string;
   status: string;
   capacity: number;
   componentId: number;
@@ -19,7 +19,7 @@ export interface RequestUpgradeData extends PagingModel {
 }
 
 export interface RequestUpgradeCreateModel {
-  description: string;
+  information: string;
   capacity: number;
   componentId: number;
   serverAllocationId: number;
@@ -27,7 +27,7 @@ export interface RequestUpgradeCreateModel {
 
 export interface RequestUpgradeUpdateModel {
   id: number;
-  description: string;
+  information: string;
   capacity: number;
   componentId: number;
   component: ComponentObj;

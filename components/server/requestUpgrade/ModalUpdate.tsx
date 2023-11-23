@@ -35,7 +35,7 @@ const ModalUpdate: React.FC<Props> = (props) => {
     if (formRef.current)
       form.setFieldsValue({
         id: requestUpgrade.id,
-        description: requestUpgrade.description,
+        information: requestUpgrade.information,
         capacity: requestUpgrade.capacity,
         componentId: requestUpgrade.componentId,
         serverAllocationId: requestUpgrade.serverAllocationId,
@@ -76,7 +76,7 @@ const ModalUpdate: React.FC<Props> = (props) => {
                       componentId: form.getFieldValue("componentId"),
                       serverAllocationId:
                         form.getFieldValue("serverAllocationId"),
-                      description: form.getFieldValue("description"),
+                      information: form.getFieldValue("information"),
                       capacity: form.getFieldValue("capacity"),
                     } as RequestUpgradeUpdateModel);
                     form.resetFields();
@@ -98,16 +98,22 @@ const ModalUpdate: React.FC<Props> = (props) => {
             style={{ width: "100%" }}
           >
             <Form.Item
-              name="description"
-              label="Description"
-              // rules={[{ required: true }]}
+              name="information"
+              label="Information"
+              rules={[{ required: true }]}
             >
-              <Input placeholder="Description" allowClear />
+              <Input placeholder="Information" allowClear />
             </Form.Item>
             <Form.Item
               name="capacity"
               label="Capacity"
-              rules={[{ required: true }]}
+              rules={[
+                { required: true },
+                {
+                  pattern: new RegExp(/^[0-9]+$/),
+                  message: "Capacity must be a number greater than 0",
+                },
+              ]}
             >
               <Input placeholder="Capacity" allowClear />
             </Form.Item>

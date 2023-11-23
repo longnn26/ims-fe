@@ -54,7 +54,7 @@ const ModalCreate: React.FC<Props> = (props) => {
                   title: "Do you want to save?",
                   async onOk() {
                     onSubmit({
-                      description: form.getFieldValue("description"),
+                      information: form.getFieldValue("information"),
                       capacity: form.getFieldValue("capacity"),
                       componentId: form.getFieldValue("component").value,
                     } as RequestUpgradeCreateModel);
@@ -77,16 +77,22 @@ const ModalCreate: React.FC<Props> = (props) => {
             style={{ width: "100%" }}
           >
             <Form.Item
-              name="description"
-              label="Description"
-              // rules={[{ required: true }]}
+              name="information"
+              label="Information"
+              rules={[{ required: true }]}
             >
-              <Input placeholder="Description" allowClear />
+              <Input placeholder="Information" allowClear />
             </Form.Item>
             <Form.Item
               name="capacity"
               label="Capacity"
-              rules={[{ required: true }]}
+              rules={[
+                { required: true },
+                {
+                  pattern: new RegExp(/^[0-9]+$/),
+                  message: "Capacity must be a number greater than 0",
+                },
+              ]}
             >
               <Input placeholder="Capacity" allowClear />
             </Form.Item>
@@ -108,7 +114,7 @@ const ModalCreate: React.FC<Props> = (props) => {
               >
                 {componentOptions.map((l, index) => (
                   <Option value={l.id} label={l?.name} key={index}>
-                    {l.name}
+                    {`${l.name} - ${l.unit} - ${l.type}`}
                   </Option>
                 ))}
               </Select>

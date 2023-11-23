@@ -92,3 +92,31 @@ export const serverAllocationStatus = [
     color: "#ed1c24",
   },
 ];
+
+export const requestUpgradeStatus = [
+  {
+    value: "Waiting",
+    label: "Waiting",
+    color: "#19bcf1",
+  },
+  {
+    value: "Accepted",
+    label: "Accepted",
+    color: "#14a2b8",
+  },
+  {
+    value: "Denied",
+    label: "Denied",
+    color: "#ed1c24",
+  },
+  {
+    value: "Success",
+    label: "Success",
+    color: "#28a745",
+  },
+  {
+    value: "Failed",
+    label: "Failed",
+    color: "#343a3f",
+  },
+];
