@@ -8,6 +8,7 @@ import { BiEdit } from "react-icons/bi";
 import { AiFillDelete } from "react-icons/ai";
 import moment from "moment";
 import { ServerHardwareConfig } from "@models/serverHardwareConfig";
+import { ComponentObj } from "@models/component";
 
 interface Props {
   onEdit: (data: ServerHardwareConfig) => void;
@@ -21,6 +22,7 @@ interface DataType {
   capacity: number;
   serverAllocationId: number;
   componentId: number;
+  component: ComponentObj;
   dateCreated: string;
   dateUpdated: string;
 }
@@ -36,7 +38,14 @@ const ServerHardwareConfigTable: React.FC<Props> = (props) => {
       dataIndex: "id",
       key: "id",
     },
-    { title: "Description", dataIndex: "description", key: "description" },
+    // { title: "Description", dataIndex: "description", key: "description" },
+    {
+      title: "Component",
+      key: "component",
+      render: (record: ServerHardwareConfig) => (
+        <p>{`${record.component?.name} - ${record.component?.unit} - ${record.component?.type}`}</p>
+      ),
+    },
     { title: "Capacity", dataIndex: "capacity", key: "capacity" },
     { title: "Date Created", dataIndex: "dateCreated", key: "dateCreated" },
     { title: "Date Updated", dataIndex: "dateUpdated", key: "dateUpdated" },
@@ -69,6 +78,7 @@ const ServerHardwareConfigTable: React.FC<Props> = (props) => {
       capacity: serverHardwareConfigData?.data[i].capacity,
       serverAllocationId: serverHardwareConfigData?.data[i].serverAllocationId,
       componentId: serverHardwareConfigData?.data[i].componentId,
+      component: serverHardwareConfigData?.data[i].component,
       dateCreated: moment(serverHardwareConfigData?.data[i].dateCreated).format(
         dateAdvFormat
       ),

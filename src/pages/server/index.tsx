@@ -6,7 +6,10 @@ import React from "react";
 import { ParamGet } from "@models/base";
 import useDispatch from "@hooks/use-dispatch";
 import useSelector from "@hooks/use-selector";
-import { getServerAllocationData } from "@slices/serverAllocation";
+import {
+  getCustomerData,
+  getServerAllocationData,
+} from "@slices/serverAllocation";
 import {
   SACreateModel,
   SAUpdateModel,
@@ -36,6 +39,12 @@ const Customer: React.FC = () => {
     PageIndex: 1,
     PageSize: 7,
   } as ParamGet);
+
+  const [customerSelectParamGet, setCustomerSelectParamGet] =
+    useState<ParamGet>({
+      PageIndex: 1,
+      PageSize: 6,
+    } as ParamGet);
   const [loadingSubmit, setLoadingSubmit] = useState<boolean>(false);
   const [serverAllocationUpdate, setServerAllocationUpdate] = useState<
     ServerAllocation | undefined
@@ -120,6 +129,17 @@ const Customer: React.FC = () => {
     session && getData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session, paramGet]);
+
+  useEffect(() => {
+    session &&
+      dispatch(
+        getCustomerData({
+          token: session?.user.access_token!,
+          paramGet: { ...customerSelectParamGet },
+        })
+      );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [session, customerSelectParamGet]);
   return (
     <AntdLayoutNoSSR
       content={
@@ -156,6 +176,8 @@ const Customer: React.FC = () => {
             onSubmit={(data: SACreateModel) => {
               createData(data);
             }}
+            customerParamGet={customerSelectParamGet}
+            setCustomerParamGet={setCustomerSelectParamGet}
           />
           <ModalUpdate
             serverAllocation={serverAllocationUpdate!}

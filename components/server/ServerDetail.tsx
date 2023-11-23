@@ -1,7 +1,7 @@
 import React from "react";
-import { Descriptions, Divider, Modal } from "antd";
+import { Descriptions, Divider, Modal, Tag } from "antd";
 import { ServerAllocation } from "@models/serverAllocation";
-import { dateAdvFormat } from "@utils/constants";
+import { dateAdvFormat, serverAllocationStatus } from "@utils/constants";
 import moment from "moment";
 
 interface Props {
@@ -10,7 +10,9 @@ interface Props {
 
 const ServerDetail: React.FC<Props> = (props) => {
   const { serverAllocationDetail } = props;
-
+  var statusData = serverAllocationStatus.find(
+    (_) => _.value === serverAllocationDetail?.status
+  );
   return (
     <div className="shadow-[rgba(13,_38,_76,_0.19)_0px_9px_20px] m-5 rounded-md">
       <Divider orientation="left" plain>
@@ -20,11 +22,20 @@ const ServerDetail: React.FC<Props> = (props) => {
         <Descriptions.Item label="Id">
           {serverAllocationDetail?.id}
         </Descriptions.Item>
-        {/* <Descriptions.Item label="Expected Size">
-          {serverAllocationDetail?.expectedSize}
-        </Descriptions.Item> */}
+        <Descriptions.Item label="Server Name">
+          {serverAllocationDetail?.name}
+        </Descriptions.Item>
         <Descriptions.Item label="Status">
-          {serverAllocationDetail?.status}
+          <Tag color={statusData?.color}>{statusData?.value}</Tag>
+        </Descriptions.Item>
+        <Descriptions.Item label="Power">
+          {serverAllocationDetail?.power}
+        </Descriptions.Item>
+        <Descriptions.Item label="Serial Number">
+          {serverAllocationDetail?.serialNumber}
+        </Descriptions.Item>
+        <Descriptions.Item label="Customer">
+          {/* {serverAllocationDetail?.} */}
         </Descriptions.Item>
         <Descriptions.Item label="Note" span={4}>
           {serverAllocationDetail?.note}
