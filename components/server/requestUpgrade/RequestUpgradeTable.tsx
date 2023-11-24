@@ -12,6 +12,7 @@ import { useRouter } from "next/router";
 import { ComponentObj } from "@models/component";
 
 interface Props {
+  typeGet?: string;
   serverAllocationId?: string;
   urlOncell?: string;
   onEdit: (data: RequestUpgrade) => void;
@@ -32,17 +33,28 @@ interface DataType {
 }
 
 const RequestUpgradeTable: React.FC<Props> = (props) => {
-  const { onEdit, onDelete, urlOncell } = props;
+  const { onEdit, onDelete, urlOncell, typeGet } = props;
   const router = useRouter();
   const { requestUpgradeDataLoading, requestUpgradeData } = useSelector(
     (state) => state.requestUpgrade
   );
+  const { requestUpgradeData: rUDataOfAppointment } = useSelector(
+    (state) => state.appointment
+  );
+
+  var listData =
+    typeGet == "All"
+      ? requestUpgradeData
+      : typeGet == "ByAppointmentId"
+      ? rUDataOfAppointment
+      : requestUpgradeData;
 
   const columns: TableColumnsType<DataType> = [
     {
       title: "Id",
       dataIndex: "id",
       key: "id",
+      fixed: "left",
       render: (text) => (
         <p className="text-[#b75c3c] hover:text-[#ee4623]">{text}</p>
       ),
@@ -72,7 +84,7 @@ const RequestUpgradeTable: React.FC<Props> = (props) => {
           (_) => _.value === record.status
         );
         return (
-          <Tag className=" w-4/5 text-center" color={statusData?.color}>
+          <Tag className=" w-2/3 text-center" color={statusData?.color}>
             {statusData?.value}
           </Tag>
         );
@@ -110,22 +122,18 @@ const RequestUpgradeTable: React.FC<Props> = (props) => {
   ];
 
   const data: DataType[] = [];
-  for (let i = 0; i < requestUpgradeData?.data?.length; ++i) {
+  for (let i = 0; i < listData?.data?.length; ++i) {
     data.push({
-      key: requestUpgradeData?.data[i].id,
-      id: requestUpgradeData?.data[i].id,
-      information: requestUpgradeData?.data[i].information,
-      component: requestUpgradeData?.data[i].component,
-      capacity: requestUpgradeData?.data[i].capacity,
-      serverAllocationId: requestUpgradeData?.data[i].serverAllocationId,
-      componentId: requestUpgradeData?.data[i].componentId,
-      status: requestUpgradeData?.data[i].status,
-      dateCreated: moment(requestUpgradeData?.data[i].dateCreated).format(
-        dateAdvFormat
-      ),
-      dateUpdated: moment(requestUpgradeData?.data[i].dateUpdated).format(
-        dateAdvFormat
-      ),
+      key: listData?.data[i].id,
+      id: listData?.data[i].id,
+      information: listData?.data[i].information,
+      component: listData?.data[i].component,
+      capacity: listData?.data[i].capacity,
+      serverAllocationId: listData?.data[i].serverAllocationId,
+      componentId: listData?.data[i].componentId,
+      status: listData?.data[i].status,
+      dateCreated: moment(listData?.data[i].dateCreated).format(dateAdvFormat),
+      dateUpdated: moment(listData?.data[i].dateUpdated).format(dateAdvFormat),
     });
   }
 
@@ -140,7 +148,7 @@ const RequestUpgradeTable: React.FC<Props> = (props) => {
         dataSource={data}
         scroll={{ x: 1300 }}
         pagination={false}
-        className="cursor-pointer"
+        // className="cursor-pointer"
       />
     </div>
   );

@@ -1,7 +1,7 @@
 import React from "react";
-import { Descriptions, Divider, Modal } from "antd";
+import { Descriptions, Divider, Modal, Tag } from "antd";
 import { ServerAllocation } from "@models/serverAllocation";
-import { dateAdvFormat } from "@utils/constants";
+import { dateAdvFormat, requestUpgradeStatus } from "@utils/constants";
 import moment from "moment";
 import { Appointment } from "@models/appointment";
 
@@ -25,7 +25,20 @@ const ServerDetail: React.FC<Props> = (props) => {
           {appointmentDetail?.appointedCustomer}
         </Descriptions.Item>
         <Descriptions.Item label="Status">
-          {appointmentDetail?.status}
+          <Tag
+            className="text-center"
+            color={
+              requestUpgradeStatus.find(
+                (_) => _.value === appointmentDetail?.status
+              )?.color
+            }
+          >
+            {
+              requestUpgradeStatus.find(
+                (_) => _.value === appointmentDetail?.status
+              )?.value
+            }
+          </Tag>
         </Descriptions.Item>
         {/* <Descriptions.Item label="Appointed" span={4}>
           {moment(appointmentDetail?.dateAppointed).format(dateAdvFormat)}

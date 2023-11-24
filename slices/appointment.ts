@@ -1,15 +1,20 @@
 import { AppointmentData } from "@models/appointment";
-import { RUAppointmentParamGet } from "@models/requestUpgrade";
+import {
+  RUAppointmentParamGet,
+  RequestUpgradeData,
+} from "@models/requestUpgrade";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import appointment from "@services/appointment";
 
 interface State {
   listAppointmentData: AppointmentData;
+  requestUpgradeData: RequestUpgradeData;
   listAppointmentDataLoading: boolean;
 }
 
 const initialState: State = {
   listAppointmentData: {} as AppointmentData,
+  requestUpgradeData: {} as RequestUpgradeData,
   listAppointmentDataLoading: false,
 };
 
@@ -19,6 +24,17 @@ const getListAppointment = createAsyncThunk(
   `${TYPE_PREFIX}/getListAppointment`,
   async (arg: { token: string; paramGet: RUAppointmentParamGet }) => {
     const result = await appointment.getListAppointments(
+      arg.token,
+      arg.paramGet
+    );
+    return result;
+  }
+);
+
+const getRequestUpgradeData = createAsyncThunk(
+  `${TYPE_PREFIX}/getAppointmentData`,
+  async (arg: { token: string; paramGet: RUAppointmentParamGet }) => {
+    const result = await appointment.getRequestUpgradesById(
       arg.token,
       arg.paramGet
     );
@@ -44,9 +60,14 @@ const slice = createSlice({
       ...state,
       listAppointmentDataLoading: false,
     }));
+
+    builder.addCase(getRequestUpgradeData.fulfilled, (state, { payload }) => ({
+      ...state,
+      requestUpgradeData: payload,
+    }));
   },
 });
 
-export { getListAppointment };
+export { getListAppointment, getRequestUpgradeData };
 
 export default slice.reducer;

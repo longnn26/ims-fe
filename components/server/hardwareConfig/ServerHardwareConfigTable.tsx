@@ -37,6 +37,7 @@ const ServerHardwareConfigTable: React.FC<Props> = (props) => {
       title: "Id",
       dataIndex: "id",
       key: "id",
+      fixed: "left",
     },
     // { title: "Description", dataIndex: "description", key: "description" },
     {

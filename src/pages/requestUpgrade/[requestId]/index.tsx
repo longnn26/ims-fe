@@ -10,12 +10,16 @@ import { ServerAllocation } from "@models/serverAllocation";
 import requestUpgradeService from "@services/requestUpgrade";
 import serverAllocationService from "@services/serverAllocation";
 import { getAppointmentData } from "@slices/requestUpgrade";
-import { Pagination } from "antd";
+import { Button, FloatButton, Pagination, message } from "antd";
 import { ItemType } from "antd/es/breadcrumb/Breadcrumb";
 import { useSession } from "next-auth/react";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
+import { AiOutlineFileDone } from "react-icons/ai";
+import { MdCancel } from "react-icons/md";
+import { CaretLeftOutlined } from "@ant-design/icons";
+
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
 });
@@ -53,6 +57,38 @@ const RequestDetail: React.FC = () => {
           });
         setRequestUpgradeDetail(res);
       });
+  };
+
+  const acceptRequestUpgrade = async () => {
+    await requestUpgradeService
+      .acceptRequestUpgrade(
+        session?.user.access_token!,
+        requestUpgradeDetail?.id + ""
+      )
+      .then((res) => {
+        message.success("Accept request upgrade successful!");
+        getData();
+      })
+      .catch((errors) => {
+        message.error(errors.message);
+      })
+      .finally(() => {});
+  };
+
+  const denyRequestUpgrade = async () => {
+    await requestUpgradeService
+      .denyRequestUpgrade(
+        session?.user.access_token!,
+        requestUpgradeDetail?.id + ""
+      )
+      .then((res) => {
+        message.success("Deny request upgrade successful!");
+        getData();
+      })
+      .catch((errors) => {
+        message.error(errors.message);
+      })
+      .finally(() => {});
   };
 
   const handleBreadCumb = () => {
@@ -96,7 +132,15 @@ const RequestDetail: React.FC = () => {
       content={
         <>
           <div className="flex flex-wrap items-center justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
-            <BreadcrumbComponent itemBreadcrumbs={itemBreadcrumbs} />
+            <div>
+              <Button
+                type="primary"
+                className="mb-2"
+                icon={<CaretLeftOutlined />}
+                onClick={() => router.back()}
+              ></Button>
+              <BreadcrumbComponent itemBreadcrumbs={itemBreadcrumbs} />
+            </div>
           </div>
           <div className="md:flex">
             <ServerDetail
@@ -126,6 +170,25 @@ const RequestDetail: React.FC = () => {
                 });
               }}
             />
+          )}
+          {requestUpgradeDetail?.status === "Waiting" && (
+            <FloatButton.Group
+              trigger="hover"
+              type="primary"
+              style={{ right: 60, bottom: 500 }}
+              icon={<AiOutlineFileDone />}
+            >
+              <FloatButton
+                icon={<MdCancel color="red" />}
+                tooltip="Deny"
+                onClick={() => denyRequestUpgrade()}
+              />
+              <FloatButton
+                onClick={() => acceptRequestUpgrade()}
+                icon={<AiOutlineFileDone color="green" />}
+                tooltip="Accept"
+              />
+            </FloatButton.Group>
           )}
         </>
       }

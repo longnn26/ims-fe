@@ -6,13 +6,13 @@ import { Rack, RackData } from "@models/rack";
 
 interface State {
   areaData: AreaData;
-  rackData: Rack[];
+  rackData: RackData;
   areaDataLoading: boolean;
 }
 
 const initialState: State = {
   areaData: {} as AreaData,
-  rackData: [],
+  rackData: {} as RackData,
   areaDataLoading: false,
 };
 

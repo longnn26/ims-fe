@@ -44,6 +44,8 @@ const apiLinks = {
     create: `${url}/api/RequestUpgrade`,
     update: `${url}/api/RequestUpgrade`,
     delete: `${url}/api/RequestUpgrade`,
+    accept: `${url}/api/RequestUpgrade`,
+    deny: `${url}/api/RequestUpgrade`,
   },
 
   area: {
@@ -68,7 +70,10 @@ const apiLinks = {
   appointment: {
     get: `${url}/api/Appointment`,
     getById: `${url}/api/Appointment`,
+    getRequestUpgradesById: `${url}/api/Appointment`,
     upload: `${url}/api/Appointment`,
+    accept: `${url}/api/Appointment`,
+    deny: `${url}/api/Appointment`,
   },
 };
 

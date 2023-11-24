@@ -2,18 +2,28 @@
 import BreadcrumbComponent from "@components/BreadcrumbComponent";
 import useDispatch from "@hooks/use-dispatch";
 import useSelector from "@hooks/use-selector";
-import { Appointment } from "@models/appointment";
+import { Appointment, ParamGetExtend } from "@models/appointment";
 import { ItemType } from "antd/es/breadcrumb/Breadcrumb";
 import { useSession } from "next-auth/react";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import appointmentService from "@services/appointment";
+import requestUpgradeService from "@services/requestUpgrade";
 import { CaretLeftOutlined, UploadOutlined } from "@ant-design/icons";
 import React, { useEffect, useState } from "react";
 import AppointmentDetail from "@components/appointment/AppointmentDetail";
-import { Button, message } from "antd";
+import { Button, FloatButton, Pagination, message } from "antd";
 import UploadComponent from "@components/UploadComponent";
 import type { UploadFile } from "antd/es/upload/interface";
+import { getRequestUpgradeData } from "@slices/appointment";
+import RequestUpgradeTable from "@components/server/requestUpgrade/RequestUpgradeTable";
+import { AiOutlineFileDone } from "react-icons/ai";
+import { MdCancel } from "react-icons/md";
+import {
+  RequestUpgrade,
+  RequestUpgradeUpdateModel,
+} from "@models/requestUpgrade";
+import ModalUpdate from "@components/server/requestUpgrade/ModalUpdate";
 
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
@@ -30,12 +40,21 @@ const Appoinment: React.FC = () => {
   const [fileReceiptOfRecipient, setFileReceiptOfRecipient] = useState<
     UploadFile[]
   >([]);
+  const [paramGetExtend, setParamGetExtend] = useState<ParamGetExtend>({
+    PageIndex: 1,
+    PageSize: 10,
+    id: router.query.appointmentId,
+  } as unknown as ParamGetExtend);
   const [loadingUploadDocument, setLoadingUploadDocument] =
     useState<boolean>(false);
   const [disabledReceiptOfRecipient, setDisabledReceiptOfRecipient] =
     useState<boolean>(false);
   const [disabledInspectionReport, setDisabledInspectionReport] =
     useState<boolean>(false);
+  const [requestUpgradeUpdate, setRequestUpgradeUpdate] = useState<
+    RequestUpgrade | undefined
+  >(undefined);
+  const { requestUpgradeData } = useSelector((state) => state.appointment);
 
   const getData = async () => {
     await appointmentService
@@ -72,6 +91,35 @@ const Appoinment: React.FC = () => {
       });
   };
 
+  const acceptAppointment = async () => {
+    await appointmentService
+      .acceptAppointment(
+        session?.user.access_token!,
+        appointmentDetail?.id + ""
+      )
+      .then((res) => {
+        message.success("Accept appointment successful!");
+        getData();
+      })
+      .catch((errors) => {
+        message.error(errors.message);
+      })
+      .finally(() => {});
+  };
+
+  const denyAppointment = async () => {
+    await appointmentService
+      .denyAppointment(session?.user.access_token!, appointmentDetail?.id + "")
+      .then((res) => {
+        message.success("Deny appointment successful!");
+        getData();
+      })
+      .catch((errors) => {
+        message.error(errors.message);
+      })
+      .finally(() => {});
+  };
+
   const handleBreadCumb = () => {
     var itemBrs = [] as ItemType[];
     var items = router.asPath.split("/").filter((_) => _ != "");
@@ -86,6 +134,21 @@ const Appoinment: React.FC = () => {
     setItemBreadcrumbs(itemBrs);
   };
 
+  const updateRequestUpgrade = async (data: RequestUpgradeUpdateModel) => {
+    await requestUpgradeService
+      .updateData(session?.user.access_token!, data)
+      .then((res) => {
+        message.success("Update successful!");
+        getData();
+      })
+      .catch((errors) => {
+        message.error(errors.message);
+      })
+      .finally(() => {
+        setRequestUpgradeUpdate(undefined);
+      });
+  };
+
   useEffect(() => {
     if (router.query.appointmentId && session) {
       getData();
@@ -94,6 +157,20 @@ const Appoinment: React.FC = () => {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session]);
+
+  useEffect(() => {
+    if (router.query.appointmentId && session) {
+      paramGetExtend.Id = parseInt(router.query.appointmentId!.toString());
+      dispatch(
+        getRequestUpgradeData({
+          token: session?.user.access_token!,
+          paramGet: { ...paramGetExtend },
+        })
+      );
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [session, paramGetExtend]);
 
   return (
     <AntdLayoutNoSSR
@@ -152,6 +229,57 @@ const Appoinment: React.FC = () => {
               Upload
             </Button>
           </div>
+          <RequestUpgradeTable
+            urlOncell=""
+            typeGet="ByAppointmentId"
+            onEdit={(value) => {
+              setRequestUpgradeUpdate(value);
+            }}
+            onDelete={(value) => {}}
+          />
+          {requestUpgradeData.totalPage > 0 && (
+            <Pagination
+              className="text-end m-4"
+              current={paramGetExtend?.PageIndex}
+              pageSize={requestUpgradeData?.pageSize ?? 10}
+              total={requestUpgradeData?.totalSize}
+              onChange={(page, pageSize) => {
+                setParamGetExtend({
+                  ...paramGetExtend,
+                  PageIndex: page,
+                  PageSize: pageSize,
+                });
+              }}
+            />
+          )}
+
+          <ModalUpdate
+            requestUpgrade={requestUpgradeUpdate!}
+            onClose={() => setRequestUpgradeUpdate(undefined)}
+            onSubmit={(data: RequestUpgradeUpdateModel) => {
+              updateRequestUpgrade(data);
+            }}
+          />
+
+          {appointmentDetail?.status === "Waiting" && (
+            <FloatButton.Group
+              trigger="hover"
+              type="primary"
+              style={{ right: 60, bottom: 500 }}
+              icon={<AiOutlineFileDone />}
+            >
+              <FloatButton
+                icon={<MdCancel color="red" />}
+                tooltip="Deny"
+                onClick={() => denyAppointment()}
+              />
+              <FloatButton
+                onClick={() => acceptAppointment()}
+                icon={<AiOutlineFileDone color="green" />}
+                tooltip="Accept"
+              />
+            </FloatButton.Group>
+          )}
         </>
       }
     />

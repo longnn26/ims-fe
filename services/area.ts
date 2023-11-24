@@ -21,7 +21,7 @@ const getDataById = async (token: string, id: string): Promise<Area> => {
   return response.data;
 };
 
-const getRackDataById = async (token: string, id: string): Promise<Rack[]> => {
+const getRackDataById = async (token: string, id: string): Promise<RackData> => {
   const response = await httpClient.get({
     url: apiLinks.area.get + `/${id}/Rack`,
     token: token,

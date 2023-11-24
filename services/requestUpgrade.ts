@@ -77,6 +77,25 @@ const deleteData = async (token: string, id: string): Promise<any> => {
   return response.data;
 };
 
+const acceptRequestUpgrade = async (
+  token: string,
+  id: string
+): Promise<any> => {
+  const response = await httpClient.put({
+    url: apiLinks.requestUpgrade.accept + `/${id}/Accept`,
+    token: token,
+  });
+  return response.data;
+};
+
+const denyRequestUpgrade = async (token: string, id: string): Promise<any> => {
+  const response = await httpClient.put({
+    url: apiLinks.requestUpgrade.accept + `/${id}/Deny`,
+    token: token,
+  });
+  return response.data;
+};
+
 const requestUpgrade = {
   getData,
   getAppointmentsById,
@@ -84,6 +103,8 @@ const requestUpgrade = {
   updateData,
   deleteData,
   getDetail,
+  acceptRequestUpgrade,
+  denyRequestUpgrade,
 };
 
 export default requestUpgrade;

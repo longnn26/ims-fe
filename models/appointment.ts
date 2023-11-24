@@ -1,4 +1,4 @@
-import { BaseWithIdNumber, PagingModel } from "./base";
+import { BaseWithIdNumber, PagingModel, ParamGet } from "./base";
 
 export interface Appointment extends BaseWithIdNumber {
   appointedCustomer: string;
@@ -17,4 +17,8 @@ export interface Appointment extends BaseWithIdNumber {
 
 export interface AppointmentData extends PagingModel {
   data: Appointment[];
+}
+
+export interface ParamGetExtend extends ParamGet {
+  Id: number;
 }

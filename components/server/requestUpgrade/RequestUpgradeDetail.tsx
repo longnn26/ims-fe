@@ -1,6 +1,6 @@
 import React from "react";
-import { Descriptions, Divider } from "antd";
-import { dateAdvFormat } from "@utils/constants";
+import { Descriptions, Divider, Tag } from "antd";
+import { dateAdvFormat, requestUpgradeStatus } from "@utils/constants";
 import moment from "moment";
 import { RequestUpgrade } from "@models/requestUpgrade";
 
@@ -24,7 +24,20 @@ const RequestUpgradeDetailInfor: React.FC<Props> = (props) => {
           {requestUpgradeDetail?.capacity}
         </Descriptions.Item>
         <Descriptions.Item label="Status">
-          {requestUpgradeDetail?.status}
+          <Tag
+            className="text-center"
+            color={
+              requestUpgradeStatus.find(
+                (_) => _.value === requestUpgradeDetail?.status
+              )?.color
+            }
+          >
+            {
+              requestUpgradeStatus.find(
+                (_) => _.value === requestUpgradeDetail?.status
+              )?.value
+            }
+          </Tag>
         </Descriptions.Item>
         <Descriptions.Item label="Component" span={4}>
           {requestUpgradeDetail?.component.name}

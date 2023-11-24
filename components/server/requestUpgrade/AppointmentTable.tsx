@@ -48,6 +48,7 @@ const AppointmentTable: React.FC<Props> = (props) => {
       title: "Id",
       dataIndex: "id",
       key: "id",
+      fixed: "left",
       render: (text) => (
         <a className="text-[#b75c3c] hover:text-[#ee4623]">{text}</a>
       ),
@@ -79,7 +80,7 @@ const AppointmentTable: React.FC<Props> = (props) => {
           (_) => _.value === record.status
         );
         return (
-          <Tag className="w-full text-center" color={statusData?.color}>
+          <Tag className="w-3/4 text-center" color={statusData?.color}>
             {statusData?.value}
           </Tag>
         );

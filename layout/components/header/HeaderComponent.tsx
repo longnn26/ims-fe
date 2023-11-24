@@ -84,7 +84,7 @@ const HeaderComponent: React.FC<Props> = (props) => {
       <Head>
         <title>{item?.label}</title>
       </Head>
-      <div className="flex w-1/3 justify-start">
+      <div className="flex w-1/3 justify-start items-center">
         <Button
           type="text"
           icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
@@ -95,11 +95,11 @@ const HeaderComponent: React.FC<Props> = (props) => {
             height: 64,
           }}
         />
-        <div className="max-w-screen-xl inline-block flex-wrap items-center justify-between p-4">
+        <div className="max-w-screen-xl inline-block flex-wrap items-center justify-between">
           <div className="flex items-center">
             <img
-              src="https://telecom.qtsc.com.vn/Common/img/QTSClogo.png"
-              className="h-10 mr-3"
+              src="/images/logo.jpeg"
+              className="h-14 mr-3"
               alt="FlowBite Logo"
             />
             <span className="self-center text-2xl font-semibold whitespace-nowrap">

@@ -1,5 +1,12 @@
-import { Appointment, AppointmentData } from "@models/appointment";
-import { RUAppointmentParamGet } from "@models/requestUpgrade";
+import {
+  Appointment,
+  AppointmentData,
+  ParamGetExtend,
+} from "@models/appointment";
+import {
+  RUAppointmentParamGet,
+  RequestUpgradeData,
+} from "@models/requestUpgrade";
 import apiLinks from "@utils/api-links";
 import httpClient from "@utils/http-client";
 
@@ -23,6 +30,35 @@ const getDetail = async (token: string, id: string): Promise<Appointment> => {
   return response.data;
 };
 
+const getRequestUpgradesById = async (
+  token: string,
+  params: ParamGetExtend
+): Promise<RequestUpgradeData> => {
+  const response = await httpClient.get({
+    url:
+      apiLinks.appointment.getRequestUpgradesById +
+      `/${params.Id}/RequestUpgrade`,
+    token: token,
+  });
+  return response.data;
+};
+
+const acceptAppointment = async (token: string, id: string): Promise<any> => {
+  const response = await httpClient.put({
+    url: apiLinks.appointment.accept + `/${id}/Accept`,
+    token: token,
+  });
+  return response.data;
+};
+
+const denyAppointment = async (token: string, id: string): Promise<any> => {
+  const response = await httpClient.put({
+    url: apiLinks.appointment.accept + `/${id}/Deny`,
+    token: token,
+  });
+  return response.data;
+};
+
 const uploadDocument = async (
   token: string,
   id: string,
@@ -37,6 +73,13 @@ const uploadDocument = async (
   return response.data;
 };
 
-const appointment = { getListAppointments, getDetail, uploadDocument };
+const appointment = {
+  getListAppointments,
+  getDetail,
+  uploadDocument,
+  getRequestUpgradesById,
+  acceptAppointment,
+  denyAppointment,
+};
 
 export default appointment;
