@@ -46,6 +46,8 @@ const apiLinks = {
     delete: `${url}/api/RequestUpgrade`,
     accept: `${url}/api/RequestUpgrade`,
     deny: `${url}/api/RequestUpgrade`,
+    complete: `${url}/api/RequestUpgrade`,
+    reject: `${url}/api/RequestUpgrade`,
   },
 
   area: {
@@ -74,6 +76,8 @@ const apiLinks = {
     upload: `${url}/api/Appointment`,
     accept: `${url}/api/Appointment`,
     deny: `${url}/api/Appointment`,
+    complete: `${url}/api/Appointment`,
+    fail: `${url}/api/Appointment`,
   },
 };
 

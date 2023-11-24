@@ -115,6 +115,62 @@ const RequestDetail: React.FC = () => {
     });
   };
 
+  const rejectRequestUpgrade = async () => {
+    confirm({
+      title: "Reject",
+      content: (
+        <Alert
+          message={`Do you want to reject with Id ${requestUpgradeDetail?.id}?`}
+          type="warning"
+        />
+      ),
+      async onOk() {
+        await requestUpgradeService
+          .rejectRequestUpgrade(
+            session?.user.access_token!,
+            requestUpgradeDetail?.id + ""
+          )
+          .then((res) => {
+            message.success("Reject request upgrade successful!");
+            getData();
+          })
+          .catch((errors) => {
+            message.error(errors.message);
+          })
+          .finally(() => {});
+      },
+      onCancel() {},
+    });
+  };
+
+  const completeRequestUpgrade = async () => {
+    confirm({
+      title: "Complete",
+      content: (
+        <Alert
+          message={`Do you want to complete with Id ${requestUpgradeDetail?.id}?`}
+          type="warning"
+        />
+      ),
+      async onOk() {
+        await requestUpgradeService
+          .completeRequestUpgrade(
+            session?.user.access_token!,
+            requestUpgradeDetail?.id + ""
+          )
+          .then((res) => {
+            message.success("Complete request upgrade successful!");
+            getData();
+          })
+          .catch((errors) => {
+            message.error(errors.message);
+          })
+          .finally(() => {});
+      },
+      onCancel() {},
+    });
+  };
+
   const handleBreadCumb = () => {
     var itemBrs = [] as ItemType[];
     var items = router.asPath.split("/").filter((_) => _ != "");
@@ -211,6 +267,26 @@ const RequestDetail: React.FC = () => {
                 onClick={() => acceptRequestUpgrade()}
                 icon={<AiOutlineFileDone color="green" />}
                 tooltip="Accept"
+              />
+            </FloatButton.Group>
+          )}
+
+          {Boolean(requestUpgradeDetail?.status === "Accepted") && (
+            <FloatButton.Group
+              trigger="hover"
+              type="primary"
+              style={{ right: 60, bottom: 500 }}
+              icon={<AiOutlineFileDone />}
+            >
+              <FloatButton
+                icon={<MdCancel color="red" />}
+                tooltip="Fail"
+                onClick={() => rejectRequestUpgrade()}
+              />
+              <FloatButton
+                onClick={() => completeRequestUpgrade()}
+                icon={<AiOutlineFileDone color="green" />}
+                tooltip="Complete"
               />
             </FloatButton.Group>
           )}

@@ -2,7 +2,11 @@
 import BreadcrumbComponent from "@components/BreadcrumbComponent";
 import useDispatch from "@hooks/use-dispatch";
 import useSelector from "@hooks/use-selector";
-import { Appointment, ParamGetExtend } from "@models/appointment";
+import {
+  Appointment,
+  AppointmentComplete,
+  ParamGetExtend,
+} from "@models/appointment";
 import { ItemType } from "antd/es/breadcrumb/Breadcrumb";
 import { useSession } from "next-auth/react";
 import dynamic from "next/dynamic";
@@ -24,6 +28,8 @@ import {
   RequestUpgradeUpdateModel,
 } from "@models/requestUpgrade";
 import ModalUpdate from "@components/server/requestUpgrade/ModalUpdate";
+import ModalComplete from "@components/appointment/ModalComplete";
+import ModalFail from "@components/appointment/ModalFail";
 const { confirm } = Modal;
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
@@ -54,6 +60,9 @@ const Appoinment: React.FC = () => {
   const [requestUpgradeUpdate, setRequestUpgradeUpdate] = useState<
     RequestUpgrade | undefined
   >(undefined);
+
+  const [openComplete, setOpenComplete] = useState<boolean>(false);
+  const [openFail, setOpenFail] = useState<boolean>(false);
   const { requestUpgradeData } = useSelector((state) => state.appointment);
 
   const getData = async () => {
@@ -145,6 +154,42 @@ const Appoinment: React.FC = () => {
       },
       onCancel() {},
     });
+  };
+
+  const completeAppointment = async (data: AppointmentComplete) => {
+    await appointmentService
+      .completeAppointment(
+        session?.user.access_token!,
+        appointmentDetail?.id + "",
+        data
+      )
+      .then((res) => {
+        message.success("Complete appointment successful!");
+        getData();
+      })
+      .catch((errors) => {
+        message.error(errors.message);
+      })
+      .finally(() => {
+        setOpenComplete(false);
+      });
+  };
+
+  const failAppointment = async (data: string) => {
+    await appointmentService
+      .failAppointment(
+        session?.user.access_token!,
+        appointmentDetail?.id + "",
+        data
+      )
+      .then((res) => {
+        message.success("Fail appointment successful!");
+        getData();
+      })
+      .catch((errors) => {
+        message.error(errors.message);
+      })
+      .finally(() => {});
   };
 
   const handleBreadCumb = () => {
@@ -287,6 +332,17 @@ const Appoinment: React.FC = () => {
               updateRequestUpgrade(data);
             }}
           />
+          <ModalComplete
+            open={openComplete}
+            appointment={appointmentDetail!}
+            onSubmit={(value) => completeAppointment(value)}
+            onClose={() => setOpenComplete(false)}
+          />
+          <ModalFail
+            open={openFail}
+            onSubmit={(value) => failAppointment(value)}
+            onClose={() => setOpenFail(false)}
+          />
 
           {appointmentDetail?.status === "Waiting" && (
             <FloatButton.Group
@@ -304,6 +360,30 @@ const Appoinment: React.FC = () => {
                 onClick={() => acceptAppointment()}
                 icon={<AiOutlineFileDone color="green" />}
                 tooltip="Accept"
+              />
+            </FloatButton.Group>
+          )}
+
+          {Boolean(
+            appointmentDetail?.status === "Accepted" &&
+              appointmentDetail.inspectionReportFilePath &&
+              appointmentDetail.receiptOfRecipientFilePath
+          ) && (
+            <FloatButton.Group
+              trigger="hover"
+              type="primary"
+              style={{ right: 60, bottom: 500 }}
+              icon={<AiOutlineFileDone />}
+            >
+              <FloatButton
+                icon={<MdCancel color="red" />}
+                tooltip="Fail"
+                onClick={() => setOpenFail(true)}
+              />
+              <FloatButton
+                onClick={() => setOpenComplete(true)}
+                icon={<AiOutlineFileDone color="green" />}
+                tooltip="Complete"
               />
             </FloatButton.Group>
           )}

@@ -22,3 +22,10 @@ export interface AppointmentData extends PagingModel {
 export interface ParamGetExtend extends ParamGet {
   Id: number;
 }
+
+export interface AppointmentComplete {
+  dateCheckedIn: string;
+  dateCheckedOut: string;
+  techNote: string;
+  isCorrectPerson: boolean;
+}

@@ -1,5 +1,6 @@
 import {
   Appointment,
+  AppointmentComplete,
   AppointmentData,
   ParamGetExtend,
 } from "@models/appointment";
@@ -59,6 +60,32 @@ const denyAppointment = async (token: string, id: string): Promise<any> => {
   return response.data;
 };
 
+const completeAppointment = async (
+  token: string,
+  id: string,
+  data: AppointmentComplete
+): Promise<any> => {
+  const response = await httpClient.put({
+    url: apiLinks.appointment.complete + `/${id}/Complete`,
+    token: token,
+    data: data,
+  });
+  return response.data;
+};
+
+const failAppointment = async (
+  token: string,
+  id: string,
+  data: string
+): Promise<any> => {
+  const response = await httpClient.put({
+    url: apiLinks.appointment.fail + `/${id}/Fail`,
+    token: token,
+    data: data,
+  });
+  return response.data;
+};
+
 const uploadDocument = async (
   token: string,
   id: string,
@@ -80,6 +107,8 @@ const appointment = {
   getRequestUpgradesById,
   acceptAppointment,
   denyAppointment,
+  completeAppointment,
+  failAppointment,
 };
 
 export default appointment;

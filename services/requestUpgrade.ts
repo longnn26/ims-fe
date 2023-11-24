@@ -1,4 +1,4 @@
-import { AppointmentData } from "@models/appointment";
+import { AppointmentComplete, AppointmentData } from "@models/appointment";
 import { ParamGet } from "@models/base";
 import {
   RequestUpgradeCreateModel,
@@ -96,6 +96,28 @@ const denyRequestUpgrade = async (token: string, id: string): Promise<any> => {
   return response.data;
 };
 
+const completeRequestUpgrade = async (
+  token: string,
+  id: string
+): Promise<any> => {
+  const response = await httpClient.put({
+    url: apiLinks.requestUpgrade.complete + `/${id}/Complete`,
+    token: token,
+  });
+  return response.data;
+};
+
+const rejectRequestUpgrade = async (
+  token: string,
+  id: string
+): Promise<any> => {
+  const response = await httpClient.put({
+    url: apiLinks.requestUpgrade.reject + `/${id}/Reject`,
+    token: token,
+  });
+  return response.data;
+};
+
 const requestUpgrade = {
   getData,
   getAppointmentsById,
@@ -105,6 +127,8 @@ const requestUpgrade = {
   getDetail,
   acceptRequestUpgrade,
   denyRequestUpgrade,
+  completeRequestUpgrade,
+  rejectRequestUpgrade,
 };
 
 export default requestUpgrade;
