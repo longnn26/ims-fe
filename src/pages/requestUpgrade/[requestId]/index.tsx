@@ -10,7 +10,7 @@ import { ServerAllocation } from "@models/serverAllocation";
 import requestUpgradeService from "@services/requestUpgrade";
 import serverAllocationService from "@services/serverAllocation";
 import { getAppointmentData } from "@slices/requestUpgrade";
-import { Button, FloatButton, Pagination, message } from "antd";
+import { Alert, Button, FloatButton, Modal, Pagination, message } from "antd";
 import { ItemType } from "antd/es/breadcrumb/Breadcrumb";
 import { useSession } from "next-auth/react";
 import dynamic from "next/dynamic";
@@ -19,7 +19,7 @@ import React, { useEffect, useState } from "react";
 import { AiOutlineFileDone } from "react-icons/ai";
 import { MdCancel } from "react-icons/md";
 import { CaretLeftOutlined } from "@ant-design/icons";
-
+const { confirm } = Modal;
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
 });
@@ -60,35 +60,59 @@ const RequestDetail: React.FC = () => {
   };
 
   const acceptRequestUpgrade = async () => {
-    await requestUpgradeService
-      .acceptRequestUpgrade(
-        session?.user.access_token!,
-        requestUpgradeDetail?.id + ""
-      )
-      .then((res) => {
-        message.success("Accept request upgrade successful!");
-        getData();
-      })
-      .catch((errors) => {
-        message.error(errors.message);
-      })
-      .finally(() => {});
+    confirm({
+      title: "Accept",
+      content: (
+        <Alert
+          message={`Do you want to accept with Id ${requestUpgradeDetail?.id}?`}
+          type="warning"
+        />
+      ),
+      async onOk() {
+        await requestUpgradeService
+          .acceptRequestUpgrade(
+            session?.user.access_token!,
+            requestUpgradeDetail?.id + ""
+          )
+          .then((res) => {
+            message.success("Accept request upgrade successful!");
+            getData();
+          })
+          .catch((errors) => {
+            message.error(errors.message);
+          })
+          .finally(() => {});
+      },
+      onCancel() {},
+    });
   };
 
   const denyRequestUpgrade = async () => {
-    await requestUpgradeService
-      .denyRequestUpgrade(
-        session?.user.access_token!,
-        requestUpgradeDetail?.id + ""
-      )
-      .then((res) => {
-        message.success("Deny request upgrade successful!");
-        getData();
-      })
-      .catch((errors) => {
-        message.error(errors.message);
-      })
-      .finally(() => {});
+    confirm({
+      title: "Deny",
+      content: (
+        <Alert
+          message={`Do you want to deny with Id ${requestUpgradeDetail?.id}?`}
+          type="warning"
+        />
+      ),
+      async onOk() {
+        await requestUpgradeService
+          .denyRequestUpgrade(
+            session?.user.access_token!,
+            requestUpgradeDetail?.id + ""
+          )
+          .then((res) => {
+            message.success("Deny request upgrade successful!");
+            getData();
+          })
+          .catch((errors) => {
+            message.error(errors.message);
+          })
+          .finally(() => {});
+      },
+      onCancel() {},
+    });
   };
 
   const handleBreadCumb = () => {

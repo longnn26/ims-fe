@@ -12,7 +12,7 @@ import requestUpgradeService from "@services/requestUpgrade";
 import { CaretLeftOutlined, UploadOutlined } from "@ant-design/icons";
 import React, { useEffect, useState } from "react";
 import AppointmentDetail from "@components/appointment/AppointmentDetail";
-import { Button, FloatButton, Pagination, message } from "antd";
+import { Alert, Button, FloatButton, Modal, Pagination, message } from "antd";
 import UploadComponent from "@components/UploadComponent";
 import type { UploadFile } from "antd/es/upload/interface";
 import { getRequestUpgradeData } from "@slices/appointment";
@@ -24,7 +24,7 @@ import {
   RequestUpgradeUpdateModel,
 } from "@models/requestUpgrade";
 import ModalUpdate from "@components/server/requestUpgrade/ModalUpdate";
-
+const { confirm } = Modal;
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
 });
@@ -92,32 +92,59 @@ const Appoinment: React.FC = () => {
   };
 
   const acceptAppointment = async () => {
-    await appointmentService
-      .acceptAppointment(
-        session?.user.access_token!,
-        appointmentDetail?.id + ""
-      )
-      .then((res) => {
-        message.success("Accept appointment successful!");
-        getData();
-      })
-      .catch((errors) => {
-        message.error(errors.message);
-      })
-      .finally(() => {});
+    confirm({
+      title: "Accept",
+      content: (
+        <Alert
+          message={`Do you want to accept with Id ${appointmentDetail?.id}?`}
+          type="warning"
+        />
+      ),
+      async onOk() {
+        await appointmentService
+          .acceptAppointment(
+            session?.user.access_token!,
+            appointmentDetail?.id + ""
+          )
+          .then((res) => {
+            message.success("Accept appointment successful!");
+            getData();
+          })
+          .catch((errors) => {
+            message.error(errors.message);
+          })
+          .finally(() => {});
+      },
+      onCancel() {},
+    });
   };
 
   const denyAppointment = async () => {
-    await appointmentService
-      .denyAppointment(session?.user.access_token!, appointmentDetail?.id + "")
-      .then((res) => {
-        message.success("Deny appointment successful!");
-        getData();
-      })
-      .catch((errors) => {
-        message.error(errors.message);
-      })
-      .finally(() => {});
+    confirm({
+      title: "Deny",
+      content: (
+        <Alert
+          message={`Do you want to deny with Id ${appointmentDetail?.id}?`}
+          type="warning"
+        />
+      ),
+      async onOk() {
+        await appointmentService
+          .denyAppointment(
+            session?.user.access_token!,
+            appointmentDetail?.id + ""
+          )
+          .then((res) => {
+            message.success("Deny appointment successful!");
+            getData();
+          })
+          .catch((errors) => {
+            message.error(errors.message);
+          })
+          .finally(() => {});
+      },
+      onCancel() {},
+    });
   };
 
   const handleBreadCumb = () => {
