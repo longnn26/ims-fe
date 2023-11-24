@@ -271,7 +271,7 @@ const RequestDetail: React.FC = () => {
             </FloatButton.Group>
           )}
 
-          {Boolean(requestUpgradeDetail?.status === "Accepted") && (
+          {Boolean(requestUpgradeDetail?.status === "Accepted" && requestUpgradeDetail?.succeededAppointment?.status === "Success") && (
             <FloatButton.Group
               trigger="hover"
               type="primary"

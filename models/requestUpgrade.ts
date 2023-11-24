@@ -1,3 +1,4 @@
+import { Appointment } from "./appointment";
 import { BaseWithIdNumber, PagingModel, ParamGet } from "./base";
 import { ComponentObj } from "./component";
 
@@ -8,6 +9,7 @@ export interface RequestUpgrade extends BaseWithIdNumber {
   componentId: number;
   component: ComponentObj;
   serverAllocationId: number;
+  succeededAppointment: Appointment;
 }
 
 export interface RUParamGet extends ParamGet {

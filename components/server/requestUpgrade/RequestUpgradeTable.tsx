@@ -73,7 +73,7 @@ const RequestUpgradeTable: React.FC<Props> = (props) => {
         <p>{`${record.component?.name} - ${record.component?.unit} - ${record.component?.type}`}</p>
       ),
     },
-    { title: "Description", dataIndex: "description", key: "description" },
+    { title: "Information", dataIndex: "information", key: "information" },
     { title: "Capacity", dataIndex: "capacity", key: "capacity" },
     {
       title: "Status",

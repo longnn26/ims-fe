@@ -10,12 +10,15 @@ import { ServerAllocation } from "@models/serverAllocation";
 import requestUpgradeService from "@services/requestUpgrade";
 import serverAllocationService from "@services/serverAllocation";
 import { getAppointmentData } from "@slices/requestUpgrade";
-import { Pagination } from "antd";
+import { Alert, FloatButton, Modal, Pagination, message } from "antd";
 import { ItemType } from "antd/es/breadcrumb/Breadcrumb";
 import { useSession } from "next-auth/react";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
+import { AiOutlineFileDone } from "react-icons/ai";
+import { MdCancel } from "react-icons/md";
+const { confirm } = Modal;
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
 });
@@ -56,6 +59,62 @@ const RequestUpgradeDetail: React.FC = () => {
       .then((res) => {
         setRequestUpgradeDetail(res);
       });
+  };
+
+  const rejectRequestUpgrade = async () => {
+    confirm({
+      title: "Reject",
+      content: (
+        <Alert
+          message={`Do you want to reject with Id ${requestUpgradeDetail?.id}?`}
+          type="warning"
+        />
+      ),
+      async onOk() {
+        await requestUpgradeService
+          .rejectRequestUpgrade(
+            session?.user.access_token!,
+            requestUpgradeDetail?.id + ""
+          )
+          .then((res) => {
+            message.success("Reject request upgrade successful!");
+            getData();
+          })
+          .catch((errors) => {
+            message.error(errors.message);
+          })
+          .finally(() => {});
+      },
+      onCancel() {},
+    });
+  };
+
+  const completeRequestUpgrade = async () => {
+    confirm({
+      title: "Complete",
+      content: (
+        <Alert
+          message={`Do you want to complete with Id ${requestUpgradeDetail?.id}?`}
+          type="warning"
+        />
+      ),
+      async onOk() {
+        await requestUpgradeService
+          .completeRequestUpgrade(
+            session?.user.access_token!,
+            requestUpgradeDetail?.id + ""
+          )
+          .then((res) => {
+            message.success("Complete request upgrade successful!");
+            getData();
+          })
+          .catch((errors) => {
+            message.error(errors.message);
+          })
+          .finally(() => {});
+      },
+      onCancel() {},
+    });
   };
 
   const handleBreadCumb = () => {
@@ -130,6 +189,25 @@ const RequestUpgradeDetail: React.FC = () => {
                 });
               }}
             />
+          )}
+          {Boolean(requestUpgradeDetail?.status === "Accepted") && (
+            <FloatButton.Group
+              trigger="hover"
+              type="primary"
+              style={{ right: 60, bottom: 500 }}
+              icon={<AiOutlineFileDone />}
+            >
+              <FloatButton
+                icon={<MdCancel color="red" />}
+                tooltip="Fail"
+                onClick={() => rejectRequestUpgrade()}
+              />
+              <FloatButton
+                onClick={() => completeRequestUpgrade()}
+                icon={<AiOutlineFileDone color="green" />}
+                tooltip="Complete"
+              />
+            </FloatButton.Group>
           )}
         </>
       }
