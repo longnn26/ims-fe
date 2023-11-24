@@ -22,20 +22,20 @@ const ServerDetail: React.FC<Props> = (props) => {
         <Descriptions.Item label="Id">
           {serverAllocationDetail?.id}
         </Descriptions.Item>
-        <Descriptions.Item label="Server Name">
-          {serverAllocationDetail?.name}
-        </Descriptions.Item>
         <Descriptions.Item label="Status">
           <Tag color={statusData?.color}>{statusData?.value}</Tag>
         </Descriptions.Item>
         <Descriptions.Item label="Power">
           {serverAllocationDetail?.power}
         </Descriptions.Item>
-        <Descriptions.Item label="Serial Number">
+        <Descriptions.Item label="Serial Number" span={4}>
           {serverAllocationDetail?.serialNumber}
         </Descriptions.Item>
-        <Descriptions.Item label="Customer">
-          {/* {serverAllocationDetail?.} */}
+        <Descriptions.Item label="Server Name" span={4}>
+          {serverAllocationDetail?.name}
+        </Descriptions.Item>
+        <Descriptions.Item label="Customer" span={4}>
+          {serverAllocationDetail?.customer.customerName}
         </Descriptions.Item>
         <Descriptions.Item label="Note" span={4}>
           {serverAllocationDetail?.note}

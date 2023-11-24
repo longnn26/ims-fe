@@ -1,4 +1,5 @@
 import { BaseWithIdNumber, PagingModel } from "./base";
+import { Customer } from "./customer";
 
 export interface ServerAllocation extends BaseWithIdNumber {
   status: string;
@@ -7,6 +8,7 @@ export interface ServerAllocation extends BaseWithIdNumber {
   serialNumber: string;
   note: string;
   customerId: number;
+  customer: Customer;
 }
 
 export interface ServerAllocationData extends PagingModel {
