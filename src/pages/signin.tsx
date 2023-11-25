@@ -45,15 +45,15 @@ const Signin: React.FC<Props> = (props) => {
         <div>
           <img
             className="absolute left-0 top-[24rem] h-auto w-full"
-            src="https://www.qtsc.com.vn/uploads/files/2022/08/01/QTSC-map-2022.png"
+            src="/images/background.png"
             alt=""
           />
         </div>
         <div className="m-auto max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow-2xl relative">
           <div className="flex justify-center">
             <img
-              src="https://telecom.qtsc.com.vn/Common/img/QTSClogo.png"
-              className="h-12 mr-3"
+              src="/images/logo.jpeg"
+              className="h-20 mr-3"
               alt="Logo"
             />
           </div>

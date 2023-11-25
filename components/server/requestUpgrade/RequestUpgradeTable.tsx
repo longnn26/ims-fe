@@ -1,15 +1,20 @@
 "use client";
 
 import useSelector from "@hooks/use-selector";
-import { dateAdvFormat } from "@utils/constants";
-import { Divider, TableColumnsType } from "antd";
+import { dateAdvFormat, requestUpgradeStatus } from "@utils/constants";
+import { Divider, TableColumnsType, Tag } from "antd";
 import { Button, Space, Table, Tooltip } from "antd";
-import { BiEdit } from "react-icons/bi";
+import { BiEdit, BiSolidCommentDetail } from "react-icons/bi";
 import { AiFillDelete } from "react-icons/ai";
 import moment from "moment";
 import { RequestUpgrade } from "@models/requestUpgrade";
+import { useRouter } from "next/router";
+import { ComponentObj } from "@models/component";
 
 interface Props {
+  typeGet?: string;
+  serverAllocationId?: string;
+  urlOncell?: string;
   onEdit: (data: RequestUpgrade) => void;
   onDelete: (data: RequestUpgrade) => void;
 }
@@ -17,28 +22,74 @@ interface Props {
 interface DataType {
   key: React.Key;
   id: number;
-  description: string;
+  information: string;
+  status: string;
   capacity: number;
   serverAllocationId: number;
   componentId: number;
+  component: ComponentObj;
   dateCreated: string;
   dateUpdated: string;
 }
 
 const RequestUpgradeTable: React.FC<Props> = (props) => {
-  const { onEdit, onDelete } = props;
+  const { onEdit, onDelete, urlOncell, typeGet } = props;
+  const router = useRouter();
   const { requestUpgradeDataLoading, requestUpgradeData } = useSelector(
     (state) => state.requestUpgrade
   );
+  const { requestUpgradeData: rUDataOfAppointment } = useSelector(
+    (state) => state.appointment
+  );
+
+  var listData =
+    typeGet == "All"
+      ? requestUpgradeData
+      : typeGet == "ByAppointmentId"
+      ? rUDataOfAppointment
+      : requestUpgradeData;
 
   const columns: TableColumnsType<DataType> = [
     {
       title: "Id",
       dataIndex: "id",
       key: "id",
+      fixed: "left",
+      render: (text) => (
+        <p className="text-[#b75c3c] hover:text-[#ee4623]">{text}</p>
+      ),
+      // onCell: (record, rowIndex) => {
+      //   return {
+      //     onClick: (ev) => {
+      //       router.push(`${urlOncell}/requestUpgrade/${record.id}`);
+      //     },
+      //   };
+      // },
     },
-    { title: "Description", dataIndex: "description", key: "description" },
+    {
+      title: "Component",
+      key: "component",
+      render: (record: RequestUpgrade) => (
+        <p>{`${record.component?.name} - ${record.component?.unit} - ${record.component?.type}`}</p>
+      ),
+    },
+    { title: "Information", dataIndex: "information", key: "information" },
     { title: "Capacity", dataIndex: "capacity", key: "capacity" },
+    {
+      title: "Status",
+      // dataIndex: "status",
+      key: "status",
+      render: (record: RequestUpgrade) => {
+        var statusData = requestUpgradeStatus.find(
+          (_) => _.value === record.status
+        );
+        return (
+          <Tag className=" w-2/3 text-center" color={statusData?.color}>
+            {statusData?.value}
+          </Tag>
+        );
+      },
+    },
     { title: "Date Created", dataIndex: "dateCreated", key: "dateCreated" },
     { title: "Date Updated", dataIndex: "dateUpdated", key: "dateUpdated" },
     {
@@ -46,6 +97,15 @@ const RequestUpgradeTable: React.FC<Props> = (props) => {
       key: "operation",
       render: (record: RequestUpgrade) => (
         <Space wrap>
+          <Tooltip title="View detail" color={"black"}>
+            <Button
+              onClick={() =>
+                router.push(`${urlOncell}/requestUpgrade/${record.id}`)
+              }
+            >
+              <BiSolidCommentDetail />
+            </Button>
+          </Tooltip>
           <Tooltip title="Edit" color={"black"}>
             <Button onClick={() => onEdit(record)}>
               <BiEdit />
@@ -62,25 +122,23 @@ const RequestUpgradeTable: React.FC<Props> = (props) => {
   ];
 
   const data: DataType[] = [];
-  for (let i = 0; i < requestUpgradeData?.data?.length; ++i) {
+  for (let i = 0; i < listData?.data?.length; ++i) {
     data.push({
-      key: requestUpgradeData?.data[i].id,
-      id: requestUpgradeData?.data[i].id,
-      description: requestUpgradeData?.data[i].description,
-      capacity: requestUpgradeData?.data[i].capacity,
-      serverAllocationId: requestUpgradeData?.data[i].serverAllocationId,
-      componentId: requestUpgradeData?.data[i].componentId,
-      dateCreated: moment(requestUpgradeData?.data[i].dateCreated).format(
-        dateAdvFormat
-      ),
-      dateUpdated: moment(requestUpgradeData?.data[i].dateUpdated).format(
-        dateAdvFormat
-      ),
+      key: listData?.data[i].id,
+      id: listData?.data[i].id,
+      information: listData?.data[i].information,
+      component: listData?.data[i].component,
+      capacity: listData?.data[i].capacity,
+      serverAllocationId: listData?.data[i].serverAllocationId,
+      componentId: listData?.data[i].componentId,
+      status: listData?.data[i].status,
+      dateCreated: moment(listData?.data[i].dateCreated).format(dateAdvFormat),
+      dateUpdated: moment(listData?.data[i].dateUpdated).format(dateAdvFormat),
     });
   }
 
   return (
-    <>
+    <div className="shadow m-5">
       <Divider orientation="left" plain>
         <h3>Request Upgrade</h3>
       </Divider>
@@ -90,9 +148,9 @@ const RequestUpgradeTable: React.FC<Props> = (props) => {
         dataSource={data}
         scroll={{ x: 1300 }}
         pagination={false}
-        className="cursor-pointer"
+        // className="cursor-pointer"
       />
-    </>
+    </div>
   );
 };
 

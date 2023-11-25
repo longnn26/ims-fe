@@ -1,15 +1,17 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import componentService from "@services/component";
 import { ParamGet } from "@models/base";
-import { ComponentData } from "@models/component";
+import { ComponentData, ComponentObj } from "@models/component";
 
 interface State {
   componentData: ComponentData;
+  componentOptions: ComponentObj[];
   componentDataLoading: boolean;
 }
 
 const initialState: State = {
   componentData: {} as ComponentData,
+  componentOptions: [],
   componentDataLoading: false,
 };
 
@@ -22,6 +24,14 @@ const getComponentData = createAsyncThunk(
       arg.token,
       arg.paramGet
     );
+    return result;
+  }
+);
+
+const getComponentAll = createAsyncThunk(
+  `${TYPE_PREFIX}/getAll`,
+  async (arg: { token: string }) => {
+    const result = await componentService.getComponentAll(arg.token);
     return result;
   }
 );
@@ -44,9 +54,20 @@ const slice = createSlice({
       ...state,
       componentDataLoading: false,
     }));
+
+    builder.addCase(getComponentAll.pending, (state) => ({
+      ...state,
+    }));
+    builder.addCase(getComponentAll.fulfilled, (state, { payload }) => ({
+      ...state,
+      componentOptions: payload,
+    }));
+    builder.addCase(getComponentAll.rejected, (state) => ({
+      ...state,
+    }));
   },
 });
 
-export { getComponentData };
+export { getComponentData, getComponentAll };
 
 export default slice.reducer;

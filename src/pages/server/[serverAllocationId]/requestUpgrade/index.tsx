@@ -36,11 +36,10 @@ import ModalUpdate from "@components/server/requestUpgrade/ModalUpdate";
 import RequestUpgradeTable from "@components/server/requestUpgrade/RequestUpgradeTable";
 import { ItemType } from "antd/es/breadcrumb/Breadcrumb";
 import BreadcrumbComponent from "@components/BreadcrumbComponent";
+import ServerDetail from "@components/server/ServerDetail";
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
 });
-var itemDetails: DescriptionsProps["items"] = [];
-var itemBreadcrumbs: ItemType[] = [];
 const { confirm } = Modal;
 const RequestUpgrade: React.FC = () => {
   const dispatch = useDispatch();
@@ -60,6 +59,9 @@ const RequestUpgrade: React.FC = () => {
   const [openModalCreate, setOpenModalCreate] = useState<boolean>(false);
   const [serverAllocationDetail, setServerAllocationDetail] =
     useState<ServerAllocation>();
+
+  const [itemBreadcrumbs, setItemBreadcrumbs] = useState<ItemType[]>([]);
+
   const getData = async () => {
     await serverAllocationService
       .getServerAllocationById(
@@ -67,42 +69,7 @@ const RequestUpgrade: React.FC = () => {
         router.query.serverAllocationId + ""
       )
       .then((res) => {
-        itemDetails = [];
-        itemDetails?.push({
-          key: "1",
-          label: "Id",
-          children: res.id,
-        });
-        itemDetails?.push({
-          key: "2",
-          label: "Note",
-          children: res.note,
-        });
-        itemDetails?.push({
-          key: "3",
-          label: "ExpectedSize",
-          children: res.expectedSize,
-        });
-        itemDetails?.push({
-          key: "4",
-          label: "Status",
-          children: res.status,
-        });
-        itemDetails?.push({
-          key: "5",
-          label: "InspectorNote",
-          children: res.inspectorNote,
-        });
-        itemDetails?.push({
-          key: "6",
-          label: "Date created",
-          children: moment(res.dateCreated).format(dateAdvFormat),
-        });
-        itemDetails?.push({
-          key: "7",
-          label: "Date updated",
-          children: moment(res.dateUpdated).format(dateAdvFormat),
-        });
+        setServerAllocationDetail(res);
       });
     dispatch(
       getRequestUpgradeData({
@@ -175,16 +142,17 @@ const RequestUpgrade: React.FC = () => {
   };
 
   const handleBreadCumb = () => {
-    itemBreadcrumbs = [];
+    var itemBrs = [] as ItemType[];
     var items = router.asPath.split("/").filter((_) => _ != "");
     var path = "";
     items.forEach((element) => {
       path += `/${element}`;
-      itemBreadcrumbs.push({
+      itemBrs.push({
         href: path,
         title: element,
       });
     });
+    setItemBreadcrumbs(itemBrs);
   };
 
   useEffect(() => {
@@ -239,11 +207,12 @@ const RequestUpgrade: React.FC = () => {
               createData(data);
             }}
           />
-          <Divider orientation="left" plain>
-            <h3>Server </h3>
-          </Divider>{" "}
-          <Descriptions className="p-5" items={itemDetails} />
+          <ServerDetail
+            serverAllocationDetail={serverAllocationDetail!}
+          ></ServerDetail>
           <RequestUpgradeTable
+            urlOncell={`/server/${serverAllocationDetail?.id}`}
+            serverAllocationId={serverAllocationDetail?.id.toString()}
             onEdit={(record) => {
               setRequestUpgradeUpdate(record);
             }}

@@ -24,6 +24,7 @@ const apiLinks = {
 
   component: {
     get: `${url}/api/Component`,
+    getAll: `${url}/api/Component/All`,
     create: `${url}/api/Component`,
     update: `${url}/api/Component`,
     delete: `${url}/api/Component`,
@@ -38,9 +39,15 @@ const apiLinks = {
 
   requestUpgrade: {
     get: `${url}/api/RequestUpgrade`,
+    getById: `${url}/api/RequestUpgrade`,
+    getAppointmentsById: `${url}/api/RequestUpgrade`,
     create: `${url}/api/RequestUpgrade`,
     update: `${url}/api/RequestUpgrade`,
     delete: `${url}/api/RequestUpgrade`,
+    accept: `${url}/api/RequestUpgrade`,
+    deny: `${url}/api/RequestUpgrade`,
+    complete: `${url}/api/RequestUpgrade`,
+    reject: `${url}/api/RequestUpgrade`,
   },
 
   area: {
@@ -56,6 +63,21 @@ const apiLinks = {
     create: `${url}/api/Rack`,
     update: `${url}/api/Rack`,
     delete: `${url}/api/Rack`,
+  },
+
+  companyType: {
+    get: `${url}/api/CompanyType`,
+  },
+
+  appointment: {
+    get: `${url}/api/Appointment`,
+    getById: `${url}/api/Appointment`,
+    getRequestUpgradesById: `${url}/api/Appointment`,
+    upload: `${url}/api/Appointment`,
+    accept: `${url}/api/Appointment`,
+    deny: `${url}/api/Appointment`,
+    complete: `${url}/api/Appointment`,
+    fail: `${url}/api/Appointment`,
   },
 };
 

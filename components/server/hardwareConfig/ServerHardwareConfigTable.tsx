@@ -8,6 +8,7 @@ import { BiEdit } from "react-icons/bi";
 import { AiFillDelete } from "react-icons/ai";
 import moment from "moment";
 import { ServerHardwareConfig } from "@models/serverHardwareConfig";
+import { ComponentObj } from "@models/component";
 
 interface Props {
   onEdit: (data: ServerHardwareConfig) => void;
@@ -17,10 +18,11 @@ interface Props {
 interface DataType {
   key: React.Key;
   id: number;
-  description: string;
+  information: string;
   capacity: number;
   serverAllocationId: number;
   componentId: number;
+  component: ComponentObj;
   dateCreated: string;
   dateUpdated: string;
 }
@@ -35,8 +37,16 @@ const ServerHardwareConfigTable: React.FC<Props> = (props) => {
       title: "Id",
       dataIndex: "id",
       key: "id",
+      fixed: "left",
     },
-    { title: "Description", dataIndex: "description", key: "description" },
+    // { title: "Description", dataIndex: "description", key: "description" },
+    {
+      title: "Component",
+      key: "component",
+      render: (record: ServerHardwareConfig) => (
+        <p>{`${record.component?.name} - ${record.component?.unit} - ${record.component?.type}`}</p>
+      ),
+    },
     { title: "Capacity", dataIndex: "capacity", key: "capacity" },
     { title: "Date Created", dataIndex: "dateCreated", key: "dateCreated" },
     { title: "Date Updated", dataIndex: "dateUpdated", key: "dateUpdated" },
@@ -65,10 +75,11 @@ const ServerHardwareConfigTable: React.FC<Props> = (props) => {
     data.push({
       key: serverHardwareConfigData?.data[i].id,
       id: serverHardwareConfigData?.data[i].id,
-      description: serverHardwareConfigData?.data[i].description,
+      information: serverHardwareConfigData?.data[i].information,
       capacity: serverHardwareConfigData?.data[i].capacity,
       serverAllocationId: serverHardwareConfigData?.data[i].serverAllocationId,
       componentId: serverHardwareConfigData?.data[i].componentId,
+      component: serverHardwareConfigData?.data[i].component,
       dateCreated: moment(serverHardwareConfigData?.data[i].dateCreated).format(
         dateAdvFormat
       ),
@@ -79,7 +90,7 @@ const ServerHardwareConfigTable: React.FC<Props> = (props) => {
   }
 
   return (
-    <>
+    <div className="shadow m-5">
       <Divider orientation="left" plain>
         <h3>Hardware Config</h3>
       </Divider>
@@ -91,7 +102,7 @@ const ServerHardwareConfigTable: React.FC<Props> = (props) => {
         pagination={false}
         className="cursor-pointer"
       />
-    </>
+    </div>
   );
 };
 

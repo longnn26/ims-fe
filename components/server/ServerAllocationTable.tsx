@@ -1,11 +1,12 @@
 "use client";
 
 import useSelector from "@hooks/use-selector";
-import { dateAdvFormat } from "@utils/constants";
-import { TableColumnsType } from "antd";
+import { dateAdvFormat, serverAllocationStatus } from "@utils/constants";
+import { TableColumnsType, Tag } from "antd";
 import { Button, Space, Table, Tooltip } from "antd";
 import { BiEdit } from "react-icons/bi";
 import { AiFillDelete } from "react-icons/ai";
+import { BiSolidCommentDetail } from "react-icons/bi";
 import moment from "moment";
 import { ServerAllocation } from "@models/serverAllocation";
 import { useRouter } from "next/router";
@@ -18,12 +19,13 @@ interface Props {
 interface DataType {
   key: React.Key;
   id: number;
-  expectedSize: number;
+  status: string;
+  power: number;
+  name: string;
+  serialNumber: string;
   note: string;
-  inspectorNote: string;
   dateCreated: string;
   dateUpdated: string;
-  status: string;
 }
 
 const ServerAllocationTable: React.FC<Props> = (props) => {
@@ -40,31 +42,37 @@ const ServerAllocationTable: React.FC<Props> = (props) => {
       key: "id",
       fixed: "left",
       render: (text) => (
-        <a className="text-[#b75c3c] hover:text-[#ee4623]">{text}</a>
+        <p className="text-[#b75c3c] hover:text-[#ee4623]">{text}</p>
       ),
-      onCell: (record, rowIndex) => {
-        return {
-          onClick: (ev) => {
-            router.push(`/server/${record.id}`);
-          },
-        };
+    },
+    {
+      title: "Status",
+      // dataIndex: "status",
+      key: "status",
+      render: (record: ServerAllocation) => {
+        var statusData = serverAllocationStatus.find(
+          (_) => _.value === record.status
+        );
+        return <Tag color={statusData?.color}>{statusData?.value}</Tag>;
       },
     },
-    { title: "Expected Size", dataIndex: "expectedSize", key: "expectedSize" },
-    { title: "Note", dataIndex: "note", key: "note" },
-    {
-      title: "Inspector Note",
-      dataIndex: "inspectorNote",
-      key: "inspectorNote",
-    },
-    { title: "Date Created", dataIndex: "dateCreated", key: "dateCreated" },
-    { title: "Date Updated", dataIndex: "dateUpdated", key: "dateUpdated" },
-    { title: "Status", dataIndex: "status", key: "status" },
+    { title: "Power", dataIndex: "power", key: "power" },
+    { title: "Name", dataIndex: "name", key: "name" },
+    { title: "Serial Number", dataIndex: "serialNumber", key: "serialNumber" },
+    // { title: "Note", dataIndex: "note", key: "note" },
+    // { title: "Date Created", dataIndex: "dateCreated", key: "dateCreated" },
+    // { title: "Date Updated", dataIndex: "dateUpdated", key: "dateUpdated" },
+
     {
       title: "Action",
       key: "operation",
       render: (record: ServerAllocation) => (
         <Space wrap>
+          <Tooltip title="View detail" color={"black"}>
+            <Button onClick={() => router.push(`/server/${record.id}`)}>
+              <BiSolidCommentDetail />
+            </Button>
+          </Tooltip>
           <Tooltip title="Edit" color={"black"}>
             <Button onClick={() => onEdit(record)}>
               <BiEdit />
@@ -85,10 +93,11 @@ const ServerAllocationTable: React.FC<Props> = (props) => {
     data.push({
       key: serverAllocationData?.data[i].id,
       id: serverAllocationData?.data[i].id,
-      note: serverAllocationData?.data[i].note,
-      expectedSize: serverAllocationData?.data[i].expectedSize,
-      inspectorNote: serverAllocationData?.data[i].inspectorNote,
       status: serverAllocationData?.data[i].status,
+      power: serverAllocationData?.data[i].power,
+      name: serverAllocationData?.data[i].name,
+      serialNumber: serverAllocationData?.data[i].serialNumber,
+      note: serverAllocationData?.data[i].note,
       dateCreated: moment(serverAllocationData?.data[i].dateCreated).format(
         dateAdvFormat
       ),
@@ -99,7 +108,7 @@ const ServerAllocationTable: React.FC<Props> = (props) => {
   }
 
   return (
-    <>
+    <div className="shadow m-5">
       <Table
         loading={serverAllocationDataLoading}
         columns={columns}
@@ -107,7 +116,7 @@ const ServerAllocationTable: React.FC<Props> = (props) => {
         scroll={{ x: 1300 }}
         pagination={false}
       />
-    </>
+    </div>
   );
 };
 

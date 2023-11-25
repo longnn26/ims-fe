@@ -1,10 +1,12 @@
 import { BaseWithIdNumber, PagingModel, ParamGet } from "./base";
+import { ComponentObj } from "./component";
 
 export interface ServerHardwareConfig extends BaseWithIdNumber {
-  description: string;
+  information: string;
   capacity: number;
   serverAllocationId: number;
   componentId: number;
+  component: ComponentObj;
 }
 
 export interface SHCParamGet extends ParamGet {
@@ -16,14 +18,14 @@ export interface ServerHardwareConfigData extends PagingModel {
 }
 
 export interface SHCCreateModel {
-  description: string;
+  information: string;
   capacity: number;
   serverAllocationId: number;
   componentId: number;
 }
 export interface SHCUpdateModel {
   id: number;
-  description: string;
+  information: string;
   capacity: number;
   componentId: number;
   serverAllocationId: number;

@@ -1,7 +1,9 @@
 import React, { useRef, useState } from "react";
-import { Button, Input, Modal } from "antd";
+import { Button, Input, Modal, Select } from "antd";
 import { Form } from "antd";
 import { RequestUpgradeCreateModel } from "@models/requestUpgrade";
+import useSelector from "@hooks/use-selector";
+const { Option } = Select;
 const { confirm } = Modal;
 
 interface Props {
@@ -17,6 +19,7 @@ const ModalCreate: React.FC<Props> = (props) => {
   const { onSubmit, open, onClose } = props;
 
   const [confirmLoading, setConfirmLoading] = useState(false);
+  const { componentOptions } = useSelector((state) => state.component);
 
   const disabled = async () => {
     var result = false;
@@ -51,9 +54,9 @@ const ModalCreate: React.FC<Props> = (props) => {
                   title: "Do you want to save?",
                   async onOk() {
                     onSubmit({
-                      description: form.getFieldValue("description"),
+                      information: form.getFieldValue("information"),
                       capacity: form.getFieldValue("capacity"),
-                      componentId: form.getFieldValue("componentId"),
+                      componentId: form.getFieldValue("component").value,
                     } as RequestUpgradeCreateModel);
                     form.resetFields();
                   },
@@ -74,25 +77,47 @@ const ModalCreate: React.FC<Props> = (props) => {
             style={{ width: "100%" }}
           >
             <Form.Item
-              name="description"
-              label="Description"
-              // rules={[{ required: true }]}
+              name="information"
+              label="Information"
+              rules={[{ required: true }]}
             >
-              <Input placeholder="Description" allowClear />
+              <Input placeholder="Information" allowClear />
             </Form.Item>
             <Form.Item
               name="capacity"
               label="Capacity"
-              rules={[{ required: true }]}
+              rules={[
+                { required: true },
+                {
+                  pattern: new RegExp(/^[0-9]+$/),
+                  message: "Capacity must be a number greater than 0",
+                },
+              ]}
             >
               <Input placeholder="Capacity" allowClear />
             </Form.Item>
             <Form.Item
-              name="componentId"
-              label="Component Id"
+              name="component"
+              label="Component"
               rules={[{ required: true }]}
             >
-              <Input placeholder="Component Id" allowClear />
+              <Select
+                allowClear
+                onSelect={(value, option) => {
+                  form.setFieldsValue({
+                    component: {
+                      value: value,
+                      label: option.label,
+                    },
+                  });
+                }}
+              >
+                {componentOptions.map((l, index) => (
+                  <Option value={l.id} label={l?.name} key={index}>
+                    {`${l.name} - ${l.unit} - ${l.type}`}
+                  </Option>
+                ))}
+              </Select>
             </Form.Item>
           </Form>
         </div>

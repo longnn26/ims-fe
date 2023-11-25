@@ -5,7 +5,8 @@ import {
   SHCUpdateModel,
   ServerHardwareConfig,
 } from "@models/serverHardwareConfig";
-import { optionStatus } from "@utils/constants";
+import useSelector from "@hooks/use-selector";
+const { Option } = Select;
 const { confirm } = Modal;
 
 interface Props {
@@ -20,6 +21,7 @@ const ModalUpdate: React.FC<Props> = (props) => {
   const { onSubmit, serverHardwareConfig, onClose } = props;
 
   const [confirmLoading, setConfirmLoading] = useState(false);
+  const { componentOptions } = useSelector((state) => state.component);
 
   const disabled = async () => {
     var result = false;
@@ -32,12 +34,20 @@ const ModalUpdate: React.FC<Props> = (props) => {
   };
 
   const setFieldsValueInitial = () => {
+    var component = componentOptions.find(
+      (_) => _.id === serverHardwareConfig.componentId
+    );
     if (formRef.current)
       form.setFieldsValue({
         id: serverHardwareConfig.id,
-        description: serverHardwareConfig.description,
+        information: serverHardwareConfig.information,
         capacity: serverHardwareConfig.capacity,
-        componentId: serverHardwareConfig.componentId,
+        component: component
+          ? {
+              value: component?.id!,
+              label: component.name!,
+            }
+          : undefined,
         serverAllocationId: serverHardwareConfig.serverAllocationId,
       });
   };
@@ -73,10 +83,12 @@ const ModalUpdate: React.FC<Props> = (props) => {
                   async onOk() {
                     onSubmit({
                       id: form.getFieldValue("id"),
-                      componentId: form.getFieldValue("componentId"),
+                      componentId:
+                        form.getFieldValue("component").value ||
+                        form.getFieldValue("component"),
                       serverAllocationId:
                         form.getFieldValue("serverAllocationId"),
-                      description: form.getFieldValue("description"),
+                      information: form.getFieldValue("information"),
                       capacity: form.getFieldValue("capacity"),
                     } as SHCUpdateModel);
                     form.resetFields();
@@ -98,18 +110,37 @@ const ModalUpdate: React.FC<Props> = (props) => {
             style={{ width: "100%" }}
           >
             <Form.Item
-              name="description"
-              label="Description"
-              // rules={[{ required: true }]}
+              name="information"
+              label="Information"
+              rules={[{ required: true }]}
             >
-              <Input placeholder="Description" allowClear />
+              <Input placeholder="information" allowClear />
             </Form.Item>
             <Form.Item
               name="capacity"
               label="Capacity"
-              rules={[{ required: true }]}
+              rules={[
+                { required: true },
+                {
+                  pattern: new RegExp(/^[0-9]+$/),
+                  message: "Capacity must be a number greater than 0",
+                },
+              ]}
             >
               <Input placeholder="Capacity" allowClear />
+            </Form.Item>
+            <Form.Item
+              name="component"
+              label="Component"
+              rules={[{ required: true }]}
+            >
+              <Select allowClear>
+                {componentOptions.map((l, index) => (
+                  <Option value={l.id} label={l?.name} key={index}>
+                    {`${l.name} - ${l.unit} - ${l.type}`}
+                  </Option>
+                ))}
+              </Select>
             </Form.Item>
           </Form>
         </div>

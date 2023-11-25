@@ -1,11 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Button, Input, Modal, Select } from "antd";
 import { Form } from "antd";
-import {
-  SAUpdateModel,
-  ServerAllocation,
-} from "@models/serverAllocation";
-import { optionStatus } from "@utils/constants";
+import { SAUpdateModel, ServerAllocation } from "@models/serverAllocation";
+import { optionStatus, serverAllocationStatus } from "@utils/constants";
 const { confirm } = Modal;
 
 interface Props {
@@ -35,9 +32,9 @@ const ModalUpdate: React.FC<Props> = (props) => {
     if (formRef.current)
       form.setFieldsValue({
         id: serverAllocation.id,
-        expectedSize: serverAllocation.expectedSize,
+        name: serverAllocation.name,
+        power: serverAllocation.power,
         note: serverAllocation.note,
-        inspectorNote: serverAllocation.inspectorNote,
         status: serverAllocation?.status
           ? {
               value: serverAllocation?.status,
@@ -52,7 +49,7 @@ const ModalUpdate: React.FC<Props> = (props) => {
     if (serverAllocation) {
       setFieldsValueInitial();
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [serverAllocation]);
 
   return (
@@ -78,10 +75,9 @@ const ModalUpdate: React.FC<Props> = (props) => {
                   async onOk() {
                     onSubmit({
                       id: form.getFieldValue("id"),
-                      status: form.getFieldValue("status").value,
-                      expectedSize: form.getFieldValue("expectedSize"),
+                      name: form.getFieldValue("name"),
+                      power: form.getFieldValue("power"),
                       note: form.getFieldValue("note"),
-                      inspectorNote: form.getFieldValue("inspectorNote"),
                     } as SAUpdateModel);
                     form.resetFields();
                   },
@@ -102,17 +98,29 @@ const ModalUpdate: React.FC<Props> = (props) => {
             style={{ width: "100%" }}
           >
             <Form.Item
-              name="expectedSize"
-              label="Expected Size"
+              name="name"
+              label="Server Name"
               rules={[{ required: true }]}
             >
-              <Input placeholder="Expected Size" allowClear />
+              <Input placeholder="Server Name" allowClear />
+            </Form.Item>
+            <Form.Item
+              name="power"
+              label="Power"
+              rules={[
+                {
+                  required: true,
+                },
+                {
+                  pattern: new RegExp(/^[0-9]+$/),
+                  message: "Power must be a number",
+                },
+              ]}
+            >
+              <Input placeholder="Power" allowClear />
             </Form.Item>
             <Form.Item name="note" label="Note">
               <Input placeholder="Note" allowClear />
-            </Form.Item>
-            <Form.Item name="inspectorNote" label="Inspector Note">
-              <Input placeholder="Inspector Note" allowClear />
             </Form.Item>
             <Form.Item
               name="status"
@@ -120,7 +128,7 @@ const ModalUpdate: React.FC<Props> = (props) => {
               labelAlign="right"
               rules={[{ required: true, message: "Status not empty" }]}
             >
-              <Select labelInValue allowClear options={optionStatus} />
+              <Select labelInValue allowClear options={serverAllocationStatus} />
             </Form.Item>
           </Form>
         </div>

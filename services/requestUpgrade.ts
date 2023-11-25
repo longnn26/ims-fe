@@ -1,8 +1,11 @@
+import { AppointmentComplete, AppointmentData } from "@models/appointment";
 import { ParamGet } from "@models/base";
 import {
   RequestUpgradeCreateModel,
   RequestUpgradeUpdateModel,
   RequestUpgradeData,
+  RequestUpgrade,
+  RUAppointmentParamGet,
 } from "@models/requestUpgrade";
 import apiLinks from "@utils/api-links";
 import httpClient from "@utils/http-client";
@@ -15,6 +18,29 @@ const getData = async (
     token: token,
     url: apiLinks.requestUpgrade.get,
     params: params,
+  });
+  return response.data;
+};
+
+const getDetail = async (
+  token: string,
+  id: string
+): Promise<RequestUpgrade> => {
+  const response = await httpClient.get({
+    url: apiLinks.requestUpgrade.getById + `/${id}`,
+    token: token,
+  });
+  return response.data;
+};
+
+const getAppointmentsById = async (
+  token: string,
+  params: RUAppointmentParamGet
+): Promise<AppointmentData> => {
+  const response = await httpClient.get({
+    url:
+      apiLinks.requestUpgrade.getAppointmentsById + `/${params.Id}/Appointment`,
+    token: token,
   });
   return response.data;
 };
@@ -51,11 +77,58 @@ const deleteData = async (token: string, id: string): Promise<any> => {
   return response.data;
 };
 
+const acceptRequestUpgrade = async (
+  token: string,
+  id: string
+): Promise<any> => {
+  const response = await httpClient.put({
+    url: apiLinks.requestUpgrade.accept + `/${id}/Accept`,
+    token: token,
+  });
+  return response.data;
+};
+
+const denyRequestUpgrade = async (token: string, id: string): Promise<any> => {
+  const response = await httpClient.put({
+    url: apiLinks.requestUpgrade.accept + `/${id}/Deny`,
+    token: token,
+  });
+  return response.data;
+};
+
+const completeRequestUpgrade = async (
+  token: string,
+  id: string
+): Promise<any> => {
+  const response = await httpClient.put({
+    url: apiLinks.requestUpgrade.complete + `/${id}/Complete`,
+    token: token,
+  });
+  return response.data;
+};
+
+const rejectRequestUpgrade = async (
+  token: string,
+  id: string
+): Promise<any> => {
+  const response = await httpClient.put({
+    url: apiLinks.requestUpgrade.reject + `/${id}/Reject`,
+    token: token,
+  });
+  return response.data;
+};
+
 const requestUpgrade = {
   getData,
+  getAppointmentsById,
   createData,
   updateData,
   deleteData,
+  getDetail,
+  acceptRequestUpgrade,
+  denyRequestUpgrade,
+  completeRequestUpgrade,
+  rejectRequestUpgrade,
 };
 
 export default requestUpgrade;
