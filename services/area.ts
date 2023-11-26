@@ -21,7 +21,10 @@ const getDataById = async (token: string, id: string): Promise<Area> => {
   return response.data;
 };
 
-const getRackDataById = async (token: string, id: string): Promise<RackData> => {
+const getRackDataById = async (
+  token: string,
+  id: string
+): Promise<RackData> => {
   const response = await httpClient.get({
     url: apiLinks.area.get + `/${id}/Rack`,
     token: token,
@@ -61,6 +64,25 @@ const deleteData = async (token: string, id: number): Promise<any> => {
   return response.data;
 };
 
+const getAllRackDataById = async (
+  token: string,
+  id: string
+): Promise<Rack[]> => {
+  const response = await httpClient.get({
+    url: apiLinks.area.get + `/${id}/RackAll`,
+    token: token,
+  });
+  return response.data;
+};
+
+const getAllArea = async (token: string): Promise<Area[]> => {
+  const response = await httpClient.get({
+    token: token,
+    url: apiLinks.area.getAll,
+  });
+  return response.data;
+};
+
 const area = {
   getData,
   getDataById,
@@ -68,6 +90,8 @@ const area = {
   updateData,
   deleteData,
   createData,
+  getAllRackDataById,
+  getAllArea,
 };
 
 export default area;

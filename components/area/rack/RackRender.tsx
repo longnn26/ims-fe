@@ -30,12 +30,12 @@ const style: React.CSSProperties = { background: "#0092ff", padding: "8px 0" };
 const RackRender: React.FC<Props> = (props) => {
   const { area, onEdit } = props;
   const router = useRouter();
-  const { rackData } = useSelector((state) => state.area);
+  const { getAllRackData } = useSelector((state) => state.area);
   var rowList = [] as RowInArea[];
   for (let index = 0; index < area?.rowCount; index++) {
     rowList.push({ id: index + 1, data: [] } as RowInArea);
   }
-  rackData.data.forEach((rack) => {
+  getAllRackData.forEach((rack) => {
     rowList.forEach((row) => {
       if (row.id === rack.row) {
         row.data?.push(rack);
