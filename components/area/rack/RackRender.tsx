@@ -168,7 +168,8 @@ const RackRender: React.FC<Props> = (props) => {
                 key={i}
                 className="gutter-row !flex !justify-center cursor-pointer"
                 span={Math.ceil(24 / area.columnCount)}
-                onClick={() => onEdit(item)}
+                // onClick={() => onEdit(item)}
+                onClick={() => router.push(`rack/${item.id}`)}
               >
                 <div className="text-[#ee4623] font-bold text-center w-2/3 px-2 h-10 flex items-center justify-center relative">
                   <img
