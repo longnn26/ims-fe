@@ -2,6 +2,7 @@
 import { CaretLeftOutlined } from "@ant-design/icons";
 import RackDetail from "@components/area/rack/RackDetail";
 import RackMapRender from "@components/area/rack/RackMapRender";
+import PieChartComponent from "@components/chartComponent/Pie";
 import { Rack, RackMap } from "@models/rack";
 import area from "@services/rack";
 import { Avatar, Button, List } from "antd";
@@ -9,6 +10,7 @@ import { useSession } from "next-auth/react";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
+
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
 });
@@ -18,6 +20,10 @@ const AreaDetail: React.FC = () => {
   const router = useRouter();
   const [rackDetail, setRackDetail] = useState<Rack | undefined>(undefined);
   const [rackMapList, setRackMapList] = useState<RackMap[]>([]);
+  var available =
+    rackMapList.filter((_) => !_.serverAllocation).length / rackMapList.length;
+  var reserved =
+    rackMapList.filter((_) => _.serverAllocation).length / rackMapList.length;
 
   const getData = async () => {
     await area
@@ -52,7 +58,19 @@ const AreaDetail: React.FC = () => {
           </div>
 
           <RackDetail rackDetail={rackDetail!} />
-          <RackMapRender rackMapList={rackMapList}/>
+          <div className="flex ">
+            <div className="w-2/3">
+              <RackMapRender rackMapList={rackMapList} />
+            </div>
+            <div className="w-1/3">
+              <PieChartComponent
+                data={[
+                  { name: "Available", value: available, color: "#e1efd8" },
+                  { name: "Reserved", value: reserved, color: "#fbe4d4" },
+                ]}
+              />
+            </div>
+          </div>
         </>
       }
     />

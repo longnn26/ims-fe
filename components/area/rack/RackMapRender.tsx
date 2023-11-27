@@ -43,13 +43,13 @@ const RackMapRender: React.FC<Props> = (props) => {
     {
       title: "Location",
       dataIndex: "location",
+      // fixed: "left",
       key: "location",
       render: (_, record) => {
-        // <a className="text-[#b75c3c] hover:text-[#ee4623]">{record.position}</a>
         return {
           props: {
             style: {
-              backgroundColor: record.serverAllocation ? "#fde3cf" : "#b2b6c1",
+              backgroundColor: record.serverAllocation ? "#fde3cf" : "#e1efd8",
               color: record.serverAllocation ? "#f56a00" : "",
             },
           },
@@ -63,6 +63,7 @@ const RackMapRender: React.FC<Props> = (props) => {
       render: (_, record) => {
         return {
           props: { style: { backgroundColor: "#fde3cf", color: "#f56a00" } },
+
           children: (
             <p
               className="cursor-pointer"
@@ -109,6 +110,7 @@ const RackMapRender: React.FC<Props> = (props) => {
   return (
     <div className="shadow m-5">
       <Table
+        // className="!p-2"
         bordered
         columns={columns}
         dataSource={data}
