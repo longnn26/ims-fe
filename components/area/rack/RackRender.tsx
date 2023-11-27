@@ -35,7 +35,7 @@ const RackRender: React.FC<Props> = (props) => {
   for (let index = 0; index < area?.rowCount; index++) {
     rowList.push({ id: index + 1, data: [] } as RowInArea);
   }
-  getAllRackData.forEach((rack) => {
+  getAllRackData?.forEach((rack) => {
     rowList.forEach((row) => {
       if (row.id === rack.row) {
         row.data?.push(rack);

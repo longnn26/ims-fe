@@ -20,7 +20,7 @@ const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
 
 const { confirm } = Modal;
 
-const Customer: React.FC = () => {
+const Area: React.FC = () => {
   const dispatch = useDispatch();
   const { data: session } = useSession();
   const { customerData } = useSelector((state) => state.customer);
@@ -127,22 +127,7 @@ const Customer: React.FC = () => {
             >
               Create
             </Button>
-            {/* <SearchComponent
-              placeholder="Search Name, Description..."
-              setSearchValue={(value) =>
-                setParamGet({ ...paramGet, SearchValue: value })
-              }
-            /> */}
           </div>
-          {/* <AreaTable
-            onEdit={(record) => {
-              setAreaUpdate(record);
-            }}
-            onDelete={async (record) => {
-              deleteComponent(record);
-            }}
-          /> */}
-
           <AreaCollap />
 
           <ModalCreate
@@ -159,25 +144,10 @@ const Customer: React.FC = () => {
               updateData(data);
             }}
           />
-          {/* {customerData.totalPage > 0 && (
-            <Pagination
-              className="text-end m-4"
-              current={paramGet.PageIndex}
-              pageSize={customerData.pageSize ?? 10}
-              total={customerData.totalSize}
-              onChange={(page, pageSize) => {
-                setParamGet({
-                  ...paramGet,
-                  PageIndex: page,
-                  PageSize: pageSize,
-                });
-              }}
-            />
-          )} */}
         </>
       }
     />
   );
 };
 
-export default Customer;
+export default Area;

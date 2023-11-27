@@ -1,7 +1,13 @@
 import { ParamGet } from "@models/base";
 import apiLinks from "@utils/api-links";
 import httpClient from "@utils/http-client";
-import { RackCreateModel, RackUpdateModel, RackData, Rack } from "@models/rack";
+import {
+  RackCreateModel,
+  RackUpdateModel,
+  RackData,
+  Rack,
+  RackMap,
+} from "@models/rack";
 
 const getData = async (token: string, params: ParamGet): Promise<RackData> => {
   const response = await httpClient.get({
@@ -52,9 +58,9 @@ const getRackById = async (token: string, id: string): Promise<Rack> => {
   return response.data;
 };
 
-const getRackByIdWithMap = async (token: string, id: string): Promise<Rack> => {
+const getMapsById = async (token: string, id: string): Promise<RackMap[]> => {
   const response = await httpClient.get({
-    url: apiLinks.rack.get + `/${id}/Map`,
+    url: apiLinks.rack.getMapById + `/${id}/Map`,
     token: token,
   });
   return response.data;
@@ -66,6 +72,7 @@ const area = {
   deleteData,
   createData,
   getRackById,
+  getMapsById,
 };
 
 export default area;

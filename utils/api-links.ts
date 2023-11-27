@@ -61,6 +61,7 @@ const apiLinks = {
 
   rack: {
     get: `${url}/api/Rack`,
+    getMapById: `${url}/api/Rack`,
     create: `${url}/api/Rack`,
     update: `${url}/api/Rack`,
     delete: `${url}/api/Rack`,

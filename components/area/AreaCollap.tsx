@@ -37,7 +37,7 @@ const AreaCollap: React.FC<Props> = (props) => {
 
   return (
     <>
-      <Collapse accordion items={items} />
+      <Collapse className="m-5" accordion items={items} />
     </>
   );
 };

@@ -1,4 +1,5 @@
 import { BaseWithIdNumber, PagingModel } from "./base";
+import { ServerAllocation } from "./serverAllocation";
 
 export interface Rack extends BaseWithIdNumber {
   maxPower: number;
@@ -35,4 +36,11 @@ export interface RackUpdateModel {
   row: number;
   size: number;
   areaId: number;
+}
+
+export interface RackMap {
+  id: number;
+  position: number;
+  rackId: number;
+  serverAllocation: ServerAllocation;
 }
