@@ -56,6 +56,7 @@ const apiLinks = {
     create: `${url}/api/Area`,
     update: `${url}/api/Area`,
     delete: `${url}/api/Area`,
+    getAll: `${url}/api/Area/All`,
   },
 
   rack: {
