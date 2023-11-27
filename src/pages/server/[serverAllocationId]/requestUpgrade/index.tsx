@@ -220,7 +220,7 @@ const RequestUpgrade: React.FC = () => {
               deleteData(record);
             }}
           />
-          {requestUpgradeData.totalPage > 0 && (
+          {requestUpgradeData?.totalPage > 0 && (
             <Pagination
               className="text-end m-4"
               current={paramGet?.PageIndex}

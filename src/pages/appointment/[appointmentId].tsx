@@ -309,7 +309,7 @@ const Appoinment: React.FC = () => {
             }}
             onDelete={(value) => {}}
           />
-          {requestUpgradeData.totalPage > 0 && (
+          {requestUpgradeData?.totalPage > 0 && (
             <Pagination
               className="text-end m-4"
               current={paramGetExtend?.PageIndex}
