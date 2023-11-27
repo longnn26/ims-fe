@@ -81,6 +81,10 @@ const apiLinks = {
     complete: `${url}/api/Appointment`,
     fail: `${url}/api/Appointment`,
   },
+
+  requestExpand: {
+    get: `${url}/api/ServerAllocation`,
+  },
 };
 
 export default apiLinks;

@@ -1,56 +1,54 @@
 "use client";
-import { AppstoreAddOutlined, SendOutlined } from "@ant-design/icons";
 import BreadcrumbComponent from "@components/BreadcrumbComponent";
 import ServerDetail from "@components/server/ServerDetail";
-import ModalCreate from "@components/server/hardwareConfig/ModalCreate";
-import ModalUpdate from "@components/server/hardwareConfig/ModalUpdate";
-import ServerHardwareConfigTable from "@components/server/hardwareConfig/ServerHardwareConfigTable";
+import RequestExpandTable from "@components/server/requestExpand/RequestExpandTable";
+import ModalCreate from "@components/server/requestUpgrade/ModalCreate";
+import ModalUpdate from "@components/server/requestUpgrade/ModalUpdate";
 import useDispatch from "@hooks/use-dispatch";
 import useSelector from "@hooks/use-selector";
-import { ServerAllocation } from "@models/serverAllocation";
 import {
-  SHCCreateModel,
-  SHCParamGet,
-  SHCUpdateModel,
-  ServerHardwareConfig,
-  ServerHardwareConfigData,
-} from "@models/serverHardwareConfig";
+  RUParamGet,
+  RequestUpgrade,
+  RequestUpgradeCreateModel,
+  RequestUpgradeData,
+  RequestUpgradeUpdateModel,
+} from "@models/requestUpgrade";
+import { ServerAllocation } from "@models/serverAllocation";
+import requestUpgradeService from "@services/requestUpgrade";
 import serverAllocationService from "@services/serverAllocation";
-import serverHardwareConfigService from "@services/serverHardwareConfig";
-import { getComponentAll } from "@slices/component";
-import { getserverHardwareConfigData } from "@slices/serverHardwareConfig";
-import { Alert, Button, FloatButton, Modal, Pagination, message } from "antd";
+import { getRequestExpandData } from "@slices/requestExpand";
+import { Alert, FloatButton, Modal, Pagination, message } from "antd";
 import { ItemType } from "antd/es/breadcrumb/Breadcrumb";
 import { useSession } from "next-auth/react";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { AiOutlineFileDone } from "react-icons/ai";
-import { VscGitPullRequestGoToChanges } from "react-icons/vsc";
+import { MdCancel } from "react-icons/md";
+
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
 });
 const { confirm } = Modal;
-const Customer: React.FC = () => {
+const RequestExpand: React.FC = () => {
   const dispatch = useDispatch();
   const router = useRouter();
   const { data: session } = useSession();
-  const { serverHardwareConfigData } = useSelector(
-    (state) => state.serverHardwareConfig
-  );
+  const { requestExpandData } = useSelector((state) => state.requestExpand);
 
-  const [paramGet, setParamGet] = useState<SHCParamGet>({
+  const [paramGet, setParamGet] = useState<RUParamGet>({
     PageIndex: 1,
     PageSize: 10,
-    ServerAllocationId: router.query.serverAllocationId ?? -1,
-  } as unknown as SHCParamGet);
+    // ServerAllocationId: router.query.serverAllocationId ?? -1,
+  } as unknown as RUParamGet);
   const [loadingSubmit, setLoadingSubmit] = useState<boolean>(false);
-  const [serverHardwareConfigUpdate, setServerHardwareConfigUpdate] = useState<
-    ServerHardwareConfig | undefined
+  const [requestUpgradeUpdate, setRequestUpgradeUpdate] = useState<
+    RequestUpgrade | undefined
   >(undefined);
   const [openModalCreate, setOpenModalCreate] = useState<boolean>(false);
   const [serverAllocationDetail, setServerAllocationDetail] =
     useState<ServerAllocation>();
+
   const [itemBreadcrumbs, setItemBreadcrumbs] = useState<ItemType[]>([]);
 
   const getData = async () => {
@@ -63,22 +61,22 @@ const Customer: React.FC = () => {
         setServerAllocationDetail(res);
       });
     dispatch(
-      getserverHardwareConfigData({
+      getRequestExpandData({
         token: session?.user.access_token!,
+        id: parseInt(router.query.serverAllocationId?.toString()!) ?? -1,
         paramGet: { ...paramGet },
       })
     ).then(({ payload }) => {
-      var res = payload as ServerHardwareConfigData;
-      if (res.totalPage < paramGet.PageIndex && res.totalPage != 0) {
+      var res = payload as RequestUpgradeData;
+      if (res?.totalPage < paramGet.PageIndex && res.totalPage != 0) {
         setParamGet({ ...paramGet, PageIndex: res.totalPage });
       }
     });
-    dispatch(getComponentAll({ token: session?.user.access_token! }));
   };
 
-  const createData = async (data: SHCCreateModel) => {
-    await serverHardwareConfigService
-      .createServerHardwareConfig(session?.user.access_token!, data)
+  const createData = async (data: RequestUpgradeCreateModel) => {
+    await requestUpgradeService
+      .createData(session?.user.access_token!, data)
       .then((res) => {
         message.success("Create successful!");
         getData();
@@ -91,9 +89,9 @@ const Customer: React.FC = () => {
       });
   };
 
-  const updateData = async (data: SHCUpdateModel) => {
-    await serverHardwareConfigService
-      .updateServerHardwareConfig(session?.user.access_token!, data)
+  const updateData = async (data: RequestUpgradeUpdateModel) => {
+    await requestUpgradeService
+      .updateData(session?.user.access_token!, data)
       .then((res) => {
         message.success("Update successful!");
         getData();
@@ -102,33 +100,30 @@ const Customer: React.FC = () => {
         message.error(errors.message);
       })
       .finally(() => {
-        setServerHardwareConfigUpdate(undefined);
+        setRequestUpgradeUpdate(undefined);
       });
   };
 
-  const deleteData = (serverHardwareConfig: ServerHardwareConfig) => {
+  const deleteData = (requestUpgrade: RequestUpgrade) => {
     confirm({
       title: "Delete",
       content: (
         <Alert
-          message={`Do you want to delete with Id ${serverHardwareConfig.id}?`}
+          message={`Do you want to delete with Id ${requestUpgrade.id}?`}
           // description={`${serverAllocation.id}`}
           type="warning"
         />
       ),
       async onOk() {
         setLoadingSubmit(true);
-        await serverHardwareConfigService
-          .deleteServerHardwareConfig(
-            session?.user.access_token!,
-            serverHardwareConfig.id.toString()
-          )
+        await requestUpgradeService
+          .deleteData(session?.user.access_token!, requestUpgrade.id.toString())
           .then(() => {
             getData();
-            message.success(`Delete hardware config successful`);
+            message.success(`Delete request upgrade successful`);
           })
           .catch((errors) => {
-            message.error(errors.message ?? "Delete hardware config failed");
+            message.error(errors.message ?? "Delete request upgrade failed");
             setLoadingSubmit(false);
           });
       },
@@ -167,34 +162,18 @@ const Customer: React.FC = () => {
         <>
           <div className="flex flex-wrap items-center justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
             <BreadcrumbComponent itemBreadcrumbs={itemBreadcrumbs} />
-            <Button
-              type="primary"
-              htmlType="submit"
-              icon={<AppstoreAddOutlined />}
-              onClick={() => {
-                setOpenModalCreate(true);
-              }}
-            >
-              Hardware Config
-            </Button>
-            {/* <SearchComponent
-              placeholder="Search Name, Description..."
-              setSearchValue={(value) =>
-                setParamGet({ ...paramGet, SearchValue: value })
-              }
-            /> */}
           </div>
           <ModalUpdate
-            serverHardwareConfig={serverHardwareConfigUpdate!}
-            onClose={() => setServerHardwareConfigUpdate(undefined)}
-            onSubmit={(data: SHCUpdateModel) => {
+            requestUpgrade={requestUpgradeUpdate!}
+            onClose={() => setRequestUpgradeUpdate(undefined)}
+            onSubmit={(data: RequestUpgradeUpdateModel) => {
               updateData(data);
             }}
           />
           <ModalCreate
             open={openModalCreate}
             onClose={() => setOpenModalCreate(false)}
-            onSubmit={(data: SHCCreateModel) => {
+            onSubmit={(data: RequestUpgradeCreateModel) => {
               data.serverAllocationId = parseInt(
                 router.query!.serverAllocationId!.toString()
               );
@@ -204,20 +183,22 @@ const Customer: React.FC = () => {
           <ServerDetail
             serverAllocationDetail={serverAllocationDetail!}
           ></ServerDetail>
-          <ServerHardwareConfigTable
+          <RequestExpandTable
+            urlOncell={`/server/${serverAllocationDetail?.id}`}
+            serverAllocationId={serverAllocationDetail?.id.toString()}
             onEdit={(record) => {
-              setServerHardwareConfigUpdate(record);
+              setRequestUpgradeUpdate(record);
             }}
             onDelete={async (record) => {
               deleteData(record);
             }}
           />
-          {serverHardwareConfigData.totalPage > 0 && (
+          {requestExpandData?.totalPage > 0 && (
             <Pagination
               className="text-end m-4"
-              current={paramGet.PageIndex}
-              pageSize={serverHardwareConfigData.pageSize ?? 10}
-              total={serverHardwareConfigData.totalSize}
+              current={paramGet?.PageIndex}
+              pageSize={requestExpandData?.pageSize ?? 10}
+              total={requestExpandData?.totalSize}
               onChange={(page, pageSize) => {
                 setParamGet({
                   ...paramGet,
@@ -227,36 +208,29 @@ const Customer: React.FC = () => {
               }}
             />
           )}
-
-          <FloatButton.Group
-            trigger="hover"
-            type="primary"
-            style={{ right: 60, bottom: 500 }}
-            icon={<SendOutlined />}
-          >
-            <FloatButton
-              tooltip="Request upgrade"
-              icon={<VscGitPullRequestGoToChanges />}
-              onClick={() =>
-                router.push(
-                  `/server/${serverAllocationDetail?.id}/requestUpgrade`
-                )
-              }
-            />
-            <FloatButton
-              onClick={() =>
-                router.push(
-                  `/server/${serverAllocationDetail?.id}/requestExpand`
-                )
-              }
-              icon={<AiOutlineFileDone color="green" />}
-              tooltip="Request expand"
-            />
-          </FloatButton.Group>
+          {Boolean(true) && (
+            <FloatButton.Group
+              trigger="hover"
+              type="primary"
+              style={{ right: 60, bottom: 500 }}
+              icon={<AiOutlineFileDone />}
+            >
+              <FloatButton
+                icon={<MdCancel color="red" />}
+                tooltip="Fail"
+                // onClick={() => setOpenFail(true)}
+              />
+              <FloatButton
+                // onClick={() => setOpenComplete(true)}
+                icon={<AiOutlineFileDone color="green" />}
+                tooltip="Complete"
+              />
+            </FloatButton.Group>
+          )}
         </>
       }
     />
   );
 };
 
-export default Customer;
+export default RequestExpand;
