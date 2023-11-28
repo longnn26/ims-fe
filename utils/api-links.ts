@@ -75,6 +75,7 @@ const apiLinks = {
     get: `${url}/api/Appointment`,
     getById: `${url}/api/Appointment`,
     getRequestUpgradesById: `${url}/api/Appointment`,
+    getRequestExpandById: `${url}/api/Appointment`,
     upload: `${url}/api/Appointment`,
     accept: `${url}/api/Appointment`,
     deny: `${url}/api/Appointment`,
@@ -84,6 +85,7 @@ const apiLinks = {
 
   requestExpand: {
     get: `${url}/api/ServerAllocation`,
+    getAppointmentsById: `${url}/api/RequestExpand`,
     getById: `${url}/api/RequestExpand`,
     accept: `${url}/api/RequestExpand`,
     deny: `${url}/api/RequestExpand`,

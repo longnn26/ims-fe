@@ -1,6 +1,8 @@
 "use client";
 
 import useSelector from "@hooks/use-selector";
+import { Appointment } from "@models/appointment";
+import { Customer } from "@models/customer";
 import { RequestExpand } from "@models/requestExpand";
 import { RequestUpgrade } from "@models/requestUpgrade";
 import { dateAdvFormat, requestUpgradeStatus } from "@utils/constants";
@@ -29,12 +31,17 @@ interface Props {
 interface DataType {
   key: React.Key;
   id: number;
-  customerExpectation: string;
-  expandSize: string;
   status: string;
-  isRemoved: string;
+  removalStatus: string;
+  requestType: string;
+  note: string;
+  techNote: string;
+  serverAllocationId: number;
   dateCreated: string;
   dateUpdated: string;
+  size: string;
+  customer: Customer;
+  succeededAppointment: Appointment;
 }
 
 const RequestExpandTable: React.FC<Props> = (props) => {
@@ -43,10 +50,15 @@ const RequestExpandTable: React.FC<Props> = (props) => {
   const { requestExpandDataLoading, requestExpandData } = useSelector(
     (state) => state.requestExpand
   );
-  const { requestUpgradeData: rUDataOfAppointment } = useSelector(
+  const { requestExpandData: rEDataOfAppointment } = useSelector(
     (state) => state.appointment
   );
-
+  var listData =
+    typeGet == "All"
+      ? requestExpandData
+      : typeGet == "ByAppointmentId"
+      ? rEDataOfAppointment
+      : requestExpandData;
   const columns: TableColumnsType<DataType> = [
     {
       title: "Id",
@@ -58,11 +70,11 @@ const RequestExpandTable: React.FC<Props> = (props) => {
       ),
     },
     {
-      title: "Customer's expectation",
-      key: "customerExpectation",
-      dataIndex: "customerExpectation",
+      title: "Customer",
+      key: "customer",
+      render: (_, record) => <p className="">{record.customer.customerName}</p>,
     },
-    { title: "Expand size (U)", dataIndex: "expandSize", key: "expandSize" },
+    { title: "Expand size (U)", dataIndex: "size", key: "size" },
     {
       title: "Status",
       key: "status",
@@ -77,17 +89,7 @@ const RequestExpandTable: React.FC<Props> = (props) => {
         );
       },
     },
-    {
-      title: "IsRemoved",
-      key: "isRemoved",
-      render: (record: RequestExpand) => {
-        return Boolean(record.removalStatus === "Success") ? (
-          <p>Removed</p>
-        ) : (
-          <p>Activating</p>
-        );
-      },
-    },
+    { title: "Note", dataIndex: "note", key: "note" },
     { title: "Date Created", dataIndex: "dateCreated", key: "dateCreated" },
     { title: "Date Updated", dataIndex: "dateUpdated", key: "dateUpdated" },
     {
@@ -120,20 +122,21 @@ const RequestExpandTable: React.FC<Props> = (props) => {
   ];
 
   const data: DataType[] = [];
-  for (let i = 0; i < requestExpandData?.data?.length; ++i) {
+  for (let i = 0; i < listData?.data?.length; ++i) {
     data.push({
-      key: requestExpandData?.data[i].id,
-      id: requestExpandData?.data[i].id,
-      customerExpectation: requestExpandData?.data[i].note,
-      expandSize: requestExpandData?.data[i].size,
-      isRemoved: requestExpandData?.data[i].removalStatus,
-      status: requestExpandData?.data[i].status,
-      dateCreated: moment(requestExpandData?.data[i].dateCreated).format(
-        dateAdvFormat
-      ),
-      dateUpdated: moment(requestExpandData?.data[i].dateUpdated).format(
-        dateAdvFormat
-      ),
+      key: listData?.data[i].id,
+      id: listData?.data[i].id,
+      status: listData?.data[i].status,
+      removalStatus: listData?.data[i].removalStatus,
+      requestType: listData?.data[i].requestType,
+      note: listData?.data[i].note,
+      techNote: listData?.data[i].techNote,
+      serverAllocationId: listData?.data[i].serverAllocationId,
+      size: listData?.data[i].size,
+      customer: listData?.data[i].customer,
+      succeededAppointment: listData?.data[i].succeededAppointment,
+      dateCreated: moment(listData?.data[i].dateCreated).format(dateAdvFormat),
+      dateUpdated: moment(listData?.data[i].dateUpdated).format(dateAdvFormat),
     });
   }
 
@@ -143,7 +146,6 @@ const RequestExpandTable: React.FC<Props> = (props) => {
         <h3>Request Expand</h3>
       </Divider>
       <Table
-        loading={requestExpandDataLoading}
         columns={columns}
         dataSource={data}
         scroll={{ x: 1300 }}

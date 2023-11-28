@@ -1,5 +1,7 @@
+import { AppointmentData } from "@models/appointment";
 import { ParamGet } from "@models/base";
 import { RequestExpand, RequestExpandData } from "@models/requestExpand";
+import { RUAppointmentParamGet } from "@models/requestUpgrade";
 import apiLinks from "@utils/api-links";
 import httpClient from "@utils/http-client";
 
@@ -22,6 +24,18 @@ const getDetail = async (
 ): Promise<RequestExpand> => {
   const response = await httpClient.get({
     url: apiLinks.requestExpand.getById + `/${id}`,
+    token: token,
+  });
+  return response.data;
+};
+
+const getAppointmentsById = async (
+  token: string,
+  params: RUAppointmentParamGet
+): Promise<AppointmentData> => {
+  const response = await httpClient.get({
+    url:
+      apiLinks.requestExpand.getAppointmentsById + `/${params.Id}/Appointment`,
     token: token,
   });
   return response.data;
@@ -69,6 +83,7 @@ const requestExpand = {
   completeRequestExpand,
   rejectRequestExpand,
   denyRequestExpand,
+  getAppointmentsById
 };
 
 export default requestExpand;

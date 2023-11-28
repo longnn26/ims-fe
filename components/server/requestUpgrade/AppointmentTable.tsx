@@ -34,6 +34,9 @@ const AppointmentTable: React.FC<Props> = (props) => {
   const { onEdit, onDelete, typeGet, urlOncell } = props;
   const router = useRouter();
   const { appointmentData } = useSelector((state) => state.requestUpgrade);
+  const { appointmentData: appointmentDataRE } = useSelector(
+    (state) => state.requestExpand
+  );
   const { listAppointmentData } = useSelector((state) => state.appointment);
 
   var listData =
@@ -41,6 +44,8 @@ const AppointmentTable: React.FC<Props> = (props) => {
       ? listAppointmentData
       : typeGet == "ByRequestUpgradeId"
       ? appointmentData
+      : typeGet == "ByRequestExpandId"
+      ? appointmentDataRE
       : listAppointmentData;
 
   const columns: TableColumnsType<DataType> = [

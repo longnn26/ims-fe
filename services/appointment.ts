@@ -4,6 +4,7 @@ import {
   AppointmentData,
   ParamGetExtend,
 } from "@models/appointment";
+import { RequestExpandData } from "@models/requestExpand";
 import {
   RUAppointmentParamGet,
   RequestUpgradeData,
@@ -39,6 +40,18 @@ const getRequestUpgradesById = async (
     url:
       apiLinks.appointment.getRequestUpgradesById +
       `/${params.Id}/RequestUpgrade`,
+    token: token,
+  });
+  return response.data;
+};
+
+const getRequestExpandsById = async (
+  token: string,
+  params: ParamGetExtend
+): Promise<RequestExpandData> => {
+  const response = await httpClient.get({
+    url:
+      apiLinks.appointment.getRequestExpandById + `/${params.Id}/RequestExpand`,
     token: token,
   });
   return response.data;
@@ -105,6 +118,7 @@ const appointment = {
   getDetail,
   uploadDocument,
   getRequestUpgradesById,
+  getRequestExpandsById,
   acceptAppointment,
   denyAppointment,
   completeAppointment,

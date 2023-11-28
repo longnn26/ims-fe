@@ -8,7 +8,7 @@ import { ServerAllocation } from "@models/serverAllocation";
 import requestExpandService from "@services/requestExpand";
 import serverAllocationService from "@services/serverAllocation";
 import { getAppointmentData } from "@slices/requestExpand";
-import { Alert, FloatButton, Modal, Pagination, message } from "antd";
+import { Alert, Button, FloatButton, Modal, Pagination, message } from "antd";
 import { ItemType } from "antd/es/breadcrumb/Breadcrumb";
 import { useSession } from "next-auth/react";
 import dynamic from "next/dynamic";
@@ -18,6 +18,7 @@ import { AiOutlineFileDone } from "react-icons/ai";
 import { MdCancel } from "react-icons/md";
 import useSelector from "@hooks/use-selector";
 import useDispatch from "@hooks/use-dispatch";
+import { CaretLeftOutlined } from "@ant-design/icons";
 import AppointmentTable from "@components/server/requestUpgrade/AppointmentTable";
 const { confirm } = Modal;
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
@@ -44,18 +45,17 @@ const RequestExpandDetail: React.FC = () => {
   const { appointmentData } = useSelector((state) => state.requestExpand);
 
   const getData = async () => {
-    await serverAllocationService
-      .getServerAllocationById(
-        session?.user.access_token!,
-        router.query.serverAllocationId + ""
-      )
-      .then((res) => {
-        setServerAllocationDetail(res);
-      });
-
     await requestExpandService
       .getDetail(session?.user.access_token!, router.query.requestExpandId + "")
-      .then((res) => {
+      .then(async (res) => {
+        await serverAllocationService
+          .getServerAllocationById(
+            session?.user.access_token!,
+            res.serverAllocationId + ""
+          )
+          .then((res) => {
+            setServerAllocationDetail(res);
+          });
         setRequestExpandDetail(res);
       });
   };
@@ -131,14 +131,8 @@ const RequestExpandDetail: React.FC = () => {
   };
 
   useEffect(() => {
-    if (router.query.serverAllocationId && session) {
-      getData();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [session]);
-
-  useEffect(() => {
     if (router.query.requestExpandId && session) {
+      getData();
       handleBreadCumb();
       rUAppointmentParamGet.Id = parseInt(
         router.query.requestExpandId!.toString()
@@ -158,7 +152,15 @@ const RequestExpandDetail: React.FC = () => {
       content={
         <>
           <div className="flex flex-wrap items-center justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
-            <BreadcrumbComponent itemBreadcrumbs={itemBreadcrumbs} />
+            <div>
+              <Button
+                type="primary"
+                className="mb-2"
+                icon={<CaretLeftOutlined />}
+                onClick={() => router.back()}
+              ></Button>
+              <BreadcrumbComponent itemBreadcrumbs={itemBreadcrumbs} />
+            </div>
           </div>
           <div className="md:flex">
             <ServerDetail
