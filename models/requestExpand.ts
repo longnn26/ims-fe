@@ -19,3 +19,10 @@ export interface RequestExpand extends BaseWithIdNumber {
 export interface RequestExpandData extends PagingModel {
   data: RequestExpand[];
 }
+
+export interface RequestExpandUpdateModel {
+  id: number;
+  size: number;
+  note: string;
+  techNote: string;
+}

@@ -2,7 +2,7 @@
 import BreadcrumbComponent from "@components/BreadcrumbComponent";
 import ServerDetail from "@components/server/ServerDetail";
 import RequestExpandDetailInfor from "@components/server/requestExpand/RequestExpandDetail";
-import { RequestExpand } from "@models/requestExpand";
+import { RequestExpand, RequestExpandUpdateModel } from "@models/requestExpand";
 import { RUAppointmentParamGet } from "@models/requestUpgrade";
 import { ServerAllocation } from "@models/serverAllocation";
 import requestExpandService from "@services/requestExpand";
@@ -18,8 +18,9 @@ import { AiOutlineFileDone } from "react-icons/ai";
 import { MdCancel } from "react-icons/md";
 import useSelector from "@hooks/use-selector";
 import useDispatch from "@hooks/use-dispatch";
-import { CaretLeftOutlined } from "@ant-design/icons";
+import { CaretLeftOutlined, EditOutlined } from "@ant-design/icons";
 import AppointmentTable from "@components/server/requestUpgrade/AppointmentTable";
+import ModalUpdate from "@components/server/requestExpand/ModalUpdate";
 const { confirm } = Modal;
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
@@ -42,6 +43,8 @@ const RequestExpandDetail: React.FC = () => {
     } as unknown as RUAppointmentParamGet);
 
   const [itemBreadcrumbs, setItemBreadcrumbs] = useState<ItemType[]>([]);
+  const [requestExpandUpdate, setRequestExpandUpdate] =
+    useState<RequestExpand>();
   const { appointmentData } = useSelector((state) => state.requestExpand);
 
   const getData = async () => {
@@ -116,6 +119,35 @@ const RequestExpandDetail: React.FC = () => {
     });
   };
 
+  const updateData = async (data: RequestExpandUpdateModel) => {
+    await requestExpandService
+      .updateData(session?.user.access_token!, data)
+      .then(async (res) => {
+        message.success("Update successful!");
+        await requestExpandService
+          .getDetail(
+            session?.user.access_token!,
+            router.query.requestExpandId + ""
+          )
+          .then(async (res) => {
+            await serverAllocationService
+              .getServerAllocationById(
+                session?.user.access_token!,
+                res.serverAllocationId + ""
+              )
+              .then((res) => {
+                setServerAllocationDetail(res);
+              });
+            setRequestExpandDetail(res);
+            // setRequestExpandUpdate(res);
+          });
+        // getData();
+      })
+      .catch((errors) => {
+        message.error(errors.message);
+      });
+  };
+
   const handleBreadCumb = () => {
     var itemBrs = [] as ItemType[];
     var items = router.asPath.split("/").filter((_) => _ != "");
@@ -160,6 +192,18 @@ const RequestExpandDetail: React.FC = () => {
                 onClick={() => router.back()}
               ></Button>
               <BreadcrumbComponent itemBreadcrumbs={itemBreadcrumbs} />
+            </div>
+            <div>
+              <Button
+                type="primary"
+                className="mb-2"
+                icon={<EditOutlined />}
+                onClick={() => {
+                  setRequestExpandUpdate(requestExpandDetail);
+                }}
+              >
+                Update
+              </Button>
             </div>
           </div>
           <div className="md:flex">
@@ -214,6 +258,14 @@ const RequestExpandDetail: React.FC = () => {
               />
             </FloatButton.Group>
           )}
+
+          <ModalUpdate
+            requestExpand={requestExpandUpdate!}
+            onClose={() => setRequestExpandUpdate(undefined)}
+            onSubmit={(value) => {
+              updateData(value);
+            }}
+          />
         </>
       }
     />
