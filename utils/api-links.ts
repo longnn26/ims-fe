@@ -84,6 +84,11 @@ const apiLinks = {
 
   requestExpand: {
     get: `${url}/api/ServerAllocation`,
+    getById: `${url}/api/RequestExpand`,
+    accept: `${url}/api/RequestExpand`,
+    deny: `${url}/api/RequestExpand`,
+    complete: `${url}/api/RequestExpand`,
+    reject: `${url}/api/RequestExpand`,
   },
 };
 

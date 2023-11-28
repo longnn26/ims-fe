@@ -26,7 +26,8 @@ import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { AiOutlineFileDone } from "react-icons/ai";
-import { VscGitPullRequestGoToChanges } from "react-icons/vsc";
+import { MdUpgrade } from "react-icons/md";
+import { FaExpand } from "react-icons/fa";
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
 });
@@ -236,7 +237,7 @@ const Customer: React.FC = () => {
           >
             <FloatButton
               tooltip="Request upgrade"
-              icon={<VscGitPullRequestGoToChanges />}
+              icon={<MdUpgrade />}
               onClick={() =>
                 router.push(
                   `/server/${serverAllocationDetail?.id}/requestUpgrade`
@@ -249,7 +250,7 @@ const Customer: React.FC = () => {
                   `/server/${serverAllocationDetail?.id}/requestExpand`
                 )
               }
-              icon={<AiOutlineFileDone color="green" />}
+              icon={<FaExpand />}
               tooltip="Request expand"
             />
           </FloatButton.Group>

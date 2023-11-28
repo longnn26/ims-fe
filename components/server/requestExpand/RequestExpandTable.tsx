@@ -98,13 +98,13 @@ const RequestExpandTable: React.FC<Props> = (props) => {
           <Tooltip title="View detail" color={"black"}>
             <Button
               onClick={() =>
-                router.push(`${urlOncell}/requestUpgrade/${record.id}`)
+                router.push(`${urlOncell}/requestExpand/${record.id}`)
               }
             >
               <BiSolidCommentDetail />
             </Button>
           </Tooltip>
-          <Tooltip title="Edit" color={"black"}>
+          {/* <Tooltip title="Edit" color={"black"}>
             <Button onClick={() => onEdit(record)}>
               <BiEdit />
             </Button>
@@ -113,7 +113,7 @@ const RequestExpandTable: React.FC<Props> = (props) => {
             <Button onClick={() => onDelete(record)}>
               <AiFillDelete />
             </Button>
-          </Tooltip>
+          </Tooltip> */}
         </Space>
       ),
     },

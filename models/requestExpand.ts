@@ -1,4 +1,6 @@
 import { BaseWithIdNumber, PagingModel } from "./base";
+import { ComponentObj } from "./component";
+import { Customer } from "./customer";
 
 export interface RequestExpand extends BaseWithIdNumber {
   status: string;
@@ -10,6 +12,7 @@ export interface RequestExpand extends BaseWithIdNumber {
   dateCreated: string;
   dateUpdated: string;
   size: string;
+  customer: Customer;
 }
 
 export interface RequestExpandData extends PagingModel {

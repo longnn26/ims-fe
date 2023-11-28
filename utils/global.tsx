@@ -3,6 +3,7 @@ import { FaUser, FaChartArea } from "react-icons/fa";
 import { BiServer, BiSolidComponent } from "react-icons/bi";
 import { GoGitPullRequest } from "react-icons/go";
 import { GrSchedules } from "react-icons/gr";
+import { MdUpgrade } from "react-icons/md";
 
 export interface SliderMenuItem {
   key: string;
@@ -18,7 +19,7 @@ export const sliderMenu = [
   },
   {
     key: "requestUpgrade",
-    icon: <GoGitPullRequest />,
+    icon: <MdUpgrade />,
     label: "Request Upgrade",
   },
   {
