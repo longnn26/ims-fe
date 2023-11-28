@@ -1,9 +1,11 @@
 import { AppointmentData } from "@models/appointment";
 import { ParamGet } from "@models/base";
 import {
+  RequestedLocation,
   RequestExpand,
   RequestExpandData,
   RequestExpandUpdateModel,
+  SuggestLocation,
 } from "@models/requestExpand";
 import { RUAppointmentParamGet } from "@models/requestUpgrade";
 import apiLinks from "@utils/api-links";
@@ -37,6 +39,17 @@ const getAppointmentsById = async (
   const response = await httpClient.get({
     url:
       apiLinks.requestExpand.getAppointmentsById + `/${params.Id}/Appointment`,
+    token: token,
+  });
+  return response.data;
+};
+
+const getSuggestLocation = async (
+  token: string,
+  id: number
+): Promise<SuggestLocation> => {
+  const response = await httpClient.get({
+    url: apiLinks.requestExpand.getSuggestLocation + `/${id}/SuggestLocation`,
     token: token,
   });
   return response.data;
@@ -89,6 +102,19 @@ const updateData = async (
   return response.data;
 };
 
+const saveLocation = async (
+  token: string,
+  id: number,
+  data: RequestedLocation
+): Promise<any> => {
+  const response = await httpClient.post({
+    token: token,
+    url: apiLinks.requestExpand.saveLocation + `/${id}/RequestExpandLocation`,
+    data: data,
+  });
+  return response.data;
+};
+
 const requestExpand = {
   getData,
   getDetail,
@@ -98,6 +124,8 @@ const requestExpand = {
   denyRequestExpand,
   getAppointmentsById,
   updateData,
+  getSuggestLocation,
+  saveLocation,
 };
 
 export default requestExpand;

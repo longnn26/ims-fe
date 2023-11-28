@@ -2,7 +2,12 @@
 import BreadcrumbComponent from "@components/BreadcrumbComponent";
 import ServerDetail from "@components/server/ServerDetail";
 import RequestExpandDetailInfor from "@components/server/requestExpand/RequestExpandDetail";
-import { RequestExpand, RequestExpandUpdateModel } from "@models/requestExpand";
+import {
+  RequestedLocation,
+  RequestExpand,
+  RequestExpandUpdateModel,
+  SuggestLocation,
+} from "@models/requestExpand";
 import { RUAppointmentParamGet } from "@models/requestUpgrade";
 import { ServerAllocation } from "@models/serverAllocation";
 import requestExpandService from "@services/requestExpand";
@@ -34,6 +39,7 @@ const RequestExpandDetail: React.FC = () => {
 
   const [requestExpandDetail, setRequestExpandDetail] =
     useState<RequestExpand>();
+  const [suggestLocation, setSuggestLocation] = useState<SuggestLocation>();
 
   const [rUAppointmentParamGet, setRUAppointmentParamGet] =
     useState<RUAppointmentParamGet>({
@@ -45,6 +51,7 @@ const RequestExpandDetail: React.FC = () => {
   const [itemBreadcrumbs, setItemBreadcrumbs] = useState<ItemType[]>([]);
   const [requestExpandUpdate, setRequestExpandUpdate] =
     useState<RequestExpand>();
+
   const { appointmentData } = useSelector((state) => state.requestExpand);
 
   const getData = async () => {
@@ -195,12 +202,38 @@ const RequestExpandDetail: React.FC = () => {
                 setServerAllocationDetail(res);
               });
             setRequestExpandDetail(res);
-            // setRequestExpandUpdate(res);
+            setRequestExpandUpdate(res);
+            if (!res?.requestedLocation && res?.size! > 0) {
+              await requestExpandService
+                .getSuggestLocation(
+                  session?.user.access_token!,
+                  requestExpandDetail?.id!
+                )
+                .then((res) => {
+                  setSuggestLocation(res);
+                })
+                .catch((e) => {});
+            }
           });
         // getData();
       })
       .catch((errors) => {
         message.error(errors.message);
+      });
+  };
+
+  const saveLocation = async (data: RequestedLocation) => {
+    await requestExpandService
+      .saveLocation(session?.user.access_token!, requestExpandUpdate?.id!, data)
+      .then(async (res) => {
+        message.success("Save location successful!");
+        getData();
+      })
+      .catch((errors) => {
+        message.error(errors.message);
+      })
+      .finally(() => {
+        setRequestExpandUpdate(undefined);
       });
   };
 
@@ -254,8 +287,22 @@ const RequestExpandDetail: React.FC = () => {
                 type="primary"
                 className="mb-2"
                 icon={<EditOutlined />}
-                onClick={() => {
+                onClick={async () => {
                   setRequestExpandUpdate(requestExpandDetail);
+                  if (
+                    !requestExpandDetail?.requestedLocation &&
+                    requestExpandDetail?.size! > 0
+                  ) {
+                    await requestExpandService
+                      .getSuggestLocation(
+                        session?.user.access_token!,
+                        requestExpandDetail?.id!
+                      )
+                      .then((res) => {
+                        setSuggestLocation(res);
+                      })
+                      .catch((e) => {});
+                  }
                 }}
               >
                 Update
@@ -336,8 +383,13 @@ const RequestExpandDetail: React.FC = () => {
           )}
 
           <ModalUpdate
+            onSaveLocation={(data) => saveLocation(data)}
+            suggestLocation={suggestLocation}
             requestExpand={requestExpandUpdate!}
-            onClose={() => setRequestExpandUpdate(undefined)}
+            onClose={() => {
+              setRequestExpandUpdate(undefined);
+              setSuggestLocation(undefined);
+            }}
             onSubmit={(value) => {
               updateData(value);
             }}

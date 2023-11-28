@@ -87,11 +87,13 @@ const apiLinks = {
     get: `${url}/api/ServerAllocation`,
     getAppointmentsById: `${url}/api/RequestExpand`,
     update: `${url}/api/RequestExpand`,
+    getSuggestLocation: `${url}/api/RequestExpand`,
     getById: `${url}/api/RequestExpand`,
     accept: `${url}/api/RequestExpand`,
     deny: `${url}/api/RequestExpand`,
     complete: `${url}/api/RequestExpand`,
     reject: `${url}/api/RequestExpand`,
+    saveLocation: `${url}/api/RequestExpand`,
   },
 };
 

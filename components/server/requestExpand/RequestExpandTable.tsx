@@ -39,7 +39,7 @@ interface DataType {
   serverAllocationId: number;
   dateCreated: string;
   dateUpdated: string;
-  size: string;
+  size: number;
   customer: Customer;
   succeededAppointment: Appointment;
 }

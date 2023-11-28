@@ -1,6 +1,8 @@
 import { Appointment } from "./appointment";
+import { Area } from "./area";
 import { BaseWithIdNumber, PagingModel } from "./base";
 import { Customer } from "./customer";
+import { Rack } from "./rack";
 
 export interface RequestExpand extends BaseWithIdNumber {
   status: string;
@@ -11,9 +13,10 @@ export interface RequestExpand extends BaseWithIdNumber {
   serverAllocationId: number;
   dateCreated: string;
   dateUpdated: string;
-  size: string;
+  size: number;
   customer: Customer;
   succeededAppointment: Appointment;
+  requestedLocation: RequestedLocation;
 }
 
 export interface RequestExpandData extends PagingModel {
@@ -25,4 +28,15 @@ export interface RequestExpandUpdateModel {
   size: number;
   note: string;
   techNote: string;
+}
+
+export interface SuggestLocation {
+  area: Area;
+  rack: Rack;
+  position: number;
+}
+
+export interface RequestedLocation {
+  rackId: number;
+  startPosition: number;
 }

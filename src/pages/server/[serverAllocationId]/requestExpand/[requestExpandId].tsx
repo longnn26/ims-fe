@@ -2,23 +2,30 @@
 import BreadcrumbComponent from "@components/BreadcrumbComponent";
 import ServerDetail from "@components/server/ServerDetail";
 import RequestExpandDetailInfor from "@components/server/requestExpand/RequestExpandDetail";
-import { RequestExpand } from "@models/requestExpand";
+import {
+  RequestedLocation,
+  RequestExpand,
+  RequestExpandUpdateModel,
+  SuggestLocation,
+} from "@models/requestExpand";
 import { RUAppointmentParamGet } from "@models/requestUpgrade";
 import { ServerAllocation } from "@models/serverAllocation";
 import requestExpandService from "@services/requestExpand";
 import serverAllocationService from "@services/serverAllocation";
 import { getAppointmentData } from "@slices/requestExpand";
-import { Alert, FloatButton, Modal, Pagination, message } from "antd";
+import { Alert, Button, FloatButton, Modal, Pagination, message } from "antd";
 import { ItemType } from "antd/es/breadcrumb/Breadcrumb";
 import { useSession } from "next-auth/react";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { AiOutlineFileDone } from "react-icons/ai";
+import { EditOutlined } from "@ant-design/icons";
 import { MdCancel } from "react-icons/md";
 import useSelector from "@hooks/use-selector";
 import useDispatch from "@hooks/use-dispatch";
 import AppointmentTable from "@components/server/requestUpgrade/AppointmentTable";
+import ModalUpdate from "@components/server/requestExpand/ModalUpdate";
 const { confirm } = Modal;
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
@@ -41,6 +48,9 @@ const RequestExpandDetail: React.FC = () => {
     } as unknown as RUAppointmentParamGet);
 
   const [itemBreadcrumbs, setItemBreadcrumbs] = useState<ItemType[]>([]);
+  const [suggestLocation, setSuggestLocation] = useState<SuggestLocation>();
+  const [requestExpandUpdate, setRequestExpandUpdate] =
+    useState<RequestExpand>();
   const { appointmentData } = useSelector((state) => state.requestExpand);
 
   const getData = async () => {
@@ -172,6 +182,47 @@ const RequestExpandDetail: React.FC = () => {
     });
   };
 
+  const updateData = async (data: RequestExpandUpdateModel) => {
+    await requestExpandService
+      .updateData(session?.user.access_token!, data)
+      .then(async (res) => {
+        message.success("Update successful!");
+        await requestExpandService
+          .getDetail(
+            session?.user.access_token!,
+            router.query.requestExpandId + ""
+          )
+          .then(async (res) => {
+            await serverAllocationService
+              .getServerAllocationById(
+                session?.user.access_token!,
+                res.serverAllocationId + ""
+              )
+              .then((res) => {
+                setServerAllocationDetail(res);
+              });
+            setRequestExpandDetail(res);
+            setRequestExpandDetail(res);
+            setRequestExpandUpdate(res);
+            if (!res?.requestedLocation && res?.size! > 0) {
+              await requestExpandService
+                .getSuggestLocation(
+                  session?.user.access_token!,
+                  requestExpandDetail?.id!
+                )
+                .then((res) => {
+                  setSuggestLocation(res);
+                })
+                .catch((e) => {});
+            }
+          });
+        // getData();
+      })
+      .catch((errors) => {
+        message.error(errors.message);
+      });
+  };
+
   const handleBreadCumb = () => {
     var itemBrs = [] as ItemType[];
     var items = router.asPath.split("/").filter((_) => _ != "");
@@ -184,6 +235,21 @@ const RequestExpandDetail: React.FC = () => {
       });
     });
     setItemBreadcrumbs(itemBrs);
+  };
+
+  const saveLocation = async (data: RequestedLocation) => {
+    await requestExpandService
+      .saveLocation(session?.user.access_token!, requestExpandUpdate?.id!, data)
+      .then(async (res) => {
+        message.success("Save location successful!");
+        getData();
+      })
+      .catch((errors) => {
+        message.error(errors.message);
+      })
+      .finally(() => {
+        setRequestExpandUpdate(undefined);
+      });
   };
 
   useEffect(() => {
@@ -215,7 +281,34 @@ const RequestExpandDetail: React.FC = () => {
         <>
           <div className="flex flex-wrap items-center justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
             <BreadcrumbComponent itemBreadcrumbs={itemBreadcrumbs} />
+            <div>
+              <Button
+                type="primary"
+                className="mb-2"
+                icon={<EditOutlined />}
+                onClick={async () => {
+                  setRequestExpandUpdate(requestExpandDetail);
+                  if (
+                    !requestExpandDetail?.requestedLocation &&
+                    requestExpandDetail?.size! > 0
+                  ) {
+                    await requestExpandService
+                      .getSuggestLocation(
+                        session?.user.access_token!,
+                        requestExpandDetail?.id!
+                      )
+                      .then((res) => {
+                        setSuggestLocation(res);
+                      })
+                      .catch((e) => {});
+                  }
+                }}
+              >
+                Update
+              </Button>
+            </div>
           </div>
+
           <div className="md:flex">
             <ServerDetail
               serverAllocationDetail={serverAllocationDetail!}
@@ -288,6 +381,18 @@ const RequestExpandDetail: React.FC = () => {
               />
             </FloatButton.Group>
           )}
+          <ModalUpdate
+            onSaveLocation={(data) => saveLocation(data)}
+            suggestLocation={suggestLocation}
+            requestExpand={requestExpandUpdate!}
+            onClose={() => {
+              setRequestExpandUpdate(undefined);
+              setSuggestLocation(undefined);
+            }}
+            onSubmit={(value) => {
+              updateData(value);
+            }}
+          />
         </>
       }
     />
