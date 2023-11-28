@@ -116,6 +116,62 @@ const RequestExpandDetail: React.FC = () => {
     });
   };
 
+  const acceptRequestExpand = async () => {
+    confirm({
+      title: "Accept",
+      content: (
+        <Alert
+          message={`Do you want to accept with Id ${requestExpandDetail?.id}?`}
+          type="warning"
+        />
+      ),
+      async onOk() {
+        await requestExpandService
+          .acceptRequestExpand(
+            session?.user.access_token!,
+            requestExpandDetail?.id + ""
+          )
+          .then((res) => {
+            message.success("Accept request expand successful!");
+            getData();
+          })
+          .catch((errors) => {
+            message.error(errors.message);
+          })
+          .finally(() => {});
+      },
+      onCancel() {},
+    });
+  };
+
+  const denyRequestExpand = async () => {
+    confirm({
+      title: "Deny",
+      content: (
+        <Alert
+          message={`Do you want to deny with Id ${requestExpandDetail?.id}?`}
+          type="warning"
+        />
+      ),
+      async onOk() {
+        await requestExpandService
+          .denyRequestExpand(
+            session?.user.access_token!,
+            requestExpandDetail?.id + ""
+          )
+          .then((res) => {
+            message.success("Deny request expand successful!");
+            getData();
+          })
+          .catch((errors) => {
+            message.error(errors.message);
+          })
+          .finally(() => {});
+      },
+      onCancel() {},
+    });
+  };
+
   const handleBreadCumb = () => {
     var itemBrs = [] as ItemType[];
     var items = router.asPath.split("/").filter((_) => _ != "");
@@ -189,6 +245,26 @@ const RequestExpandDetail: React.FC = () => {
                 });
               }}
             />
+          )}
+
+          {requestExpandDetail?.status === "Waiting" && (
+            <FloatButton.Group
+              trigger="hover"
+              type="primary"
+              style={{ right: 60, bottom: 500 }}
+              icon={<AiOutlineFileDone />}
+            >
+              <FloatButton
+                icon={<MdCancel color="red" />}
+                tooltip="Deny"
+                onClick={() => denyRequestExpand()}
+              />
+              <FloatButton
+                onClick={() => acceptRequestExpand()}
+                icon={<AiOutlineFileDone color="green" />}
+                tooltip="Accept"
+              />
+            </FloatButton.Group>
           )}
           {Boolean(
             requestExpandDetail?.status === "Accepted" &&
