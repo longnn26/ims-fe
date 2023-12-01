@@ -7,10 +7,15 @@ import { ParamGet } from "@models/base";
 import useDispatch from "@hooks/use-dispatch";
 import useSelector from "@hooks/use-selector";
 import { getIpSubnetData } from "@slices/ipSubnet";
-import { IpSubnetCreateModel, IpSubnet as IpSubnetObj, IpSubnetData } from "@models/ipSubnet";
+import {
+  IpSubnetCreateModel,
+  IpSubnet as IpSubnetObj,
+  IpSubnetData,
+} from "@models/ipSubnet";
 import { Button, Pagination, message, Modal, Alert } from "antd";
 import AreaTable from "@components/ipSubnet/IpSubnetTable";
 import IpSubnetTable from "@components/ipSubnet/IpSubnetTable";
+import ModalCreate from "@components/ipSubnet/ModalCreate";
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
 });
@@ -24,6 +29,7 @@ const IpSubnet: React.FC = () => {
     (state) => state.ipSubnet
   );
 
+  const [openModalCreate, setOpenModalCreate] = useState<boolean>(false);
   const [paramGet, setParamGet] = useState<ParamGet>({
     PageIndex: 1,
     PageSize: 7,
@@ -51,7 +57,25 @@ const IpSubnet: React.FC = () => {
     <AntdLayoutNoSSR
       content={
         <>
-          <div className="flex justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50"></div>
+          <div className="flex justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
+            <Button
+              type="primary"
+              htmlType="submit"
+              onClick={() => {
+                setOpenModalCreate(true);
+              }}
+            >
+              Create
+            </Button>
+          </div>
+
+          <ModalCreate
+            open={openModalCreate}
+            onClose={() => setOpenModalCreate(false)}
+            onSubmit={(data: IpSubnetCreateModel) => {
+              console.log(data);
+            }}
+          />
           <IpSubnetTable
             onEdit={(record) => {}}
             onDelete={async (record) => {}}

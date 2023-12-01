@@ -1,14 +1,14 @@
 import React, { useRef, useState } from "react";
-import { Button, Input, Modal } from "antd";
+import { Button, Input, Modal, Space } from "antd";
 import { Form } from "antd";
-import { AreaCreateModel } from "@models/area";
+import { IpSubnetCreateModel } from "@models/ipSubnet";
+import { CloseOutlined } from "@ant-design/icons";
 const { confirm } = Modal;
 
 interface Props {
   open: boolean;
   onClose: () => void;
-  // loadingSubmit: boolean;
-  onSubmit: (data: AreaCreateModel) => void;
+  onSubmit: (data: IpSubnetCreateModel) => void;
 }
 
 const ModalCreate: React.FC<Props> = (props) => {
@@ -31,7 +31,7 @@ const ModalCreate: React.FC<Props> = (props) => {
   return (
     <>
       <Modal
-        title={<span className="inline-block m-auto">Create area</span>}
+        title={<span className="inline-block m-auto">Create IP</span>}
         open={open}
         confirmLoading={confirmLoading}
         onCancel={() => {
@@ -48,11 +48,13 @@ const ModalCreate: React.FC<Props> = (props) => {
                 confirm({
                   title: "Do you want to save?",
                   async onOk() {
+                    console.log(form.getFieldsValue());
                     onSubmit({
-                      name: form.getFieldValue("name"),
-                      rowCount: form.getFieldValue("rowCount"),
-                      columnCount: form.getFieldValue("columnCount"),
-                    } as AreaCreateModel);
+                      ipAddresss: form.getFieldValue("ipAddresss"),
+                      prefixLength: form.getFieldValue("prefixLength"),
+                      note: form.getFieldValue("note"),
+                      ipSubnets: form.getFieldValue("ipSubnets"),
+                    } as IpSubnetCreateModel);
                     form.resetFields();
                   },
                   onCancel() {},
@@ -67,26 +69,74 @@ const ModalCreate: React.FC<Props> = (props) => {
           <Form
             ref={formRef}
             form={form}
-            labelCol={{ span: 8 }}
-            wrapperCol={{ span: 16 }}
+            // labelCol={{ span: 8 }}
+            // wrapperCol={{ span: 16 }}
             style={{ width: "100%" }}
+            layout="vertical"
           >
-            <Form.Item name="name" label="Name" rules={[{ required: true }]}>
-              <Input placeholder="Name" allowClear />
-            </Form.Item>
             <Form.Item
-              name="rowCount"
-              label="Row Count"
+              name="ipAddresss"
+              label="Ip Addresss"
               rules={[{ required: true }]}
             >
-              <Input placeholder="Row Count" allowClear />
+              <Input placeholder="Ip Addresss" allowClear />
             </Form.Item>
             <Form.Item
-              name="columnCount"
-              label="Column Count"
+              name="prefixLength"
+              label="Prefix Length"
               rules={[{ required: true }]}
             >
-              <Input placeholder="Column Count" allowClear />
+              <Input placeholder="Prefix Length" allowClear />
+            </Form.Item>
+            <Form.Item name="note" label="Note">
+              <Input placeholder="Note" allowClear />
+            </Form.Item>
+            <Form.Item label="Ip Subnets">
+              <Form.List name="ipSubnets">
+                {(subFields, subOpt) => (
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      rowGap: 16,
+                    }}
+                  >
+                    {subFields.map((subField) => (
+                      <div
+                        key={subField.key}
+                        className="relative p-5 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#464649]/50"
+                      >
+                        <CloseOutlined
+                          className="absolute top-4 right-2"
+                          onClick={() => {
+                            subOpt.remove(subField.name);
+                          }}
+                        />
+                        <Form.Item
+                          name={[subField.name, "ipAddresss"]}
+                          label="Ip Addresss"
+                          rules={[{ required: true }]}
+                        >
+                          <Input placeholder="Ip Addresss" />
+                        </Form.Item>
+                        <Form.Item
+                          name={[subField.name, "prefixLength"]}
+                          label="Prefix Length"
+                          rules={[{ required: true }]}
+                        >
+                          <Input placeholder="prefixLength" />
+                        </Form.Item>
+                        <Form.Item name={[subField.name, "note"]} label="Note">
+                          <Input placeholder="note" />
+                        </Form.Item>
+                      </div>
+                    ))}
+                    <Button type="dashed" onClick={() => subOpt.add()} block>
+                      + Add Ip Subnet
+                    </Button>
+                  </div>
+                )}
+              </Form.List>
             </Form.Item>
           </Form>
         </div>
