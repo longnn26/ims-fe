@@ -92,31 +92,37 @@ const ModalCreate: React.FC<Props> = (props) => {
               style={{ width: "100%" }}
               layout="vertical"
             >
-              <Form.Item
-                name="ipAddresss"
-                label="Ip Addresss"
-                rules={[{ required: true }]}
-              >
-                <Input placeholder="Ip Addresss" allowClear />
-              </Form.Item>
-              <Form.Item
-                name="prefixLength"
-                label="Prefix Length"
-                rules={[
-                  { required: true },
-                  {
-                    pattern: new RegExp(/^(?:1[6-9]|2[0-4])$/),
-                    message: "PrefixLength must be a number between 16 and 24",
-                  },
-                ]}
-              >
-                <Input placeholder="Prefix Length" allowClear />
-              </Form.Item>
+              <Space.Compact style={{ width: "100%" }}>
+                <Form.Item
+                  style={{ width: "69%" }}
+                  name="ipAddresss"
+                  label="Ip Addresss"
+                  rules={[{ required: true }]}
+                >
+                  <Input placeholder="Ip Addresss" allowClear />
+                </Form.Item>
+                <div className="w-[1%] m-auto"></div>
+                <Form.Item
+                  style={{ width: "30%" }}
+                  name="prefixLength"
+                  label="Prefix Length"
+                  rules={[
+                    { required: true },
+                    {
+                      pattern: new RegExp(/^(?:1[6-9]|2[0-4])$/),
+                      message:
+                        "PrefixLength must be a number between 16 and 24",
+                    },
+                  ]}
+                >
+                  <Input placeholder="Prefix Length" allowClear />
+                </Form.Item>
+              </Space.Compact>
+
               <Form.Item name="note" label="Note">
                 <Input placeholder="Note" allowClear />
               </Form.Item>
               <Form.Item
-                label="Ip Subnets"
                 name="subnets"
                 rules={[
                   ({ getFieldValue }) => ({
@@ -127,7 +133,7 @@ const ModalCreate: React.FC<Props> = (props) => {
                       ) {
                         return Promise.resolve();
                       }
-                      return Promise.reject("Please add Ip Subnet");
+                      return Promise.reject("Please add Subnet");
                     },
                   }),
                 ]}
@@ -152,27 +158,33 @@ const ModalCreate: React.FC<Props> = (props) => {
                               subOpt.remove(subField.name);
                             }}
                           />
-                          <Form.Item
-                            name={[subField.name, "ipAddresss"]}
-                            label="Ip Addresss"
-                            rules={[{ required: true }]}
-                          >
-                            <Input placeholder="Ip Addresss" />
-                          </Form.Item>
-                          <Form.Item
-                            name={[subField.name, "prefixLength"]}
-                            label="Prefix Length"
-                            rules={[
-                              { required: true },
-                              {
-                                pattern: new RegExp(/^(?:1[6-9]|2[0-4])$/),
-                                message:
-                                  "PrefixLength must be a number between 16 and 24",
-                              },
-                            ]}
-                          >
-                            <Input placeholder="Prefix Length" />
-                          </Form.Item>
+                          <Space.Compact style={{ width: "100%" }}>
+                            <Form.Item
+                              style={{ width: "69%" }}
+                              name={[subField.name, "ipAddresss"]}
+                              label="Ip Addresss"
+                              rules={[{ required: true }]}
+                            >
+                              <Input placeholder="Ip Addresss" />
+                            </Form.Item>
+                            <div className="w-[1%] m-auto"></div>
+                            <Form.Item
+                              name={[subField.name, "prefixLength"]}
+                              label="Prefix Length"
+                              style={{ width: "30%" }}
+                              rules={[
+                                { required: true },
+                                {
+                                  pattern: new RegExp(/^(?:1[6-9]|2[0-4])$/),
+                                  message:
+                                    "PrefixLength must be a number between 16 and 24",
+                                },
+                              ]}
+                            >
+                              <Input placeholder="Prefix Length" />
+                            </Form.Item>
+                          </Space.Compact>
+
                           <Form.Item
                             name={[subField.name, "note"]}
                             label="Note"
@@ -182,7 +194,7 @@ const ModalCreate: React.FC<Props> = (props) => {
                         </div>
                       ))}
                       <Button type="dashed" onClick={() => subOpt.add()} block>
-                        + Add Ip Subnet
+                        + Add Subnet
                       </Button>
                     </div>
                   )}
