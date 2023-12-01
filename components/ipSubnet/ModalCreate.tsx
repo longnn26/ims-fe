@@ -84,108 +84,113 @@ const ModalCreate: React.FC<Props> = (props) => {
           </Button>,
         ]}
       >
-        <div className="flex max-w-md flex-col gap-4 m-auto">
-          <Form
-            ref={formRef}
-            form={form}
-            style={{ width: "100%" }}
-            layout="vertical"
-          >
-            <Form.Item
-              name="ipAddresss"
-              label="Ip Addresss"
-              rules={[{ required: true }]}
+        <Spin spinning={confirmLoading}>
+          <div className="flex max-w-md flex-col gap-4 m-auto">
+            <Form
+              ref={formRef}
+              form={form}
+              style={{ width: "100%" }}
+              layout="vertical"
             >
-              <Input placeholder="Ip Addresss" allowClear />
-            </Form.Item>
-            <Form.Item
-              name="prefixLength"
-              label="Prefix Length"
-              rules={[
-                { required: true },
-                {
-                  pattern: new RegExp(/^(?:1[6-9]|2[0-4])$/),
-                  message: "PrefixLength must be a number between 16 and 24",
-                },
-              ]}
-            >
-              <Input placeholder="Prefix Length" allowClear />
-            </Form.Item>
-            <Form.Item name="note" label="Note">
-              <Input placeholder="Note" allowClear />
-            </Form.Item>
-            <Form.Item
-              label="Ip Subnets"
-              name="subnets"
-              rules={[
-                ({ getFieldValue }) => ({
-                  validator(rule, value) {
-                    if (
-                      getFieldValue("ipSubnets") &&
-                      getFieldValue("ipSubnets").length
-                    ) {
-                      return Promise.resolve();
-                    }
-                    return Promise.reject("Please add Ip Subnet");
+              <Form.Item
+                name="ipAddresss"
+                label="Ip Addresss"
+                rules={[{ required: true }]}
+              >
+                <Input placeholder="Ip Addresss" allowClear />
+              </Form.Item>
+              <Form.Item
+                name="prefixLength"
+                label="Prefix Length"
+                rules={[
+                  { required: true },
+                  {
+                    pattern: new RegExp(/^(?:1[6-9]|2[0-4])$/),
+                    message: "PrefixLength must be a number between 16 and 24",
                   },
-                }),
-              ]}
-            >
-              <Form.List name="ipSubnets">
-                {(subFields, subOpt) => (
-                  <div
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      rowGap: 16,
-                    }}
-                  >
-                    {subFields.map((subField) => (
-                      <div
-                        key={subField.key}
-                        className="relative p-5 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#464649]/50"
-                      >
-                        <CloseOutlined
-                          className="absolute top-4 right-2"
-                          onClick={() => {
-                            subOpt.remove(subField.name);
-                          }}
-                        />
-                        <Form.Item
-                          name={[subField.name, "ipAddresss"]}
-                          label="Ip Addresss"
-                          rules={[{ required: true }]}
+                ]}
+              >
+                <Input placeholder="Prefix Length" allowClear />
+              </Form.Item>
+              <Form.Item name="note" label="Note">
+                <Input placeholder="Note" allowClear />
+              </Form.Item>
+              <Form.Item
+                label="Ip Subnets"
+                name="subnets"
+                rules={[
+                  ({ getFieldValue }) => ({
+                    validator(rule, value) {
+                      if (
+                        getFieldValue("ipSubnets") &&
+                        getFieldValue("ipSubnets").length
+                      ) {
+                        return Promise.resolve();
+                      }
+                      return Promise.reject("Please add Ip Subnet");
+                    },
+                  }),
+                ]}
+              >
+                <Form.List name="ipSubnets">
+                  {(subFields, subOpt) => (
+                    <div
+                      style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        rowGap: 16,
+                      }}
+                    >
+                      {subFields.map((subField) => (
+                        <div
+                          key={subField.key}
+                          className="relative p-5 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#464649]/50"
                         >
-                          <Input placeholder="Ip Addresss" />
-                        </Form.Item>
-                        <Form.Item
-                          name={[subField.name, "prefixLength"]}
-                          label="Prefix Length"
-                          rules={[
-                            { required: true },
-                            {
-                              pattern: new RegExp(/^(?:1[6-9]|2[0-4])$/),
-                              message:
-                                "PrefixLength must be a number between 16 and 24",
-                            },
-                          ]}
-                        >
-                          <Input placeholder="Prefix Length" />
-                        </Form.Item>
-                        <Form.Item name={[subField.name, "note"]} label="Note">
-                          <Input placeholder="note" />
-                        </Form.Item>
-                      </div>
-                    ))}
-                    <Button type="dashed" onClick={() => subOpt.add()} block>
-                      + Add Ip Subnet
-                    </Button>
-                  </div>
-                )}
-              </Form.List>
-            </Form.Item>
-          </Form>
-        </div>
+                          <CloseOutlined
+                            className="absolute top-4 right-2"
+                            onClick={() => {
+                              subOpt.remove(subField.name);
+                            }}
+                          />
+                          <Form.Item
+                            name={[subField.name, "ipAddresss"]}
+                            label="Ip Addresss"
+                            rules={[{ required: true }]}
+                          >
+                            <Input placeholder="Ip Addresss" />
+                          </Form.Item>
+                          <Form.Item
+                            name={[subField.name, "prefixLength"]}
+                            label="Prefix Length"
+                            rules={[
+                              { required: true },
+                              {
+                                pattern: new RegExp(/^(?:1[6-9]|2[0-4])$/),
+                                message:
+                                  "PrefixLength must be a number between 16 and 24",
+                              },
+                            ]}
+                          >
+                            <Input placeholder="Prefix Length" />
+                          </Form.Item>
+                          <Form.Item
+                            name={[subField.name, "note"]}
+                            label="Note"
+                          >
+                            <Input placeholder="note" />
+                          </Form.Item>
+                        </div>
+                      ))}
+                      <Button type="dashed" onClick={() => subOpt.add()} block>
+                        + Add Ip Subnet
+                      </Button>
+                    </div>
+                  )}
+                </Form.List>
+              </Form.Item>
+            </Form>
+          </div>
+        </Spin>
       </Modal>
     </>
   );
