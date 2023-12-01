@@ -72,8 +72,8 @@ const IpSubnet: React.FC = () => {
           <ModalCreate
             open={openModalCreate}
             onClose={() => setOpenModalCreate(false)}
-            onSubmit={(data: IpSubnetCreateModel) => {
-              console.log(data);
+            onRefresh={() => {
+              getData();
             }}
           />
           <IpSubnetTable

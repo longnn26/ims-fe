@@ -1,20 +1,23 @@
 import React, { useRef, useState } from "react";
-import { Button, Input, Modal, Space } from "antd";
+import { Button, Input, Modal, Space, Spin, message } from "antd";
 import { Form } from "antd";
 import { IpSubnetCreateModel } from "@models/ipSubnet";
 import { CloseOutlined } from "@ant-design/icons";
+import ipSubnetService from "@services/ipSubnet";
+import { useSession } from "next-auth/react";
 const { confirm } = Modal;
 
 interface Props {
   open: boolean;
   onClose: () => void;
-  onSubmit: (data: IpSubnetCreateModel) => void;
+  onRefresh: () => void;
 }
 
 const ModalCreate: React.FC<Props> = (props) => {
   const formRef = useRef(null);
   const [form] = Form.useForm();
-  const { onSubmit, open, onClose } = props;
+  const { onRefresh, open, onClose } = props;
+  const { data: session } = useSession();
 
   const [confirmLoading, setConfirmLoading] = useState(false);
 
@@ -26,6 +29,24 @@ const ModalCreate: React.FC<Props> = (props) => {
       result = true;
     }
     return result;
+  };
+
+  const createData = async (data: IpSubnetCreateModel) => {
+    setConfirmLoading(true);
+    await ipSubnetService
+      .createData(session?.user.access_token!, data)
+      .then((res) => {
+        message.success("Create successful!");
+        onRefresh();
+        onClose();
+        form.resetFields();
+      })
+      .catch((errors) => {
+        message.error(errors.response.data);
+      })
+      .finally(() => {
+        setConfirmLoading(false);
+      });
   };
 
   return (
@@ -40,7 +61,7 @@ const ModalCreate: React.FC<Props> = (props) => {
         }}
         footer={[
           <Button
-            // loading={loadingSubmit}
+            loading={confirmLoading}
             className="btn-submit"
             key="submit"
             onClick={async () => {
@@ -48,14 +69,12 @@ const ModalCreate: React.FC<Props> = (props) => {
                 confirm({
                   title: "Do you want to save?",
                   async onOk() {
-                    console.log(form.getFieldsValue());
-                    onSubmit({
+                    createData({
                       ipAddresss: form.getFieldValue("ipAddresss"),
                       prefixLength: form.getFieldValue("prefixLength"),
                       note: form.getFieldValue("note"),
                       ipSubnets: form.getFieldValue("ipSubnets"),
                     } as IpSubnetCreateModel);
-                    form.resetFields();
                   },
                   onCancel() {},
                 });
@@ -69,8 +88,6 @@ const ModalCreate: React.FC<Props> = (props) => {
           <Form
             ref={formRef}
             form={form}
-            // labelCol={{ span: 8 }}
-            // wrapperCol={{ span: 16 }}
             style={{ width: "100%" }}
             layout="vertical"
           >
@@ -84,14 +101,36 @@ const ModalCreate: React.FC<Props> = (props) => {
             <Form.Item
               name="prefixLength"
               label="Prefix Length"
-              rules={[{ required: true }]}
+              rules={[
+                { required: true },
+                {
+                  pattern: new RegExp(/^(?:1[6-9]|2[0-4])$/),
+                  message: "PrefixLength must be a number between 16 and 24",
+                },
+              ]}
             >
               <Input placeholder="Prefix Length" allowClear />
             </Form.Item>
             <Form.Item name="note" label="Note">
               <Input placeholder="Note" allowClear />
             </Form.Item>
-            <Form.Item label="Ip Subnets">
+            <Form.Item
+              label="Ip Subnets"
+              name="subnets"
+              rules={[
+                ({ getFieldValue }) => ({
+                  validator(rule, value) {
+                    if (
+                      getFieldValue("ipSubnets") &&
+                      getFieldValue("ipSubnets").length
+                    ) {
+                      return Promise.resolve();
+                    }
+                    return Promise.reject("Please add Ip Subnet");
+                  },
+                }),
+              ]}
+            >
               <Form.List name="ipSubnets">
                 {(subFields, subOpt) => (
                   <div
@@ -122,9 +161,16 @@ const ModalCreate: React.FC<Props> = (props) => {
                         <Form.Item
                           name={[subField.name, "prefixLength"]}
                           label="Prefix Length"
-                          rules={[{ required: true }]}
+                          rules={[
+                            { required: true },
+                            {
+                              pattern: new RegExp(/^(?:1[6-9]|2[0-4])$/),
+                              message:
+                                "PrefixLength must be a number between 16 and 24",
+                            },
+                          ]}
                         >
-                          <Input placeholder="prefixLength" />
+                          <Input placeholder="Prefix Length" />
                         </Form.Item>
                         <Form.Item name={[subField.name, "note"]} label="Note">
                           <Input placeholder="note" />
