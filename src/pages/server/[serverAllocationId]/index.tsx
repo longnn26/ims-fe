@@ -250,7 +250,9 @@ const Customer: React.FC = () => {
             id={serverAllocationDetail?.id!}
             ipSuggestMaster={ipSuggestMaster}
             onClose={() => setIpSuggestMaster(undefined)}
-            onRefresh={() => {}}
+            onRefresh={() => {
+              getData();
+            }}
           />
 
           <FloatButton.Group

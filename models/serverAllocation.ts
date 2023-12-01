@@ -1,5 +1,6 @@
 import { BaseWithIdNumber, PagingModel } from "./base";
 import { Customer } from "./customer";
+import { IpAddress } from "./ipAddress";
 
 export interface ServerAllocation extends BaseWithIdNumber {
   status: string;
@@ -9,6 +10,7 @@ export interface ServerAllocation extends BaseWithIdNumber {
   note: string;
   customerId: number;
   customer: Customer;
+  masterIp: IpAddress;
 }
 
 export interface ServerAllocationData extends PagingModel {
