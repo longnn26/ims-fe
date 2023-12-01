@@ -95,6 +95,13 @@ const apiLinks = {
     reject: `${url}/api/RequestExpand`,
     saveLocation: `${url}/api/RequestExpand`,
   },
+
+  ipSubnet: {
+    get: `${url}/api/IpSubnet`,
+    getById: `${url}/api/IpSubnet`,
+    getIpAddresssById: `${url}/api/IpSubnet`,
+    create: `${url}/api/IpSubnet`,
+  },
 };
 
 export default apiLinks;
