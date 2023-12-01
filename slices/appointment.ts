@@ -1,4 +1,5 @@
 import { AppointmentData } from "@models/appointment";
+import { RequestExpandData } from "@models/requestExpand";
 import {
   RUAppointmentParamGet,
   RequestUpgradeData,
@@ -9,16 +10,18 @@ import appointment from "@services/appointment";
 interface State {
   listAppointmentData: AppointmentData;
   requestUpgradeData: RequestUpgradeData;
+  requestExpandData: RequestExpandData;
   listAppointmentDataLoading: boolean;
 }
 
 const initialState: State = {
   listAppointmentData: {} as AppointmentData,
   requestUpgradeData: {} as RequestUpgradeData,
+  requestExpandData: {} as RequestExpandData,
   listAppointmentDataLoading: false,
 };
 
-const TYPE_PREFIX = "requestUpgrade";
+const TYPE_PREFIX = "appointment";
 
 const getListAppointment = createAsyncThunk(
   `${TYPE_PREFIX}/getListAppointment`,
@@ -32,9 +35,20 @@ const getListAppointment = createAsyncThunk(
 );
 
 const getRequestUpgradeData = createAsyncThunk(
-  `${TYPE_PREFIX}/getAppointmentData`,
+  `${TYPE_PREFIX}/getRequestUpgradeData`,
   async (arg: { token: string; paramGet: RUAppointmentParamGet }) => {
     const result = await appointment.getRequestUpgradesById(
+      arg.token,
+      arg.paramGet
+    );
+    return result;
+  }
+);
+
+const getRequestExpandData = createAsyncThunk(
+  `${TYPE_PREFIX}/getRequestExpandData`,
+  async (arg: { token: string; paramGet: RUAppointmentParamGet }) => {
+    const result = await appointment.getRequestExpandsById(
       arg.token,
       arg.paramGet
     );
@@ -65,9 +79,14 @@ const slice = createSlice({
       ...state,
       requestUpgradeData: payload,
     }));
+
+    builder.addCase(getRequestExpandData.fulfilled, (state, { payload }) => ({
+      ...state,
+      requestExpandData: payload,
+    }));
   },
 });
 
-export { getListAppointment, getRequestUpgradeData };
+export { getListAppointment, getRequestUpgradeData, getRequestExpandData };
 
 export default slice.reducer;

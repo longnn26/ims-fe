@@ -1,56 +1,45 @@
 "use client";
-import dynamic from "next/dynamic";
-import { useEffect, useState } from "react";
-import { useSession } from "next-auth/react";
-import React from "react";
-import useDispatch from "@hooks/use-dispatch";
-import useSelector from "@hooks/use-selector";
-import { getRequestUpgradeData } from "@slices/requestUpgrade";
-import {
-  RequestUpgradeCreateModel,
-  RequestUpgrade,
-  RequestUpgradeData,
-  RequestUpgradeUpdateModel,
-  RUParamGet,
-} from "@models/requestUpgrade";
-import {
-  Button,
-  Pagination,
-  message,
-  Modal,
-  Alert,
-  Descriptions,
-  Divider,
-} from "antd";
-import type { DescriptionsProps } from "antd";
-import { CaretLeftOutlined } from "@ant-design/icons";
-import requestUpgradeService from "@services/requestUpgrade";
-import serverAllocationService from "@services/serverAllocation";
-import { useRouter } from "next/router";
-import { ServerAllocation } from "@models/serverAllocation";
-import { dateAdvFormat } from "@utils/constants";
-import { IoIosSend } from "react-icons/io";
-import moment from "moment";
-import ModalCreate from "@components/server/requestUpgrade/ModalCreate";
-import ModalUpdate from "@components/server/requestUpgrade/ModalUpdate";
-import RequestUpgradeTable from "@components/server/requestUpgrade/RequestUpgradeTable";
-import { ItemType } from "antd/es/breadcrumb/Breadcrumb";
 import BreadcrumbComponent from "@components/BreadcrumbComponent";
 import ServerDetail from "@components/server/ServerDetail";
+import RequestExpandTable from "@components/server/requestExpand/RequestExpandTable";
+import ModalCreate from "@components/server/requestUpgrade/ModalCreate";
+import ModalUpdate from "@components/server/requestUpgrade/ModalUpdate";
+import useDispatch from "@hooks/use-dispatch";
+import useSelector from "@hooks/use-selector";
+import {
+  RUParamGet,
+  RequestUpgrade,
+  RequestUpgradeCreateModel,
+  RequestUpgradeData,
+  RequestUpgradeUpdateModel,
+} from "@models/requestUpgrade";
+import { ServerAllocation } from "@models/serverAllocation";
+import requestUpgradeService from "@services/requestUpgrade";
+import serverAllocationService from "@services/serverAllocation";
+import { getRequestExpandData } from "@slices/requestExpand";
+import { Alert, FloatButton, Modal, Pagination, message } from "antd";
+import { ItemType } from "antd/es/breadcrumb/Breadcrumb";
+import { useSession } from "next-auth/react";
+import dynamic from "next/dynamic";
+import { useRouter } from "next/router";
+import React, { useEffect, useState } from "react";
+import { AiOutlineFileDone } from "react-icons/ai";
+import { MdCancel } from "react-icons/md";
+
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
 });
 const { confirm } = Modal;
-const RequestUpgrade: React.FC = () => {
+const RequestExpand: React.FC = () => {
   const dispatch = useDispatch();
   const router = useRouter();
   const { data: session } = useSession();
-  const { requestUpgradeData } = useSelector((state) => state.requestUpgrade);
+  const { requestExpandData } = useSelector((state) => state.requestExpand);
 
   const [paramGet, setParamGet] = useState<RUParamGet>({
     PageIndex: 1,
     PageSize: 10,
-    ServerAllocationId: router.query.serverAllocationId ?? -1,
+    // ServerAllocationId: router.query.serverAllocationId ?? -1,
   } as unknown as RUParamGet);
   const [loadingSubmit, setLoadingSubmit] = useState<boolean>(false);
   const [requestUpgradeUpdate, setRequestUpgradeUpdate] = useState<
@@ -72,8 +61,9 @@ const RequestUpgrade: React.FC = () => {
         setServerAllocationDetail(res);
       });
     dispatch(
-      getRequestUpgradeData({
+      getRequestExpandData({
         token: session?.user.access_token!,
+        id: parseInt(router.query.serverAllocationId?.toString()!) ?? -1,
         paramGet: { ...paramGet },
       })
     ).then(({ payload }) => {
@@ -172,23 +162,6 @@ const RequestUpgrade: React.FC = () => {
         <>
           <div className="flex flex-wrap items-center justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
             <BreadcrumbComponent itemBreadcrumbs={itemBreadcrumbs} />
-            <Button
-              type="primary"
-              htmlType="submit"
-              icon={<IoIosSend />}
-              onClick={() => {
-                setOpenModalCreate(true);
-              }}
-            >
-              Request upgrade
-            </Button>
-
-            {/* <SearchComponent
-              placeholder="Search Name, Description..."
-              setSearchValue={(value) =>
-                setParamGet({ ...paramGet, SearchValue: value })
-              }
-            /> */}
           </div>
           <ModalUpdate
             requestUpgrade={requestUpgradeUpdate!}
@@ -210,7 +183,7 @@ const RequestUpgrade: React.FC = () => {
           <ServerDetail
             serverAllocationDetail={serverAllocationDetail!}
           ></ServerDetail>
-          <RequestUpgradeTable
+          <RequestExpandTable
             urlOncell={`/server/${serverAllocationDetail?.id}`}
             serverAllocationId={serverAllocationDetail?.id.toString()}
             onEdit={(record) => {
@@ -220,12 +193,12 @@ const RequestUpgrade: React.FC = () => {
               deleteData(record);
             }}
           />
-          {requestUpgradeData?.totalPage > 0 && (
+          {requestExpandData?.totalPage > 0 && (
             <Pagination
               className="text-end m-4"
               current={paramGet?.PageIndex}
-              pageSize={requestUpgradeData?.pageSize ?? 10}
-              total={requestUpgradeData?.totalSize}
+              pageSize={requestExpandData?.pageSize ?? 10}
+              total={requestExpandData?.totalSize}
               onChange={(page, pageSize) => {
                 setParamGet({
                   ...paramGet,
@@ -235,10 +208,29 @@ const RequestUpgrade: React.FC = () => {
               }}
             />
           )}
+          {/* {Boolean(true) && (
+            <FloatButton.Group
+              trigger="hover"
+              type="primary"
+              style={{ right: 60, bottom: 500 }}
+              icon={<AiOutlineFileDone />}
+            >
+              <FloatButton
+                icon={<MdCancel color="red" />}
+                tooltip="Fail"
+                // onClick={() => setOpenFail(true)}
+              />
+              <FloatButton
+                // onClick={() => setOpenComplete(true)}
+                icon={<AiOutlineFileDone color="green" />}
+                tooltip="Complete"
+              />
+            </FloatButton.Group>
+          )} */}
         </>
       }
     />
   );
 };
 
-export default RequestUpgrade;
+export default RequestExpand;

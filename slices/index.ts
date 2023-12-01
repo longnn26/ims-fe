@@ -7,6 +7,8 @@ import requestUpgrade from "@slices/requestUpgrade";
 import area from "@slices/area";
 import companyType from "@slices/companyType";
 import appointment from "@slices/appointment";
+import requestExpand from "@slices/requestExpand";
+import ipSubnet from "@slices/ipSubnet";
 
 // eslint-disable-next-line import/no-anonymous-default-export
 export default {
@@ -19,4 +21,6 @@ export default {
   area,
   companyType,
   appointment,
+  requestExpand,
+  ipSubnet
 };

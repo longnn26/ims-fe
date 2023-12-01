@@ -30,12 +30,12 @@ const style: React.CSSProperties = { background: "#0092ff", padding: "8px 0" };
 const RackRender: React.FC<Props> = (props) => {
   const { area, onEdit } = props;
   const router = useRouter();
-  const { rackData } = useSelector((state) => state.area);
+  const { getAllRackData } = useSelector((state) => state.area);
   var rowList = [] as RowInArea[];
   for (let index = 0; index < area?.rowCount; index++) {
     rowList.push({ id: index + 1, data: [] } as RowInArea);
   }
-  rackData.data.forEach((rack) => {
+  getAllRackData?.forEach((rack) => {
     rowList.forEach((row) => {
       if (row.id === rack.row) {
         row.data?.push(rack);
@@ -168,7 +168,8 @@ const RackRender: React.FC<Props> = (props) => {
                 key={i}
                 className="gutter-row !flex !justify-center cursor-pointer"
                 span={Math.ceil(24 / area.columnCount)}
-                onClick={() => onEdit(item)}
+                // onClick={() => onEdit(item)}
+                onClick={() => router.push(`rack/${item.id}`)}
               >
                 <div className="text-[#ee4623] font-bold text-center w-2/3 px-2 h-10 flex items-center justify-center relative">
                   <img

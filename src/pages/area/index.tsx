@@ -6,20 +6,21 @@ import React from "react";
 import { ParamGet } from "@models/base";
 import useDispatch from "@hooks/use-dispatch";
 import useSelector from "@hooks/use-selector";
-import { getAreaData } from "@slices/area";
+import { getAllAreaData, getAreaData } from "@slices/area";
 import { AreaCreateModel, AreaUpdateModel, Area, AreaData } from "@models/area";
 import { Button, Pagination, message, Modal, Alert } from "antd";
 import ModalCreate from "@components/area/ModalCreate";
 import areaService from "@services/area";
 import ModalUpdate from "@components/area/ModalUpdate";
 import AreaTable from "@components/area/AreaTable";
+import AreaCollap from "@components/area/AreaCollap";
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
 });
 
 const { confirm } = Modal;
 
-const Customer: React.FC = () => {
+const Area: React.FC = () => {
   const dispatch = useDispatch();
   const { data: session } = useSession();
   const { customerData } = useSelector((state) => state.customer);
@@ -33,17 +34,22 @@ const Customer: React.FC = () => {
   const [openModalCreate, setOpenModalCreate] = useState<boolean>(false);
 
   const getData = async () => {
+    // dispatch(
+    //   getAreaData({
+    //     token: session?.user.access_token!,
+    //     paramGet: { ...paramGet },
+    //   })
+    // ).then(({ payload }) => {
+    //   var res = payload as AreaData;
+    //   if (res.totalPage < paramGet.PageIndex && res.totalPage != 0) {
+    //     setParamGet({ ...paramGet, PageIndex: res.totalPage });
+    //   }
+    // });
     dispatch(
-      getAreaData({
+      getAllAreaData({
         token: session?.user.access_token!,
-        paramGet: { ...paramGet },
       })
-    ).then(({ payload }) => {
-      var res = payload as AreaData;
-      if (res.totalPage < paramGet.PageIndex && res.totalPage != 0) {
-        setParamGet({ ...paramGet, PageIndex: res.totalPage });
-      }
-    });
+    );
   };
 
   const createData = async (data: AreaCreateModel) => {
@@ -121,21 +127,8 @@ const Customer: React.FC = () => {
             >
               Create
             </Button>
-            {/* <SearchComponent
-              placeholder="Search Name, Description..."
-              setSearchValue={(value) =>
-                setParamGet({ ...paramGet, SearchValue: value })
-              }
-            /> */}
           </div>
-          <AreaTable
-            onEdit={(record) => {
-              setAreaUpdate(record);
-            }}
-            onDelete={async (record) => {
-              deleteComponent(record);
-            }}
-          />
+          <AreaCollap />
 
           <ModalCreate
             open={openModalCreate}
@@ -151,25 +144,10 @@ const Customer: React.FC = () => {
               updateData(data);
             }}
           />
-          {customerData.totalPage > 0 && (
-            <Pagination
-              className="text-end m-4"
-              current={paramGet.PageIndex}
-              pageSize={customerData.pageSize ?? 10}
-              total={customerData.totalSize}
-              onChange={(page, pageSize) => {
-                setParamGet({
-                  ...paramGet,
-                  PageIndex: page,
-                  PageSize: pageSize,
-                });
-              }}
-            />
-          )}
         </>
       }
     />
   );
 };
 
-export default Customer;
+export default Area;

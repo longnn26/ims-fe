@@ -16,10 +16,22 @@ import requestUpgradeService from "@services/requestUpgrade";
 import { CaretLeftOutlined, UploadOutlined } from "@ant-design/icons";
 import React, { useEffect, useState } from "react";
 import AppointmentDetail from "@components/appointment/AppointmentDetail";
-import { Alert, Button, FloatButton, Modal, Pagination, message } from "antd";
+import {
+  Alert,
+  Button,
+  FloatButton,
+  Modal,
+  Pagination,
+  Tabs,
+  TabsProps,
+  message,
+} from "antd";
 import UploadComponent from "@components/UploadComponent";
 import type { UploadFile } from "antd/es/upload/interface";
-import { getRequestUpgradeData } from "@slices/appointment";
+import {
+  getRequestExpandData,
+  getRequestUpgradeData,
+} from "@slices/appointment";
 import RequestUpgradeTable from "@components/server/requestUpgrade/RequestUpgradeTable";
 import { AiOutlineFileDone } from "react-icons/ai";
 import { MdCancel } from "react-icons/md";
@@ -30,10 +42,12 @@ import {
 import ModalUpdate from "@components/server/requestUpgrade/ModalUpdate";
 import ModalComplete from "@components/appointment/ModalComplete";
 import ModalFail from "@components/appointment/ModalFail";
+import RequestExpandTable from "@components/server/requestExpand/RequestExpandTable";
 const { confirm } = Modal;
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
 });
+
 const Appoinment: React.FC = () => {
   const dispatch = useDispatch();
   const router = useRouter();
@@ -51,6 +65,14 @@ const Appoinment: React.FC = () => {
     PageSize: 10,
     id: router.query.appointmentId,
   } as unknown as ParamGetExtend);
+
+  const [paramGetExpandExtend, setParamGetExpandExtend] =
+    useState<ParamGetExtend>({
+      PageIndex: 1,
+      PageSize: 10,
+      id: router.query.appointmentId,
+    } as unknown as ParamGetExtend);
+
   const [loadingUploadDocument, setLoadingUploadDocument] =
     useState<boolean>(false);
   const [disabledReceiptOfRecipient, setDisabledReceiptOfRecipient] =
@@ -63,7 +85,9 @@ const Appoinment: React.FC = () => {
 
   const [openComplete, setOpenComplete] = useState<boolean>(false);
   const [openFail, setOpenFail] = useState<boolean>(false);
-  const { requestUpgradeData } = useSelector((state) => state.appointment);
+  const { requestUpgradeData, requestExpandData } = useSelector(
+    (state) => state.appointment
+  );
 
   const getData = async () => {
     await appointmentService
@@ -233,17 +257,91 @@ const Appoinment: React.FC = () => {
   useEffect(() => {
     if (router.query.appointmentId && session) {
       paramGetExtend.Id = parseInt(router.query.appointmentId!.toString());
+      paramGetExpandExtend.Id = parseInt(
+        router.query.appointmentId!.toString()
+      );
       dispatch(
         getRequestUpgradeData({
           token: session?.user.access_token!,
           paramGet: { ...paramGetExtend },
         })
       );
+
+      dispatch(
+        getRequestExpandData({
+          token: session?.user.access_token!,
+          paramGet: { ...paramGetExpandExtend },
+        })
+      );
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [session, paramGetExtend]);
+  }, [session, paramGetExtend, paramGetExpandExtend]);
 
+  const items: TabsProps["items"] = [
+    {
+      key: "1",
+      label: "Request Upgrade",
+      children: (
+        <>
+          <RequestUpgradeTable
+            urlOncell=""
+            typeGet="ByAppointmentId"
+            onEdit={(value) => {
+              setRequestUpgradeUpdate(value);
+            }}
+            onDelete={(value) => {}}
+          />
+          {requestUpgradeData?.totalPage > 0 && (
+            <Pagination
+              className="text-end m-4"
+              current={paramGetExtend?.PageIndex}
+              pageSize={requestUpgradeData?.pageSize ?? 10}
+              total={requestUpgradeData?.totalSize}
+              onChange={(page, pageSize) => {
+                setParamGetExtend({
+                  ...paramGetExtend,
+                  PageIndex: page,
+                  PageSize: pageSize,
+                });
+              }}
+            />
+          )}
+        </>
+      ),
+    },
+    {
+      key: "2",
+      label: "Request Expand",
+      children: (
+        <>
+          <RequestExpandTable
+            urlOncell=""
+            typeGet="ByAppointmentId"
+            onEdit={(value) => {
+              // setRequestUpgradeUpdate(value);
+            }}
+            onDelete={(value) => {}}
+          />
+          {requestExpandData?.totalPage > 0 && (
+            <Pagination
+              className="text-end m-4"
+              current={paramGetExtend?.PageIndex}
+              pageSize={requestExpandData?.pageSize ?? 10}
+              total={requestExpandData?.totalSize}
+              onChange={(page, pageSize) => {
+                setParamGetExtend({
+                  ...paramGetExpandExtend,
+                  PageIndex: page,
+                  PageSize: pageSize,
+                });
+              }}
+            />
+          )}
+        </>
+      ),
+    },
+  ];
   return (
     <AntdLayoutNoSSR
       content={
@@ -301,30 +399,8 @@ const Appoinment: React.FC = () => {
               Upload
             </Button>
           </div>
-          <RequestUpgradeTable
-            urlOncell=""
-            typeGet="ByAppointmentId"
-            onEdit={(value) => {
-              setRequestUpgradeUpdate(value);
-            }}
-            onDelete={(value) => {}}
-          />
-          {requestUpgradeData.totalPage > 0 && (
-            <Pagination
-              className="text-end m-4"
-              current={paramGetExtend?.PageIndex}
-              pageSize={requestUpgradeData?.pageSize ?? 10}
-              total={requestUpgradeData?.totalSize}
-              onChange={(page, pageSize) => {
-                setParamGetExtend({
-                  ...paramGetExtend,
-                  PageIndex: page,
-                  PageSize: pageSize,
-                });
-              }}
-            />
-          )}
 
+          <Tabs className="m-5" defaultActiveKey="1" items={items} />
           <ModalUpdate
             requestUpgrade={requestUpgradeUpdate!}
             onClose={() => setRequestUpgradeUpdate(undefined)}

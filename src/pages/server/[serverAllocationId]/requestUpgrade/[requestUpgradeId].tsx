@@ -117,6 +117,62 @@ const RequestUpgradeDetail: React.FC = () => {
     });
   };
 
+  const acceptRequestUpgrade = async () => {
+    confirm({
+      title: "Accept",
+      content: (
+        <Alert
+          message={`Do you want to accept with Id ${requestUpgradeDetail?.id}?`}
+          type="warning"
+        />
+      ),
+      async onOk() {
+        await requestUpgradeService
+          .acceptRequestUpgrade(
+            session?.user.access_token!,
+            requestUpgradeDetail?.id + ""
+          )
+          .then((res) => {
+            message.success("Accept request upgrade successful!");
+            getData();
+          })
+          .catch((errors) => {
+            message.error(errors.message);
+          })
+          .finally(() => {});
+      },
+      onCancel() {},
+    });
+  };
+
+  const denyRequestUpgrade = async () => {
+    confirm({
+      title: "Deny",
+      content: (
+        <Alert
+          message={`Do you want to deny with Id ${requestUpgradeDetail?.id}?`}
+          type="warning"
+        />
+      ),
+      async onOk() {
+        await requestUpgradeService
+          .denyRequestUpgrade(
+            session?.user.access_token!,
+            requestUpgradeDetail?.id + ""
+          )
+          .then((res) => {
+            message.success("Deny request upgrade successful!");
+            getData();
+          })
+          .catch((errors) => {
+            message.error(errors.message);
+          })
+          .finally(() => {});
+      },
+      onCancel() {},
+    });
+  };
+
   const handleBreadCumb = () => {
     var itemBrs = [] as ItemType[];
     var items = router.asPath.split("/").filter((_) => _ != "");
@@ -132,7 +188,11 @@ const RequestUpgradeDetail: React.FC = () => {
   };
 
   useEffect(() => {
-    if (router.query.serverAllocationId && session) {
+    if (
+      router.query.serverAllocationId &&
+      router.query.requestUpgradeId &&
+      session
+    ) {
       getData();
       handleBreadCumb();
     }
@@ -189,6 +249,25 @@ const RequestUpgradeDetail: React.FC = () => {
                 });
               }}
             />
+          )}
+          {requestUpgradeDetail?.status === "Waiting" && (
+            <FloatButton.Group
+              trigger="hover"
+              type="primary"
+              style={{ right: 60, bottom: 500 }}
+              icon={<AiOutlineFileDone />}
+            >
+              <FloatButton
+                icon={<MdCancel color="red" />}
+                tooltip="Deny"
+                onClick={() => denyRequestUpgrade()}
+              />
+              <FloatButton
+                onClick={() => acceptRequestUpgrade()}
+                icon={<AiOutlineFileDone color="green" />}
+                tooltip="Accept"
+              />
+            </FloatButton.Group>
           )}
           {Boolean(
             requestUpgradeDetail?.status === "Accepted" &&

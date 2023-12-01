@@ -28,6 +28,10 @@ export interface ParamGet {
   DateEnd: string;
 }
 
+export interface ParamGetWithId extends ParamGet {
+  Id: number;
+}
+
 export interface OptionType {
   value: string;
   label: string;

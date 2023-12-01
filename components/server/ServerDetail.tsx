@@ -28,11 +28,14 @@ const ServerDetail: React.FC<Props> = (props) => {
         <Descriptions.Item label="Power">
           {serverAllocationDetail?.power}
         </Descriptions.Item>
-        <Descriptions.Item label="Serial Number" span={4}>
+        <Descriptions.Item label="Serial Number" span={0}>
           {serverAllocationDetail?.serialNumber}
         </Descriptions.Item>
-        <Descriptions.Item label="Server Name" span={4}>
+        <Descriptions.Item label="Server Name" span={0}>
           {serverAllocationDetail?.name}
+        </Descriptions.Item>
+        <Descriptions.Item label="IP Address" span={0}>
+          {serverAllocationDetail?.masterIp?.address}
         </Descriptions.Item>
         <Descriptions.Item label="Customer" span={4}>
           {serverAllocationDetail?.customer.customerName}

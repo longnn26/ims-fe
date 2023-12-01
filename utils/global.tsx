@@ -1,8 +1,9 @@
 import { ReactNode } from "react";
 import { FaUser, FaChartArea } from "react-icons/fa";
 import { BiServer, BiSolidComponent } from "react-icons/bi";
-import { GoGitPullRequest } from "react-icons/go";
+import { BsFillHddNetworkFill } from "react-icons/bs";
 import { GrSchedules } from "react-icons/gr";
+import { MdUpgrade } from "react-icons/md";
 
 export interface SliderMenuItem {
   key: string;
@@ -18,8 +19,13 @@ export const sliderMenu = [
   },
   {
     key: "requestUpgrade",
-    icon: <GoGitPullRequest />,
+    icon: <MdUpgrade />,
     label: "Request Upgrade",
+  },
+  {
+    key: "ipSubnet",
+    icon: <BsFillHddNetworkFill />,
+    label: "IP Subnet",
   },
   {
     key: "appointment",

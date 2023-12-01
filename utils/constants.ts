@@ -2,7 +2,7 @@ export const dateFormat = "YYYY-MM-DD";
 export const timeFormat = "HH:mm";
 // export const dateTimeFormat = 'YYYY-MM-DD HH:mm';
 export const dateTimeFormat = "MMM DD HH:mm";
-export const dateAdvFormat = "YYYY-MM-DD HH:mm:ss";
+export const dateAdvFormat = "YYYY-MM-DD HH:mm";
 export const formatPublicView = "MMM Do YYYY";
 
 export const LIST_PAGE_SIZE = [5, 10, 20, 30, 40, 50];

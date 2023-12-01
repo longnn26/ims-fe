@@ -59,6 +59,9 @@ const HeaderComponent: React.FC<Props> = (props) => {
       case "/component":
         dispatch(setSliderMenuItemSelectedKey("component"));
         break;
+      case "/ipSubnet":
+        dispatch(setSliderMenuItemSelectedKey("ipSubnet"));
+        break;
       case "/customer":
         dispatch(setSliderMenuItemSelectedKey("customer"));
         break;

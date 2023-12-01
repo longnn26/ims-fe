@@ -1,5 +1,6 @@
 import { ParamGet } from "@models/base";
 import {
+  MasterIpCreateModel,
   SACreateModel,
   SAUpdateModel,
   ServerAllocation,
@@ -22,7 +23,7 @@ const getServerAllocationData = async (
 
 const getServerAllocationById = async (
   token: string,
-  id: string,
+  id: string
 ): Promise<ServerAllocation> => {
   const response = await httpClient.get({
     url: apiLinks.serverAllocation.get + `/${id}`,
@@ -66,12 +67,26 @@ const deleteServerAllocation = async (
   return response.data;
 };
 
+const assignMasterIp = async (
+  token: string,
+  id: number,
+  data: MasterIpCreateModel
+): Promise<any> => {
+  const response = await httpClient.post({
+    url: apiLinks.serverAllocation.createMasterIp + `/${id}/MasterIp`,
+    token: token,
+    data: data
+  });
+  return response.data;
+};
+
 const serverAllocation = {
   getServerAllocationData,
   createServerAllocation,
   deleteServerAllocation,
   updateServerAllocation,
   getServerAllocationById,
+  assignMasterIp,
 };
 
 export default serverAllocation;

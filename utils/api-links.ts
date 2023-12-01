@@ -13,6 +13,7 @@ const apiLinks = {
     create: `${url}/api/ServerAllocation`,
     update: `${url}/api/ServerAllocation`,
     delete: `${url}/api/ServerAllocation`,
+    createMasterIp: `${url}/api/ServerAllocation`,
   },
 
   serverHardwareConfig: {
@@ -56,10 +57,12 @@ const apiLinks = {
     create: `${url}/api/Area`,
     update: `${url}/api/Area`,
     delete: `${url}/api/Area`,
+    getAll: `${url}/api/Area/All`,
   },
 
   rack: {
     get: `${url}/api/Rack`,
+    getMapById: `${url}/api/Rack`,
     create: `${url}/api/Rack`,
     update: `${url}/api/Rack`,
     delete: `${url}/api/Rack`,
@@ -73,11 +76,36 @@ const apiLinks = {
     get: `${url}/api/Appointment`,
     getById: `${url}/api/Appointment`,
     getRequestUpgradesById: `${url}/api/Appointment`,
+    getRequestExpandById: `${url}/api/Appointment`,
     upload: `${url}/api/Appointment`,
     accept: `${url}/api/Appointment`,
     deny: `${url}/api/Appointment`,
     complete: `${url}/api/Appointment`,
     fail: `${url}/api/Appointment`,
+  },
+
+  requestExpand: {
+    get: `${url}/api/ServerAllocation`,
+    getAppointmentsById: `${url}/api/RequestExpand`,
+    update: `${url}/api/RequestExpand`,
+    getSuggestLocation: `${url}/api/RequestExpand`,
+    getById: `${url}/api/RequestExpand`,
+    accept: `${url}/api/RequestExpand`,
+    deny: `${url}/api/RequestExpand`,
+    complete: `${url}/api/RequestExpand`,
+    reject: `${url}/api/RequestExpand`,
+    saveLocation: `${url}/api/RequestExpand`,
+  },
+
+  ipSubnet: {
+    get: `${url}/api/IpSubnet`,
+    getById: `${url}/api/IpSubnet`,
+    getIpAddresssById: `${url}/api/IpSubnet`,
+    create: `${url}/api/IpSubnet`,
+  },
+
+  ipAddress: {
+    getSuggestMaster: `${url}/api/IpAddress/SuggestMaster`,
   },
 };
 

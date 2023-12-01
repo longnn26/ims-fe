@@ -40,47 +40,12 @@ const AreaDetail: React.FC = () => {
   const [areaDetail, setAreaDetail] = useState<Area | undefined>(undefined);
   const [rackUpdate, setRackUpdate] = useState<Rack>();
   const [openModalCreate, setOpenModalCreate] = useState<boolean>(false);
-  const [itemDetails, setItemDetails] = useState<DescriptionsProps["items"]>(
-    []
-  );
 
   const getData = async () => {
     await areaService
       .getDataById(session?.user.access_token!, router.query.areaId + "")
       .then((res) => {
         setAreaDetail(res);
-        var items = [] as DescriptionsProps["items"];
-        items?.push({
-          key: "1",
-          label: "Id",
-          children: res.id,
-        });
-        items?.push({
-          key: "2",
-          label: "Name",
-          children: res.name,
-        });
-        items?.push({
-          key: "3",
-          label: "Row Count",
-          children: res.rowCount,
-        });
-        items?.push({
-          key: "4",
-          label: "Column Count",
-          children: res.columnCount,
-        });
-        items?.push({
-          key: "6",
-          label: "Date created",
-          children: moment(res.dateCreated).format(dateAdvFormat),
-        });
-        items?.push({
-          key: "7",
-          label: "Date updated",
-          children: moment(res.dateUpdated).format(dateAdvFormat),
-        });
-        setItemDetails(items);
       });
     dispatch(
       getRackData({
@@ -192,7 +157,7 @@ const AreaDetail: React.FC = () => {
           <Divider orientation="left" plain>
             <h3>Area Information</h3>
           </Divider>{" "}
-          <Descriptions className="p-5" items={itemDetails} />
+          {/* <Descriptions className="p-5" items={itemDetails} /> */}
           <RackTable
             area={areaDetail!}
             onEdit={(record) => {

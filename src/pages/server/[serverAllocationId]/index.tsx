@@ -1,11 +1,13 @@
 "use client";
-import dynamic from "next/dynamic";
-import { useEffect, useState } from "react";
-import { useSession } from "next-auth/react";
-import React from "react";
+import { AppstoreAddOutlined, SendOutlined } from "@ant-design/icons";
+import BreadcrumbComponent from "@components/BreadcrumbComponent";
+import ServerDetail from "@components/server/ServerDetail";
+import ModalCreate from "@components/server/hardwareConfig/ModalCreate";
+import ModalUpdate from "@components/server/hardwareConfig/ModalUpdate";
+import ServerHardwareConfigTable from "@components/server/hardwareConfig/ServerHardwareConfigTable";
 import useDispatch from "@hooks/use-dispatch";
 import useSelector from "@hooks/use-selector";
-import { getserverHardwareConfigData } from "@slices/serverHardwareConfig";
+import { ServerAllocation } from "@models/serverAllocation";
 import {
   SHCCreateModel,
   SHCParamGet,
@@ -13,31 +15,23 @@ import {
   ServerHardwareConfig,
   ServerHardwareConfigData,
 } from "@models/serverHardwareConfig";
-import {
-  Button,
-  Pagination,
-  message,
-  Modal,
-  Alert,
-  Descriptions,
-  Divider,
-  FloatButton,
-} from "antd";
-import type { DescriptionsProps } from "antd";
-import ServerHardwareConfigTable from "@components/server/hardwareConfig/ServerHardwareConfigTable";
-import serverHardwareConfigService from "@services/serverHardwareConfig";
 import serverAllocationService from "@services/serverAllocation";
-import { useRouter } from "next/router";
-import { ServerAllocation } from "@models/serverAllocation";
-import { dateAdvFormat } from "@utils/constants";
-import { AppstoreAddOutlined, SendOutlined } from "@ant-design/icons";
-import moment from "moment";
-import ModalCreate from "@components/server/hardwareConfig/ModalCreate";
-import ModalUpdate from "@components/server/hardwareConfig/ModalUpdate";
-import { ItemType } from "antd/es/breadcrumb/Breadcrumb";
-import BreadcrumbComponent from "@components/BreadcrumbComponent";
+import serverHardwareConfigService from "@services/serverHardwareConfig";
+import ipAddressService from "@services/ipAddress";
 import { getComponentAll } from "@slices/component";
-import ServerDetail from "@components/server/ServerDetail";
+import { getserverHardwareConfigData } from "@slices/serverHardwareConfig";
+import { Alert, Button, FloatButton, Modal, Pagination, message } from "antd";
+import { ItemType } from "antd/es/breadcrumb/Breadcrumb";
+import { useSession } from "next-auth/react";
+import dynamic from "next/dynamic";
+import { useRouter } from "next/router";
+import React, { useEffect, useState } from "react";
+import { MdUpgrade } from "react-icons/md";
+import { FaExpand } from "react-icons/fa";
+import { IpAddress } from "@models/ipAddress";
+import ModalAssign from "@components/server/ipAddress/ModalAssign";
+import { BsFillHddNetworkFill } from "react-icons/bs";
+
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
 });
@@ -63,6 +57,7 @@ const Customer: React.FC = () => {
   const [serverAllocationDetail, setServerAllocationDetail] =
     useState<ServerAllocation>();
   const [itemBreadcrumbs, setItemBreadcrumbs] = useState<ItemType[]>([]);
+  const [ipSuggestMaster, setIpSuggestMaster] = useState<IpAddress>();
 
   const getData = async () => {
     await serverAllocationService
@@ -161,6 +156,18 @@ const Customer: React.FC = () => {
     setItemBreadcrumbs(itemBrs);
   };
 
+  const getIpSuggestMaster = async () => {
+    await ipAddressService
+      .getSuggestMaster(session?.user.access_token!)
+      .then((res) => {
+        setIpSuggestMaster(res);
+      })
+      .catch((errors) => {
+        // message.error(errors.response.data);
+      })
+      .finally(() => {});
+  };
+
   useEffect(() => {
     if (router.query.serverAllocationId && session) {
       paramGet.ServerAllocationId = parseInt(
@@ -238,18 +245,48 @@ const Customer: React.FC = () => {
               }}
             />
           )}
-          <FloatButton
-            type="primary"
-            tooltip="Request upgrade"
-            icon={<SendOutlined />}
-            style={{ top: 300 }}
-            // className="top-[100]"
-            onClick={() =>
-              router.push(
-                `/server/${serverAllocationDetail?.id}/requestUpgrade`
-              )
-            }
+
+          <ModalAssign
+            id={serverAllocationDetail?.id!}
+            ipSuggestMaster={ipSuggestMaster}
+            onClose={() => setIpSuggestMaster(undefined)}
+            onRefresh={() => {
+              getData();
+            }}
           />
+
+          <FloatButton.Group
+            trigger="hover"
+            type="primary"
+            style={{ right: 60, bottom: 500 }}
+            icon={<SendOutlined />}
+          >
+            <FloatButton
+              tooltip="Assign IP"
+              icon={<BsFillHddNetworkFill />}
+              onClick={() => {
+                getIpSuggestMaster();
+              }}
+            />
+            <FloatButton
+              tooltip="Request upgrade"
+              icon={<MdUpgrade />}
+              onClick={() =>
+                router.push(
+                  `/server/${serverAllocationDetail?.id}/requestUpgrade`
+                )
+              }
+            />
+            <FloatButton
+              onClick={() =>
+                router.push(
+                  `/server/${serverAllocationDetail?.id}/requestExpand`
+                )
+              }
+              icon={<FaExpand />}
+              tooltip="Request expand"
+            />
+          </FloatButton.Group>
         </>
       }
     />
