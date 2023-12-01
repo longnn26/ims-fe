@@ -13,6 +13,7 @@ const apiLinks = {
     create: `${url}/api/ServerAllocation`,
     update: `${url}/api/ServerAllocation`,
     delete: `${url}/api/ServerAllocation`,
+    createMasterIp: `${url}/api/ServerAllocation`,
   },
 
   serverHardwareConfig: {
@@ -101,6 +102,10 @@ const apiLinks = {
     getById: `${url}/api/IpSubnet`,
     getIpAddresssById: `${url}/api/IpSubnet`,
     create: `${url}/api/IpSubnet`,
+  },
+
+  ipAddress: {
+    getSuggestMaster: `${url}/api/IpAddress/SuggestMaster`,
   },
 };
 

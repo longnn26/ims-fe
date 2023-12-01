@@ -29,3 +29,7 @@ export interface SAUpdateModel {
   power: number;
   note: string;
 }
+
+export interface MasterIpCreateModel {
+  ipAddressId: number;
+}
