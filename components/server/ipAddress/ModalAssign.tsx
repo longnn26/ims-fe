@@ -145,7 +145,6 @@ const ModalAssign: React.FC<Props> = (props) => {
                   }
                 }}
                 onChange={(value, option) => {
-                  console.log(value);
                   setIpAddressSelected(value);
                 }}
               >
