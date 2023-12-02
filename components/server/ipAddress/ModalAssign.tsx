@@ -27,7 +27,7 @@ const ModalAssign: React.FC<Props> = (props) => {
   );
   const [ipAddressList, setIpAddressList] = useState<IpAddress[]>([]);
   const [ipAddressSelected, setIpAddressSelected] = useState<
-    IpAddress | undefined
+    number | undefined
   >();
 
   // const [pageSizeIp, setPageSizeIp] = useState<number>(6);
@@ -145,7 +145,7 @@ const ModalAssign: React.FC<Props> = (props) => {
                   }
                 }}
                 onChange={(value, option) => {
-                  setIpAddressSelected(value);
+                  setIpAddressSelected(value.value);
                 }}
               >
                 {ipAddressList.map((l, index) => (
@@ -163,7 +163,7 @@ const ModalAssign: React.FC<Props> = (props) => {
                     confirm({
                       title: "Do you want to save?",
                       async onOk() {
-                        assignMasterIp(ipAddressSelected.id);
+                        assignMasterIp(ipAddressSelected);
                       },
                       onCancel() {},
                     });
