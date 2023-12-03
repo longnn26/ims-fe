@@ -108,7 +108,6 @@ const IpSubnetDetail: React.FC = () => {
               pageSize={ipAddressData?.pageSize ?? 10}
               total={ipAddressData?.totalSize}
               onChange={(page, pageSize) => {
-                console.log(page);
                 setIpAddressParamGet({
                   ...ipAddressParamGet,
                   PageIndex: page,

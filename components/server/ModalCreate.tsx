@@ -58,7 +58,6 @@ const ModalCreate: React.FC<Props> = (props) => {
 
   useEffect(() => {
     session && getMoreCustomer();
-    // console.log(session?.user.permissions);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session]);
 

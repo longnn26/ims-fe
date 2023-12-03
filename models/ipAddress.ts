@@ -1,4 +1,4 @@
-import { BaseWithIdNumber, PagingModel } from "./base";
+import { BaseWithIdNumber, PagingModel, ParamGet } from "./base";
 import { IpSubnet } from "./ipSubnet";
 
 export interface IpAddress extends BaseWithIdNumber {
@@ -12,4 +12,8 @@ export interface IpAddress extends BaseWithIdNumber {
 
 export interface IpAddressData extends PagingModel {
   data: IpAddress[];
+}
+
+export interface IpAddressParamGet extends ParamGet {
+  Address: string;
 }

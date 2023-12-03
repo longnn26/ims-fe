@@ -38,7 +38,6 @@ const RackMapRender: React.FC<Props> = (props) => {
   const _ = require("lodash");
 
   const groupWithServer = _.groupBy(rackMapList, "serverAllocation['id']");
-  console.log(groupWithServer);
   const columns: TableColumnsType<DataType> = [
     {
       title: "Location",
@@ -93,7 +92,6 @@ const RackMapRender: React.FC<Props> = (props) => {
       rackMapList[i].id ===
         groupWithServer[`${rackMapList[i].serverAllocation?.id}`][0].id
     ) {
-      console.log(groupWithServer[`${rackMapList[i].serverAllocation?.id}`]);
       rowSpan =
         groupWithServer[`${rackMapList[i].serverAllocation?.id}`].length;
     }

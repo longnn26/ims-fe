@@ -39,7 +39,6 @@ const UploadComponent: React.FC<Props> = (props) => {
     const { status } = info.file;
     if (status !== "uploading") {
       setFileList(info.fileList);
-      //   console.log(info.file, info.fileList);
     }
     // if (status === "done") {
     //   message.success(`${info.file.name} file uploaded successfully.`);
@@ -49,7 +48,6 @@ const UploadComponent: React.FC<Props> = (props) => {
   };
 
   const onDrop = (e) => {
-    // console.log("Dropped files", e.dataTransfer.files);
     // setFileList(e.dataTransfer.files);
   };
 
