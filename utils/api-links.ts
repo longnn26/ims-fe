@@ -99,6 +99,7 @@ const apiLinks = {
 
   ipSubnet: {
     get: `${url}/api/IpSubnet`,
+    getTree: `${url}/api/IpSubnet/Tree`,
     getById: `${url}/api/IpSubnet`,
     getIpAddresssById: `${url}/api/IpSubnet`,
     create: `${url}/api/IpSubnet`,

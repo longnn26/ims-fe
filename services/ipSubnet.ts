@@ -16,6 +16,14 @@ const getData = async (
   return response.data;
 };
 
+const getDataTree = async (token: string): Promise<IpSubnet[]> => {
+  const response = await httpClient.get({
+    token: token,
+    url: apiLinks.ipSubnet.getTree,
+  });
+  return response.data;
+};
+
 const getDetail = async (token: string, id: string): Promise<IpSubnet> => {
   const response = await httpClient.get({
     url: apiLinks.ipSubnet.getById + `/${id}`,
@@ -53,6 +61,7 @@ const ipSubnet = {
   createData,
   getDetail,
   getIpAddresssById,
+  getDataTree,
 };
 
 export default ipSubnet;

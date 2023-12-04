@@ -9,6 +9,7 @@ export interface IpSubnet extends BaseWithIdNumber {
   parentNetworkId: number;
   prefixLength: number;
   subnetIds: IpSubnet[];
+  children: IpSubnet[]
 }
 
 export interface IpSubnetData extends PagingModel {
