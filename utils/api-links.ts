@@ -5,6 +5,7 @@ export const urlServerSide = "http://192.168.40.83:8001";
 const apiLinks = {
   user: {
     login: `${urlServerSide}/api/User/Login`,
+    getUserTech: `${urlServerSide}/api/User/Tech`,
   },
 
   serverAllocation: {
