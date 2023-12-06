@@ -162,7 +162,7 @@ const RequestHostDetail: React.FC = () => {
         await requestHost
           .getDetail(
             session?.user.access_token!,
-            router.query.requestExpandId + ""
+            router.query.requestHostId + ""
           )
           .then(async (res) => {
             await serverAllocationService
@@ -174,8 +174,7 @@ const RequestHostDetail: React.FC = () => {
                 setServerAllocationDetail(res);
               });
             setRequestHostDetail(res);
-            setRequestHostDetail(res);
-            setRequestHostUpdate(res);
+            setRequestHostUpdate(undefined);
             // if (!res?.requestedLocation && res?.size! > 0) {
             //   await requestExpandService
             //     .getSuggestLocation(
@@ -188,7 +187,7 @@ const RequestHostDetail: React.FC = () => {
             //     .catch((e) => {});
             // }
           });
-        // getData();
+        getData();
       })
       .catch((errors) => {
         message.error(errors.message);
@@ -331,15 +330,13 @@ const RequestHostDetail: React.FC = () => {
             </FloatButton.Group>
           )}
           <ModalUpdate
-            onSaveLocation={(data) => saveLocation(data)}
-            suggestLocation={suggestLocation}
             requestHost={requestHostUpdate!}
             onClose={() => {
               setRequestHostUpdate(undefined);
               setSuggestLocation(undefined);
             }}
             onSubmit={(value) => {
-              // updateData(value);
+              updateData(value);
             }}
           />
           <ModalDenyHost

@@ -64,6 +64,12 @@ const RequestHostDetailInfor: React.FC<Props> = (props) => {
         <Descriptions.Item label="Customer's Note" span={4}>
           {requestHostDetail?.note}
         </Descriptions.Item>
+        <Descriptions.Item label="Sale Staff's Note" span={4}>
+          {requestHostDetail?.saleNote}
+        </Descriptions.Item>
+        <Descriptions.Item label="Technical Staff's Note" span={4}>
+          {requestHostDetail?.techNote}
+        </Descriptions.Item>
       </Descriptions>
     </div>
   );
