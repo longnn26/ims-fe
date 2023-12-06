@@ -117,12 +117,12 @@ const RequestHostTable: React.FC<Props> = (props) => {
     {
       title: "Action",
       key: "operation",
-      render: (record: RequestUpgrade) => (
+      render: (record: RequestHost) => (
         <Space wrap>
           <Tooltip title="View detail" color={"black"}>
             <Button
               onClick={() =>
-                router.push(`${urlOncell}/requestExpand/${record.id}`)
+                router.push(`${urlOncell}/requestHost/${record.id}`)
               }
             >
               <BiSolidCommentDetail />

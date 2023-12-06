@@ -23,3 +23,12 @@ export interface RequestHost extends BaseWithIdNumber {
 export interface RequestHostData extends PagingModel {
   data: RequestHost[];
 }
+
+export interface RequestHostUpdateModel {
+  id: number;
+  note: string;
+  saleNote: string;
+  techNote: string;
+  quantity: number;
+  type: string;
+}

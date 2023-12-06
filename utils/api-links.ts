@@ -109,6 +109,16 @@ const apiLinks = {
     get: `${url}/api/IpAddress`,
     getSuggestMaster: `${url}/api/IpAddress/SuggestMaster`,
   },
+
+  requestHost: {
+    get: `${url}/api/ServerAllocation`,
+    getById: `${url}/api/RequestHost`,
+    accept: `${url}/api/RequestHost`,
+    deny: `${url}/api/RequestHost`,
+    complete: `${url}/api/RequestHost`,
+    reject: `${url}/api/RequestHost`,
+    update: `${url}/api/RequestHost`,
+  },
 };
 
 export default apiLinks;
