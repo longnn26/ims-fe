@@ -70,7 +70,7 @@ const RequestHostDetail: React.FC = () => {
       });
   };
 
-  const rejectRequestExpand = async () => {
+  const rejectRequestHost = async () => {
     confirm({
       title: "Reject",
       content: (
@@ -98,7 +98,7 @@ const RequestHostDetail: React.FC = () => {
     });
   };
 
-  const completeRequestExpand = async () => {
+  const completeRequestHost = async () => {
     confirm({
       title: "Complete",
       content: (
@@ -320,10 +320,10 @@ const RequestHostDetail: React.FC = () => {
               <FloatButton
                 icon={<MdCancel color="red" />}
                 tooltip="Fail"
-                onClick={() => rejectRequestExpand()}
+                onClick={() => rejectRequestHost()}
               />
               <FloatButton
-                onClick={() => completeRequestExpand()}
+                onClick={() => completeRequestHost()}
                 icon={<AiOutlineFileDone color="green" />}
                 tooltip="Complete"
               />
