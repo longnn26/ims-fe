@@ -31,6 +31,7 @@ import { FaExpand } from "react-icons/fa";
 import { IpAddress } from "@models/ipAddress";
 import ModalAssign from "@components/server/ipAddress/ModalAssign";
 import { BsFillHddNetworkFill } from "react-icons/bs";
+import { GrHost } from "react-icons/gr";
 
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
@@ -258,7 +259,7 @@ const Customer: React.FC = () => {
           <FloatButton.Group
             trigger="hover"
             type="primary"
-            style={{ right: 60, bottom: 500 }}
+            style={{ right: 60, bottom: 400 }}
             icon={<SendOutlined />}
           >
             <FloatButton
@@ -285,6 +286,13 @@ const Customer: React.FC = () => {
               }
               icon={<FaExpand />}
               tooltip="Request expand"
+            />
+            <FloatButton
+              tooltip="Request host"
+              icon={<GrHost />}
+              onClick={() =>
+                router.push(`/server/${serverAllocationDetail?.id}/requestHost`)
+              }
             />
           </FloatButton.Group>
         </>
