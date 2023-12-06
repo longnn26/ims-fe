@@ -17,29 +17,11 @@ const RequestHostDetailInfor: React.FC<Props> = (props) => {
         <h3>Request host information </h3>
       </Divider>{" "}
       <Descriptions className="p-5">
-        <Descriptions.Item label="Date Created" span={4}>
+        <Descriptions.Item label="Date Created" span={2}>
           {moment(requestHostDetail?.dateCreated).format(dateAdvFormat)}
         </Descriptions.Item>
 
-        <Descriptions.Item label="Customer">
-          {requestHostDetail?.customer.companyName}
-        </Descriptions.Item>
-        <Descriptions.Item label="Address">
-          {requestHostDetail?.customer.address}
-        </Descriptions.Item>
-        <Descriptions.Item label="Taxnumber">
-          {requestHostDetail?.customer.taxNumber}
-        </Descriptions.Item>
-        <Descriptions.Item label="Email">
-          {requestHostDetail?.customer.email}
-        </Descriptions.Item>
-        <Descriptions.Item label="Phone">
-          {requestHostDetail?.customer.phoneNumber}
-        </Descriptions.Item>
-        <Descriptions.Item label="Server's Ip">
-          {requestHostDetail?.serverAllocation.masterIpAddress}
-        </Descriptions.Item>
-        <Descriptions.Item label="Request's Status" span={4}>
+        <Descriptions.Item label="Request's Status" span={2}>
           <Tag
             className="text-center"
             color={
@@ -55,25 +37,51 @@ const RequestHostDetailInfor: React.FC<Props> = (props) => {
             }
           </Tag>
         </Descriptions.Item>
-        <Descriptions.Item label="Type" span={4}>
+
+        <Descriptions.Item label="Customer" span={2}>
+          {requestHostDetail?.customer.companyName}
+        </Descriptions.Item>
+        <Descriptions.Item label="Type" span={2}>
+          {requestHostDetail?.type === "Additional"
+            ? "Ip"
+            : requestHostDetail?.type}
+        </Descriptions.Item>
+        <Descriptions.Item label="Address" span={2}>
+          {requestHostDetail?.customer.address}
+        </Descriptions.Item>
+        <Descriptions.Item label="Purpose" span={2}>
           {requestHostDetail?.isRemoval ? "Remove" : "Add"}
         </Descriptions.Item>
-        <Descriptions.Item label="Quantity" span={4}>
+        <Descriptions.Item label="Taxnumber" span={2}>
+          {requestHostDetail?.customer.taxNumber}
+        </Descriptions.Item>
+        <Descriptions.Item label="Quantity" span={2}>
           {requestHostDetail?.quantity}
         </Descriptions.Item>
-        <Descriptions.Item label="Customer's Note" span={4}>
-          {requestHostDetail?.note}
+        <Descriptions.Item label="Email" span={2}>
+          {requestHostDetail?.customer.email}
         </Descriptions.Item>
-        <Descriptions.Item label="Sales Staff" span={4}>
+        <Descriptions.Item label="Sales Staff" span={2}>
           {requestHostDetail?.evaluator?.fullname}
         </Descriptions.Item>
-        <Descriptions.Item label="Sale Staff's Note" span={4}>
+        <Descriptions.Item label="Phone" span={2}>
+          {requestHostDetail?.customer.phoneNumber}
+        </Descriptions.Item>
+        <Descriptions.Item label="Sale Staff's Note" span={2}>
           {requestHostDetail?.saleNote}
         </Descriptions.Item>
-        <Descriptions.Item label="Technical Staff" span={4}>
+        <Descriptions.Item label="Server's Ip" span={2}>
+          {requestHostDetail?.serverAllocation.masterIpAddress}
+        </Descriptions.Item>
+        <Descriptions.Item label="Technical Staff" span={2}>
           {requestHostDetail?.executor?.fullname}
         </Descriptions.Item>
-        <Descriptions.Item label="Technical Staff's Note" span={4}>
+
+        <Descriptions.Item label="Customer's Note" span={2}>
+          {requestHostDetail?.note}
+        </Descriptions.Item>
+
+        <Descriptions.Item label="Technical Staff's Note" span={2}>
           {requestHostDetail?.techNote}
         </Descriptions.Item>
       </Descriptions>
