@@ -1,6 +1,7 @@
 "use client";
 import { EditOutlined } from "@ant-design/icons";
 import BreadcrumbComponent from "@components/BreadcrumbComponent";
+import ModalAcceptRequestHost from "@components/server/requestHost/ModalAcceptRequestHost";
 import ModalDenyHost from "@components/server/requestHost/ModalDenyHost";
 import ModalUpdate from "@components/server/requestHost/ModalUpdate";
 import RequestHostDetailInfor from "@components/server/requestHost/RequestHostDetail";
@@ -52,6 +53,8 @@ const RequestHostDetail: React.FC = () => {
   const [requestHostUpdate, setRequestHostUpdate] = useState<RequestHost>();
   const { appointmentData } = useSelector((state) => state.requestExpand);
   const [openModalDenyHost, setOpenModalDenyHost] = useState<boolean>(false);
+  const [openModalAcceptHost, setOpenModalAcceptHost] =
+    useState<boolean>(false);
 
   const getData = async () => {
     await serverAllocationService
@@ -115,34 +118,6 @@ const RequestHostDetail: React.FC = () => {
           )
           .then((res) => {
             message.success("Complete request host successful!");
-            getData();
-          })
-          .catch((errors) => {
-            message.error(errors.message);
-          })
-          .finally(() => {});
-      },
-      onCancel() {},
-    });
-  };
-
-  const acceptRequestHost = async () => {
-    confirm({
-      title: "Accept",
-      content: (
-        <Alert
-          message={`Do you want to accept with Id ${requestHostDetail?.id}?`}
-          type="warning"
-        />
-      ),
-      async onOk() {
-        await requestHost
-          .acceptRequestHost(
-            session?.user.access_token!,
-            requestHostDetail?.id + ""
-          )
-          .then((res) => {
-            message.success("Accept request host successful!");
             getData();
           })
           .catch((errors) => {
@@ -297,11 +272,10 @@ const RequestHostDetail: React.FC = () => {
               <FloatButton
                 icon={<MdCancel color="red" />}
                 tooltip="Deny"
-                // onClick={() => denyRequestHost()}
                 onClick={() => setOpenModalDenyHost(true)}
               />
               <FloatButton
-                onClick={() => acceptRequestHost()}
+                onClick={() => setOpenModalAcceptHost(true)}
                 icon={<AiOutlineFileDone color="green" />}
                 tooltip="Accept"
               />
@@ -342,6 +316,13 @@ const RequestHostDetail: React.FC = () => {
           <ModalDenyHost
             open={openModalDenyHost}
             onClose={() => setOpenModalDenyHost(false)}
+            requestHostId={requestHostDetail?.id!}
+            getData={() => getData()}
+          />
+
+          <ModalAcceptRequestHost
+            open={openModalAcceptHost}
+            onClose={() => setOpenModalAcceptHost(false)}
             requestHostId={requestHostDetail?.id!}
             getData={() => getData()}
           />

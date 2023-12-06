@@ -41,11 +41,15 @@ const denyRequestHost = async (
   return response.data;
 };
 
-const acceptRequestHost = async (token: string, id: string): Promise<any> => {
+const acceptRequestHost = async (
+  token: string,
+  id: string,
+  userId: string
+): Promise<any> => {
   const response = await httpClient.put({
     url: apiLinks.requestHost.accept + `/${id}/Accept`,
     token: token,
-    data: { saleNote: "accept" },
+    data: { userId: userId },
   });
   return response.data;
 };
