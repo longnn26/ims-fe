@@ -119,6 +119,7 @@ const apiLinks = {
     complete: `${url}/api/RequestHost`,
     reject: `${url}/api/RequestHost`,
     update: `${url}/api/RequestHost`,
+    getIpAdress: `${url}/api/RequestHost`,
   },
 };
 

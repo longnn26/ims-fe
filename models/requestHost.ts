@@ -1,4 +1,4 @@
-import { BaseWithIdNumber, PagingModel } from "./base";
+import { BaseWithIdNumber, PagingModel, ParamGet } from "./base";
 import { Customer } from "./customer";
 import { ServerAllocation } from "./serverAllocation";
 
@@ -15,9 +15,10 @@ export interface RequestHost extends BaseWithIdNumber {
   dateCreated: string;
   dateUpdated: string;
   serverAllocationId: number;
-  executor: string;
+  executor: Executor;
   customer: Customer;
   serverAllocation: ServerAllocation;
+  evaluator: Evaluator;
 }
 
 export interface RequestHostData extends PagingModel {
@@ -31,4 +32,24 @@ export interface RequestHostUpdateModel {
   techNote: string;
   quantity: number;
   type: string;
+}
+export interface Evaluator {
+  id: number;
+  phoneNumber: string;
+  userName: string;
+  fullname: string;
+  email: number;
+  address: string;
+}
+export interface Executor {
+  id: number;
+  phoneNumber: string;
+  userName: string;
+  fullname: string;
+  email: number;
+  address: string;
+}
+
+export interface RUIpAdressParamGet extends ParamGet {
+  Id: number;
 }

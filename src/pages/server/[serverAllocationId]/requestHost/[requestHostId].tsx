@@ -1,16 +1,24 @@
 "use client";
 import { EditOutlined } from "@ant-design/icons";
 import BreadcrumbComponent from "@components/BreadcrumbComponent";
+import IpAddressTable from "@components/server/ipAddress/IpAddressTable";
 import ModalAcceptRequestHost from "@components/server/requestHost/ModalAcceptRequestHost";
 import ModalDenyHost from "@components/server/requestHost/ModalDenyHost";
 import ModalUpdate from "@components/server/requestHost/ModalUpdate";
 import RequestHostDetailInfor from "@components/server/requestHost/RequestHostDetail";
 import ServerDetail from "@components/server/ServerDetail";
-import { RequestHost, RequestHostUpdateModel } from "@models/requestHost";
+import useDispatch from "@hooks/use-dispatch";
+import useSelector from "@hooks/use-selector";
+import {
+  RequestHost,
+  RequestHostUpdateModel,
+  RUIpAdressParamGet,
+} from "@models/requestHost";
 import { ServerAllocation } from "@models/serverAllocation";
 import requestHost from "@services/requestHost";
 import serverAllocationService from "@services/serverAllocation";
-import { Alert, Button, FloatButton, message, Modal } from "antd";
+import { getIpAdressData } from "@slices/requestHost";
+import { Alert, Button, FloatButton, message, Modal, Pagination } from "antd";
 import { ItemType } from "antd/es/breadcrumb/Breadcrumb";
 import { useSession } from "next-auth/react";
 import dynamic from "next/dynamic";
@@ -24,9 +32,11 @@ const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
 });
 const RequestHostDetail: React.FC = () => {
   const router = useRouter();
+  const dispatch = useDispatch();
   const { data: session } = useSession();
   const [serverAllocationDetail, setServerAllocationDetail] =
     useState<ServerAllocation>();
+  const { ipAdressData } = useSelector((state) => state.requestHost);
 
   const [requestHostDetail, setRequestHostDetail] = useState<RequestHost>();
 
@@ -35,6 +45,13 @@ const RequestHostDetail: React.FC = () => {
   const [openModalDenyHost, setOpenModalDenyHost] = useState<boolean>(false);
   const [openModalAcceptHost, setOpenModalAcceptHost] =
     useState<boolean>(false);
+
+  const [rUIpAddressParamGet, setRUIpAddressParamGet] =
+    useState<RUIpAdressParamGet>({
+      PageIndex: 1,
+      PageSize: 10,
+      RequestHostId: router.query.requestHostId ?? -1,
+    } as unknown as RUIpAdressParamGet);
 
   const getData = async () => {
     await serverAllocationService
@@ -162,6 +179,13 @@ const RequestHostDetail: React.FC = () => {
   useEffect(() => {
     if (router.query.requestHostId && session) {
       handleBreadCumb();
+      rUIpAddressParamGet.Id = parseInt(router.query.requestHostId!.toString());
+      dispatch(
+        getIpAdressData({
+          token: session?.user.access_token!,
+          paramGet: { ...rUIpAddressParamGet },
+        })
+      );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session]);
@@ -192,6 +216,23 @@ const RequestHostDetail: React.FC = () => {
             ></ServerDetail>
             <RequestHostDetailInfor requestHostDetail={requestHostDetail!} />
           </div>
+
+          <IpAddressTable typeGet="ByRequestExpandId" urlOncell="" />
+          {ipAdressData?.totalPage > 0 && (
+            <Pagination
+              className="text-end m-4"
+              current={rUIpAddressParamGet?.PageIndex}
+              pageSize={ipAdressData?.pageSize ?? 10}
+              total={ipAdressData?.totalSize}
+              onChange={(page, pageSize) => {
+                setRUIpAddressParamGet({
+                  ...rUIpAddressParamGet,
+                  PageIndex: page,
+                  PageSize: pageSize,
+                });
+              }}
+            />
+          )}
 
           {requestHostDetail?.status === "Waiting" && (
             <FloatButton.Group

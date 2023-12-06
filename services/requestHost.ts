@@ -1,5 +1,7 @@
 import { ParamGet } from "@models/base";
+import { IpAddressData } from "@models/ipAddress";
 import {
+  RUIpAdressParamGet,
   RequestHost,
   RequestHostData,
   RequestHostUpdateModel,
@@ -82,6 +84,18 @@ const updateData = async (
   return response.data;
 };
 
+const getIpAddressById = async (
+  token: string,
+  params: RUIpAdressParamGet
+): Promise<IpAddressData> => {
+  const response = await httpClient.get({
+    url: apiLinks.requestHost.getIpAdress + `/${params.Id}/IpAddress`,
+    token: token,
+    params: params,
+  });
+  return response.data;
+};
+
 const requestHost = {
   getData,
   getDetail,
@@ -90,6 +104,7 @@ const requestHost = {
   completeRequestHost,
   rejectRequestHost,
   updateData,
+  getIpAddressById,
 };
 
 export default requestHost;

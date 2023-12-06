@@ -32,7 +32,7 @@ const ModalDenyHost: React.FC<Props> = (props) => {
   return (
     <>
       <Modal
-        title={<span className="inline-block m-auto">Deny</span>}
+        title={<span className="inline-block m-auto">Deny request host</span>}
         open={open}
         confirmLoading={confirmLoading}
         onCancel={() => {
