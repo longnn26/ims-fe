@@ -1,5 +1,5 @@
 import { RequestHost } from "@models/requestHost";
-import { dateAdvFormat, requestUpgradeStatus } from "@utils/constants";
+import { dateAdvFormat, requestHostStatus } from "@utils/constants";
 import { Descriptions, Divider, Tag } from "antd";
 import moment from "moment";
 import React from "react";
@@ -43,13 +43,13 @@ const RequestHostDetailInfor: React.FC<Props> = (props) => {
           <Tag
             className="text-center"
             color={
-              requestUpgradeStatus.find(
+              requestHostStatus.find(
                 (_) => _.value === requestHostDetail?.status
               )?.color
             }
           >
             {
-              requestUpgradeStatus.find(
+              requestHostStatus.find(
                 (_) => _.value === requestHostDetail?.status
               )?.value
             }

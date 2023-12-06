@@ -5,7 +5,7 @@ import { Customer } from "@models/customer";
 import { RequestHost } from "@models/requestHost";
 import { RequestUpgrade } from "@models/requestUpgrade";
 import { ServerAllocation } from "@models/serverAllocation";
-import { dateAdvFormat, requestUpgradeStatus } from "@utils/constants";
+import { dateAdvFormat, requestHostStatus } from "@utils/constants";
 import {
   Button,
   Divider,
@@ -104,7 +104,7 @@ const RequestHostTable: React.FC<Props> = (props) => {
       title: "Status",
       key: "status",
       render: (record: RequestHost) => {
-        var statusData = requestUpgradeStatus.find(
+        var statusData = requestHostStatus.find(
           (_) => _.value === record.status
         );
         return (
