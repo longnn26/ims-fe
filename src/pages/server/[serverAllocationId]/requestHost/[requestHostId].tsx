@@ -6,21 +6,11 @@ import ModalDenyHost from "@components/server/requestHost/ModalDenyHost";
 import ModalUpdate from "@components/server/requestHost/ModalUpdate";
 import RequestHostDetailInfor from "@components/server/requestHost/RequestHostDetail";
 import ServerDetail from "@components/server/ServerDetail";
-import useDispatch from "@hooks/use-dispatch";
-import useSelector from "@hooks/use-selector";
-import {
-  RequestedLocation,
-  RequestExpand,
-  RequestExpandUpdateModel,
-  SuggestLocation,
-} from "@models/requestExpand";
 import { RequestHost, RequestHostUpdateModel } from "@models/requestHost";
-import { RUAppointmentParamGet } from "@models/requestUpgrade";
 import { ServerAllocation } from "@models/serverAllocation";
 import requestHost from "@services/requestHost";
 import serverAllocationService from "@services/serverAllocation";
-import { getAppointmentData } from "@slices/requestExpand";
-import { Alert, Button, FloatButton, Form, message, Modal } from "antd";
+import { Alert, Button, FloatButton, message, Modal } from "antd";
 import { ItemType } from "antd/es/breadcrumb/Breadcrumb";
 import { useSession } from "next-auth/react";
 import dynamic from "next/dynamic";
@@ -34,24 +24,14 @@ const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
 });
 const RequestHostDetail: React.FC = () => {
   const router = useRouter();
-  const dispatch = useDispatch();
   const { data: session } = useSession();
   const [serverAllocationDetail, setServerAllocationDetail] =
     useState<ServerAllocation>();
 
   const [requestHostDetail, setRequestHostDetail] = useState<RequestHost>();
 
-  const [rUAppointmentParamGet, setRUAppointmentParamGet] =
-    useState<RUAppointmentParamGet>({
-      PageIndex: 1,
-      PageSize: 10,
-      RequestUpgradeId: router.query.requestHostId ?? -1,
-    } as unknown as RUAppointmentParamGet);
-
   const [itemBreadcrumbs, setItemBreadcrumbs] = useState<ItemType[]>([]);
-  const [suggestLocation, setSuggestLocation] = useState<SuggestLocation>();
   const [requestHostUpdate, setRequestHostUpdate] = useState<RequestHost>();
-  const { appointmentData } = useSelector((state) => state.requestExpand);
   const [openModalDenyHost, setOpenModalDenyHost] = useState<boolean>(false);
   const [openModalAcceptHost, setOpenModalAcceptHost] =
     useState<boolean>(false);
@@ -150,17 +130,6 @@ const RequestHostDetail: React.FC = () => {
               });
             setRequestHostDetail(res);
             setRequestHostUpdate(undefined);
-            // if (!res?.requestedLocation && res?.size! > 0) {
-            //   await requestExpandService
-            //     .getSuggestLocation(
-            //       session?.user.access_token!,
-            //       requestHostDetail?.id!
-            //     )
-            //     .then((res) => {
-            //       setSuggestLocation(res);
-            //     })
-            //     .catch((e) => {});
-            // }
           });
         getData();
       })
@@ -183,21 +152,6 @@ const RequestHostDetail: React.FC = () => {
     setItemBreadcrumbs(itemBrs);
   };
 
-  const saveLocation = async (data: RequestedLocation) => {
-    // await requestExpandService
-    //   .saveLocation(session?.user.access_token!, requestExpandUpdate?.id!, data)
-    //   .then(async (res) => {
-    //     message.success("Save location successful!");
-    //     getData();
-    //   })
-    //   .catch((errors) => {
-    //     message.error(errors.message);
-    //   })
-    //   .finally(() => {
-    //     setRequestExpandUpdate(undefined);
-    //   });
-  };
-
   useEffect(() => {
     if (router.query.serverAllocationId && session) {
       getData();
@@ -208,18 +162,9 @@ const RequestHostDetail: React.FC = () => {
   useEffect(() => {
     if (router.query.requestHostId && session) {
       handleBreadCumb();
-      rUAppointmentParamGet.Id = parseInt(
-        router.query.requestHostId!.toString()
-      );
-      dispatch(
-        getAppointmentData({
-          token: session?.user.access_token!,
-          paramGet: { ...rUAppointmentParamGet },
-        })
-      );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [session, rUAppointmentParamGet]);
+  }, [session]);
 
   return (
     <AntdLayoutNoSSR
@@ -234,20 +179,6 @@ const RequestHostDetail: React.FC = () => {
                 icon={<EditOutlined />}
                 onClick={async () => {
                   setRequestHostUpdate(requestHostDetail);
-                  // if (
-                  //   !requestHostDetail?.requestedLocation &&
-                  //   requestHostDetail?.size! > 0
-                  // ) {
-                  //   await requestExpandService
-                  //     .getSuggestLocation(
-                  //       session?.user.access_token!,
-                  //       requestHostDetail?.id!
-                  //     )
-                  //     .then((res) => {
-                  //       setSuggestLocation(res);
-                  //     })
-                  //     .catch((e) => {});
-                  // }
                 }}
               >
                 Update
@@ -281,9 +212,8 @@ const RequestHostDetail: React.FC = () => {
               />
             </FloatButton.Group>
           )}
-          {Boolean(
+          {/* {Boolean(
             requestHostDetail?.status === "Accepted"
-            // && requestHostDetail?.succeededAppointment?.status === "Success"
           ) && (
             <FloatButton.Group
               trigger="hover"
@@ -302,12 +232,11 @@ const RequestHostDetail: React.FC = () => {
                 tooltip="Complete"
               />
             </FloatButton.Group>
-          )}
+          )} */}
           <ModalUpdate
             requestHost={requestHostUpdate!}
             onClose={() => {
               setRequestHostUpdate(undefined);
-              setSuggestLocation(undefined);
             }}
             onSubmit={(value) => {
               updateData(value);
