@@ -289,9 +289,8 @@ const RequestHostDetail: React.FC = () => {
               />
             </FloatButton.Group>
           )}
-          {/* {Boolean(
-            requestHostDetail?.status === "Accepted"
-          ) && (
+
+          {Boolean(requestHostDetail?.status === "Accepted") && (
             <FloatButton.Group
               trigger="hover"
               type="primary"
@@ -303,13 +302,15 @@ const RequestHostDetail: React.FC = () => {
                 tooltip="Fail"
                 onClick={() => rejectRequestHost()}
               />
-              <FloatButton
-                onClick={() => completeRequestHost()}
-                icon={<AiOutlineFileDone color="green" />}
-                tooltip="Complete"
-              />
+              {Boolean(ipAdressData.data.length > 0) && (
+                <FloatButton
+                  onClick={() => completeRequestHost()}
+                  icon={<AiOutlineFileDone color="green" />}
+                  tooltip="Complete"
+                />
+              )}
             </FloatButton.Group>
-          )} */}
+          )}
           <ModalUpdate
             requestHost={requestHostUpdate!}
             onClose={() => {
