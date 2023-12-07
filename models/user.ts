@@ -1,4 +1,4 @@
-import { Base } from "./base";
+import { Base, PagingModel } from "./base";
 
 export interface LoginResponse {
   access_token: string;
@@ -16,4 +16,9 @@ export interface User extends Base {
   lastName?: string;
   email: string;
   address?: string;
+  fullname?: string;
+}
+
+export interface UserTechData extends PagingModel {
+  data: User[];
 }

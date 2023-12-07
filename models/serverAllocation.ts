@@ -11,6 +11,7 @@ export interface ServerAllocation extends BaseWithIdNumber {
   customerId: number;
   customer: Customer;
   masterIp: IpAddress;
+  masterIpAddress: string;
 }
 
 export interface ServerAllocationData extends PagingModel {

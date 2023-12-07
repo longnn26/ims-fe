@@ -5,6 +5,7 @@ export const urlServerSide = "http://192.168.40.83:8001";
 const apiLinks = {
   user: {
     login: `${urlServerSide}/api/User/Login`,
+    getUserTech: `${url}/api/User/Tech`,
   },
 
   serverAllocation: {
@@ -99,6 +100,7 @@ const apiLinks = {
 
   ipSubnet: {
     get: `${url}/api/IpSubnet`,
+    getTree: `${url}/api/IpSubnet/Tree`,
     getById: `${url}/api/IpSubnet`,
     getIpAddresssById: `${url}/api/IpSubnet`,
     create: `${url}/api/IpSubnet`,
@@ -107,6 +109,17 @@ const apiLinks = {
   ipAddress: {
     get: `${url}/api/IpAddress`,
     getSuggestMaster: `${url}/api/IpAddress/SuggestMaster`,
+  },
+
+  requestHost: {
+    get: `${url}/api/ServerAllocation`,
+    getById: `${url}/api/RequestHost`,
+    accept: `${url}/api/RequestHost`,
+    deny: `${url}/api/RequestHost`,
+    complete: `${url}/api/RequestHost`,
+    reject: `${url}/api/RequestHost`,
+    update: `${url}/api/RequestHost`,
+    getIpAdress: `${url}/api/RequestHost`,
   },
 };
 

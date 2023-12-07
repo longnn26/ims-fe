@@ -1,21 +1,25 @@
 "use client";
 import dynamic from "next/dynamic";
+import { Tree } from "antd";
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import React from "react";
 import { ParamGet } from "@models/base";
 import useDispatch from "@hooks/use-dispatch";
 import useSelector from "@hooks/use-selector";
-import { getIpSubnetData } from "@slices/ipSubnet";
+// import { getIpSubnetData } from "@slices/ipSubnet";
 import {
-  IpSubnetCreateModel,
-  IpSubnet as IpSubnetObj,
-  IpSubnetData,
+  // IpSubnetCreateModel,
+  // IpSubnet as IpSubnetObj,
+  // IpSubnetData,
+  IpSubnet,
 } from "@models/ipSubnet";
-import { Button, Pagination, message, Modal, Alert } from "antd";
-import AreaTable from "@components/ipSubnet/IpSubnetTable";
-import IpSubnetTable from "@components/ipSubnet/IpSubnetTable";
+import { Button, Modal } from "antd";
+// import IpSubnetTable from "@components/ipSubnet/IpSubnetTable";
 import ModalCreate from "@components/ipSubnet/ModalCreate";
+import ipSubnetService from "@services/ipSubnet";
+import type { DataNode, DirectoryTreeProps } from "antd/es/tree";
+
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
 });
@@ -35,18 +39,63 @@ const IpSubnet: React.FC = () => {
     PageSize: 7,
   } as ParamGet);
 
-  const getData = async () => {
-    dispatch(
-      getIpSubnetData({
-        token: session?.user.access_token!,
-        paramGet: { ...paramGet },
-      })
-    ).then(({ payload }) => {
-      var res = payload as IpSubnetData;
-      if (res.totalPage < paramGet.PageIndex && res.totalPage != 0) {
-        setParamGet({ ...paramGet, PageIndex: res.totalPage });
-      }
+  const [treeData, setTreeData] = useState<DataNode[]>([]);
+  const [ipSubnetSelected, setIpSubnetSelected] = useState<
+    string | undefined
+  >();
+
+  const onSelect: DirectoryTreeProps["onSelect"] = (keys, info) => {
+    var data = info.selectedNodes[0] as DataNode;
+    setIpSubnetSelected(data.id);
+  };
+
+  const recursiveChildrensTree = (children: IpSubnet[]) => {
+    var result = [] as DataNode[];
+    children.forEach((i) => {
+      result.push({
+        id: i.id.toString(),
+        title: `${i.firstOctet}.${i.secondOctet}.${i.thirdOctet}.${i.fourthOctet}/${i.prefixLength}`,
+        name: `${i.firstOctet}.${i.secondOctet}.${i.thirdOctet}.${i.fourthOctet}/${i.prefixLength}`,
+        key: i.id.toString(),
+        dateCreated: i.dateCreated,
+        dataUpdated: i.dateUpdated,
+        parentId: i.parentNetworkId.toString(),
+        children: recursiveChildrensTree(i.children),
+      });
     });
+    return result;
+  };
+
+  const getData = async () => {
+    // dispatch(
+    //   getIpSubnetData({
+    //     token: session?.user.access_token!,
+    //     paramGet: { ...paramGet },
+    //   })
+    // ).then(({ payload }) => {
+    //   var res = payload as IpSubnetData;
+    //   if (res.totalPage < paramGet.PageIndex && res.totalPage != 0) {
+    //     setParamGet({ ...paramGet, PageIndex: res.totalPage });
+    //   }
+    // });
+    await ipSubnetService
+      .getDataTree(session?.user.access_token!)
+      .then((res) => {
+        var result = [] as DataNode[];
+        res?.forEach((i) => {
+          result.push({
+            id: i.id.toString(),
+            title: `${i.firstOctet}.${i.secondOctet}.${i.thirdOctet}.${i.fourthOctet}/${i.prefixLength}`,
+            name: `${i.firstOctet}.${i.secondOctet}.${i.thirdOctet}.${i.fourthOctet}/${i.prefixLength}`,
+            key: i.id.toString(),
+            dateCreated: i.dateCreated,
+            dataUpdated: i.dateUpdated,
+            parentId: i?.parentNetworkId?.toString(),
+            children: recursiveChildrensTree(i.children),
+          });
+        });
+        setTreeData([...result]);
+      });
   };
 
   useEffect(() => {
@@ -76,12 +125,19 @@ const IpSubnet: React.FC = () => {
               getData();
             }}
           />
-          <IpSubnetTable
+          {/* <IpSubnetTable
             onEdit={(record) => {}}
             onDelete={async (record) => {}}
-          />
-
-          {ipSubnetData.totalPage > 0 && (
+          /> */}
+          <div className="p-3">
+            <Tree
+              showLine={true}
+              onSelect={onSelect}
+              treeData={treeData}
+              selectedKeys={[ipSubnetSelected!]}
+            />
+          </div>
+          {/* {ipSubnetData.totalPage > 0 && (
             <Pagination
               className="text-end m-4"
               current={paramGet.PageIndex}
@@ -95,7 +151,7 @@ const IpSubnet: React.FC = () => {
                 });
               }}
             />
-          )}
+          )} */}
         </>
       }
     />
