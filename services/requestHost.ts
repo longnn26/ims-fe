@@ -96,6 +96,19 @@ const getIpAddressById = async (
   return response.data;
 };
 
+const saveProvideIps = async (
+  token: string,
+  id: number,
+  ipAddressIds: number[]
+): Promise<any> => {
+  const response = await httpClient.put({
+    token: token,
+    url: apiLinks.requestHost.update + `/${id}/IpAddress`,
+    data: { ipAddressIds: ipAddressIds },
+  });
+  return response.data;
+};
+
 const requestHost = {
   getData,
   getDetail,
@@ -105,6 +118,7 @@ const requestHost = {
   rejectRequestHost,
   updateData,
   getIpAddressById,
+  saveProvideIps,
 };
 
 export default requestHost;

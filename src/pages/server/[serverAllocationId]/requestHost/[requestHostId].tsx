@@ -4,17 +4,21 @@ import BreadcrumbComponent from "@components/BreadcrumbComponent";
 import IpAddressTable from "@components/server/ipAddress/IpAddressTable";
 import ModalAcceptRequestHost from "@components/server/requestHost/ModalAcceptRequestHost";
 import ModalDenyHost from "@components/server/requestHost/ModalDenyHost";
+import ModalProvideIps from "@components/server/requestHost/ModalProvideIps";
 import ModalUpdate from "@components/server/requestHost/ModalUpdate";
 import RequestHostDetailInfor from "@components/server/requestHost/RequestHostDetail";
 import ServerDetail from "@components/server/ServerDetail";
 import useDispatch from "@hooks/use-dispatch";
 import useSelector from "@hooks/use-selector";
+import { ParamGetSuggestAdditional } from "@models/base";
+import { SuggestAdditionalModel } from "@models/ipSubnet";
 import {
   RequestHost,
   RequestHostUpdateModel,
   RUIpAdressParamGet,
 } from "@models/requestHost";
 import { ServerAllocation } from "@models/serverAllocation";
+import ipSubnet from "@services/ipSubnet";
 import requestHost from "@services/requestHost";
 import serverAllocationService from "@services/serverAllocation";
 import { getIpAdressData } from "@slices/requestHost";
@@ -39,6 +43,8 @@ const RequestHostDetail: React.FC = () => {
   const { ipAdressData } = useSelector((state) => state.requestHost);
 
   const [requestHostDetail, setRequestHostDetail] = useState<RequestHost>();
+  const [provideIpsData, setProvideIpsData] =
+    useState<SuggestAdditionalModel>();
 
   const [itemBreadcrumbs, setItemBreadcrumbs] = useState<ItemType[]>([]);
   const [requestHostUpdate, setRequestHostUpdate] = useState<RequestHost>();
@@ -52,6 +58,11 @@ const RequestHostDetail: React.FC = () => {
       PageSize: 10,
       RequestHostId: router.query.requestHostId ?? -1,
     } as unknown as RUIpAdressParamGet);
+
+  const [provideIpsParamGet, setProvideIpsParamGet] =
+    useState<ParamGetSuggestAdditional>({
+      ServerAllocationId: router.query.serverAllocationId + "",
+    } as unknown as ParamGetSuggestAdditional);
 
   const getData = async () => {
     await serverAllocationService
@@ -169,6 +180,19 @@ const RequestHostDetail: React.FC = () => {
     setItemBreadcrumbs(itemBrs);
   };
 
+  const getProvideIps = async () => {
+    if (requestHostDetail?.quantity) {
+      provideIpsParamGet.Quantity = requestHostDetail?.quantity!;
+      await ipSubnet
+        .getSuggestAdditional(session?.user.access_token!, {
+          ...provideIpsParamGet,
+        })
+        .then((res) => {
+          setProvideIpsData(res);
+        });
+    }
+  };
+
   useEffect(() => {
     if (router.query.serverAllocationId && session) {
       getData();
@@ -197,6 +221,18 @@ const RequestHostDetail: React.FC = () => {
           <div className="flex flex-wrap items-center justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
             <BreadcrumbComponent itemBreadcrumbs={itemBreadcrumbs} />
             <div>
+              {requestHostDetail?.isRemoval != true && (
+                <Button
+                  type="primary"
+                  className="mb-2 mr-3"
+                  // icon={<EditOutlined />}
+                  onClick={async () => {
+                    getProvideIps();
+                  }}
+                >
+                  Provide Ips
+                </Button>
+              )}
               <Button
                 type="primary"
                 className="mb-2"
@@ -295,6 +331,13 @@ const RequestHostDetail: React.FC = () => {
             onClose={() => setOpenModalAcceptHost(false)}
             requestHostId={requestHostDetail?.id!}
             getData={() => getData()}
+          />
+
+          <ModalProvideIps
+            provideIpsData={provideIpsData!}
+            quantity={requestHostDetail?.quantity!}
+            requestHostId={requestHostDetail?.id!}
+            onClose={() => setProvideIpsData(undefined)}
           />
         </>
       }

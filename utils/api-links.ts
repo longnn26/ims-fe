@@ -104,6 +104,7 @@ const apiLinks = {
     getById: `${url}/api/IpSubnet`,
     getIpAddresssById: `${url}/api/IpSubnet`,
     create: `${url}/api/IpSubnet`,
+    getSuggestAdditional: `${url}/api/IpSubnet/SuggestAdditional`,
   },
 
   ipAddress: {

@@ -1,4 +1,5 @@
 import { BaseWithIdNumber, PagingModel } from "./base";
+import { IpAddress } from "./ipAddress";
 
 export interface IpSubnet extends BaseWithIdNumber {
   firstOctet: number;
@@ -9,7 +10,7 @@ export interface IpSubnet extends BaseWithIdNumber {
   parentNetworkId: number;
   prefixLength: number;
   subnetIds: IpSubnet[];
-  children: IpSubnet[]
+  children: IpSubnet[];
 }
 
 export interface IpSubnetData extends PagingModel {
@@ -21,4 +22,9 @@ export interface IpSubnetCreateModel {
   prefixLength: number;
   note: string;
   ipSubnets: IpSubnet[];
+}
+
+export interface SuggestAdditionalModel {
+  ipSubnets: IpSubnet[];
+  ipAddresses: IpAddress[];
 }
