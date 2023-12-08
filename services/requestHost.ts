@@ -3,6 +3,7 @@ import { IpAddressData } from "@models/ipAddress";
 import {
   RUIpAdressParamGet,
   RequestHost,
+  RequestHostCompleteModel,
   RequestHostData,
   RequestHostUpdateModel,
 } from "@models/requestHost";
@@ -56,10 +57,15 @@ const acceptRequestHost = async (
   return response.data;
 };
 
-const completeRequestHost = async (token: string, id: string): Promise<any> => {
+const completeRequestHost = async (
+  token: string,
+  id: number,
+  data: RequestHostCompleteModel
+): Promise<any> => {
   const response = await httpClient.put({
     url: apiLinks.requestHost.complete + `/${id}/Complete`,
     token: token,
+    data: data,
   });
   return response.data;
 };

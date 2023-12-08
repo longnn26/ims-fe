@@ -3,6 +3,7 @@ import { EditOutlined } from "@ant-design/icons";
 import BreadcrumbComponent from "@components/BreadcrumbComponent";
 import IpAddressTable from "@components/server/ipAddress/IpAddressTable";
 import ModalAcceptRequestHost from "@components/server/requestHost/ModalAcceptRequestHost";
+import ModalCompletetHost from "@components/server/requestHost/ModalCompleteHost";
 import ModalDenyHost from "@components/server/requestHost/ModalDenyHost";
 import ModalProvideIps from "@components/server/requestHost/ModalProvideIps";
 import ModalUpdate from "@components/server/requestHost/ModalUpdate";
@@ -49,6 +50,8 @@ const RequestHostDetail: React.FC = () => {
   const [itemBreadcrumbs, setItemBreadcrumbs] = useState<ItemType[]>([]);
   const [requestHostUpdate, setRequestHostUpdate] = useState<RequestHost>();
   const [openModalDenyHost, setOpenModalDenyHost] = useState<boolean>(false);
+  const [openModalCompleteHost, setOpenModalCompleteHost] =
+    useState<boolean>(false);
   const [openModalAcceptHost, setOpenModalAcceptHost] =
     useState<boolean>(false);
 
@@ -98,34 +101,6 @@ const RequestHostDetail: React.FC = () => {
           )
           .then((res) => {
             message.success("Reject request host successful!");
-            getData();
-          })
-          .catch((errors) => {
-            message.error(errors.message);
-          })
-          .finally(() => {});
-      },
-      onCancel() {},
-    });
-  };
-
-  const completeRequestHost = async () => {
-    confirm({
-      title: "Complete",
-      content: (
-        <Alert
-          message={`Do you want to complete with Id ${requestHostDetail?.id}?`}
-          type="warning"
-        />
-      ),
-      async onOk() {
-        await requestHost
-          .completeRequestHost(
-            session?.user.access_token!,
-            requestHostDetail?.id + ""
-          )
-          .then((res) => {
-            message.success("Complete request host successful!");
             getData();
           })
           .catch((errors) => {
@@ -302,9 +277,9 @@ const RequestHostDetail: React.FC = () => {
                 tooltip="Fail"
                 onClick={() => rejectRequestHost()}
               />
-              {Boolean(ipAdressData.data.length > 0) && (
+              {Boolean(ipAdressData?.data?.length > 0) && (
                 <FloatButton
-                  onClick={() => completeRequestHost()}
+                  onClick={() => setOpenModalCompleteHost(true)}
                   icon={<AiOutlineFileDone color="green" />}
                   tooltip="Complete"
                 />
@@ -325,6 +300,13 @@ const RequestHostDetail: React.FC = () => {
             onClose={() => setOpenModalDenyHost(false)}
             requestHostId={requestHostDetail?.id!}
             getData={() => getData()}
+          />
+
+          <ModalCompletetHost
+            requestHostId={requestHostDetail?.id!}
+            onRefresh={() => getData()}
+            open={openModalCompleteHost}
+            onClose={() => setOpenModalCompleteHost(false)}
           />
 
           <ModalAcceptRequestHost
