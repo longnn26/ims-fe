@@ -97,7 +97,15 @@ const ModalCreate: React.FC<Props> = (props) => {
                   style={{ width: "69%" }}
                   name="ipAddresss"
                   label="Ip Addresss"
-                  rules={[{ required: true }]}
+                  rules={[
+                    { required: true },
+                    {
+                      pattern: new RegExp(
+                        /^(25[0-5]|2[0-4][0-9]|[0-1]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[0-1]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[0-1]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[0-1]?[0-9][0-9]?)$/
+                      ),
+                      message: "IP address has the form 192.0.0.0 - 223.255.255.0",
+                    },
+                  ]}
                 >
                   <Input placeholder="Ip Addresss" allowClear />
                 </Form.Item>
