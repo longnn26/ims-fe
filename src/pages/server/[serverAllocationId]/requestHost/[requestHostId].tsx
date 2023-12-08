@@ -321,6 +321,7 @@ const RequestHostDetail: React.FC = () => {
             quantity={requestHostDetail?.quantity!}
             requestHostId={requestHostDetail?.id!}
             onClose={() => setProvideIpsData(undefined)}
+            onRefresh={() => getData()}
           />
         </>
       }

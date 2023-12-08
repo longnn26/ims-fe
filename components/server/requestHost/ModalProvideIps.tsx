@@ -10,10 +10,12 @@ interface Props {
   quantity: number;
   requestHostId: number;
   onClose: () => void;
+  onRefresh: () => void;
+
 }
 
 const ModalProvideIps: React.FC<Props> = (props) => {
-  const { onClose, provideIpsData, quantity, requestHostId } = props;
+  const { onClose, provideIpsData, quantity, requestHostId, onRefresh } = props;
   const { data: session } = useSession();
 
   const [confirmLoading, setConfirmLoading] = useState(false);
@@ -53,6 +55,7 @@ const ModalProvideIps: React.FC<Props> = (props) => {
                     )
                     .then((res) => {
                       message.success("Save successful!");
+                      onRefresh();
                       onClose();
                     })
                     .catch((errors) => {
