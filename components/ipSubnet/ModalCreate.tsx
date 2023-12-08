@@ -73,7 +73,7 @@ const ModalCreate: React.FC<Props> = (props) => {
                       ipAddresss: form.getFieldValue("ipAddresss"),
                       prefixLength: form.getFieldValue("prefixLength"),
                       note: form.getFieldValue("note"),
-                      ipSubnets: form.getFieldValue("ipSubnets"),
+                      // ipSubnets: form.getFieldValue("ipSubnets"),
                     } as IpSubnetCreateModel);
                   },
                   onCancel() {},
@@ -109,9 +109,9 @@ const ModalCreate: React.FC<Props> = (props) => {
                   rules={[
                     { required: true },
                     {
-                      pattern: new RegExp(/^(?:1[6-9]|2[0-4])$/),
+                      pattern: new RegExp(/^(?:2[4-9])$/),
                       message:
-                        "PrefixLength must be a number between 16 and 24",
+                        "PrefixLength must be a number between 24 and 29",
                     },
                   ]}
                 >
@@ -122,7 +122,7 @@ const ModalCreate: React.FC<Props> = (props) => {
               <Form.Item name="note" label="Note">
                 <Input placeholder="Note" allowClear />
               </Form.Item>
-              <Form.Item
+              {/* <Form.Item
                 name="subnets"
                 rules={[
                   ({ getFieldValue }) => ({
@@ -199,7 +199,7 @@ const ModalCreate: React.FC<Props> = (props) => {
                     </div>
                   )}
                 </Form.List>
-              </Form.Item>
+              </Form.Item> */}
             </Form>
           </div>
         </Spin>

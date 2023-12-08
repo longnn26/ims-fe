@@ -21,7 +21,7 @@ export interface IpSubnetCreateModel {
   ipAddresss: string;
   prefixLength: number;
   note: string;
-  ipSubnets: IpSubnet[];
+  // ipSubnets: IpSubnet[];
 }
 
 export interface SuggestAdditionalModel {
