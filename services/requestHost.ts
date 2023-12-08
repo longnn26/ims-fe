@@ -5,6 +5,7 @@ import {
   RequestHost,
   RequestHostCompleteModel,
   RequestHostData,
+  RequestHostRejectModel,
   RequestHostUpdateModel,
 } from "@models/requestHost";
 import apiLinks from "@utils/api-links";
@@ -70,10 +71,15 @@ const completeRequestHost = async (
   return response.data;
 };
 
-const rejectRequestHost = async (token: string, id: string): Promise<any> => {
+const rejectRequestHost = async (
+  token: string,
+  id: number,
+  data: RequestHostRejectModel
+): Promise<any> => {
   const response = await httpClient.put({
     url: apiLinks.requestHost.reject + `/${id}/Reject`,
     token: token,
+    data: data,
   });
   return response.data;
 };

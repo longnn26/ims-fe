@@ -64,3 +64,9 @@ export interface RequestHostCompleteModel {
   good: boolean;
   note: string;
 }
+
+export interface RequestHostRejectModel {
+  note: string;
+  saleNote: string;
+  techNote: string;
+}

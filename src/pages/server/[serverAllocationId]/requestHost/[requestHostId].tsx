@@ -6,6 +6,7 @@ import ModalAcceptRequestHost from "@components/server/requestHost/ModalAcceptRe
 import ModalCompletetHost from "@components/server/requestHost/ModalCompleteHost";
 import ModalDenyHost from "@components/server/requestHost/ModalDenyHost";
 import ModalProvideIps from "@components/server/requestHost/ModalProvideIps";
+import ModalRejectHost from "@components/server/requestHost/ModalRejectHost";
 import ModalUpdate from "@components/server/requestHost/ModalUpdate";
 import RequestHostDetailInfor from "@components/server/requestHost/RequestHostDetail";
 import ServerDetail from "@components/server/ServerDetail";
@@ -50,6 +51,8 @@ const RequestHostDetail: React.FC = () => {
   const [itemBreadcrumbs, setItemBreadcrumbs] = useState<ItemType[]>([]);
   const [requestHostUpdate, setRequestHostUpdate] = useState<RequestHost>();
   const [openModalDenyHost, setOpenModalDenyHost] = useState<boolean>(false);
+  const [openModalRejectHost, setOpenModalRejectHost] =
+    useState<boolean>(false);
   const [openModalCompleteHost, setOpenModalCompleteHost] =
     useState<boolean>(false);
   const [openModalAcceptHost, setOpenModalAcceptHost] =
@@ -82,34 +85,6 @@ const RequestHostDetail: React.FC = () => {
       .then((res) => {
         setRequestHostDetail(res);
       });
-  };
-
-  const rejectRequestHost = async () => {
-    confirm({
-      title: "Reject",
-      content: (
-        <Alert
-          message={`Do you want to reject with Id ${requestHostDetail?.id}?`}
-          type="warning"
-        />
-      ),
-      async onOk() {
-        await requestHost
-          .rejectRequestHost(
-            session?.user.access_token!,
-            requestHostDetail?.id + ""
-          )
-          .then((res) => {
-            message.success("Reject request host successful!");
-            getData();
-          })
-          .catch((errors) => {
-            message.error(errors.message);
-          })
-          .finally(() => {});
-      },
-      onCancel() {},
-    });
   };
 
   const updateData = async (data: RequestHostUpdateModel) => {
@@ -275,7 +250,7 @@ const RequestHostDetail: React.FC = () => {
               <FloatButton
                 icon={<MdCancel color="red" />}
                 tooltip="Fail"
-                onClick={() => rejectRequestHost()}
+                onClick={() => setOpenModalRejectHost(true)}
               />
               {Boolean(ipAdressData?.data?.length > 0) && (
                 <FloatButton
@@ -307,6 +282,13 @@ const RequestHostDetail: React.FC = () => {
             onRefresh={() => getData()}
             open={openModalCompleteHost}
             onClose={() => setOpenModalCompleteHost(false)}
+          />
+
+          <ModalRejectHost
+            requestHostId={requestHostDetail?.id!}
+            onRefresh={() => getData()}
+            open={openModalRejectHost}
+            onClose={() => setOpenModalRejectHost(false)}
           />
 
           <ModalAcceptRequestHost
