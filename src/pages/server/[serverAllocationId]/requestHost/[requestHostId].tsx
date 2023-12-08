@@ -32,6 +32,10 @@ import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { AiOutlineFileDone } from "react-icons/ai";
 import { MdCancel } from "react-icons/md";
+import UploadComponent from "@components/UploadComponent";
+import type { UploadFile } from "antd/es/upload/interface";
+import { CaretLeftOutlined, UploadOutlined } from "@ant-design/icons";
+
 const { confirm } = Modal;
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
@@ -70,6 +74,13 @@ const RequestHostDetail: React.FC = () => {
       ServerAllocationId: router.query.serverAllocationId + "",
     } as unknown as ParamGetSuggestAdditional);
 
+  const [fileInspectionReport, setFileInspectionReport] = useState<
+    UploadFile[]
+  >([]);
+  const [loadingUploadDocument, setLoadingUploadDocument] =
+    useState<boolean>(false);
+  const [disabledInspectionReport, setDisabledInspectionReport] =
+    useState<boolean>(false);
   const getData = async () => {
     await serverAllocationService
       .getServerAllocationById(
@@ -143,6 +154,30 @@ const RequestHostDetail: React.FC = () => {
     }
   };
 
+  const uploadDocument = async () => {
+    var data = new FormData();
+    data.append("InspectionReport", fileInspectionReport[0].originFileObj!);
+    data.append("InspectionReportFileName", fileInspectionReport[0].name!);
+    setLoadingUploadDocument(true);
+    await requestHost
+      .uploadDocument(
+        session?.user.access_token!,
+        requestHostDetail!.id.toString(),
+        data
+      )
+      .then((res) => {
+        message.success("Upload document successful!");
+        getData();
+      })
+      .catch((errors) => {
+        message.error(errors.message);
+      })
+      .finally(() => {
+        setLoadingUploadDocument(false);
+        setFileInspectionReport([]);
+      });
+  };
+
   useEffect(() => {
     if (router.query.serverAllocationId && session) {
       getData();
@@ -201,6 +236,31 @@ const RequestHostDetail: React.FC = () => {
               serverAllocationDetail={serverAllocationDetail!}
             ></ServerDetail>
             <RequestHostDetailInfor requestHostDetail={requestHostDetail!} />
+          </div>
+          <div className="p-5">
+            <UploadComponent
+              fileList={fileInspectionReport}
+              title="BBNT"
+              setFileList={setFileInspectionReport}
+              multiple={false}
+              maxCount={1}
+              disabled={setDisabledInspectionReport}
+            />
+            <Button
+              icon={<UploadOutlined />}
+              loading={loadingUploadDocument}
+              className="w-full"
+              type="primary"
+              disabled={
+                !Boolean(fileInspectionReport.length > 0) ||
+                disabledInspectionReport
+              }
+              onClick={() => {
+                uploadDocument();
+              }}
+            >
+              Upload
+            </Button>
           </div>
 
           <IpAddressTable typeGet="ByRequestExpandId" urlOncell="" />

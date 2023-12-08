@@ -121,6 +121,20 @@ const saveProvideIps = async (
   return response.data;
 };
 
+const uploadDocument = async (
+  token: string,
+  id: string,
+  data: FormData
+): Promise<any> => {
+  const response = await httpClient.post({
+    contentType: "multipart/form-data",
+    url: apiLinks.requestHost.upload + `/${id}/Document`,
+    token: token,
+    data: data,
+  });
+  return response.data;
+};
+
 const requestHost = {
   getData,
   getDetail,
@@ -131,6 +145,7 @@ const requestHost = {
   updateData,
   getIpAddressById,
   saveProvideIps,
+  uploadDocument,
 };
 
 export default requestHost;

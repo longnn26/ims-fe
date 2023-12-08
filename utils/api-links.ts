@@ -121,6 +121,7 @@ const apiLinks = {
     reject: `${url}/api/RequestHost`,
     update: `${url}/api/RequestHost`,
     getIpAdress: `${url}/api/RequestHost`,
+    upload: `${url}/api/RequestHost`,
   },
 };
 

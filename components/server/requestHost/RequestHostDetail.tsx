@@ -84,6 +84,9 @@ const RequestHostDetailInfor: React.FC<Props> = (props) => {
         <Descriptions.Item label="Technical Staff's Note" span={2}>
           {requestHostDetail?.techNote}
         </Descriptions.Item>
+        <Descriptions.Item label="Inspection report file" span={4}>
+          <a href={`${requestHostDetail?.inspectionReportFilePath}`}>BBNT</a>{" "}
+        </Descriptions.Item>
       </Descriptions>
     </div>
   );
