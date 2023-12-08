@@ -36,3 +36,8 @@ export interface OptionType {
   value: string;
   label: string;
 }
+
+export interface ParamGetSuggestAdditional {
+  ServerAllocationId: number;
+  Quantity: number;
+}

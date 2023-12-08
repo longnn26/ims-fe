@@ -104,6 +104,7 @@ const apiLinks = {
     getById: `${url}/api/IpSubnet`,
     getIpAddresssById: `${url}/api/IpSubnet`,
     create: `${url}/api/IpSubnet`,
+    getSuggestAdditional: `${url}/api/IpSubnet/SuggestAdditional`,
   },
 
   ipAddress: {
@@ -120,6 +121,7 @@ const apiLinks = {
     reject: `${url}/api/RequestHost`,
     update: `${url}/api/RequestHost`,
     getIpAdress: `${url}/api/RequestHost`,
+    upload: `${url}/api/RequestHost`,
   },
 };
 

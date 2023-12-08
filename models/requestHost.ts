@@ -53,3 +53,20 @@ export interface Executor {
 export interface RUIpAdressParamGet extends ParamGet {
   Id: number;
 }
+
+export interface RequestHostCompleteModel {
+  number: string;
+  customerName: string;
+  customerPosition: string;
+  qtName: string;
+  position: number;
+  location: string;
+  good: boolean;
+  note: string;
+}
+
+export interface RequestHostRejectModel {
+  note: string;
+  saleNote: string;
+  techNote: string;
+}

@@ -3,18 +3,24 @@ import { EditOutlined } from "@ant-design/icons";
 import BreadcrumbComponent from "@components/BreadcrumbComponent";
 import IpAddressTable from "@components/server/ipAddress/IpAddressTable";
 import ModalAcceptRequestHost from "@components/server/requestHost/ModalAcceptRequestHost";
+import ModalCompletetHost from "@components/server/requestHost/ModalCompleteHost";
 import ModalDenyHost from "@components/server/requestHost/ModalDenyHost";
+import ModalProvideIps from "@components/server/requestHost/ModalProvideIps";
+import ModalRejectHost from "@components/server/requestHost/ModalRejectHost";
 import ModalUpdate from "@components/server/requestHost/ModalUpdate";
 import RequestHostDetailInfor from "@components/server/requestHost/RequestHostDetail";
 import ServerDetail from "@components/server/ServerDetail";
 import useDispatch from "@hooks/use-dispatch";
 import useSelector from "@hooks/use-selector";
+import { ParamGetSuggestAdditional } from "@models/base";
+import { SuggestAdditionalModel } from "@models/ipSubnet";
 import {
   RequestHost,
   RequestHostUpdateModel,
   RUIpAdressParamGet,
 } from "@models/requestHost";
 import { ServerAllocation } from "@models/serverAllocation";
+import ipSubnet from "@services/ipSubnet";
 import requestHost from "@services/requestHost";
 import serverAllocationService from "@services/serverAllocation";
 import { getIpAdressData } from "@slices/requestHost";
@@ -26,6 +32,10 @@ import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { AiOutlineFileDone } from "react-icons/ai";
 import { MdCancel } from "react-icons/md";
+import UploadComponent from "@components/UploadComponent";
+import type { UploadFile } from "antd/es/upload/interface";
+import { CaretLeftOutlined, UploadOutlined } from "@ant-design/icons";
+
 const { confirm } = Modal;
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
@@ -39,10 +49,16 @@ const RequestHostDetail: React.FC = () => {
   const { ipAdressData } = useSelector((state) => state.requestHost);
 
   const [requestHostDetail, setRequestHostDetail] = useState<RequestHost>();
+  const [provideIpsData, setProvideIpsData] =
+    useState<SuggestAdditionalModel>();
 
   const [itemBreadcrumbs, setItemBreadcrumbs] = useState<ItemType[]>([]);
   const [requestHostUpdate, setRequestHostUpdate] = useState<RequestHost>();
   const [openModalDenyHost, setOpenModalDenyHost] = useState<boolean>(false);
+  const [openModalRejectHost, setOpenModalRejectHost] =
+    useState<boolean>(false);
+  const [openModalCompleteHost, setOpenModalCompleteHost] =
+    useState<boolean>(false);
   const [openModalAcceptHost, setOpenModalAcceptHost] =
     useState<boolean>(false);
 
@@ -53,6 +69,18 @@ const RequestHostDetail: React.FC = () => {
       RequestHostId: router.query.requestHostId ?? -1,
     } as unknown as RUIpAdressParamGet);
 
+  const [provideIpsParamGet, setProvideIpsParamGet] =
+    useState<ParamGetSuggestAdditional>({
+      ServerAllocationId: router.query.serverAllocationId + "",
+    } as unknown as ParamGetSuggestAdditional);
+
+  const [fileInspectionReport, setFileInspectionReport] = useState<
+    UploadFile[]
+  >([]);
+  const [loadingUploadDocument, setLoadingUploadDocument] =
+    useState<boolean>(false);
+  const [disabledInspectionReport, setDisabledInspectionReport] =
+    useState<boolean>(false);
   const getData = async () => {
     await serverAllocationService
       .getServerAllocationById(
@@ -68,62 +96,6 @@ const RequestHostDetail: React.FC = () => {
       .then((res) => {
         setRequestHostDetail(res);
       });
-  };
-
-  const rejectRequestHost = async () => {
-    confirm({
-      title: "Reject",
-      content: (
-        <Alert
-          message={`Do you want to reject with Id ${requestHostDetail?.id}?`}
-          type="warning"
-        />
-      ),
-      async onOk() {
-        await requestHost
-          .rejectRequestHost(
-            session?.user.access_token!,
-            requestHostDetail?.id + ""
-          )
-          .then((res) => {
-            message.success("Reject request host successful!");
-            getData();
-          })
-          .catch((errors) => {
-            message.error(errors.message);
-          })
-          .finally(() => {});
-      },
-      onCancel() {},
-    });
-  };
-
-  const completeRequestHost = async () => {
-    confirm({
-      title: "Complete",
-      content: (
-        <Alert
-          message={`Do you want to complete with Id ${requestHostDetail?.id}?`}
-          type="warning"
-        />
-      ),
-      async onOk() {
-        await requestHost
-          .completeRequestHost(
-            session?.user.access_token!,
-            requestHostDetail?.id + ""
-          )
-          .then((res) => {
-            message.success("Complete request host successful!");
-            getData();
-          })
-          .catch((errors) => {
-            message.error(errors.message);
-          })
-          .finally(() => {});
-      },
-      onCancel() {},
-    });
   };
 
   const updateData = async (data: RequestHostUpdateModel) => {
@@ -169,6 +141,43 @@ const RequestHostDetail: React.FC = () => {
     setItemBreadcrumbs(itemBrs);
   };
 
+  const getProvideIps = async () => {
+    if (requestHostDetail?.quantity) {
+      provideIpsParamGet.Quantity = requestHostDetail?.quantity!;
+      await ipSubnet
+        .getSuggestAdditional(session?.user.access_token!, {
+          ...provideIpsParamGet,
+        })
+        .then((res) => {
+          setProvideIpsData(res);
+        });
+    }
+  };
+
+  const uploadDocument = async () => {
+    var data = new FormData();
+    data.append("InspectionReport", fileInspectionReport[0].originFileObj!);
+    data.append("InspectionReportFileName", fileInspectionReport[0].name!);
+    setLoadingUploadDocument(true);
+    await requestHost
+      .uploadDocument(
+        session?.user.access_token!,
+        requestHostDetail!.id.toString(),
+        data
+      )
+      .then((res) => {
+        message.success("Upload document successful!");
+        getData();
+      })
+      .catch((errors) => {
+        message.error(errors.message);
+      })
+      .finally(() => {
+        setLoadingUploadDocument(false);
+        setFileInspectionReport([]);
+      });
+  };
+
   useEffect(() => {
     if (router.query.serverAllocationId && session) {
       getData();
@@ -188,7 +197,7 @@ const RequestHostDetail: React.FC = () => {
       );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [session]);
+  }, [session, rUIpAddressParamGet]);
 
   return (
     <AntdLayoutNoSSR
@@ -197,6 +206,18 @@ const RequestHostDetail: React.FC = () => {
           <div className="flex flex-wrap items-center justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
             <BreadcrumbComponent itemBreadcrumbs={itemBreadcrumbs} />
             <div>
+              {requestHostDetail?.isRemoval != true && (
+                <Button
+                  type="primary"
+                  className="mb-2 mr-3"
+                  // icon={<EditOutlined />}
+                  onClick={async () => {
+                    getProvideIps();
+                  }}
+                >
+                  Provide Ips
+                </Button>
+              )}
               <Button
                 type="primary"
                 className="mb-2"
@@ -215,6 +236,31 @@ const RequestHostDetail: React.FC = () => {
               serverAllocationDetail={serverAllocationDetail!}
             ></ServerDetail>
             <RequestHostDetailInfor requestHostDetail={requestHostDetail!} />
+          </div>
+          <div className="p-5">
+            <UploadComponent
+              fileList={fileInspectionReport}
+              title="BBNT"
+              setFileList={setFileInspectionReport}
+              multiple={false}
+              maxCount={1}
+              disabled={setDisabledInspectionReport}
+            />
+            <Button
+              icon={<UploadOutlined />}
+              loading={loadingUploadDocument}
+              className="w-full"
+              type="primary"
+              disabled={
+                !Boolean(fileInspectionReport.length > 0) ||
+                disabledInspectionReport
+              }
+              onClick={() => {
+                uploadDocument();
+              }}
+            >
+              Upload
+            </Button>
           </div>
 
           <IpAddressTable typeGet="ByRequestExpandId" urlOncell="" />
@@ -253,9 +299,8 @@ const RequestHostDetail: React.FC = () => {
               />
             </FloatButton.Group>
           )}
-          {/* {Boolean(
-            requestHostDetail?.status === "Accepted"
-          ) && (
+
+          {Boolean(requestHostDetail?.status === "Accepted") && (
             <FloatButton.Group
               trigger="hover"
               type="primary"
@@ -265,15 +310,17 @@ const RequestHostDetail: React.FC = () => {
               <FloatButton
                 icon={<MdCancel color="red" />}
                 tooltip="Fail"
-                onClick={() => rejectRequestHost()}
+                onClick={() => setOpenModalRejectHost(true)}
               />
-              <FloatButton
-                onClick={() => completeRequestHost()}
-                icon={<AiOutlineFileDone color="green" />}
-                tooltip="Complete"
-              />
+              {Boolean(ipAdressData?.data?.length > 0) && (
+                <FloatButton
+                  onClick={() => setOpenModalCompleteHost(true)}
+                  icon={<AiOutlineFileDone color="green" />}
+                  tooltip="Complete"
+                />
+              )}
             </FloatButton.Group>
-          )} */}
+          )}
           <ModalUpdate
             requestHost={requestHostUpdate!}
             onClose={() => {
@@ -290,11 +337,33 @@ const RequestHostDetail: React.FC = () => {
             getData={() => getData()}
           />
 
+          <ModalCompletetHost
+            requestHostId={requestHostDetail?.id!}
+            onRefresh={() => getData()}
+            open={openModalCompleteHost}
+            onClose={() => setOpenModalCompleteHost(false)}
+          />
+
+          <ModalRejectHost
+            requestHostId={requestHostDetail?.id!}
+            onRefresh={() => getData()}
+            open={openModalRejectHost}
+            onClose={() => setOpenModalRejectHost(false)}
+          />
+
           <ModalAcceptRequestHost
             open={openModalAcceptHost}
             onClose={() => setOpenModalAcceptHost(false)}
             requestHostId={requestHostDetail?.id!}
             getData={() => getData()}
+          />
+
+          <ModalProvideIps
+            provideIpsData={provideIpsData!}
+            quantity={requestHostDetail?.quantity!}
+            requestHostId={requestHostDetail?.id!}
+            onClose={() => setProvideIpsData(undefined)}
+            onRefresh={() => getData()}
           />
         </>
       }

@@ -19,6 +19,7 @@ import { Button, Modal } from "antd";
 import ModalCreate from "@components/ipSubnet/ModalCreate";
 import ipSubnetService from "@services/ipSubnet";
 import type { DataNode, DirectoryTreeProps } from "antd/es/tree";
+import { useRouter } from "next/router";
 
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
@@ -33,6 +34,8 @@ const IpSubnet: React.FC = () => {
     (state) => state.ipSubnet
   );
 
+  const router = useRouter();
+
   const [openModalCreate, setOpenModalCreate] = useState<boolean>(false);
   const [paramGet, setParamGet] = useState<ParamGet>({
     PageIndex: 1,
@@ -46,6 +49,7 @@ const IpSubnet: React.FC = () => {
 
   const onSelect: DirectoryTreeProps["onSelect"] = (keys, info) => {
     var data = info.selectedNodes[0] as DataNode;
+    router.push(`ipSubnet/${data.id}`);
     setIpSubnetSelected(data.id);
   };
 

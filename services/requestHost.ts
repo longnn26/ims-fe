@@ -3,7 +3,9 @@ import { IpAddressData } from "@models/ipAddress";
 import {
   RUIpAdressParamGet,
   RequestHost,
+  RequestHostCompleteModel,
   RequestHostData,
+  RequestHostRejectModel,
   RequestHostUpdateModel,
 } from "@models/requestHost";
 import apiLinks from "@utils/api-links";
@@ -56,18 +58,28 @@ const acceptRequestHost = async (
   return response.data;
 };
 
-const completeRequestHost = async (token: string, id: string): Promise<any> => {
+const completeRequestHost = async (
+  token: string,
+  id: number,
+  data: RequestHostCompleteModel
+): Promise<any> => {
   const response = await httpClient.put({
     url: apiLinks.requestHost.complete + `/${id}/Complete`,
     token: token,
+    data: data,
   });
   return response.data;
 };
 
-const rejectRequestHost = async (token: string, id: string): Promise<any> => {
+const rejectRequestHost = async (
+  token: string,
+  id: number,
+  data: RequestHostRejectModel
+): Promise<any> => {
   const response = await httpClient.put({
     url: apiLinks.requestHost.reject + `/${id}/Reject`,
     token: token,
+    data: data,
   });
   return response.data;
 };
@@ -96,6 +108,33 @@ const getIpAddressById = async (
   return response.data;
 };
 
+const saveProvideIps = async (
+  token: string,
+  id: number,
+  ipAddressIds: number[]
+): Promise<any> => {
+  const response = await httpClient.put({
+    token: token,
+    url: apiLinks.requestHost.update + `/${id}/IpAddress`,
+    data: { ipAddressIds: ipAddressIds },
+  });
+  return response.data;
+};
+
+const uploadDocument = async (
+  token: string,
+  id: string,
+  data: FormData
+): Promise<any> => {
+  const response = await httpClient.post({
+    contentType: "multipart/form-data",
+    url: apiLinks.requestHost.upload + `/${id}/Document`,
+    token: token,
+    data: data,
+  });
+  return response.data;
+};
+
 const requestHost = {
   getData,
   getDetail,
@@ -105,6 +144,8 @@ const requestHost = {
   rejectRequestHost,
   updateData,
   getIpAddressById,
+  saveProvideIps,
+  uploadDocument,
 };
 
 export default requestHost;

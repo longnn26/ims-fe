@@ -1,6 +1,15 @@
-import { ParamGet, ParamGetWithId } from "@models/base";
+import {
+  ParamGet,
+  ParamGetSuggestAdditional,
+  ParamGetWithId,
+} from "@models/base";
 import { IpAddressData } from "@models/ipAddress";
-import { IpSubnet, IpSubnetCreateModel, IpSubnetData } from "@models/ipSubnet";
+import {
+  IpSubnet,
+  IpSubnetCreateModel,
+  IpSubnetData,
+  SuggestAdditionalModel,
+} from "@models/ipSubnet";
 import apiLinks from "@utils/api-links";
 import httpClient from "@utils/http-client";
 
@@ -56,12 +65,25 @@ const createData = async (
   return response.data;
 };
 
+const getSuggestAdditional = async (
+  token: string,
+  params: ParamGetSuggestAdditional
+): Promise<SuggestAdditionalModel> => {
+  const response = await httpClient.get({
+    url: apiLinks.ipSubnet.getSuggestAdditional,
+    token: token,
+    params: params,
+  });
+  return response.data;
+};
+
 const ipSubnet = {
   getData,
   createData,
   getDetail,
   getIpAddresssById,
   getDataTree,
+  getSuggestAdditional,
 };
 
 export default ipSubnet;
