@@ -27,6 +27,7 @@ interface DataType {
   serialNumber: string;
   customer: Customer;
   note: string;
+  techNote: string;
   dateCreated: string;
   masterIp: IpAddress;
   dateUpdated: string;
@@ -121,6 +122,7 @@ const ServerAllocationTable: React.FC<Props> = (props) => {
       note: serverAllocationData?.data[i].note,
       customer: serverAllocationData?.data[i].customer,
       masterIp: serverAllocationData?.data[i].masterIp,
+      techNote: serverAllocationData?.data[i].techNote,
       dateCreated: moment(serverAllocationData?.data[i].dateCreated).format(
         dateAdvFormat
       ),

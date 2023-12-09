@@ -98,8 +98,8 @@ const ModalUpdate: React.FC<Props> = (props) => {
           <Form
             ref={formRef}
             form={form}
-            labelCol={{ span: 8 }}
-            wrapperCol={{ span: 16 }}
+            labelCol={{ span: 10 }}
+            wrapperCol={{ span: 14 }}
             style={{ width: "100%" }}
           >
             <Form.Item label="Customer">
