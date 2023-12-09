@@ -34,13 +34,15 @@ const ModalUpdate: React.FC<Props> = (props) => {
         id: serverAllocation.id,
         name: serverAllocation.name,
         power: serverAllocation.power,
-        note: serverAllocation.note,
-        status: serverAllocation?.status
-          ? {
-              value: serverAllocation?.status,
-              label: serverAllocation?.status,
-            }
-          : undefined,
+        serialNumber: serverAllocation.serialNumber,
+        techNote: serverAllocation.techNote,
+        // note: serverAllocation.note,
+        // status: serverAllocation?.status
+        //   ? {
+        //       value: serverAllocation?.status,
+        //       label: serverAllocation?.status,
+        //     }
+        //   : undefined,
       });
   };
 
@@ -79,7 +81,8 @@ const ModalUpdate: React.FC<Props> = (props) => {
                       id: form.getFieldValue("id"),
                       name: form.getFieldValue("name"),
                       power: form.getFieldValue("power"),
-                      note: form.getFieldValue("note"),
+                      serialNumber: form.getFieldValue("serialNumber"),
+                      techNote: form.getFieldValue("techNote"),
                     } as SAUpdateModel);
                     form.resetFields();
                   },
@@ -102,32 +105,59 @@ const ModalUpdate: React.FC<Props> = (props) => {
             <Form.Item label="Customer">
               <Input value={serverAllocation?.customer?.companyName} readOnly />
             </Form.Item>
+            <Form.Item label="Customer Note">
+              <Input value={serverAllocation?.note} readOnly />
+            </Form.Item>
+            <Form.Item
+              name="serialNumber"
+              label="Server Serial Number"
+              rules={[{ required: true, min: 6, max: 255 }]}
+
+              // rules={[
+              //   { required: true },
+
+              //   {
+              //     pattern: new RegExp(/^\b(\w+\W*){1,2000}\b/),
+              //     message: "Server Serial Number no more than 2000 words",
+              //   },
+              // ]}
+            >
+              <Input placeholder="Power" allowClear />
+            </Form.Item>
             <Form.Item
               name="name"
               label="Server Name"
-              rules={[{ required: true }]}
+              rules={[{ required: true, min: 6, max: 255 }]}
             >
               <Input placeholder="Server Name" allowClear />
             </Form.Item>
             <Form.Item
               name="power"
-              label="Power"
+              label="Server Power (w)"
               rules={[
                 {
                   required: true,
                 },
                 {
-                  pattern: new RegExp(/^[0-9]+$/),
-                  message: "Power must be a number",
+                  pattern: new RegExp(/^(100|[1-9]\d{2,})$/),
+                  message:
+                    "Power must be a number greater than or equal to 100",
                 },
               ]}
             >
               <Input placeholder="Power" allowClear />
             </Form.Item>
-            <Form.Item name="note" label="Note">
-              <Input placeholder="Note" allowClear />
-            </Form.Item>
             <Form.Item
+              name="techNote"
+              label="Technical Note"
+              rules={[{ max: 2000 }]}
+            >
+              <Input placeholder="Technical Note" allowClear />
+            </Form.Item>
+            {/* <Form.Item name="note" label="Note">
+              <Input placeholder="Note" allowClear />
+            </Form.Item> */}
+            {/* <Form.Item
               name="status"
               label="Status"
               labelAlign="right"
@@ -138,7 +168,7 @@ const ModalUpdate: React.FC<Props> = (props) => {
                 allowClear
                 options={serverAllocationStatus}
               />
-            </Form.Item>
+            </Form.Item> */}
           </Form>
         </div>
       </Modal>
