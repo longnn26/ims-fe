@@ -77,6 +77,11 @@ export const optionStatus = [
 
 export const serverAllocationStatus = [
   {
+    value: "Waiting",
+    label: "Waiting",
+    color: "#d3d3d3",
+  },
+  {
     value: "Working",
     label: "Working",
     color: "#19bcf1",
@@ -151,5 +156,18 @@ export const requestHostStatus = [
     value: "Processed",
     label: "Processed",
     color: "#1E90FF",
+  },
+];
+
+export const customerStatus = [
+  {
+    value: true,
+    label: "Active",
+    color: "#19bcf1",
+  },
+  {
+    value: false,
+    label: "Removed",
+    color: "#ed1c24",
   },
 ];

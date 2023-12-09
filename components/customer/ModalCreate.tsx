@@ -66,11 +66,6 @@ const ModalCreate: React.FC<Props> = (props) => {
                 confirm({
                   title: "Do you want to save?",
                   async onOk() {
-                    console.log(form.getFieldValue("taxNumber"));
-                    console.log(form.getFieldValue("companyName"));
-                    console.log(form.getFieldValue("address"));
-                    console.log(form.getFieldValue("email"));
-                    console.log(form.getFieldValue("phoneNumber"));
                     onSubmit({
                       companyName: form.getFieldValue("companyName"),
                       address: form.getFieldValue("address"),
@@ -106,7 +101,6 @@ const ModalCreate: React.FC<Props> = (props) => {
             </Form.Item>
             <Form.Item
             name="button"
-              label="Save"
             >
             <Button key="fetchData" onClick={handleFetchData}>Save</Button>
             </Form.Item>

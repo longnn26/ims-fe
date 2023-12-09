@@ -37,9 +37,6 @@ const ServerDetail: React.FC<Props> = (props) => {
         <Descriptions.Item label="IP Address" span={0}>
           {serverAllocationDetail?.masterIp?.address}
         </Descriptions.Item>
-        <Descriptions.Item label="Customer" span={4}>
-          {serverAllocationDetail?.customer.customerName}
-        </Descriptions.Item>
         <Descriptions.Item label="Note" span={4}>
           {serverAllocationDetail?.note}
         </Descriptions.Item>

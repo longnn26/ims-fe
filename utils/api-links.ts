@@ -36,9 +36,11 @@ const apiLinks = {
   customer: {
     getByTax: `${url3rdParty}`,
     get: `${url}/api/Customer`,
+    getById: `${url}/api/Customer`,
     create: `${url}/api/Customer`,
     update: `${url}/api/Customer`,
     delete: `${url}/api/Customer`,
+    getServerAllocationById: `${url}/api/Customer`
   },
 
   requestUpgrade: {

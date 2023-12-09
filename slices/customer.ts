@@ -15,6 +15,17 @@ const initialState: State = {
 
 const TYPE_PREFIX = "customer";
 
+const getServerAllocationData = createAsyncThunk(
+  `${TYPE_PREFIX}/getData`,
+  async (arg: { token: string; id: string }) => {
+    const result = await customerService.getServerById(
+      arg.token,
+      arg.id,
+    );
+    return result;
+  }
+);
+
 const getCustomerData = createAsyncThunk(
   `${TYPE_PREFIX}/getData`,
   async (arg: { token: string; paramGet: ParamGet }) => {
@@ -44,6 +55,6 @@ const slice = createSlice({
   },
 });
 
-export { getCustomerData };
+export { getCustomerData, getServerAllocationData };
 
 export default slice.reducer;

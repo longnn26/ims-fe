@@ -52,4 +52,9 @@ export const sliderMenu = [
     icon: <FaChartArea />,
     label: "Area",
   },
+  {
+    key: "customer-hapn",
+    icon: <FaUser />,
+    label: "Customer New",
+  },
 ] as SliderMenuItem[];
