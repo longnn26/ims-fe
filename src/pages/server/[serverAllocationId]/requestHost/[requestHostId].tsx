@@ -206,7 +206,14 @@ const RequestHostDetail: React.FC = () => {
           <div className="flex flex-wrap items-center justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
             <BreadcrumbComponent itemBreadcrumbs={itemBreadcrumbs} />
             <div>
-              {requestHostDetail?.isRemoval != true && (
+              {Boolean(
+                requestHostDetail?.isRemoval != true &&
+                  Boolean(
+                    requestHostDetail?.status !== "Success" &&
+                      requestHostDetail?.status !== "Failed" &&
+                      requestHostDetail?.status !== "Waiting"
+                  )
+              ) && (
                 <Button
                   type="primary"
                   className="mb-2 mr-3"
@@ -218,16 +225,21 @@ const RequestHostDetail: React.FC = () => {
                   Provide Ips
                 </Button>
               )}
-              <Button
-                type="primary"
-                className="mb-2"
-                icon={<EditOutlined />}
-                onClick={async () => {
-                  setRequestHostUpdate(requestHostDetail);
-                }}
-              >
-                Update
-              </Button>
+              {Boolean(
+                requestHostDetail?.status !== "Success" &&
+                  requestHostDetail?.status !== "Failed"
+              ) && (
+                <Button
+                  type="primary"
+                  className="mb-2"
+                  icon={<EditOutlined />}
+                  onClick={async () => {
+                    setRequestHostUpdate(requestHostDetail);
+                  }}
+                >
+                  Update
+                </Button>
+              )}
             </div>
           </div>
 
@@ -237,31 +249,36 @@ const RequestHostDetail: React.FC = () => {
             ></ServerDetail>
             <RequestHostDetailInfor requestHostDetail={requestHostDetail!} />
           </div>
-          <div className="p-5">
-            <UploadComponent
-              fileList={fileInspectionReport}
-              title="BBNT"
-              setFileList={setFileInspectionReport}
-              multiple={false}
-              maxCount={1}
-              disabled={setDisabledInspectionReport}
-            />
-            <Button
-              icon={<UploadOutlined />}
-              loading={loadingUploadDocument}
-              className="w-full"
-              type="primary"
-              disabled={
-                !Boolean(fileInspectionReport.length > 0) ||
-                disabledInspectionReport
-              }
-              onClick={() => {
-                uploadDocument();
-              }}
-            >
-              Upload
-            </Button>
-          </div>
+          {Boolean(
+            requestHostDetail?.status === "Success" &&
+              !requestHostDetail.documentConfirm
+          ) && (
+            <div className="p-5">
+              <UploadComponent
+                fileList={fileInspectionReport}
+                title="BBNT"
+                setFileList={setFileInspectionReport}
+                multiple={false}
+                maxCount={1}
+                disabled={setDisabledInspectionReport}
+              />
+              <Button
+                icon={<UploadOutlined />}
+                loading={loadingUploadDocument}
+                className="w-full"
+                type="primary"
+                disabled={
+                  !Boolean(fileInspectionReport.length > 0) ||
+                  disabledInspectionReport
+                }
+                onClick={() => {
+                  uploadDocument();
+                }}
+              >
+                Upload
+              </Button>
+            </div>
+          )}
 
           <IpAddressTable typeGet="ByRequestExpandId" urlOncell="" />
           {ipAdressData?.totalPage > 0 && (

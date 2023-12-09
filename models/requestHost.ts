@@ -19,6 +19,7 @@ export interface RequestHost extends BaseWithIdNumber {
   customer: Customer;
   serverAllocation: ServerAllocation;
   evaluator: Evaluator;
+  documentConfirm: boolean;
 }
 
 export interface RequestHostData extends PagingModel {
