@@ -11,6 +11,7 @@ import moment from "moment";
 import { ServerAllocation } from "@models/serverAllocation";
 import { useRouter } from "next/router";
 import { Customer } from "@models/customer";
+import { IpAddress } from "@models/ipAddress";
 
 interface Props {
   onEdit: (data: ServerAllocation) => void;
@@ -27,6 +28,7 @@ interface DataType {
   customer: Customer;
   note: string;
   dateCreated: string;
+  masterIp: IpAddress;
   dateUpdated: string;
 }
 
@@ -118,6 +120,7 @@ const ServerAllocationTable: React.FC<Props> = (props) => {
       serialNumber: serverAllocationData?.data[i].serialNumber,
       note: serverAllocationData?.data[i].note,
       customer: serverAllocationData?.data[i].customer,
+      masterIp: serverAllocationData?.data[i].masterIp,
       dateCreated: moment(serverAllocationData?.data[i].dateCreated).format(
         dateAdvFormat
       ),

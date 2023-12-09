@@ -56,7 +56,9 @@ const ModalUpdate: React.FC<Props> = (props) => {
     <>
       <Modal
         title={
-          <span className="inline-block m-auto">Update server allocation</span>
+          <span className="inline-block m-auto">
+            {"Edit Server's Information"}
+          </span>
         }
         open={Boolean(serverAllocation)}
         confirmLoading={confirmLoading}
@@ -97,6 +99,9 @@ const ModalUpdate: React.FC<Props> = (props) => {
             wrapperCol={{ span: 16 }}
             style={{ width: "100%" }}
           >
+            <Form.Item label="Customer">
+              <Input value={serverAllocation?.customer?.companyName} readOnly />
+            </Form.Item>
             <Form.Item
               name="name"
               label="Server Name"
@@ -128,7 +133,11 @@ const ModalUpdate: React.FC<Props> = (props) => {
               labelAlign="right"
               rules={[{ required: true, message: "Status not empty" }]}
             >
-              <Select labelInValue allowClear options={serverAllocationStatus} />
+              <Select
+                labelInValue
+                allowClear
+                options={serverAllocationStatus}
+              />
             </Form.Item>
           </Form>
         </div>
