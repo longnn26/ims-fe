@@ -2,7 +2,7 @@ import { ReactNode } from "react";
 import { FaUser, FaChartArea } from "react-icons/fa";
 import { BiServer, BiSolidComponent } from "react-icons/bi";
 import { BsFillHddNetworkFill } from "react-icons/bs";
-import { GrSchedules } from "react-icons/gr";
+import { GrHost, GrSchedules } from "react-icons/gr";
 import { MdUpgrade } from "react-icons/md";
 
 export interface SliderMenuItem {
@@ -21,6 +21,11 @@ export const sliderMenu = [
     key: "requestUpgrade",
     icon: <MdUpgrade />,
     label: "Request Upgrade",
+  },
+  {
+    key: "requestHost",
+    icon: <GrHost />,
+    label: "IP's Request",
   },
   {
     key: "ipSubnet",
