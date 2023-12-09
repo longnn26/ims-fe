@@ -19,6 +19,16 @@ const getData = async (
   return response.data;
 };
 
+const getCompanyByTax = async (
+  taxNumber: string
+): Promise<any> => {
+  const response = await httpClient.get({
+    url: apiLinks.customer.getByTax,
+    data: taxNumber,
+  });
+  return response.data;
+};
+
 const createData = async (
   token: string,
   data: CustomerCreateModel
@@ -56,6 +66,7 @@ const customer = {
   updateData,
   deleteData,
   createData,
+  getCompanyByTax,
 };
 
 export default customer;

@@ -6,8 +6,6 @@ export interface Customer extends BaseWithIdNumber {
   taxNumber: string;
   email: string;
   phoneNumber: string;
-  customerName: string;
-  companyTypeId: number;
 }
 
 export interface CustomerData extends PagingModel {
@@ -20,8 +18,6 @@ export interface CustomerCreateModel {
   taxNumber: string;
   email: string;
   phoneNumber: string;
-  customerName: string;
-  companyTypeId: number;
 }
 
 export interface CustomerUpdateModel {
@@ -31,6 +27,4 @@ export interface CustomerUpdateModel {
   taxNumber: string;
   email: string;
   phoneNumber: string;
-  customerName: string;
-  companyTypeId: number;
 }

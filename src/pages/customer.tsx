@@ -18,7 +18,6 @@ import ModalCreate from "@components/customer/ModalCreate";
 import customerService from "@services/customer";
 import ModalUpdate from "@components/customer/ModalUpdate";
 import CustomerTable from "@components/customer/CustomerTable";
-import { getCompanyTypeList } from "@slices/companyType";
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
 });
@@ -52,7 +51,6 @@ const Customer: React.FC = () => {
         setParamGet({ ...paramGet, PageIndex: res.totalPage });
       }
     });
-    dispatch(getCompanyTypeList({ token: session?.user.access_token! }));
   };
 
   const createData = async (data: CustomerCreateModel) => {
