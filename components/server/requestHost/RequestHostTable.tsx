@@ -71,7 +71,7 @@ const RequestHostTable: React.FC<Props> = (props) => {
       render: (_, record) => <p className="">{record.customer.companyName}</p>,
     },
     {
-      title: "ServerIp",
+      title: "Server's IP",
       key: "serverIP",
       render: (_, record) => (
         <p className="">{record.serverIP.masterIpAddress}</p>
