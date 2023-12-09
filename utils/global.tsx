@@ -13,14 +13,24 @@ export interface SliderMenuItem {
 
 export const sliderMenu = [
   {
+    key: "customer",
+    icon: <FaUser />,
+    label: "Customer",
+  },
+  {
     key: "server",
     icon: <BiServer />,
     label: "Server",
   },
   {
-    key: "requestUpgrade",
-    icon: <MdUpgrade />,
-    label: "Request Upgrade",
+    key: "component",
+    icon: <BiSolidComponent />,
+    label: "Component",
+  },
+  {
+    key: "area",
+    icon: <FaChartArea />,
+    label: "Rack map",
   },
   {
     key: "ipSubnet",
@@ -33,18 +43,8 @@ export const sliderMenu = [
     label: "Appointment",
   },
   {
-    key: "component",
-    icon: <BiSolidComponent />,
-    label: "Component",
-  },
-  {
-    key: "customer",
-    icon: <FaUser />,
-    label: "Customer",
-  },
-  {
-    key: "area",
-    icon: <FaChartArea />,
-    label: "Area",
+    key: "requestUpgrade",
+    icon: <MdUpgrade />,
+    label: "Hardware Upgrade Request",
   },
 ] as SliderMenuItem[];

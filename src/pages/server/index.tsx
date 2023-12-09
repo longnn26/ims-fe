@@ -186,12 +186,12 @@ const Customer: React.FC = () => {
               updateData(data);
             }}
           />
-          {serverAllocationData.totalPage > 0 && (
+          {serverAllocationData?.totalPage > 0 && (
             <Pagination
               className="text-end m-4"
               current={paramGet.PageIndex}
-              pageSize={serverAllocationData.pageSize ?? 10}
-              total={serverAllocationData.totalSize}
+              pageSize={serverAllocationData?.pageSize ?? 10}
+              total={serverAllocationData?.totalSize}
               onChange={(page, pageSize) => {
                 setParamGet({
                   ...paramGet,
