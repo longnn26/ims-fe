@@ -24,6 +24,7 @@ interface DataType {
   type: string;
   dateCreated: string;
   dateUpdated: string;
+  isRequired: boolean;
 }
 
 const ComponentTable: React.FC<Props> = (props) => {
@@ -35,21 +36,30 @@ const ComponentTable: React.FC<Props> = (props) => {
 
   const columns: TableColumnsType<DataType> = [
     {
-      title: "Id",
+      title: "No",
       dataIndex: "id",
       key: "id",
       fixed: "left",
     },
-    { title: "Name", dataIndex: "name", key: "name" },
-    { title: "Unit", dataIndex: "unit", key: "unit" },
-    { title: "Type", dataIndex: "type", key: "type" },
+    { title: "Component Name", dataIndex: "name", key: "name" },
     {
       title: "Description",
       dataIndex: "description",
       key: "description",
     },
+    {
+      title: "Is Server Requires",
+      dataIndex: "isRequired",
+      render: (record: boolean) => {
+        return Boolean(record) ? "Yes" : "No";
+      },
+    },
+
+    // { title: "Unit", dataIndex: "unit", key: "unit" },
+    // { title: "Type", dataIndex: "type", key: "type" },
+
     { title: "Date Created", dataIndex: "dateCreated", key: "dateCreated" },
-    { title: "Date Updated", dataIndex: "dateUpdated", key: "dateUpdated" },
+    // { title: "Date Updated", dataIndex: "dateUpdated", key: "dateUpdated" },
     {
       title: "Action",
       key: "operation",
@@ -79,6 +89,7 @@ const ComponentTable: React.FC<Props> = (props) => {
       description: componentData?.data[i].description,
       unit: componentData?.data[i].unit,
       type: componentData?.data[i].type,
+      isRequired: componentData?.data[i].isRequired,
       dateCreated: moment(componentData?.data[i].dateCreated).format(
         dateAdvFormat
       ),

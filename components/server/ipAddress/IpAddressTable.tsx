@@ -5,7 +5,7 @@ import { Divider, Table, TableColumnsType } from "antd";
 import { useRouter } from "next/router";
 
 interface Props {
-  typeGet?: string;
+  typeGet: string;
   serverAllocationId?: string;
   urlOncell?: string;
 }
@@ -17,22 +17,24 @@ interface DataType {
   purpose: string;
   reason: string;
   ipSubnetId: number;
+  assignmentType: string;
 }
 
 const IpAddressTable: React.FC<Props> = (props) => {
   const { urlOncell, typeGet } = props;
   const router = useRouter();
   const { ipAdressData } = useSelector((state) => state.requestHost);
+  const { serverIpAdressData } = useSelector((state) => state.serverAllocation);
 
   var listData =
-    typeGet == "All"
+    typeGet == "RequestHost"
       ? ipAdressData
-      : typeGet == "ByAppointmentId"
-      ? ipAdressData
-      : ipAdressData;
+      : typeGet == "ServerAllocation"
+      ? serverIpAdressData
+      : serverIpAdressData;
   const columns: TableColumnsType<DataType> = [
     {
-      title: "Id",
+      title: "No",
       dataIndex: "id",
       key: "id",
       fixed: "left",
@@ -40,7 +42,12 @@ const IpAddressTable: React.FC<Props> = (props) => {
         <p className="text-[#b75c3c] hover:text-[#ee4623]">{text}</p>
       ),
     },
-    { title: "Ip Address", dataIndex: "address", key: "address" },
+    { title: "Address", dataIndex: "address", key: "address" },
+    {
+      title: "Assignment Type",
+      dataIndex: "assignmentType",
+      key: "assignmentType",
+    },
     { title: "Ip SubnetId", dataIndex: "ipSubnetId", key: "ipSubnetId" },
     { title: "Purpose", dataIndex: "purpose", key: "purpose" },
     { title: "Reason", dataIndex: "reason", key: "reason" },
@@ -73,6 +80,7 @@ const IpAddressTable: React.FC<Props> = (props) => {
       purpose: listData?.data[i].purpose,
       reason: listData?.data[i].reason,
       ipSubnetId: listData?.data[i].ipSubnetId,
+      assignmentType: listData?.data[i].assignmentType,
     });
   }
 

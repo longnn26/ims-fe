@@ -280,7 +280,7 @@ const RequestHostDetail: React.FC = () => {
             </div>
           )}
 
-          <IpAddressTable typeGet="ByRequestExpandId" urlOncell="" />
+          <IpAddressTable typeGet="RequestHost" urlOncell="" />
           {ipAdressData?.totalPage > 0 && (
             <Pagination
               className="text-end m-4"
