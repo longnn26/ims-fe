@@ -22,8 +22,8 @@ const TYPE_PREFIX = "requestHost";
 
 const getRequestHostData = createAsyncThunk(
   `${TYPE_PREFIX}/getRequestHostData`,
-  async (arg: { token: string; paramGet: ParamGet; id: number }) => {
-    const result = await requestHost.getData(arg.token, arg.paramGet, arg.id);
+  async (arg: { token: string; paramGet: ParamGet }) => {
+    const result = await requestHost.getData(arg.token, arg.paramGet);
     return result;
   }
 );

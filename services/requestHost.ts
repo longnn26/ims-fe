@@ -14,11 +14,10 @@ import httpClient from "@utils/http-client";
 const getData = async (
   token: string,
   params: ParamGet,
-  id: number
 ): Promise<RequestHostData> => {
   const response = await httpClient.get({
     token: token,
-    url: `${apiLinks.requestHost.get}/${id}/RequestHost`,
+    url: apiLinks.requestHost.get,
     params: params,
   });
   return response.data;

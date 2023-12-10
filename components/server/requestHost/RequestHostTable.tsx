@@ -20,11 +20,8 @@ import { useRouter } from "next/router";
 import { BiSolidCommentDetail } from "react-icons/bi";
 
 interface Props {
-  typeGet?: string;
   serverAllocationId?: string;
-  urlOncell?: string;
-  onEdit: (data: RequestUpgrade) => void;
-  onDelete: (data: RequestUpgrade) => void;
+  // onEdit: (data: RequestUpgrade) => void;
 }
 
 interface DataType {
@@ -32,7 +29,7 @@ interface DataType {
   id: number;
   dateCreated: string;
   customer: Customer;
-  serverIP: ServerAllocation;
+  serverAllocation: ServerAllocation;
   type: string;
   purpose: boolean;
   quantity: number;
@@ -40,7 +37,7 @@ interface DataType {
 }
 
 const RequestHostTable: React.FC<Props> = (props) => {
-  const { onEdit, onDelete, urlOncell, typeGet } = props;
+  const { serverAllocationId } = props;
   const router = useRouter();
   const { requestHostDataLoading, requestHostData } = useSelector(
     (state) => state.requestHost
@@ -48,12 +45,12 @@ const RequestHostTable: React.FC<Props> = (props) => {
   // const { requestExpandData: rEDataOfAppointment } = useSelector(
   //   (state) => state.appointment
   // );
-  var listData =
-    typeGet == "All"
-      ? requestHostData
-      : typeGet == "ByAppointmentId"
-      ? requestHostData
-      : requestHostData;
+  // var listData =
+  //   typeGet == "All"
+  //     ? requestHostData
+  //     : typeGet == "ByAppointmentId"
+  //     ? requestHostData
+  //     : requestHostData;
   const columns: TableColumnsType<DataType> = [
     {
       title: "Id",
@@ -74,7 +71,7 @@ const RequestHostTable: React.FC<Props> = (props) => {
       title: "Server's IP",
       key: "serverIP",
       render: (_, record) => (
-        <p className="">{record.serverIP.masterIpAddress}</p>
+        <p className="">{record.serverIP?.masterIpAddress}</p>
       ),
     },
     {
