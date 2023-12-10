@@ -8,11 +8,13 @@ export interface Appointment extends BaseWithIdNumber {
   reason: string;
   note: string;
   techNote: string;
+  saleNote: string;
   isCorrectPerson: boolean;
   status: string;
   serverAllocationId: number;
   inspectionReportFilePath: string;
   receiptOfRecipientFilePath: string;
+  documentConfirm: boolean;
 }
 
 export interface AppointmentData extends PagingModel {

@@ -49,11 +49,17 @@ const ServerDetail: React.FC<Props> = (props) => {
         <Descriptions.Item label="CheckedOut" span={2}>
           {moment(appointmentDetail?.dateCheckedOut).format(dateAdvFormat)}
         </Descriptions.Item>
-        <Descriptions.Item label="Note" span={4}>
+        <Descriptions.Item label="Note">
           {appointmentDetail?.note}
         </Descriptions.Item>
-        <Descriptions.Item label="Reason" span={4}>
+        <Descriptions.Item label="Sale Staff's Note" span={2}>
+          {appointmentDetail?.saleNote}
+        </Descriptions.Item>
+        <Descriptions.Item label="Reason">
           {appointmentDetail?.reason}
+        </Descriptions.Item>
+        <Descriptions.Item label=" Techical Staff's Note" span={2}>
+          {appointmentDetail?.techNote}
         </Descriptions.Item>
 
         <Descriptions.Item label="Created">
@@ -63,14 +69,18 @@ const ServerDetail: React.FC<Props> = (props) => {
           {moment(appointmentDetail?.dateUpdated).format(dateAdvFormat)}
         </Descriptions.Item>
         <Descriptions.Item label="Inspection report file" span={4}>
-          <a href={`${appointmentDetail?.inspectionReportFilePath}`}>
-            {appointmentDetail?.inspectionReportFilePath}
-          </a>{" "}
+          {appointmentDetail?.inspectionReportFilePath !== null && (
+            <a href={`${appointmentDetail?.inspectionReportFilePath}`}>
+              Biên bản nghiệm thu
+            </a>
+          )}
         </Descriptions.Item>
         <Descriptions.Item label="Receipt of recipient file" span={4}>
-          <a href={`${appointmentDetail?.receiptOfRecipientFilePath}`}>
-            {appointmentDetail?.receiptOfRecipientFilePath}
-          </a>
+          {appointmentDetail?.inspectionReportFilePath !== null && (
+            <a href={`${appointmentDetail?.receiptOfRecipientFilePath}`}>
+              Biên bản giao nhận
+            </a>
+          )}
         </Descriptions.Item>
       </Descriptions>
     </div>

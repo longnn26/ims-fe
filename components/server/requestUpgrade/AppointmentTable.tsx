@@ -3,9 +3,18 @@
 import useSelector from "@hooks/use-selector";
 import { Appointment } from "@models/appointment";
 import { dateAdvFormat, requestUpgradeStatus } from "@utils/constants";
-import { Divider, Table, TableColumnsType, Tag } from "antd";
+import {
+  Button,
+  Divider,
+  Space,
+  Table,
+  TableColumnsType,
+  Tag,
+  Tooltip,
+} from "antd";
 import moment from "moment";
 import { useRouter } from "next/router";
+import { BiSolidCommentDetail } from "react-icons/bi";
 
 interface Props {
   typeGet?: string;
@@ -57,13 +66,6 @@ const AppointmentTable: React.FC<Props> = (props) => {
       render: (text) => (
         <a className="text-[#b75c3c] hover:text-[#ee4623]">{text}</a>
       ),
-      onCell: (record, rowIndex) => {
-        return {
-          onClick: (ev) => {
-            router.push(`${urlOncell}/appointment/${record.id}`);
-          },
-        };
-      },
     },
     {
       title: "Date Appointed",
@@ -104,24 +106,35 @@ const AppointmentTable: React.FC<Props> = (props) => {
     },
     { title: "Date Created", dataIndex: "dateCreated", key: "dateCreated" },
     { title: "Date Updated", dataIndex: "dateUpdated", key: "dateUpdated" },
-    // {
-    //   title: "Action",
-    //   key: "operation",
-    //   render: (record: Appointment) => (
-    //     <Space wrap>
-    //       <Tooltip title="Edit" color={"black"}>
-    //         <Button onClick={() => onEdit(record)}>
-    //           <BiEdit />
-    //         </Button>
-    //       </Tooltip>
-    //       <Tooltip title="Delete" color={"black"}>
-    //         <Button onClick={() => onDelete(record)}>
-    //           <AiFillDelete />
-    //         </Button>
-    //       </Tooltip>
-    //     </Space>
-    //   ),
-    // },
+    {
+      title: "Action",
+      key: "operation",
+      render: (record: Appointment) => (
+        <Space wrap>
+          <Tooltip title="View detail" color={"black"}>
+            <Button
+              onClick={() =>
+                router.push(`${urlOncell}/appointment/${record.id}`)
+              }
+            >
+              <BiSolidCommentDetail />
+            </Button>
+          </Tooltip>
+        </Space>
+        // <Space wrap>
+        //   <Tooltip title="Edit" color={"black"}>
+        //     <Button onClick={() => onEdit(record)}>
+        //       <BiEdit />
+        //     </Button>
+        //   </Tooltip>
+        //   <Tooltip title="Delete" color={"black"}>
+        //     <Button onClick={() => onDelete(record)}>
+        //       <AiFillDelete />
+        //     </Button>
+        //   </Tooltip>
+        // </Space>
+      ),
+    },
   ];
 
   const data: DataType[] = [];

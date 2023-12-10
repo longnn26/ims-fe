@@ -97,7 +97,7 @@ const ModalUpdate: React.FC<Props> = (props) => {
             <Form.Item
               name="name"
               label="Name"
-              rules={[{ required: true, min: 6, max: 255 }]}
+              rules={[{ required: true, min: 1, max: 255 }]}
             >
               <Input placeholder="Name" allowClear />
             </Form.Item>
