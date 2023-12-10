@@ -12,6 +12,12 @@ export interface ServerAllocation extends BaseWithIdNumber {
   customer: Customer;
   masterIp: IpAddress;
   masterIpAddress: string;
+  techNote: string;
+  ipCount: number;
+  location: string;
+  inspectionRecordFilePath: string;
+  receiptOfRecipientFilePath: string;
+  removalFilePath: string;
 }
 
 export interface ServerAllocationData extends PagingModel {
@@ -30,7 +36,9 @@ export interface SAUpdateModel {
   id: number;
   name: string;
   power: number;
-  note: string;
+  serialNumber: string;
+  techNote: string;
+  // note: string;
 }
 
 export interface MasterIpCreateModel {

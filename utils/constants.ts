@@ -79,7 +79,7 @@ export const serverAllocationStatus = [
   {
     value: "Waiting",
     label: "Waiting",
-    color: "#d3d3d3",
+    color: "#a19f9e",
   },
   {
     value: "Working",

@@ -11,7 +11,6 @@ interface Props {
   requestHostId: number;
   onClose: () => void;
   onRefresh: () => void;
-
 }
 
 const ModalProvideIps: React.FC<Props> = (props) => {
@@ -81,12 +80,12 @@ const ModalProvideIps: React.FC<Props> = (props) => {
             </Descriptions.Item>
           </Descriptions>
           <Descriptions className="pl-10">
-            <Descriptions.Item label="Subneto" span={4}>
+            <Descriptions.Item label="Subnets" span={4}>
               <>
                 {provideIpsData?.ipSubnets.map((m) => {
                   return (
                     <>
-                      {m.id}
+                      {`${m.firstOctet}.${m.secondOctet}.${m.thirdOctet}.${m.fourthOctet}/${m.prefixLength}`}
                       <br />
                     </>
                   );

@@ -19,14 +19,26 @@ const ServerDetail: React.FC<Props> = (props) => {
         <h3>Server </h3>
       </Divider>{" "}
       <Descriptions className="p-5">
-        <Descriptions.Item label="Id">
+        {/* <Descriptions.Item label="Id">
           {serverAllocationDetail?.id}
-        </Descriptions.Item>
+        </Descriptions.Item> */}
         <Descriptions.Item label="Status">
           <Tag color={statusData?.color}>{statusData?.value}</Tag>
         </Descriptions.Item>
-        <Descriptions.Item label="Power">
-          {serverAllocationDetail?.power}
+        <Descriptions.Item label="Date Created">
+          {moment(serverAllocationDetail?.dateCreated).format(dateAdvFormat)}
+        </Descriptions.Item>
+        <Descriptions.Item label="Nearest Updated">
+          {moment(serverAllocationDetail?.dateUpdated).format(dateAdvFormat)}
+        </Descriptions.Item>
+        <Descriptions.Item label="Customer">
+          {serverAllocationDetail?.customer.companyName}
+        </Descriptions.Item>
+        <Descriptions.Item label="Technical note" span={4}>
+          {serverAllocationDetail?.techNote}
+        </Descriptions.Item>
+        <Descriptions.Item label="Server's IP" span={0}>
+          {serverAllocationDetail?.masterIp?.address}
         </Descriptions.Item>
         <Descriptions.Item label="Serial Number" span={0}>
           {serverAllocationDetail?.serialNumber}
@@ -34,22 +46,30 @@ const ServerDetail: React.FC<Props> = (props) => {
         <Descriptions.Item label="Server Name" span={0}>
           {serverAllocationDetail?.name}
         </Descriptions.Item>
-        <Descriptions.Item label="IP Address" span={0}>
-          {serverAllocationDetail?.masterIp?.address}
+        <Descriptions.Item label="Power (w)">
+          {serverAllocationDetail?.power}
         </Descriptions.Item>
-        <Descriptions.Item label="Note" span={4}>
+        <Descriptions.Item label="Additional IPs">
+          {serverAllocationDetail?.ipCount}
+        </Descriptions.Item>
+        <Descriptions.Item label="Location">
+          {serverAllocationDetail?.location}
+        </Descriptions.Item>
+        <Descriptions.Item label="Receipt Of Recipient (installation)">
+          {serverAllocationDetail?.receiptOfRecipientFilePath}
+        </Descriptions.Item>
+        <Descriptions.Item label="Inspection Report" span={4}>
+          {serverAllocationDetail?.inspectionRecordFilePath}
+        </Descriptions.Item>
+        <Descriptions.Item label="Receipt Of Recipient (removal)">
+          {serverAllocationDetail?.removalFilePath}
+        </Descriptions.Item>
+        {/* <Descriptions.Item label="Note" span={4}>
           {serverAllocationDetail?.note}
-        </Descriptions.Item>
+        </Descriptions.Item> */}
         {/* <Descriptions.Item label="Inspector Note" span={4}>
           {serverAllocationDetail?.inspectorNote}
         </Descriptions.Item> */}
-
-        <Descriptions.Item label="Date Created" span={4}>
-          {moment(serverAllocationDetail?.dateCreated).format(dateAdvFormat)}
-        </Descriptions.Item>
-        <Descriptions.Item label="Date Updated" span={4}>
-          {moment(serverAllocationDetail?.dateUpdated).format(dateAdvFormat)}
-        </Descriptions.Item>
       </Descriptions>
     </div>
   );
