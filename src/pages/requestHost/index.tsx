@@ -1,29 +1,32 @@
 "use client";
-import dynamic from "next/dynamic";
-import { useEffect, useState } from "react";
-import { useSession } from "next-auth/react";
-import React from "react";
-import { ParamGet } from "@models/base";
+import BreadcrumbComponent from "@components/BreadcrumbComponent";
+import RequestHostTable from "@components/server/requestHost/RequestHostTable";
+import ModalCreate from "@components/server/requestUpgrade/ModalCreate";
+import ModalUpdate from "@components/server/requestUpgrade/ModalUpdate";
 import useDispatch from "@hooks/use-dispatch";
 import useSelector from "@hooks/use-selector";
 import { getRequestHostData } from "@slices/requestHost";
+import { Alert, FloatButton, Modal, Pagination, message } from "antd";
+import { ItemType } from "antd/es/breadcrumb/Breadcrumb";
+import { useSession } from "next-auth/react";
+import dynamic from "next/dynamic";
+import { useRouter } from "next/router";
+import React, { useEffect, useState } from "react";
 import {
-  RequestHost,
-  RequestHostData,
-  RequestHostUpdateModel,
+    RequestHostData,
+    RequestHost,
 } from "@models/requestHost";
-import { Button, Pagination, message, Modal, Alert } from "antd";
+import { ParamGet } from "@models/base";
 import requestHostService from "@services/requestHost";
-// import ModalUpdate from "@components/requestHost/ModalUpdate";
-import RequestHostTable from "@components/server/requestHost/RequestHostTable";
+import { getRequestHostDataAll } from "@slices/requestHost";
+
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
 });
-
 const { confirm } = Modal;
-
-const Customer: React.FC = () => {
+const RequestHostList: React.FC = () => {
   const dispatch = useDispatch();
+  const router = useRouter();
   const { data: session } = useSession();
   const { requestHostData } = useSelector((state) => state.requestHost);
 
@@ -31,17 +34,18 @@ const Customer: React.FC = () => {
     PageIndex: 1,
     PageSize: 7,
   } as ParamGet);
+  
   const [loadingSubmit, setLoadingSubmit] = useState<boolean>(false);
-  const [customerUpdate, setCustomerUpdate] = useState<RequestHost | undefined>(
-    undefined
-  );
-  const [openModalCreate, setOpenModalCreate] = useState<boolean>(false);
+  const [ requestHost, setRequestHost] =
+    useState<RequestHostData>();
+
+  const [itemBreadcrumbs, setItemBreadcrumbs] = useState<ItemType[]>([]);
 
   const getData = async () => {
     dispatch(
-      getRequestHostData({
-        token: session?.user.access_token!,
-        paramGet: { ...paramGet },
+        getRequestHostDataAll({
+          token: session?.user.access_token!,
+          paramGet: { ...paramGet },
       })
     ).then(({ payload }) => {
       var res = payload as RequestHostData;
@@ -51,64 +55,43 @@ const Customer: React.FC = () => {
     });
   };
 
-  // const updateData = async (data: CustomerUpdateModel) => {
-  //   await customerService
-  //     .updateData(session?.user.access_token!, data)
-  //     .then((res) => {
-  //       message.success("Update successful!");
-  //       getData();
-  //     })
-  //     .catch((errors) => {
-  //       message.error(errors.message);
-  //     })
-  //     .finally(() => {
-  //       setCustomerUpdate(undefined);
-  //     });
-  // };
+  const handleBreadCumb = () => {
+    var itemBrs = [] as ItemType[];
+    var items = router.asPath.split("/").filter((_) => _ != "");
+    var path = "";
+    items.forEach((element) => {
+      path += `/${element}`;
+      itemBrs.push({
+        href: path,
+        title: element,
+      });
+    });
+    setItemBreadcrumbs(itemBrs);
+  };
 
   useEffect(() => {
     session && getData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session, paramGet]);
+
   return (
     <AntdLayoutNoSSR
       content={
         <>
-          <div className="flex justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
-            <Button
-              type="primary"
-              htmlType="submit"
-              onClick={() => {
-                setOpenModalCreate(true);
-              }}
-            >
-              Create
-            </Button>
-            {/* <SearchComponent
-              placeholder="Search Name, Description..."
-              setSearchValue={(value) =>
-                setParamGet({ ...paramGet, SearchValue: value })
-              }
-            /> */}
+          <div className="flex flex-wrap items-center justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
+            <BreadcrumbComponent itemBreadcrumbs={itemBreadcrumbs} />
           </div>
           <RequestHostTable
-            // onEdit={(record) => {
-            //   setCustomerUpdate(record);
-            // }}
+            urlOncell=""
+            onEdit={(record) => {}}
+            onDelete={async (record) => {}}
           />
-          {/* <ModalUpdate
-            customer={customerUpdate!}
-            onClose={() => setCustomerUpdate(undefined)}
-            onSubmit={(data: CustomerUpdateModel) => {
-              updateData(data);
-            }}
-          /> */}
-          {requestHostData.totalPage > 0 && (
+          {requestHostData?.totalPage > 0 && (
             <Pagination
               className="text-end m-4"
-              current={paramGet.PageIndex}
-              pageSize={requestHostData.pageSize ?? 10}
-              total={requestHostData.totalSize}
+              current={paramGet?.PageIndex}
+              pageSize={requestHostData?.pageSize ?? 10}
+              total={requestHostData?.totalSize}
               onChange={(page, pageSize) => {
                 setParamGet({
                   ...paramGet,
@@ -118,10 +101,29 @@ const Customer: React.FC = () => {
               }}
             />
           )}
+          {/* {Boolean(true) && (
+            <FloatButton.Group
+              trigger="hover"
+              type="primary"
+              style={{ right: 60, bottom: 500 }}
+              icon={<AiOutlineFileDone />}
+            >
+              <FloatButton
+                icon={<MdCancel color="red" />}
+                tooltip="Fail"
+                // onClick={() => setOpenFail(true)}
+              />
+              <FloatButton
+                // onClick={() => setOpenComplete(true)}
+                icon={<AiOutlineFileDone color="green" />}
+                tooltip="Complete"
+              />
+            </FloatButton.Group>
+          )} */}
         </>
       }
     />
   );
 };
 
-export default Customer;
+export default RequestHostList;

@@ -46,43 +46,26 @@ const RequestHostDetailInfor: React.FC<Props> = (props) => {
             ? "Ip"
             : requestHostDetail?.type}
         </Descriptions.Item>
-        <Descriptions.Item label="Address" span={2}>
-          {requestHostDetail?.customer.address}
-        </Descriptions.Item>
         <Descriptions.Item label="Purpose" span={2}>
           {requestHostDetail?.isRemoval ? "Remove" : "Add"}
-        </Descriptions.Item>
-        <Descriptions.Item label="Taxnumber" span={2}>
-          {requestHostDetail?.customer.taxNumber}
         </Descriptions.Item>
         <Descriptions.Item label="Quantity" span={2}>
           {requestHostDetail?.quantity}
         </Descriptions.Item>
-        <Descriptions.Item label="Email" span={2}>
-          {requestHostDetail?.customer.email}
-        </Descriptions.Item>
         <Descriptions.Item label="Sales Staff" span={2}>
           {requestHostDetail?.evaluator?.fullname}
-        </Descriptions.Item>
-        <Descriptions.Item label="Phone" span={2}>
-          {requestHostDetail?.customer.phoneNumber}
         </Descriptions.Item>
         <Descriptions.Item label="Sale Staff's Note" span={2}>
           {requestHostDetail?.saleNote}
         </Descriptions.Item>
-        <Descriptions.Item label="Server's Ip" span={2}>
-          {requestHostDetail?.serverAllocation.masterIpAddress}
-        </Descriptions.Item>
         <Descriptions.Item label="Technical Staff" span={2}>
           {requestHostDetail?.executor?.fullname}
         </Descriptions.Item>
-
-        <Descriptions.Item label="Customer's Note" span={2}>
-          {requestHostDetail?.note}
-        </Descriptions.Item>
-
         <Descriptions.Item label="Technical Staff's Note" span={2}>
           {requestHostDetail?.techNote}
+        </Descriptions.Item>
+        <Descriptions.Item label="Customer's Note" span={2}>
+          {requestHostDetail?.note}
         </Descriptions.Item>
         <Descriptions.Item label="Inspection report file" span={4}>
           {requestHostDetail?.inspectionReportFilePath !== null && (

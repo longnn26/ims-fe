@@ -65,7 +65,7 @@ const RequestHost: React.FC = () => {
     dispatch(
       getRequestHostData({
         token: session?.user.access_token!,
-        //id: parseInt(router.query.serverAllocationId?.toString()!) ?? -1,
+        id: parseInt(router.query.serverAllocationId?.toString()!) ?? -1,
         paramGet: { ...paramGet },
       })
     ).then(({ payload }) => {
@@ -186,14 +186,14 @@ const RequestHost: React.FC = () => {
             serverAllocationDetail={serverAllocationDetail!}
           ></ServerDetail>
           <RequestHostTable
-            //urlOncell={`/server/${serverAllocationDetail?.id}`}
+            urlOncell={`/server/${serverAllocationDetail?.id}`}
             serverAllocationId={serverAllocationDetail?.id.toString()}
-            // onEdit={(record) => {
-            //   setRequestUpgradeUpdate(record);
-            // }}
-            // onDelete={async (record) => {
-            //   deleteData(record);
-            // }}
+            onEdit={(record) => {
+              setRequestUpgradeUpdate(record);
+            }}
+            onDelete={async (record) => {
+              deleteData(record);
+            }}
           />
           {requestHostData?.totalPage > 0 && (
             <Pagination

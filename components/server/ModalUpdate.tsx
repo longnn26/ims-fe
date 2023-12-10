@@ -1,10 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Button, Input, Modal, Select } from "antd";
 import { Form } from "antd";
-import { 
-  SAUpdateModel, 
-  ServerAllocation 
-} from "@models/serverAllocation-hapn";
+import { SAUpdateModel, ServerAllocation } from "@models/serverAllocation";
 import { optionStatus, serverAllocationStatus } from "@utils/constants";
 const { confirm } = Modal;
 
@@ -85,7 +82,7 @@ const ModalUpdate: React.FC<Props> = (props) => {
                       name: form.getFieldValue("name"),
                       power: form.getFieldValue("power"),
                       serialNumber: form.getFieldValue("serialNumber"),
-                      note: form.getFieldValue("techNote"),
+                      techNote: form.getFieldValue("techNote"),
                     } as SAUpdateModel);
                     form.resetFields();
                   },
