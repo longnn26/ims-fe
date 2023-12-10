@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import { Button, Input, Modal } from "antd";
+import { Button, Input, Modal, Radio } from "antd";
 import { Form } from "antd";
 import { ComponentCreateModel } from "@models/component";
 const { confirm } = Modal;
@@ -51,8 +51,7 @@ const ModalCreate: React.FC<Props> = (props) => {
                     onSubmit({
                       name: form.getFieldValue("name"),
                       description: form.getFieldValue("description"),
-                      unit: form.getFieldValue("unit"),
-                      type: form.getFieldValue("type"),
+                      isRequired: form.getFieldValue("isRequired"),
                     } as ComponentCreateModel);
                     form.resetFields();
                   },
@@ -72,18 +71,32 @@ const ModalCreate: React.FC<Props> = (props) => {
             wrapperCol={{ span: 16 }}
             style={{ width: "100%" }}
           >
-            <Form.Item name="name" label="Name" rules={[{ required: true }]}>
+            <Form.Item
+              name="name"
+              label="Name"
+              rules={[{ required: true, min: 6, max: 255 }]}
+            >
               <Input placeholder="Name" allowClear />
             </Form.Item>
             <Form.Item name="description" label="Description">
               <Input placeholder="Description" allowClear />
             </Form.Item>
-            <Form.Item name="unit" label="Unit" rules={[{ required: true }]}>
+            <Form.Item
+              label="Is Server Requires"
+              name="isRequired"
+              rules={[{ required: true }]}
+            >
+              <Radio.Group>
+                <Radio value={true}> yes </Radio>
+                <Radio value={false}> No </Radio>
+              </Radio.Group>
+            </Form.Item>
+            {/* <Form.Item name="unit" label="Unit" rules={[{ required: true }]}>
               <Input placeholder="Unit" allowClear />
             </Form.Item>
             <Form.Item name="type" label="Type" rules={[{ required: true }]}>
               <Input placeholder="Type" allowClear />
-            </Form.Item>
+            </Form.Item> */}
           </Form>
         </div>
       </Modal>

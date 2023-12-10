@@ -27,7 +27,7 @@ const RequestExpandDetailInfor: React.FC<Props> = (props) => {
           {requestExpandDetail?.requestType}
         </Descriptions.Item>
         <Descriptions.Item label="Status">
-          {Boolean(requestExpandDetail.requestType == "Expand") ? (
+          {Boolean(requestExpandDetail?.requestType == "Expand") ? (
             <Tag
               className="text-center"
               color={
