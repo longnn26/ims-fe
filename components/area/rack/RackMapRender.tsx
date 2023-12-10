@@ -26,6 +26,7 @@ interface DataType {
   position: number;
   rackId: number;
   serverAllocation: ServerAllocation;
+  requestedServerAllocation: ServerAllocation;
   rowSpanServer: number;
 }
 
@@ -38,18 +39,29 @@ const RackMapRender: React.FC<Props> = (props) => {
   const _ = require("lodash");
 
   const groupWithServer = _.groupBy(rackMapList, "serverAllocation['id']");
+  const groupWithServerR = _.groupBy(
+    rackMapList,
+    "requestedServerAllocation['id']"
+  );
   const columns: TableColumnsType<DataType> = [
     {
       title: "Location",
       dataIndex: "location",
-      // fixed: "left",
       key: "location",
       render: (_, record) => {
         return {
           props: {
             style: {
-              backgroundColor: record.serverAllocation ? "#fde3cf" : "#e1efd8",
-              color: record.serverAllocation ? "#f56a00" : "",
+              backgroundColor: record.serverAllocation
+                ? "#fde3cf"
+                : record.requestedServerAllocation
+                ? "#c2e4ea"
+                : "#e1efd8",
+              color: record.serverAllocation
+                ? "#f56a00"
+                : record.requestedServerAllocation
+                ? "black"
+                : "",
             },
           },
           children: `${record.position}`,
@@ -61,7 +73,20 @@ const RackMapRender: React.FC<Props> = (props) => {
       key: "serverAllocation",
       render: (_, record) => {
         return {
-          props: { style: { backgroundColor: "#fde3cf", color: "#f56a00" } },
+          props: {
+            style: {
+              backgroundColor: record.serverAllocation
+                ? "#fde3cf"
+                : record.requestedServerAllocation
+                ? "#c2e4ea"
+                : "#e1efd8",
+              color: record.serverAllocation
+                ? "#f56a00"
+                : record.requestedServerAllocation
+                ? "black"
+                : "",
+            },
+          },
 
           children: (
             <p
@@ -71,7 +96,11 @@ const RackMapRender: React.FC<Props> = (props) => {
                   router.push(`/server/${record.serverAllocation.id}`);
               }}
             >
-              {`${record.serverAllocation?.masterIp.address} - ${record.serverAllocation?.customer.companyName} `}
+              {record.serverAllocation
+                ? `${record.serverAllocation?.masterIp.address} - ${record.serverAllocation?.customer.companyName}`
+                : record.requestedServerAllocation
+                ? `${record.requestedServerAllocation?.masterIp.address} - ${record.requestedServerAllocation?.customer.companyName}`
+                : ``}
             </p>
           ),
         };
@@ -95,12 +124,23 @@ const RackMapRender: React.FC<Props> = (props) => {
       rowSpan =
         groupWithServer[`${rackMapList[i].serverAllocation?.id}`].length;
     }
+    if (
+      rackMapList[i].requestedServerAllocation &&
+      rackMapList[i].id ===
+        groupWithServerR[`${rackMapList[i].requestedServerAllocation?.id}`][0]
+          .id
+    ) {
+      rowSpan =
+        groupWithServerR[`${rackMapList[i].requestedServerAllocation?.id}`]
+          .length;
+    }
     data.push({
       key: rackMapList[i].id,
       id: rackMapList[i].id,
       position: rackMapList[i].position,
       rackId: rackMapList[i].rackId,
       serverAllocation: rackMapList[i].serverAllocation,
+      requestedServerAllocation: rackMapList[i].requestedServerAllocation,
       rowSpanServer: rowSpan,
     });
   }

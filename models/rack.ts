@@ -43,4 +43,5 @@ export interface RackMap {
   position: number;
   rackId: number;
   serverAllocation: ServerAllocation;
+  requestedServerAllocation: ServerAllocation;
 }
