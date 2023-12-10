@@ -77,6 +77,11 @@ export const optionStatus = [
 
 export const serverAllocationStatus = [
   {
+    value: "Waiting",
+    label: "Waiting",
+    color: "#a19f9e",
+  },
+  {
     value: "Working",
     label: "Working",
     color: "#19bcf1",

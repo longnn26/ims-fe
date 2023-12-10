@@ -10,6 +10,8 @@ import { BiSolidCommentDetail } from "react-icons/bi";
 import moment from "moment";
 import { ServerAllocation } from "@models/serverAllocation";
 import { useRouter } from "next/router";
+import { Customer } from "@models/customer";
+import { IpAddress } from "@models/ipAddress";
 
 interface Props {
   onEdit: (data: ServerAllocation) => void;
@@ -23,8 +25,11 @@ interface DataType {
   power: number;
   name: string;
   serialNumber: string;
+  customer: Customer;
   note: string;
+  techNote: string;
   dateCreated: string;
+  masterIp: IpAddress;
   dateUpdated: string;
 }
 
@@ -46,8 +51,22 @@ const ServerAllocationTable: React.FC<Props> = (props) => {
       ),
     },
     {
+      title: "Server' IP",
+      key: "masterIp",
+      render: (record: ServerAllocation) => {
+        return <p>{record?.masterIp?.address}</p>;
+      },
+    },
+    { title: "Server Name", dataIndex: "name", key: "name" },
+    {
+      title: "Customer",
+      key: "customer",
+      render: (record: ServerAllocation) => {
+        return <p>{record?.customer.companyName}</p>;
+      },
+    },
+    {
       title: "Status",
-      // dataIndex: "status",
       key: "status",
       render: (record: ServerAllocation) => {
         var statusData = serverAllocationStatus.find(
@@ -56,11 +75,10 @@ const ServerAllocationTable: React.FC<Props> = (props) => {
         return <Tag color={statusData?.color}>{statusData?.value}</Tag>;
       },
     },
-    { title: "Power", dataIndex: "power", key: "power" },
-    { title: "Name", dataIndex: "name", key: "name" },
-    { title: "Serial Number", dataIndex: "serialNumber", key: "serialNumber" },
+    // { title: "Power", dataIndex: "power", key: "power" },
+    // { title: "Serial Number", dataIndex: "serialNumber", key: "serialNumber" },
     // { title: "Note", dataIndex: "note", key: "note" },
-    // { title: "Date Created", dataIndex: "dateCreated", key: "dateCreated" },
+    { title: "Date Request", dataIndex: "dateCreated", key: "dateCreated" },
     // { title: "Date Updated", dataIndex: "dateUpdated", key: "dateUpdated" },
 
     {
@@ -73,16 +91,20 @@ const ServerAllocationTable: React.FC<Props> = (props) => {
               <BiSolidCommentDetail />
             </Button>
           </Tooltip>
-          <Tooltip title="Edit" color={"black"}>
-            <Button onClick={() => onEdit(record)}>
-              <BiEdit />
-            </Button>
-          </Tooltip>
-          <Tooltip title="Delete" color={"black"}>
+          {Boolean(record.status === "Waiting") && (
+            <>
+              <Tooltip title="Edit" color={"black"}>
+                <Button onClick={() => onEdit(record)}>
+                  <BiEdit />
+                </Button>
+              </Tooltip>
+            </>
+          )}
+          {/* <Tooltip title="Delete" color={"black"}>
             <Button onClick={() => onDelete(record)}>
               <AiFillDelete />
             </Button>
-          </Tooltip>
+          </Tooltip> */}
         </Space>
       ),
     },
@@ -98,6 +120,9 @@ const ServerAllocationTable: React.FC<Props> = (props) => {
       name: serverAllocationData?.data[i].name,
       serialNumber: serverAllocationData?.data[i].serialNumber,
       note: serverAllocationData?.data[i].note,
+      customer: serverAllocationData?.data[i].customer,
+      masterIp: serverAllocationData?.data[i].masterIp,
+      techNote: serverAllocationData?.data[i].techNote,
       dateCreated: moment(serverAllocationData?.data[i].dateCreated).format(
         dateAdvFormat
       ),
