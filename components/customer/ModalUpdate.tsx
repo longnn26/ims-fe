@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Button, Input, Modal, Select } from "antd";
 import { Form } from "antd";
-import { CustomerUpdateModel, Customer } from "@models/customer";
+import { CustomerUpdateModel, Customer } from "@models/customer-hapn";
 import useSelector from "@hooks/use-selector";
 const { Option } = Select;
 const { confirm } = Modal;
@@ -31,9 +31,6 @@ const ModalUpdate: React.FC<Props> = (props) => {
   };
 
   const setFieldsValueInitial = () => {
-    var componentType = companyTypeList.find(
-      (_) => _.id === customer.companyTypeId
-    );
     if (formRef.current)
       form.setFieldsValue({
         id: customer.id,
@@ -42,13 +39,6 @@ const ModalUpdate: React.FC<Props> = (props) => {
         taxNumber: customer.taxNumber,
         email: customer.email,
         phoneNumber: customer.phoneNumber,
-        customerName: customer.customerName,
-        companyType: componentType
-          ? {
-              value: componentType?.id!,
-              label: componentType.name!,
-            }
-          : undefined,
       });
   };
 
@@ -84,14 +74,9 @@ const ModalUpdate: React.FC<Props> = (props) => {
                       id: form.getFieldValue("id"),
                       companyName: form.getFieldValue("companyName"),
                       address: form.getFieldValue("address"),
-                      taxNumber: form.getFieldValue("taxNumber"),
                       email: form.getFieldValue("email"),
                       phoneNumber: form.getFieldValue("phoneNumber"),
-                      customerName: form.getFieldValue("customerName"),
-                      companyTypeId:
-                        form.getFieldValue("companyType").value ||
-                        form.getFieldValue("companyType"),
-                    } as Customer);
+                    });
                     form.resetFields();
                   },
                   onCancel() {},

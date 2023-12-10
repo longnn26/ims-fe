@@ -15,8 +15,6 @@ interface DataType {
   id: number;
   address: string;
   purpose: string;
-  reason: string;
-  ipSubnetId: number;
 }
 
 const IpAddressTable: React.FC<Props> = (props) => {
@@ -36,14 +34,9 @@ const IpAddressTable: React.FC<Props> = (props) => {
       dataIndex: "id",
       key: "id",
       fixed: "left",
-      render: (text) => (
-        <p className="text-[#b75c3c] hover:text-[#ee4623]">{text}</p>
-      ),
     },
-    { title: "Ip Address", dataIndex: "address", key: "address" },
-    { title: "Ip SubnetId", dataIndex: "ipSubnetId", key: "ipSubnetId" },
-    { title: "Purpose", dataIndex: "purpose", key: "purpose" },
-    { title: "Reason", dataIndex: "reason", key: "reason" },
+    { title: "IP Address", dataIndex: "address", key: "address" },
+    { title: "IP Address Type", dataIndex: "purpose", key: "purpose" },
 
     // {
     //   title: "Action",
@@ -71,8 +64,6 @@ const IpAddressTable: React.FC<Props> = (props) => {
       id: listData?.data[i].id,
       address: listData?.data[i].address,
       purpose: listData?.data[i].purpose,
-      reason: listData?.data[i].reason,
-      ipSubnetId: listData?.data[i].ipSubnetId,
     });
   }
 

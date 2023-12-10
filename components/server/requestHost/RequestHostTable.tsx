@@ -3,7 +3,6 @@
 import useSelector from "@hooks/use-selector";
 import { Customer } from "@models/customer";
 import { RequestHost } from "@models/requestHost";
-import { RequestUpgrade } from "@models/requestUpgrade";
 import { ServerAllocation } from "@models/serverAllocation";
 import { dateAdvFormat, requestHostStatus } from "@utils/constants";
 import {
@@ -42,42 +41,30 @@ const RequestHostTable: React.FC<Props> = (props) => {
   const { requestHostDataLoading, requestHostData } = useSelector(
     (state) => state.requestHost
   );
-  // const { requestExpandData: rEDataOfAppointment } = useSelector(
-  //   (state) => state.appointment
-  // );
-  // var listData =
-  //   typeGet == "All"
-  //     ? requestHostData
-  //     : typeGet == "ByAppointmentId"
-  //     ? requestHostData
-  //     : requestHostData;
   const columns: TableColumnsType<DataType> = [
     {
       title: "Id",
       dataIndex: "id",
       key: "id",
       fixed: "left",
-      render: (text) => (
-        <p className="text-[#b75c3c] hover:text-[#ee4623]">{text}</p>
-      ),
     },
     { title: "Date Created", dataIndex: "dateCreated", key: "dateCreated" },
     {
       title: "Customer",
       key: "customer",
-      render: (_, record) => <p className="">{record.customer.companyName}</p>,
+      render: (record: RequestHost) => <p className="">{record.customer.companyName}</p>,
     },
     {
       title: "Server's IP",
       key: "serverIP",
-      render: (_, record) => (
-        <p className="">{record.serverIP?.masterIpAddress}</p>
+      render: (record: RequestHost) => (
+        <p className="">{record.serverAllocation?.masterIpAddress}</p>
       ),
     },
     {
       title: "Type",
-      dataIndex: "type",
-      render: (_, record) => {
+      key: "type",
+      render: (record: RequestHost) => {
         return (
           <>
             {Boolean(record.type === "Additional") ? (
@@ -91,9 +78,9 @@ const RequestHostTable: React.FC<Props> = (props) => {
     },
     {
       title: "Purpose",
-      dataIndex: "purpose",
-      render: (_, record) => {
-        return <>{Boolean(record.purpose) ? <p>Remove</p> : <p>Add</p>}</>;
+      key: "purpose",
+      render: (record: RequestHost) => {
+        return <>{Boolean(record.isRemoval) ? <p>Remove</p> : <p>Add</p>}</>;
       },
     },
     { title: "Quantity", dataIndex: "quantity", key: "quantity" },
@@ -117,41 +104,27 @@ const RequestHostTable: React.FC<Props> = (props) => {
       render: (record: RequestHost) => (
         <Space wrap>
           <Tooltip title="View detail" color={"black"}>
-            <Button
-              onClick={() =>
-                router.push(`${urlOncell}/requestHost/${record.id}`)
-              }
-            >
+            <Button onClick={() => router.push(`/requestHost/${record.id}`)}>
               <BiSolidCommentDetail />
             </Button>
           </Tooltip>
-          {/* <Tooltip title="Edit" color={"black"}>
-            <Button onClick={() => onEdit(record)}>
-              <BiEdit />
-            </Button>
-          </Tooltip>
-          <Tooltip title="Delete" color={"black"}>
-            <Button onClick={() => onDelete(record)}>
-              <AiFillDelete />
-            </Button>
-          </Tooltip> */}
         </Space>
       ),
     },
   ];
 
   const data: DataType[] = [];
-  for (let i = 0; i < listData?.data?.length; ++i) {
+  for (let i = 0; i < requestHostData?.data?.length; ++i) {
     data.push({
-      key: listData?.data[i].id,
-      id: listData?.data[i].id,
-      dateCreated: moment(listData?.data[i].dateCreated).format(dateAdvFormat),
-      customer: listData?.data[i].customer,
-      serverIP: listData?.data[i].serverAllocation,
-      type: listData?.data[i].type,
-      purpose: listData?.data[i].isRemoval,
-      quantity: listData?.data[i].quantity,
-      status: listData?.data[i].status,
+      key: requestHostData?.data[i].id,
+      id: requestHostData?.data[i].id,
+      dateCreated: moment(requestHostData?.data[i].dateCreated).format(dateAdvFormat),
+      customer: requestHostData?.data[i].customer,
+      serverAllocation: requestHostData?.data[i].serverAllocation,
+      type: requestHostData?.data[i].type,
+      purpose: requestHostData?.data[i].isRemoval,
+      quantity: requestHostData?.data[i].quantity,
+      status: requestHostData?.data[i].status,
     });
   }
 
@@ -165,7 +138,7 @@ const RequestHostTable: React.FC<Props> = (props) => {
         dataSource={data}
         scroll={{ x: 1300 }}
         pagination={false}
-        // className="cursor-pointer"
+      // className="cursor-pointer"
       />
     </div>
   );

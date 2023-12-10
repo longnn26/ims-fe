@@ -5,7 +5,7 @@ import {
   SAUpdateModel,
   ServerAllocation,
   ServerAllocationData,
-} from "@models/serverAllocation";
+} from "@models/serverAllocation-hapn";
 
 import apiLinks from "@utils/api-links";
 import httpClient from "@utils/http-client";
@@ -27,7 +27,7 @@ const getServerAllocationById = async (
   id: string
 ): Promise<ServerAllocation> => {
   const response = await httpClient.get({
-    url: apiLinks.serverAllocation.get + `/${id}`,
+    url: apiLinks.serverAllocation.get + "/" + id,
     token: token,
   });
   return response.data;

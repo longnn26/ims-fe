@@ -12,7 +12,7 @@ import {
     ServerAllocation,
 } from "@models/serverAllocation-hapn";
 import customerService from "@services/customer";
-import serverService from "@services/serverAllocation";
+import serverService from "@services/serverAllocationHapn";
 import { Alert, Button, FloatButton, Modal, Pagination, message } from "antd";
 import { ItemType } from "antd/es/breadcrumb/Breadcrumb";
 import { useSession } from "next-auth/react";
@@ -27,7 +27,6 @@ const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
     ssr: false,
 });
 const Customer: React.FC = () => {
-    const dispatch = useDispatch();
     const router = useRouter();
     const { data: session } = useSession();
     const { serverAllocationData } = useSelector(
@@ -46,6 +45,8 @@ const Customer: React.FC = () => {
     const [customerDetail, setCustomerDetail] =
         useState<Customer>();
     const [serverList, setServerList] = useState<ServerAllocationData>();
+    const [totalServerListSize, setTotalServerListSize] = useState<number>(0);
+
     const [itemBreadcrumbs, setItemBreadcrumbs] = useState<ItemType[]>([]);
 
     const getData = async () => {
@@ -63,6 +64,7 @@ const Customer: React.FC = () => {
         )
         .then((result) => {
             setServerList(result);
+            setTotalServerListSize(result?.totalSize ?? 0);
             var res = result as ServerAllocationData;
             if (res.totalPage < paramGet.PageIndex && res.totalPage != 0) {
                 setParamGet({ ...paramGet, PageIndex: res.totalPage });
@@ -138,12 +140,12 @@ const Customer: React.FC = () => {
                         onEdit={(record) => {
                             setUpdate(record);
                         }}/>
-                    {serverAllocationData.totalPage > 0 && (
+                    {totalServerListSize > 0 && (
                         <Pagination
                             className="text-end m-4"
                             current={paramGet.PageIndex}
-                            pageSize={serverAllocationData.pageSize ?? 10}
-                            total={serverAllocationData.totalSize}
+                            pageSize={totalServerListSize ?? 10}
+                            total={totalServerListSize }
                             onChange={(page, pageSize) => {
                                 setParamGet({
                                     ...paramGet,

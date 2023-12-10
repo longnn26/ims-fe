@@ -25,7 +25,6 @@ export interface CustomerUpdateModel {
   id: number;
   companyName: string;
   address: string;
-  taxNumber: string;
   email: string;
   phoneNumber: string;
 }

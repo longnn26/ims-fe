@@ -117,7 +117,7 @@ const apiLinks = {
   },
 
   requestHost: {
-    get: `${url}/api/ServerAllocation`,
+    get: `${url}/api/RequestHost`,
     getById: `${url}/api/RequestHost`,
     accept: `${url}/api/RequestHost`,
     deny: `${url}/api/RequestHost`,

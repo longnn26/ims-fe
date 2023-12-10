@@ -12,7 +12,7 @@ import {
   CustomerUpdateModel,
   Customer,
   CustomerData,
-} from "@models/customer";
+} from "@models/customer-hapn";
 import { Button, Pagination, message, Modal, Alert } from "antd";
 import ModalCreate from "@components/customer/ModalCreate";
 import customerService from "@services/customer";
@@ -72,7 +72,7 @@ const Customer: React.FC = () => {
     await customerService
       .updateData(session?.user.access_token!, data)
       .then((res) => {
-        message.success("Update successful!");
+        message.success("Update successfully!");
         getData();
       })
       .catch((errors) => {
