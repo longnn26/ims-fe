@@ -13,6 +13,11 @@ export interface ServerAllocation extends BaseWithIdNumber {
   masterIp: IpAddress;
   masterIpAddress: string;
   techNote: string;
+  ipCount: number;
+  location: string;
+  inspectionRecordFilePath: string;
+  receiptOfRecipientFilePath: string;
+  removalFilePath: string;
 }
 
 export interface ServerAllocationData extends PagingModel {

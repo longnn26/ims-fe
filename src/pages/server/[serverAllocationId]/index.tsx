@@ -186,22 +186,31 @@ const Customer: React.FC = () => {
         <>
           <div className="flex flex-wrap items-center justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
             <BreadcrumbComponent itemBreadcrumbs={itemBreadcrumbs} />
-            <Button
-              type="primary"
-              htmlType="submit"
-              icon={<AppstoreAddOutlined />}
-              onClick={() => {
-                setOpenModalCreate(true);
-              }}
-            >
-              Hardware Config
-            </Button>
-            {/* <SearchComponent
-              placeholder="Search Name, Description..."
-              setSearchValue={(value) =>
-                setParamGet({ ...paramGet, SearchValue: value })
-              }
-            /> */}
+            <div>
+              {!serverAllocationDetail?.masterIp?.address && (
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  className="mr-2"
+                  icon={<BsFillHddNetworkFill />}
+                  onClick={() => {
+                    getIpSuggestMaster();
+                  }}
+                >
+                  Assign IP
+                </Button>
+              )}
+              <Button
+                type="primary"
+                htmlType="submit"
+                icon={<AppstoreAddOutlined />}
+                onClick={() => {
+                  setOpenModalCreate(true);
+                }}
+              >
+                Hardware Config
+              </Button>
+            </div>
           </div>
           <ModalUpdate
             serverHardwareConfig={serverHardwareConfigUpdate!}
@@ -262,13 +271,6 @@ const Customer: React.FC = () => {
             style={{ right: 60, bottom: 400 }}
             icon={<SendOutlined />}
           >
-            <FloatButton
-              tooltip="Assign IP"
-              icon={<BsFillHddNetworkFill />}
-              onClick={() => {
-                getIpSuggestMaster();
-              }}
-            />
             <FloatButton
               tooltip="Request upgrade"
               icon={<MdUpgrade />}
