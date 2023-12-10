@@ -5,6 +5,9 @@ export interface ComponentObj extends BaseWithIdNumber {
   description: string;
   unit: string;
   type: string;
+  isRequired: boolean;
+  dateCreated: string;
+  dateUpdated: string;
 }
 
 export interface ComponentData extends PagingModel {
@@ -16,6 +19,7 @@ export interface ComponentCreateModel {
   description: string;
   unit: string;
   type: string;
+  isRequired: boolean;
 }
 
 export interface ComponentUpdateModel {

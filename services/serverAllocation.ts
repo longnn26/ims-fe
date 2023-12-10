@@ -1,4 +1,6 @@
 import { ParamGet } from "@models/base";
+import { IpAddressData } from "@models/ipAddress";
+import { RUIpAdressParamGet } from "@models/requestHost";
 import {
   MasterIpCreateModel,
   SACreateModel,
@@ -76,7 +78,20 @@ const assignMasterIp = async (
   const response = await httpClient.post({
     url: apiLinks.serverAllocation.createMasterIp + `/${id}/MasterIp`,
     token: token,
-    data: data
+    data: data,
+  });
+  return response.data;
+};
+
+const serverIpAddressData = async (
+  token: string,
+  params: RUIpAdressParamGet
+): Promise<IpAddressData> => {
+  const response = await httpClient.get({
+    url:
+      apiLinks.serverAllocation.getServerIpAddress + `/${params.Id}/IpAddress`,
+    token: token,
+    params: params,
   });
   return response.data;
 };
@@ -88,6 +103,7 @@ const serverAllocation = {
   updateServerAllocation,
   getServerAllocationById,
   assignMasterIp,
+  serverIpAddressData,
 };
 
 export default serverAllocation;

@@ -9,6 +9,7 @@ export interface IpAddress extends BaseWithIdNumber {
   reason: string;
   ipSubnetId: number;
   ipSubnet: IpSubnet;
+  assignmentType: string;
 }
 
 export interface IpAddressData extends PagingModel {

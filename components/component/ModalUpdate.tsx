@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Button, Input, Modal, Select } from "antd";
+import { Button, Input, Modal, Radio, Select } from "antd";
 import { Form } from "antd";
 import { ComponentUpdateModel, ComponentObj } from "@models/component";
 import { optionStatus } from "@utils/constants";
@@ -34,8 +34,9 @@ const ModalUpdate: React.FC<Props> = (props) => {
         id: component.id,
         description: component.description,
         name: component.name,
-        unit: component.unit,
-        type: component.type,
+        isRequired: component.isRequired,
+        // unit: component.unit,
+        // type: component.type,
       });
   };
 
@@ -71,6 +72,7 @@ const ModalUpdate: React.FC<Props> = (props) => {
                       id: form.getFieldValue("id"),
                       name: form.getFieldValue("name"),
                       description: form.getFieldValue("description"),
+                      isRequired: form.getFieldValue("isRequired"),
                       unit: form.getFieldValue("unit"),
                       type: form.getFieldValue("type"),
                     } as ComponentUpdateModel);
@@ -92,18 +94,32 @@ const ModalUpdate: React.FC<Props> = (props) => {
             wrapperCol={{ span: 16 }}
             style={{ width: "100%" }}
           >
-            <Form.Item name="name" label="Name" rules={[{ required: true }]}>
+            <Form.Item
+              name="name"
+              label="Name"
+              rules={[{ required: true, min: 6, max: 255 }]}
+            >
               <Input placeholder="Name" allowClear />
             </Form.Item>
             <Form.Item name="description" label="Description">
               <Input placeholder="Description" allowClear />
             </Form.Item>
-            <Form.Item name="unit" label="Unit" rules={[{ required: true }]}>
+            <Form.Item
+              label="Is Server Requires"
+              name="isRequired"
+              rules={[{ required: true }]}
+            >
+              <Radio.Group>
+                <Radio value={true}> yes </Radio>
+                <Radio value={false}> No </Radio>
+              </Radio.Group>
+            </Form.Item>
+            {/* <Form.Item name="unit" label="Unit" rules={[{ required: true }]}>
               <Input placeholder="Unit" allowClear />
             </Form.Item>
             <Form.Item name="type" label="Type" rules={[{ required: true }]}>
               <Input placeholder="Type" allowClear />
-            </Form.Item>
+            </Form.Item> */}
           </Form>
         </div>
       </Modal>

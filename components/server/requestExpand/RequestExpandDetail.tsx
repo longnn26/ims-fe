@@ -17,36 +17,71 @@ const RequestExpandDetailInfor: React.FC<Props> = (props) => {
         <h3>Request expand information </h3>
       </Divider>{" "}
       <Descriptions className="p-5">
-        <Descriptions.Item label="Id">
-          {requestExpandDetail?.id}
-        </Descriptions.Item>
-        <Descriptions.Item label="Expand size (U)">
+        <Descriptions.Item label="Size">
           {requestExpandDetail?.size}
         </Descriptions.Item>
-        <Descriptions.Item label="Status">
-          <Tag
-            className="text-center"
-            color={
-              requestUpgradeStatus.find(
-                (_) => _.value === requestExpandDetail?.status
-              )?.color
-            }
-          >
-            {
-              requestUpgradeStatus.find(
-                (_) => _.value === requestExpandDetail?.status
-              )?.value
-            }
-          </Tag>
+        <Descriptions.Item label="Location">
+          {requestExpandDetail?.serverAllocation?.serverLocation}
         </Descriptions.Item>
-        <Descriptions.Item label="Tech note" span={4}>
+        <Descriptions.Item label="Request Type">
+          {requestExpandDetail?.requestType}
+        </Descriptions.Item>
+        <Descriptions.Item label="Status">
+          {Boolean(requestExpandDetail?.requestType == "Expand") ? (
+            <Tag
+              className="text-center"
+              color={
+                requestUpgradeStatus.find(
+                  (_) => _.value === requestExpandDetail?.status
+                )?.color
+              }
+            >
+              {
+                requestUpgradeStatus.find(
+                  (_) => _.value === requestExpandDetail?.status
+                )?.value
+              }
+            </Tag>
+          ) : (
+            <Tag
+              className="text-center"
+              color={
+                requestUpgradeStatus.find(
+                  (_) => _.value === requestExpandDetail?.removalStatus
+                )?.color
+              }
+            >
+              {
+                requestUpgradeStatus.find(
+                  (_) => _.value === requestExpandDetail?.removalStatus
+                )?.value
+              }
+            </Tag>
+          )}
+        </Descriptions.Item>
+        <Descriptions.Item label="Customer" span={4}>
+          {requestExpandDetail?.customer?.companyName}
+        </Descriptions.Item>
+        <Descriptions.Item label="Customer Note" span={4}>
+          {requestExpandDetail?.note}
+        </Descriptions.Item>
+        <Descriptions.Item label="Evaluator" span={4}>
+          {requestExpandDetail?.evaluator?.fullname}
+        </Descriptions.Item>
+        <Descriptions.Item label="Evaluator Note" span={4}>
+          {requestExpandDetail?.saleNote}
+        </Descriptions.Item>
+        <Descriptions.Item label="Executor" span={4}>
+          {requestExpandDetail?.executor?.fullname}
+        </Descriptions.Item>
+        <Descriptions.Item label="Executor Note" span={4}>
           {requestExpandDetail?.techNote}
         </Descriptions.Item>
-        <Descriptions.Item label="Customer's expectation" span={4}>
-          {requestExpandDetail?.customer.customerName}
-        </Descriptions.Item>
-        <Descriptions.Item label="Date Created" span={4}>
+        <Descriptions.Item label="Date Request" span={4}>
           {moment(requestExpandDetail?.dateCreated).format(dateAdvFormat)}
+        </Descriptions.Item>
+        <Descriptions.Item label="Nearest Updated Date" span={4}>
+          {moment(requestExpandDetail?.dateUpdated).format(dateAdvFormat)}
         </Descriptions.Item>
       </Descriptions>
     </div>

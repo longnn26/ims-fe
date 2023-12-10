@@ -4,16 +4,20 @@ import customerService from "@services/customer";
 import { ParamGet } from "@models/base";
 import { ServerAllocationData } from "@models/serverAllocation";
 import { CustomerData } from "@models/customer";
+import { RUIpAdressParamGet } from "@models/requestHost";
+import { IpAddressData } from "@models/ipAddress";
 
 interface State {
   serverAllocationData: ServerAllocationData;
   customerData: CustomerData;
   serverAllocationDataLoading: boolean;
+  serverIpAdressData: IpAddressData;
 }
 
 const initialState: State = {
   serverAllocationData: {} as ServerAllocationData,
   customerData: {} as CustomerData,
+  serverIpAdressData: {} as IpAddressData,
   serverAllocationDataLoading: false,
 };
 
@@ -34,6 +38,17 @@ const getCustomerData = createAsyncThunk(
   `${TYPE_PREFIX}/getCustomerData`,
   async (arg: { token: string; paramGet: ParamGet }) => {
     const result = await customerService.getData(arg.token, arg.paramGet);
+    return result;
+  }
+);
+
+const getServerIpAdressData = createAsyncThunk(
+  `${TYPE_PREFIX}/getServerIpAdressData`,
+  async (arg: { token: string; paramGet: RUIpAdressParamGet }) => {
+    const result = await serverAllocationService.serverIpAddressData(
+      arg.token,
+      arg.paramGet
+    );
     return result;
   }
 );
@@ -64,9 +79,14 @@ const slice = createSlice({
       ...state,
       customerData: payload,
     }));
+
+    builder.addCase(getServerIpAdressData.fulfilled, (state, { payload }) => ({
+      ...state,
+      serverIpAdressData: payload,
+    }));
   },
 });
 
-export { getServerAllocationData, getCustomerData };
+export { getServerAllocationData, getCustomerData, getServerIpAdressData };
 
 export default slice.reducer;

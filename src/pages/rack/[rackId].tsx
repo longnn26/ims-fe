@@ -24,6 +24,9 @@ const AreaDetail: React.FC = () => {
     rackMapList.filter((_) => !_.serverAllocation).length / rackMapList.length;
   var reserved =
     rackMapList.filter((_) => _.serverAllocation).length / rackMapList.length;
+  var booked =
+    rackMapList.filter((_) => _.requestedServerAllocation).length /
+    rackMapList.length;
 
   const getData = async () => {
     await area
@@ -66,6 +69,7 @@ const AreaDetail: React.FC = () => {
               <PieChartComponent
                 data={[
                   { name: "Available", value: available, color: "#e1efd8" },
+                  { name: "Booked", value: booked, color: "#c2e4ea" },
                   { name: "Reserved", value: reserved, color: "#fbe4d4" },
                 ]}
               />

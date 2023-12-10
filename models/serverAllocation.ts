@@ -18,6 +18,7 @@ export interface ServerAllocation extends BaseWithIdNumber {
   inspectionRecordFilePath: string;
   receiptOfRecipientFilePath: string;
   removalFilePath: string;
+  serverLocation: string;
 }
 
 export interface ServerAllocationData extends PagingModel {
