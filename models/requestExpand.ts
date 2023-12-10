@@ -3,6 +3,8 @@ import { Area } from "./area";
 import { BaseWithIdNumber, PagingModel } from "./base";
 import { Customer } from "./customer";
 import { Rack } from "./rack";
+import { Evaluator, Executor } from "./requestHost";
+import { ServerAllocation } from "./serverAllocation";
 
 export interface RequestExpand extends BaseWithIdNumber {
   status: string;
@@ -17,6 +19,10 @@ export interface RequestExpand extends BaseWithIdNumber {
   customer: Customer;
   succeededAppointment: Appointment;
   requestedLocation: RequestedLocation;
+  serverAllocation: ServerAllocation;
+  evaluator: Evaluator;
+  executor: Executor;
+  saleNote: string;
 }
 
 export interface RequestExpandData extends PagingModel {
