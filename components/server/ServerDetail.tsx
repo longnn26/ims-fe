@@ -55,7 +55,7 @@ const ServerDetail: React.FC<Props> = (props) => {
         <Descriptions.Item label="Location">
           {serverAllocationDetail?.location}
         </Descriptions.Item>
-        <Descriptions.Item label="Receipt Of Recipient (installation)">
+        <Descriptions.Item label="Receipt Of Recipient (installation)" span={4}>
           {serverAllocationDetail?.receiptOfRecipientFilePath}
         </Descriptions.Item>
         <Descriptions.Item label="Inspection Report" span={4}>

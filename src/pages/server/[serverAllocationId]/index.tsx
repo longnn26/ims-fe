@@ -28,10 +28,13 @@ import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { MdUpgrade } from "react-icons/md";
 import { FaExpand } from "react-icons/fa";
-import { IpAddress } from "@models/ipAddress";
+import { IpAddress, IpAddressData } from "@models/ipAddress";
 import ModalAssign from "@components/server/ipAddress/ModalAssign";
 import { BsFillHddNetworkFill } from "react-icons/bs";
 import { GrHost } from "react-icons/gr";
+import { RUIpAdressParamGet } from "@models/requestHost";
+import { getServerIpAdressData } from "@slices/serverAllocation";
+import IpAddressTable from "@components/server/ipAddress/IpAddressTable";
 
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
@@ -44,6 +47,7 @@ const Customer: React.FC = () => {
   const { serverHardwareConfigData } = useSelector(
     (state) => state.serverHardwareConfig
   );
+  const { serverIpAdressData } = useSelector((state) => state.serverAllocation);
 
   const [paramGet, setParamGet] = useState<SHCParamGet>({
     PageIndex: 1,
@@ -59,6 +63,13 @@ const Customer: React.FC = () => {
     useState<ServerAllocation>();
   const [itemBreadcrumbs, setItemBreadcrumbs] = useState<ItemType[]>([]);
   const [ipSuggestMaster, setIpSuggestMaster] = useState<IpAddress>();
+
+  const [rUIpAddressParamGet, setRUIpAddressParamGet] =
+    useState<RUIpAdressParamGet>({
+      PageIndex: 1,
+      PageSize: 10,
+      ServerAllocationId: router.query.serverAllocationId ?? -1,
+    } as unknown as RUIpAdressParamGet);
 
   const getData = async () => {
     await serverAllocationService
@@ -81,6 +92,20 @@ const Customer: React.FC = () => {
       }
     });
     dispatch(getComponentAll({ token: session?.user.access_token! }));
+    dispatch(
+      getServerIpAdressData({
+        token: session?.user.access_token!,
+        paramGet: { ...rUIpAddressParamGet },
+      })
+    ).then(({ payload }) => {
+      var res = payload as IpAddressData;
+      if (res.totalPage < rUIpAddressParamGet.PageIndex && res.totalPage != 0) {
+        setRUIpAddressParamGet({
+          ...rUIpAddressParamGet,
+          PageIndex: res.totalPage,
+        });
+      }
+    });
   };
 
   const createData = async (data: SHCCreateModel) => {
@@ -174,11 +199,14 @@ const Customer: React.FC = () => {
       paramGet.ServerAllocationId = parseInt(
         router.query.serverAllocationId!.toString()
       );
+      rUIpAddressParamGet.Id = parseInt(
+        router.query.serverAllocationId!.toString()
+      );
       getData();
       handleBreadCumb();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [session, paramGet]);
+  }, [session, paramGet, rUIpAddressParamGet]);
 
   return (
     <AntdLayoutNoSSR
@@ -257,6 +285,23 @@ const Customer: React.FC = () => {
             />
           )}
 
+          <IpAddressTable typeGet="ServerAllocation" />
+
+          {serverIpAdressData?.totalPage > 0 && (
+            <Pagination
+              className="text-end m-4"
+              current={rUIpAddressParamGet?.PageIndex}
+              pageSize={serverIpAdressData?.pageSize ?? 10}
+              total={serverIpAdressData?.totalSize}
+              onChange={(page, pageSize) => {
+                setRUIpAddressParamGet({
+                  ...rUIpAddressParamGet,
+                  PageIndex: page,
+                  PageSize: pageSize,
+                });
+              }}
+            />
+          )}
           <ModalAssign
             id={serverAllocationDetail?.id!}
             ipSuggestMaster={ipSuggestMaster}
