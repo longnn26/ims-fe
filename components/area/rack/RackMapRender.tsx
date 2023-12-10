@@ -64,7 +64,7 @@ const RackMapRender: React.FC<Props> = (props) => {
                 : "",
             },
           },
-          children: `${record.position}`,
+          children: `${record.position + 1}`,
         };
       },
     },
