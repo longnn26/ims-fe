@@ -239,6 +239,7 @@ const Customer: React.FC = () => {
             onDelete={async (record) => {
               deleteData(record);
             }}
+            serverStatus={serverAllocationDetail?.status}
           />
           {serverHardwareConfigData.totalPage > 0 && (
             <Pagination
