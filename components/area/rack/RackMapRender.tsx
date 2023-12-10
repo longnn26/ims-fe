@@ -71,7 +71,7 @@ const RackMapRender: React.FC<Props> = (props) => {
                   router.push(`/server/${record.serverAllocation.id}`);
               }}
             >
-              {`${record.serverAllocation?.customer.companyName} - ${record.serverAllocation?.note} `}
+              {`${record.serverAllocation?.masterIp.address} - ${record.serverAllocation?.customer.companyName} `}
             </p>
           ),
         };
