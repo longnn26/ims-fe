@@ -128,7 +128,13 @@ const ModalUpdate: React.FC<Props> = (props) => {
             {Boolean(suggestLocation) && (
               <Alert
                 message="Suggest location"
-                description={`${suggestLocation?.area.name} - ${suggestLocation?.rack.id} - ${suggestLocation?.position}`}
+                description={`${suggestLocation?.area.name}${
+                  suggestLocation?.rack.column
+                } - ${suggestLocation?.rack.row} start from U${
+                  suggestLocation?.position !== undefined
+                    ? suggestLocation.position + 1
+                    : ""
+                }`}
                 type="success"
                 showIcon
                 action={

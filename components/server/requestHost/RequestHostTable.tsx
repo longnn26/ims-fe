@@ -68,7 +68,7 @@ const RequestHostTable: React.FC<Props> = (props) => {
         return (
           <>
             {Boolean(record.type === "Additional") ? (
-              <p>Ip</p>
+              <p>IP</p>
             ) : (
               <p>{record.type}</p>
             )}

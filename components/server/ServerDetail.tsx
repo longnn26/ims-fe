@@ -31,7 +31,7 @@ const ServerDetail: React.FC<Props> = (props) => {
         <Descriptions.Item label="Nearest Updated">
           {moment(serverAllocationDetail?.dateUpdated).format(dateAdvFormat)}
         </Descriptions.Item>
-        <Descriptions.Item label="Customer">
+        <Descriptions.Item label="Customer" span={4}>
           {serverAllocationDetail?.customer.companyName}
         </Descriptions.Item>
         <Descriptions.Item label="Technical note" span={4}>
@@ -55,14 +55,26 @@ const ServerDetail: React.FC<Props> = (props) => {
         <Descriptions.Item label="Location">
           {serverAllocationDetail?.location}
         </Descriptions.Item>
-        <Descriptions.Item label="Receipt Of Recipient (installation)" span={4}>
-          {serverAllocationDetail?.receiptOfRecipientFilePath}
+        <Descriptions.Item label="Receipt Of Recipient (Installation)" span={4}>
+          {serverAllocationDetail?.receiptOfRecipientFilePath !== null && (
+            <a href={`${serverAllocationDetail?.receiptOfRecipientFilePath}`}>
+              Biên bản giao nhận thêm Server
+            </a>
+          )}
         </Descriptions.Item>
         <Descriptions.Item label="Inspection Report" span={4}>
-          {serverAllocationDetail?.inspectionRecordFilePath}
+          {serverAllocationDetail?.inspectionRecordFilePath !== null && (
+            <a href={`${serverAllocationDetail?.inspectionRecordFilePath}`}>
+              Biên bản nghiệm thu
+            </a>
+          )}
         </Descriptions.Item>
-        <Descriptions.Item label="Receipt Of Recipient (removal)">
-          {serverAllocationDetail?.removalFilePath}
+        <Descriptions.Item label="Receipt Of Recipient (Removal)">
+          {serverAllocationDetail?.removalFilePath !== null && (
+            <a href={`${serverAllocationDetail?.removalFilePath}`}>
+              Biên bản giao nhận gỡ Server
+            </a>
+          )}
         </Descriptions.Item>
         {/* <Descriptions.Item label="Note" span={4}>
           {serverAllocationDetail?.note}

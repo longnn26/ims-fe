@@ -281,32 +281,34 @@ const RequestExpandDetail: React.FC = () => {
         <>
           <div className="flex flex-wrap items-center justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
             <BreadcrumbComponent itemBreadcrumbs={itemBreadcrumbs} />
-            <div>
-              <Button
-                type="primary"
-                className="mb-2"
-                icon={<EditOutlined />}
-                onClick={async () => {
-                  setRequestExpandUpdate(requestExpandDetail);
-                  if (
-                    !requestExpandDetail?.requestedLocation &&
-                    requestExpandDetail?.size! > 0
-                  ) {
-                    await requestExpandService
-                      .getSuggestLocation(
-                        session?.user.access_token!,
-                        requestExpandDetail?.id!
-                      )
-                      .then((res) => {
-                        setSuggestLocation(res);
-                      })
-                      .catch((e) => {});
-                  }
-                }}
-              >
-                Update
-              </Button>
-            </div>
+            {requestExpandDetail?.status === "Accepted" && (
+              <div>
+                <Button
+                  type="primary"
+                  className="mb-2"
+                  icon={<EditOutlined />}
+                  onClick={async () => {
+                    setRequestExpandUpdate(requestExpandDetail);
+                    if (
+                      !requestExpandDetail?.requestedLocation &&
+                      requestExpandDetail?.size! > 0
+                    ) {
+                      await requestExpandService
+                        .getSuggestLocation(
+                          session?.user.access_token!,
+                          requestExpandDetail?.id!
+                        )
+                        .then((res) => {
+                          setSuggestLocation(res);
+                        })
+                        .catch((e) => {});
+                    }
+                  }}
+                >
+                  Update
+                </Button>
+              </div>
+            )}
           </div>
 
           <div className="md:flex">

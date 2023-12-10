@@ -357,47 +357,54 @@ const Appoinment: React.FC = () => {
               <BreadcrumbComponent itemBreadcrumbs={itemBreadcrumbs} />
             </div>
             <AppointmentDetail appointmentDetail={appointmentDetail!} />
-            <div className="w-full md:m-5 md:flex">
-              <div className="md:w-1/2 md:pr-5">
-                <UploadComponent
-                  fileList={fileInspectionReport}
-                  title="Inspection report"
-                  setFileList={setFileInspectionReport}
-                  multiple={false}
-                  maxCount={1}
-                  disabled={setDisabledInspectionReport}
-                />
-              </div>
-              <div className="md:w-1/2 md:pl-5 h-28">
-                <UploadComponent
-                  fileList={fileReceiptOfRecipient}
-                  title="Receipt of recipient"
-                  setFileList={setFileReceiptOfRecipient}
-                  multiple={false}
-                  maxCount={1}
-                  disabled={setDisabledReceiptOfRecipient}
-                />
-              </div>
-            </div>
-            <Button
-              icon={<UploadOutlined />}
-              loading={loadingUploadDocument}
-              className="w-full m-5"
-              type="primary"
-              disabled={
-                !Boolean(
-                  fileInspectionReport.length > 0 &&
-                    fileReceiptOfRecipient.length > 0
-                ) ||
-                disabledInspectionReport ||
-                disabledReceiptOfRecipient
-              }
-              onClick={() => {
-                uploadDocument();
-              }}
-            >
-              Upload
-            </Button>
+            {Boolean(
+              appointmentDetail?.status === "Success" &&
+                !appointmentDetail.documentConfirm
+            ) && (
+              <>
+                <div className="w-full md:m-5 md:flex">
+                  <div className="md:w-1/2 md:pr-5">
+                    <UploadComponent
+                      fileList={fileInspectionReport}
+                      title="Inspection report"
+                      setFileList={setFileInspectionReport}
+                      multiple={false}
+                      maxCount={1}
+                      disabled={setDisabledInspectionReport}
+                    />
+                  </div>
+                  <div className="md:w-1/2 md:pl-5 h-28">
+                    <UploadComponent
+                      fileList={fileReceiptOfRecipient}
+                      title="Receipt of recipient"
+                      setFileList={setFileReceiptOfRecipient}
+                      multiple={false}
+                      maxCount={1}
+                      disabled={setDisabledReceiptOfRecipient}
+                    />
+                  </div>
+                </div>
+                <Button
+                  icon={<UploadOutlined />}
+                  loading={loadingUploadDocument}
+                  className="w-full m-5"
+                  type="primary"
+                  disabled={
+                    !Boolean(
+                      fileInspectionReport.length > 0 &&
+                        fileReceiptOfRecipient.length > 0
+                    ) ||
+                    disabledInspectionReport ||
+                    disabledReceiptOfRecipient
+                  }
+                  onClick={() => {
+                    uploadDocument();
+                  }}
+                >
+                  Upload
+                </Button>
+              </>
+            )}
           </div>
 
           <Tabs className="m-5" defaultActiveKey="1" items={items} />
@@ -440,11 +447,7 @@ const Appoinment: React.FC = () => {
             </FloatButton.Group>
           )}
 
-          {Boolean(
-            appointmentDetail?.status === "Accepted" &&
-              appointmentDetail.inspectionReportFilePath &&
-              appointmentDetail.receiptOfRecipientFilePath
-          ) && (
+          {appointmentDetail?.status === "Accepted" && (
             <FloatButton.Group
               trigger="hover"
               type="primary"
