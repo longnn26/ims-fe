@@ -4,6 +4,7 @@ import {
   CustomerUpdateModel,
   CustomerData,
 } from "@models/customer";
+import {LoginResponse} from "@models/user"
 import apiLinks from "@utils/api-links";
 import httpClient from "@utils/http-client";
 
@@ -84,6 +85,20 @@ const deleteData = async (token: string, id: number): Promise<any> => {
   return response.data;
 };
 
+const login = async (
+  email: string,
+  password: string
+): Promise<LoginResponse> => {
+  const response = await httpClient.post({
+    url: apiLinks.customer.login,
+    data: {
+      email: email,
+      password: password,
+    },
+  });
+  return response.data;
+};
+
 const customer = {
   getData,
   updateData,
@@ -91,7 +106,8 @@ const customer = {
   createData,
   getCompanyByTax,
   getCustomerById,
-  getServerById
+  getServerById,
+  login
 };
 
 export default customer;

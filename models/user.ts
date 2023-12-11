@@ -6,6 +6,7 @@ export interface LoginResponse {
   userId: string;
   expires_in: number;
   userName: string;
+  email: string;
   phoneNumber?: string;
 }
 
