@@ -72,7 +72,6 @@ const ModalUpdate: React.FC<Props> = (props) => {
                   async onOk() {
                     onSubmit({
                       id: form.getFieldValue("id"),
-                      taxNumber : form.getFieldValue("taxNumber"),
                       companyName: form.getFieldValue("companyName"),
                       address: form.getFieldValue("address"),
                       email: form.getFieldValue("email"),
