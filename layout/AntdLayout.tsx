@@ -27,10 +27,10 @@ const AntdLayout: React.FC<Props> = (props) => {
         .start()
         .then(() => {
           newConnection.on("newNotify", async (data: any) => {
-            // console.log(data);
+            console.log(data);
           });
           newConnection.on("newNotifyCount", async (data: number) => {
-            // console.log(data);
+            console.log(data);
           });
         })
         .catch((err) => console.log(err));
