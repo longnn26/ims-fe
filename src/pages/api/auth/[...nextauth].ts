@@ -51,15 +51,14 @@ export default NextAuth({
         if (result) {
           const user = {
             id: result.userId,
-            name: result.email,
+            name: result.userName,
             access_token: result.access_token,
             expiresIn: result.expires_in,
             loginDate: moment().format(),
             userId: result.userId,
-            userName: result.email,
+            userName: result.userName,
             tokenType: result.tokenType
           } as User;
-          console.log(user)
           return user;
         } else {
           return null;
