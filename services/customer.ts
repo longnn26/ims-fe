@@ -19,6 +19,39 @@ const getData = async (
   return response.data;
 };
 
+const getCustomerById = async (
+  token: string,
+  id: string,
+): Promise<any> => {
+  const response = await httpClient.get({
+    url: apiLinks.customer.get + `/${id}`,
+    token: token,
+  });
+  return response.data;
+};
+
+const getCompanyByTax = async (
+  taxNumber: string
+): Promise<any> => {
+  const response = await httpClient.get({
+    url: apiLinks.customer.getByTax,
+    data: taxNumber,
+  });
+  return response.data;
+};
+
+const getServerById = async (
+  token: string,
+  id: string,
+): Promise<any> => {
+  const response = await httpClient.get({
+    token: token,
+    url: apiLinks.customer.getServerAllocationById + "/" + id + "/ServerAllocation",
+    data: id
+  });
+  return response.data;
+}
+
 const createData = async (
   token: string,
   data: CustomerCreateModel
@@ -56,6 +89,9 @@ const customer = {
   updateData,
   deleteData,
   createData,
+  getCompanyByTax,
+  getCustomerById,
+  getServerById
 };
 
 export default customer;

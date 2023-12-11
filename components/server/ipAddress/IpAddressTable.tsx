@@ -14,9 +14,6 @@ interface DataType {
   key: React.Key;
   id: number;
   address: string;
-  purpose: string;
-  reason: string;
-  ipSubnetId: number;
   assignmentType: string;
 }
 
@@ -45,13 +42,11 @@ const IpAddressTable: React.FC<Props> = (props) => {
     { title: "Address", dataIndex: "address", key: "address" },
     {
       title: "Assignment Type",
-      dataIndex: "assignmentType",
       key: "assignmentType",
+      render: (record) => (
+        <p className="">{record.assignmentType === "Additional" ? "IP" : record.assignmentType}</p>
+      ),
     },
-    { title: "Ip SubnetId", dataIndex: "ipSubnetId", key: "ipSubnetId" },
-    { title: "Purpose", dataIndex: "purpose", key: "purpose" },
-    { title: "Reason", dataIndex: "reason", key: "reason" },
-
     // {
     //   title: "Action",
     //   key: "operation",
@@ -77,9 +72,6 @@ const IpAddressTable: React.FC<Props> = (props) => {
       key: listData?.data[i].id,
       id: listData?.data[i].id,
       address: listData?.data[i].address,
-      purpose: listData?.data[i].purpose,
-      reason: listData?.data[i].reason,
-      ipSubnetId: listData?.data[i].ipSubnetId,
       assignmentType: listData?.data[i].assignmentType,
     });
   }

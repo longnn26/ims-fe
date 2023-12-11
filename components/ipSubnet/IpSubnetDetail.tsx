@@ -19,7 +19,7 @@ const IpSubnetDetail: React.FC<Props> = (props) => {
       <Descriptions className="p-5">
         <Descriptions.Item label="Id">{ipSubnetDetail?.id}</Descriptions.Item>
         <Descriptions.Item
-          label="IP"
+          label="Subnet"
           span={2}
         >{`${ipSubnetDetail?.firstOctet}.${ipSubnetDetail?.secondOctet}.${ipSubnetDetail?.thirdOctet}.${ipSubnetDetail?.fourthOctet}/${ipSubnetDetail?.prefixLength}`}</Descriptions.Item>
         <Descriptions.Item label="Note" span={4}>

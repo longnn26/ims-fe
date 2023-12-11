@@ -4,7 +4,7 @@ import useSelector from "@hooks/use-selector";
 import { dateAdvFormat } from "@utils/constants";
 import { TableColumnsType } from "antd";
 import { Button, Space, Table, Tooltip } from "antd";
-import { BiEdit } from "react-icons/bi";
+import { BiEdit, BiSolidCommentDetail } from "react-icons/bi";
 import { AiFillDelete } from "react-icons/ai";
 import moment from "moment";
 import { Customer } from "@models/customer";
@@ -23,8 +23,7 @@ interface DataType {
   taxNumber: string;
   email: string;
   phoneNumber: string;
-  customerName: string;
-  companyTypeId: number;
+  isDeleted: boolean;
   dateCreated: string;
   dateUpdated: string;
 }
@@ -52,7 +51,7 @@ const CustomerTable: React.FC<Props> = (props) => {
       key: "email",
     },
     { title: "Phone number", dataIndex: "phoneNumber", key: "phoneNumber" },
-    { title: "Customer name", dataIndex: "customerName", key: "customerName" },
+    { title: "Status", dataIndex: "isDeleted", key: "isDeleted" },
     { title: "Date Created", dataIndex: "dateCreated", key: "dateCreated" },
     { title: "Date Updated", dataIndex: "dateUpdated", key: "dateUpdated" },
     {
@@ -60,6 +59,11 @@ const CustomerTable: React.FC<Props> = (props) => {
       key: "operation",
       render: (record: Customer) => (
         <Space wrap>
+           <Tooltip title="View detail" color={"black"}>
+            <Button onClick={() => router.push(`/customer/${record.id}`)}>
+              <BiSolidCommentDetail />
+            </Button>
+          </Tooltip>
           <Tooltip title="Edit" color={"black"}>
             <Button onClick={() => onEdit(record)}>
               <BiEdit />
@@ -85,8 +89,7 @@ const CustomerTable: React.FC<Props> = (props) => {
       taxNumber: customerData?.data[i].taxNumber,
       email: customerData?.data[i].email,
       phoneNumber: customerData?.data[i].phoneNumber,
-      customerName: customerData?.data[i].customerName,
-      companyTypeId: customerData?.data[i].companyTypeId,
+      isDeleted: customerData?.data[i].isDeleted,
       dateCreated: moment(customerData?.data[i].dateCreated).format(
         dateAdvFormat
       ),

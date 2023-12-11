@@ -6,8 +6,7 @@ export interface Customer extends BaseWithIdNumber {
   taxNumber: string;
   email: string;
   phoneNumber: string;
-  customerName: string;
-  companyTypeId: number;
+  isDeleted: boolean;
 }
 
 export interface CustomerData extends PagingModel {
@@ -20,17 +19,12 @@ export interface CustomerCreateModel {
   taxNumber: string;
   email: string;
   phoneNumber: string;
-  customerName: string;
-  companyTypeId: number;
 }
 
 export interface CustomerUpdateModel {
   id: number;
   companyName: string;
   address: string;
-  taxNumber: string;
   email: string;
   phoneNumber: string;
-  customerName: string;
-  companyTypeId: number;
 }

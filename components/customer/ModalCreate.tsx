@@ -19,7 +19,6 @@ const ModalCreate: React.FC<Props> = (props) => {
   const { onSubmit, open, onClose } = props;
 
   const [confirmLoading, setConfirmLoading] = useState(false);
-  const { companyTypeList } = useSelector((state) => state.companyType);
 
   const disabled = async () => {
     var result = false;
@@ -30,6 +29,22 @@ const ModalCreate: React.FC<Props> = (props) => {
     }
     return result;
   };
+
+  const handleFetchData = async () => {
+    const taxNumber = form.getFieldValue("taxNumber");
+    if (!taxNumber) {
+      return;
+    }
+
+    const response = await fetch(`https://api.vietqr.io/v2/business/${taxNumber}`);
+    const data = await response.json();
+    form.resetFields();
+    form.setFieldsValue({
+      taxNumber,
+      companyName: data.data.name,
+      address: data.data.address,
+    });
+  }
 
   return (
     <>
@@ -57,8 +72,6 @@ const ModalCreate: React.FC<Props> = (props) => {
                       taxNumber: form.getFieldValue("taxNumber"),
                       email: form.getFieldValue("email"),
                       phoneNumber: form.getFieldValue("phoneNumber"),
-                      customerName: form.getFieldValue("customerName"),
-                      companyTypeId: form.getFieldValue("companyType").value,
                     } as CustomerCreateModel);
                     form.resetFields();
                   },
@@ -78,36 +91,7 @@ const ModalCreate: React.FC<Props> = (props) => {
             wrapperCol={{ span: 16 }}
             style={{ width: "100%" }}
           >
-            <Form.Item
-              name="companyType"
-              label="Company type"
-              rules={[{ required: true }]}
-            >
-              <Select
-                allowClear
-                onSelect={(value) => {
-                  form.setFieldsValue({
-                    companyType: {
-                      value: value,
-                      label: value,
-                    },
-                  });
-                }}
-              >
-                {companyTypeList.map((l, index) => (
-                  <Option value={l.id} label={l?.name} key={index}>
-                    {l.name}
-                  </Option>
-                ))}
-              </Select>{" "}
-            </Form.Item>
-            <Form.Item
-              name="companyName"
-              label="Company name"
-              rules={[{ required: true }]}
-            >
-              <Input placeholder="Company name" allowClear />
-            </Form.Item>
+            
             <Form.Item
               name="taxNumber"
               label="Tax number"
@@ -116,13 +100,22 @@ const ModalCreate: React.FC<Props> = (props) => {
               <Input placeholder="Tax number" allowClear />
             </Form.Item>
             <Form.Item
+            name="button"
+            >
+            <Button key="fetchData" onClick={handleFetchData}>Save</Button>
+            </Form.Item>
+            <Form.Item
+              name="companyName"
+              label="Company name"
+            >
+              <Input placeholder="Company name" readOnly disabled/>
+            </Form.Item>
+            <Form.Item
               name="address"
               label="Address"
-              rules={[{ required: true }]}
             >
-              <Input placeholder="Address" allowClear />
+              <Input placeholder="Address" readOnly disabled/>
             </Form.Item>
-
             <Form.Item name="email" label="Email" rules={[{ required: true }]}>
               <Input placeholder="Email" allowClear />
             </Form.Item>

@@ -1,4 +1,4 @@
-import { BaseWithIdNumber, PagingModel } from "./base";
+import { BaseWithIdNumber, PagingModel, ParamGet } from "./base";
 import { Customer } from "./customer";
 import { IpAddress } from "./ipAddress";
 
@@ -23,6 +23,10 @@ export interface ServerAllocation extends BaseWithIdNumber {
 
 export interface ServerAllocationData extends PagingModel {
   data: ServerAllocation[];
+}
+
+export interface SAParamGet extends ParamGet {
+  CustomerId: number;
 }
 
 export interface SACreateModel {

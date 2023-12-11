@@ -24,11 +24,27 @@ const getData = async (
   return response.data;
 };
 
-const getDetail = async (token: string, id: string): Promise<RequestHost> => {
+const getDataAll = async (
+  token: string,
+  params: ParamGet,
+): Promise<RequestHostData> => {
+  const response = await httpClient.get({
+    token: token,
+    url: apiLinks.requestHost.getAll,
+    params: params,
+  });
+  return response.data;
+};
+
+const getDetail = async (
+  token: string,
+  id: string
+): Promise<RequestHost> => {
   const response = await httpClient.get({
     url: apiLinks.requestHost.getById + `/${id}`,
     token: token,
   });
+  console.log(response)
   return response.data;
 };
 
@@ -146,6 +162,7 @@ const requestHost = {
   getIpAddressById,
   saveProvideIps,
   uploadDocument,
+  getDataAll,
 };
 
 export default requestHost;

@@ -28,6 +28,14 @@ const getRequestHostData = createAsyncThunk(
   }
 );
 
+const getRequestHostDataAll = createAsyncThunk(
+  `${TYPE_PREFIX}/getRequestHostData`,
+  async (arg: { token: string; paramGet: ParamGet }) => {
+    const result = await requestHost.getDataAll(arg.token, arg.paramGet);
+    return result;
+  }
+);
+
 const getIpAdressData = createAsyncThunk(
   `${TYPE_PREFIX}/getIpAdressData`,
   async (arg: { token: string; paramGet: RUIpAdressParamGet }) => {
@@ -70,6 +78,6 @@ const slice = createSlice({
   },
 });
 
-export { getRequestHostData, getIpAdressData };
+export { getRequestHostData, getIpAdressData, getRequestHostDataAll };
 
 export default slice.reducer;

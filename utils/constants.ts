@@ -158,3 +158,16 @@ export const requestHostStatus = [
     color: "#1E90FF",
   },
 ];
+
+export const customerStatus = [
+  {
+    value: true,
+    label: "Active",
+    color: "#19bcf1",
+  },
+  {
+    value: false,
+    label: "Removed",
+    color: "#ed1c24",
+  },
+];

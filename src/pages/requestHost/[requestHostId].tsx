@@ -21,7 +21,7 @@ import {
 } from "@models/requestHost";
 import { ServerAllocation } from "@models/serverAllocation";
 import ipSubnet from "@services/ipSubnet";
-import requestHost from "@services/requestHost";
+import requestHostService from "@services/requestHost";
 import serverAllocationService from "@services/serverAllocation";
 import { getIpAdressData } from "@slices/requestHost";
 import { Alert, Button, FloatButton, message, Modal, Pagination } from "antd";
@@ -40,7 +40,7 @@ const { confirm } = Modal;
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
 });
-const RequestHostDetail: React.FC = () => {
+const RequestDetail: React.FC = () => {
   const router = useRouter();
   const dispatch = useDispatch();
   const { data: session } = useSession();
@@ -81,29 +81,29 @@ const RequestHostDetail: React.FC = () => {
     useState<boolean>(false);
   const [disabledInspectionReport, setDisabledInspectionReport] =
     useState<boolean>(false);
+  
   const getData = async () => {
-    await serverAllocationService
-      .getServerAllocationById(
-        session?.user.access_token!,
-        router.query.serverAllocationId + ""
-      )
-      .then((res) => {
-        setServerAllocationDetail(res);
-      });
-
-    await requestHost
+    await requestHostService
       .getDetail(session?.user.access_token!, router.query.requestHostId + "")
-      .then((res) => {
+      .then(async (res) => {
+        await serverAllocationService
+          .getServerAllocationById(
+            session?.user.access_token!,
+            res.serverAllocationId + ""
+          )
+          .then((res) => {
+            setServerAllocationDetail(res);
+          });
         setRequestHostDetail(res);
       });
   };
 
   const updateData = async (data: RequestHostUpdateModel) => {
-    await requestHost
+    await requestHostService
       .updateData(session?.user.access_token!, data)
       .then(async (res) => {
         message.success("Update successful!");
-        await requestHost
+        await requestHostService
           .getDetail(
             session?.user.access_token!,
             router.query.requestHostId + ""
@@ -159,7 +159,7 @@ const RequestHostDetail: React.FC = () => {
     data.append("InspectionReport", fileInspectionReport[0].originFileObj!);
     data.append("InspectionReportFileName", fileInspectionReport[0].name!);
     setLoadingUploadDocument(true);
-    await requestHost
+    await requestHostService
       .uploadDocument(
         session?.user.access_token!,
         requestHostDetail!.id.toString(),
@@ -179,7 +179,7 @@ const RequestHostDetail: React.FC = () => {
   };
 
   useEffect(() => {
-    if (router.query.serverAllocationId && session) {
+    if (router.query.requestHostId && session) {
       getData();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -388,4 +388,4 @@ const RequestHostDetail: React.FC = () => {
   );
 };
 
-export default RequestHostDetail;
+export default RequestDetail;
