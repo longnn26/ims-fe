@@ -21,7 +21,7 @@ import ServerAllocationTable from "@components/server/ServerAllocationTable";
 import ModalCreate from "@components/server/ModalCreate";
 import serverAllocationService from "@services/serverAllocation";
 import ModalUpdate from "@components/server/ModalUpdate";
-import { useRouter } from "next/router";
+
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
 });
@@ -59,7 +59,7 @@ const Customer: React.FC = () => {
       })
     ).then(({ payload }) => {
       var res = payload as ServerAllocationData;
-      if (res.totalPage < paramGet.PageIndex && res.totalPage != 0) {
+      if (res?.totalPage < paramGet.PageIndex && res.totalPage != 0) {
         setParamGet({ ...paramGet, PageIndex: res.totalPage });
       }
     });

@@ -25,6 +25,7 @@
       "@slices/*": ["./slices/*"],
       "@hooks/*": ["./hooks/*"],
       "@components/*": ["./components/*"],
+      "@signalR/*": ["./signalR/*"],
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
