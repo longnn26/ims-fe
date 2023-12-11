@@ -3,7 +3,7 @@ import {
   CustomerCreateModel,
   CustomerUpdateModel,
   CustomerData,
-} from "@models/customer-hapn";
+} from "@models/customer";
 import apiLinks from "@utils/api-links";
 import httpClient from "@utils/http-client";
 

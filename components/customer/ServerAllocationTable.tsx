@@ -12,7 +12,7 @@ import { ServerAllocation } from "@models/serverAllocation";
 import { useRouter } from "next/router";
 import { Customer } from "@models/customer";
 import { IpAddress } from "@models/ipAddress";
-import { ServerAllocationData } from "@models/serverAllocation-hapn";
+import { ServerAllocationData } from "@models/serverAllocation";
 
 interface Props {
     data: ServerAllocationData | undefined

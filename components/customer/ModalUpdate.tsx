@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Button, Input, Modal, Select } from "antd";
 import { Form } from "antd";
-import { CustomerUpdateModel, Customer } from "@models/customer-hapn";
+import { CustomerUpdateModel, Customer } from "@models/customer";
 import useSelector from "@hooks/use-selector";
 const { Option } = Select;
 const { confirm } = Modal;
@@ -72,6 +72,7 @@ const ModalUpdate: React.FC<Props> = (props) => {
                   async onOk() {
                     onSubmit({
                       id: form.getFieldValue("id"),
+                      taxNumber : form.getFieldValue("taxNumber"),
                       companyName: form.getFieldValue("companyName"),
                       address: form.getFieldValue("address"),
                       email: form.getFieldValue("email"),

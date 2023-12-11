@@ -72,7 +72,7 @@ const Customer: React.FC = () => {
     await customerService
       .updateData(session?.user.access_token!, data)
       .then((res) => {
-        message.success("Update successful!");
+        message.success("Update successfully!");
         getData();
       })
       .catch((errors) => {

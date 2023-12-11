@@ -10,9 +10,9 @@ import {
     ServerAllocationData,
     SAUpdateModel,
     ServerAllocation,
-} from "@models/serverAllocation-hapn";
+} from "@models/serverAllocation";
 import customerService from "@services/customer";
-import serverService from "@services/serverAllocationHapn";
+import serverService from "@services/serverAllocation";
 import { Alert, Button, FloatButton, Modal, Pagination, message } from "antd";
 import { ItemType } from "antd/es/breadcrumb/Breadcrumb";
 import { useSession } from "next-auth/react";
