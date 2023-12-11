@@ -67,7 +67,7 @@ const RequestHostDetailInfor: React.FC<Props> = (props) => {
         <Descriptions.Item label="Customer's Note" span={2}>
           {requestHostDetail?.note}
         </Descriptions.Item>
-        <Descriptions.Item label="Inspection report file" span={4}>
+        <Descriptions.Item label="Accepted Report" span={4}>
           {requestHostDetail?.inspectionReportFilePath !== null && (
             <a href={`${requestHostDetail?.inspectionReportFilePath}`}>
               Biên bản nghiệm thu

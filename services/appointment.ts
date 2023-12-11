@@ -57,18 +57,28 @@ const getRequestExpandsById = async (
   return response.data;
 };
 
-const acceptAppointment = async (token: string, id: string): Promise<any> => {
+const acceptAppointment = async (
+  token: string,
+  id: string,
+  userId: string
+): Promise<any> => {
   const response = await httpClient.put({
     url: apiLinks.appointment.accept + `/${id}/Accept`,
     token: token,
+    data: { userId: userId },
   });
   return response.data;
 };
 
-const denyAppointment = async (token: string, id: string): Promise<any> => {
+const denyAppointment = async (
+  token: string,
+  id: string,
+  saleNote: string
+): Promise<any> => {
   const response = await httpClient.put({
     url: apiLinks.appointment.accept + `/${id}/Deny`,
     token: token,
+    data: { saleNote: saleNote },
   });
   return response.data;
 };
@@ -89,12 +99,12 @@ const completeAppointment = async (
 const failAppointment = async (
   token: string,
   id: string,
-  data: string
+  techNote: string
 ): Promise<any> => {
   const response = await httpClient.put({
     url: apiLinks.appointment.fail + `/${id}/Fail`,
     token: token,
-    data: data,
+    data: { techNote: techNote },
   });
   return response.data;
 };
