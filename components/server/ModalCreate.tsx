@@ -161,13 +161,7 @@ const ModalCreate: React.FC<Props> = (props) => {
                     }
                   }
                 }}
-              >
-                {customers.map((l, index) => (
-                  <Option value={l.id} label={l?.customerName} key={index}>
-                    {l.customerName}
-                  </Option>
-                ))}
-              </Select>
+              />
             </Form.Item>
           </Form>
         </div>
