@@ -1,15 +1,23 @@
 "use client";
 
-import useSelector from "@hooks/use-selector";
-import { dateAdvFormat, requestUpgradeStatus } from "@utils/constants";
-import { Divider, TableColumnsType, Tag } from "antd";
-import { Button, Space, Table, Tooltip } from "antd";
+import React from "react";
+import {
+  Button,
+  Space,
+  Table,
+  Tooltip,
+  Divider,
+  Tag,
+  TableColumnsType,
+} from "antd";
 import { BiEdit, BiSolidCommentDetail } from "react-icons/bi";
 import { AiFillDelete } from "react-icons/ai";
 import moment from "moment";
-import { RequestUpgrade } from "@models/requestUpgrade";
-import { useRouter } from "next/router";
+import { Descriptions, RequestUpgrade } from "@models/requestUpgrade";
 import { ComponentObj } from "@models/component";
+import { dateAdvFormat, requestUpgradeStatus } from "@utils/constants";
+import useSelector from "@hooks/use-selector";
+import { useRouter } from "next/router";
 
 interface Props {
   typeGet?: string;
@@ -22,12 +30,14 @@ interface Props {
 interface DataType {
   key: React.Key;
   id: number;
-  information: string;
-  status: string;
-  capacity: number;
+  component: ComponentObj;
+  serialNumber: Descriptions[];
+  model: Descriptions[];
+  capacity: Descriptions[];
+  description: Descriptions[];
   serverAllocationId: number;
   componentId: number;
-  component: ComponentObj;
+  status: string;
   dateCreated: string;
   dateUpdated: string;
 }
@@ -35,6 +45,7 @@ interface DataType {
 const RequestUpgradeTable: React.FC<Props> = (props) => {
   const { onEdit, onDelete, urlOncell, typeGet } = props;
   const router = useRouter();
+
   const { requestUpgradeDataLoading, requestUpgradeData } = useSelector(
     (state) => state.requestUpgrade
   );
@@ -51,30 +62,19 @@ const RequestUpgradeTable: React.FC<Props> = (props) => {
 
   const columns: TableColumnsType<DataType> = [
     {
-      title: "Id",
+      title: "No",
       dataIndex: "id",
       key: "id",
       fixed: "left",
       render: (text) => (
         <p className="text-[#b75c3c] hover:text-[#ee4623]">{text}</p>
       ),
-      // onCell: (record, rowIndex) => {
-      //   return {
-      //     onClick: (ev) => {
-      //       router.push(`${urlOncell}/requestUpgrade/${record.id}`);
-      //     },
-      //   };
-      // },
     },
     {
       title: "Component",
       key: "component",
-      render: (record: RequestUpgrade) => (
-        <p>{`${record.component?.name} - ${record.component?.unit} - ${record.component?.type}`}</p>
-      ),
+      render: (record: RequestUpgrade) => <p>{`${record.component?.name}`}</p>,
     },
-    { title: "Information", dataIndex: "information", key: "information" },
-    { title: "Capacity", dataIndex: "capacity", key: "capacity" },
     {
       title: "Status",
       // dataIndex: "status",
@@ -121,17 +121,75 @@ const RequestUpgradeTable: React.FC<Props> = (props) => {
     },
   ];
 
+  const getStatusColor = (status: string) => {
+    // Define your color mapping logic here based on different statuses
+    // For example, assuming "Pending", "Approved", "Rejected"
+    switch (status) {
+      case "Pending":
+        return "orange";
+      case "Approved":
+        return "green";
+      case "Rejected":
+        return "red";
+      default:
+        return "defaultColor"; // Set a default color or handle other cases
+    }
+  };
+
+  const expandedRowRender = (record: DataType) => {
+    const nestedColumns = [
+      {
+        title: "Serial Number",
+        dataIndex: "serialNumber",
+        key: "serialNumber",
+      },
+      {
+        title: "Model",
+        dataIndex: "model",
+        key: "model",
+      },
+      {
+        title: "Capacity",
+        dataIndex: "capacity",
+        key: "capacity",
+      },
+      {
+        title: "Description",
+        dataIndex: "description",
+        key: "description",
+      },
+    ];
+
+    const nestedData = record.serialNumber.map((des, index) => ({
+      key: index,
+      serialNumber: record.serialNumber[index].serialNumber,
+      model: record.model[index].model,
+      capacity: record.capacity[index].capacity,
+      description: record.description[index].description,
+    }));
+
+    return (
+      <Table
+        columns={nestedColumns}
+        dataSource={nestedData}
+        pagination={false}
+      />
+    );
+  };
+
   const data: DataType[] = [];
   for (let i = 0; i < listData?.data?.length; ++i) {
     data.push({
       key: listData?.data[i].id,
       id: listData?.data[i].id,
-      information: listData?.data[i].information,
       component: listData?.data[i].component,
-      capacity: listData?.data[i].capacity,
       serverAllocationId: listData?.data[i].serverAllocationId,
       componentId: listData?.data[i].componentId,
       status: listData?.data[i].status,
+      serialNumber: listData?.data[i].descriptions,
+      model: listData?.data[i].descriptions,
+      capacity: listData?.data[i].descriptions,
+      description: listData?.data[i].descriptions,
       dateCreated: moment(listData?.data[i].dateCreated).format(dateAdvFormat),
       dateUpdated: moment(listData?.data[i].dateUpdated).format(dateAdvFormat),
     });
@@ -146,9 +204,10 @@ const RequestUpgradeTable: React.FC<Props> = (props) => {
         loading={requestUpgradeDataLoading}
         columns={columns}
         dataSource={data}
+        expandable={{ expandedRowRender }}
         scroll={{ x: 1300 }}
         pagination={false}
-        // className="cursor-pointer"
+        className="cursor-pointer"
       />
     </div>
   );

@@ -3,11 +3,10 @@ import { BaseWithIdNumber, PagingModel, ParamGet } from "./base";
 import { ComponentObj } from "./component";
 
 export interface RequestUpgrade extends BaseWithIdNumber {
-  information: string;
   status: string;
-  capacity: number;
   componentId: number;
   component: ComponentObj;
+  descriptions: Descriptions[];
   serverAllocationId: number;
   succeededAppointment: Appointment;
 }
@@ -38,4 +37,11 @@ export interface RequestUpgradeUpdateModel {
 
 export interface RUAppointmentParamGet extends ParamGet {
   Id: number;
+}
+
+export interface Descriptions {
+  serialNumber: string;
+  model: string;
+  capacity: number;
+  description: string;
 }
