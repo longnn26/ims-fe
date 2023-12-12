@@ -6,7 +6,7 @@ import { BiEdit } from "react-icons/bi";
 import { AiFillDelete } from "react-icons/ai";
 import moment from "moment";
 import {
-  Descriptions,
+  DescriptionsObj,
   ServerHardwareConfig,
 } from "@models/serverHardwareConfig";
 import { ComponentObj } from "@models/component";
@@ -23,10 +23,10 @@ interface DataType {
   key: React.Key;
   id: number;
   component: ComponentObj;
-  serialNumber: Descriptions[];
-  model: Descriptions[];
-  capacity: Descriptions[];
-  description: Descriptions[];
+  serialNumber: DescriptionsObj[];
+  model: DescriptionsObj[];
+  capacity: DescriptionsObj[];
+  description: DescriptionsObj[];
   dateCreated: string;
 }
 
