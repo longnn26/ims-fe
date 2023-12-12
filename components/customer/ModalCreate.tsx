@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import { Button, Input, Modal, Select } from "antd";
+import { Button, Col, Input, Modal, Row, Select } from "antd";
 import { Form } from "antd";
 import { CustomerCreateModel } from "@models/customer";
 import useSelector from "@hooks/use-selector";
@@ -38,13 +38,13 @@ const ModalCreate: React.FC<Props> = (props) => {
     }
 
     const response = await customerService.getCompanyByTax(taxNumber);
-    form.resetFields();
+    // form.resetFields();
     form.setFieldsValue({
       taxNumber,
       companyName: response.data.name,
       address: response.data.address,
     });
-  }
+  };
 
   return (
     <>
@@ -91,26 +91,41 @@ const ModalCreate: React.FC<Props> = (props) => {
             wrapperCol={{ span: 16 }}
             style={{ width: "100%" }}
           >
-            
-            <Button key="fetchData" onClick={handleFetchData} style={{float:'right'}}>Search</Button>
-            <Form.Item
-              name="taxNumber"
-              label="Tax number"
-              rules={[{ required: true }]}
-            >
-              <Input placeholder="Tax number" allowClear />
-            </Form.Item>
+            <Row gutter={8}>
+              <Col span={18}>
+                <Form.Item
+                  name="taxNumber"
+                  label="Tax number"
+                  rules={[
+                    {
+                      required: true,
+                    },
+                  ]}
+                  style={{ paddingLeft: "55px" }}
+                >
+                  <Input placeholder="Tax number" allowClear />
+                </Form.Item>
+              </Col>
+              <Col span={6}>
+                <Button key="fetchData" onClick={handleFetchData}>
+                  Save
+                </Button>
+              </Col>
+            </Row>
+
             <Form.Item
               name="companyName"
               label="Company name"
+              rules={[{ required: true }]}
             >
-              <Input placeholder="Company name" allowClear/>
+              <Input placeholder="Company name" allowClear />
             </Form.Item>
             <Form.Item
               name="address"
               label="Address"
+              rules={[{ required: true }]}
             >
-              <Input placeholder="Address" allowClear/>
+              <Input placeholder="Address" allowClear />
             </Form.Item>
             <Form.Item name="email" label="Email" rules={[{ required: true }]}>
               <Input placeholder="Email" allowClear />
