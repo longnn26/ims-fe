@@ -8,6 +8,7 @@ export interface LoginResponse {
   userName: string;
   email: string;
   phoneNumber?: string;
+  currenNoticeCount: number;
 }
 
 export interface User extends Base {
@@ -18,6 +19,7 @@ export interface User extends Base {
   email: string;
   address?: string;
   fullname?: string;
+  currenNoticeCount: number;
 }
 
 export interface UserTechData extends PagingModel {

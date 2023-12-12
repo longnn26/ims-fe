@@ -27,7 +27,8 @@ export default NextAuth({
             loginDate: moment().format(),
             userId: result.userId,
             userName: result.userName,
-            tokenType: result.tokenType
+            tokenType: result.tokenType,
+            currenNoticeCount: result.currenNoticeCount,
           } as User;
           return user;
         } else {
@@ -75,6 +76,7 @@ export default NextAuth({
         // token.email = user.email;
         token.userId = user.userId;
         token.userName = user.userName;
+        token.currenNoticeCount = user.currenNoticeCount;
       }
       if (trigger === "update" && session) {
         return { ...token, ...session?.user };
@@ -90,6 +92,7 @@ export default NextAuth({
         // session.user.email = token.email;
         session.user.userName = token.userName;
         session.user.userId = token.userId;
+        session.user.currenNoticeCount = token.currenNoticeCount;
       }
       return session;
     },

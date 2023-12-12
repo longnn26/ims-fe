@@ -44,7 +44,6 @@ const getDetail = async (
     url: apiLinks.requestHost.getById + `/${id}`,
     token: token,
   });
-  console.log(response)
   return response.data;
 };
 

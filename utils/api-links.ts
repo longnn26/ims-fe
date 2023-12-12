@@ -7,6 +7,7 @@ const apiLinks = {
   user: {
     login: `${urlServerSide}/api/User/Login`,
     getUserTech: `${url}/api/User/Tech`,
+    seenCurrenNoticeCount: `${url}/api/User/SeenCurrenNoticeCount`,
   },
 
   serverAllocation: {
@@ -129,6 +130,11 @@ const apiLinks = {
     update: `${url}/api/RequestHost`,
     getIpAdress: `${url}/api/RequestHost`,
     upload: `${url}/api/RequestHost`,
+  },
+
+  notification: {
+    get: `${url}/api/Notification`,
+    seenNotification: `${url}/api/Notification/SeenNotification`,
   },
 };
 
