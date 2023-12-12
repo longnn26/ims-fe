@@ -1,10 +1,9 @@
 import React, { useRef, useState } from "react";
-import { Button, Input, Modal, Select, Space } from "antd";
+import { Button, Input, Modal, Select, Space, Card } from "antd";
 import { Form } from "antd";
 import { CloseOutlined } from '@ant-design/icons';
 import { SHCCreateModel } from "@models/serverHardwareConfig";
 import useSelector from "@hooks/use-selector";
-import Card from "antd/es/card/Card";
 const { Option } = Select;
 const { confirm } = Modal;
 
