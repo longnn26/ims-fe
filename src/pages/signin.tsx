@@ -6,7 +6,7 @@ import { useRouter } from "next/router";
 import { Form, Input, Space, message, Button } from "antd";
 import { useEffect, useState } from "react";
 
-interface Props {}
+interface Props { }
 
 const Signin: React.FC<Props> = (props) => {
   const [form] = Form.useForm();
@@ -25,16 +25,35 @@ const Signin: React.FC<Props> = (props) => {
     );
   }, [form, values]);
 
+  const isValidEmail = (username) => {
+    const emailRegex = /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/;
+    return emailRegex.test(username);
+  }
+
   const onFinish = async (values) => {
-    const res: any = await signIn("credentials", {
-      redirect: false,
-      username: values.username,
-      password: values.password,
-    });
+    let res;
+
+    const isCustomer = isValidEmail(values.username)
+
+    if (isCustomer) {
+      // For customer login
+      res = await signIn("customer_credentials", {
+        redirect: false,
+        email: values.username,
+        password: values.password,
+      });
+    } else {
+      // For staff login
+      res = await signIn("credentials", {
+        redirect: false,
+        username: values.username,
+        password: values.password,
+      });
+    }
     if (res.error) {
       return message.error(res.error);
     } else {
-      message.success("Login success!");
+      message.success("Login successfully!");
       return router.push("/");
     }
   };
@@ -65,7 +84,7 @@ const Signin: React.FC<Props> = (props) => {
           >
             <Form.Item
               name="username"
-              label="Username"
+              label="Username or Email"
               rules={[{ required: true }, { type: "string" }]}
             >
               <Input placeholder="username" className="h-9" />

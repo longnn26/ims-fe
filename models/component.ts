@@ -5,6 +5,7 @@ export interface ComponentObj extends BaseWithIdNumber {
   description: string;
 
   isRequired: boolean;
+  requireCapacity: boolean;
   dateCreated: string;
   dateUpdated: string;
 }
@@ -19,6 +20,7 @@ export interface ComponentCreateModel {
   unit: string;
   type: string;
   isRequired: boolean;
+  requireCapacity: boolean;
 }
 
 export interface ComponentUpdateModel {

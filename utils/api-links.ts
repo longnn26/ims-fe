@@ -43,6 +43,7 @@ const apiLinks = {
     update: `${url}/api/Customer`,
     delete: `${url}/api/Customer`,
     getServerAllocationById: `${url}/api/Customer`,
+    login: `${urlServerSide}/api/Customer/Login`
   },
 
   requestUpgrade: {

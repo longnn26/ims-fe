@@ -36,13 +36,7 @@ const CustomerTable: React.FC<Props> = (props) => {
   );
 
   const columns: TableColumnsType<DataType> = [
-    {
-      title: "Id",
-      dataIndex: "id",
-      key: "id",
-      fixed: "left",
-    },
-    { title: "Company Name", dataIndex: "companyName", key: "companyName" },
+    { title: "Company Name", dataIndex: "companyName", key: "companyName", fixed: "left" },
     { title: "Address", dataIndex: "address", key: "address" },
     { title: "Tax number", dataIndex: "taxNumber", key: "taxNumber" },
     {

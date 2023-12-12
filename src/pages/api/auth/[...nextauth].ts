@@ -2,6 +2,7 @@ import NextAuth, { User } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import userService from "@services/user";
 import moment from "moment";
+import customer from "@services/customer";
 
 export default NextAuth({
   providers: [
@@ -28,6 +29,36 @@ export default NextAuth({
             userName: result.userName,
             tokenType: result.tokenType,
             currenNoticeCount: result.currenNoticeCount,
+          } as User;
+          return user;
+        } else {
+          return null;
+        }
+      },
+    }),
+    CredentialsProvider({
+      id: "customer_credentials",
+      name: "CustomerCredentials",
+      credentials: {
+        email: { label: "Email", type: "email" },
+        password: { label: "Password", type: "password" },
+      },
+      async authorize(credentials) {
+        var result = await customer.login(
+          credentials?.email!,
+          credentials?.password!
+        );
+
+        if (result) {
+          const user = {
+            id: result.userId,
+            name: result.userName,
+            access_token: result.access_token,
+            expiresIn: result.expires_in,
+            loginDate: moment().format(),
+            userId: result.userId,
+            userName: result.userName,
+            tokenType: result.tokenType
           } as User;
           return user;
         } else {

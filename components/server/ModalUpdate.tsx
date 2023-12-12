@@ -36,7 +36,7 @@ const ModalUpdate: React.FC<Props> = (props) => {
         power: serverAllocation.power,
         serialNumber: serverAllocation.serialNumber,
         techNote: serverAllocation.techNote,
-        // note: serverAllocation.note,
+        note: serverAllocation.note,
         // status: serverAllocation?.status
         //   ? {
         //       value: serverAllocation?.status,
@@ -86,7 +86,7 @@ const ModalUpdate: React.FC<Props> = (props) => {
                     } as SAUpdateModel);
                     form.resetFields();
                   },
-                  onCancel() {},
+                  onCancel() { },
                 });
             }}
           >
@@ -103,26 +103,40 @@ const ModalUpdate: React.FC<Props> = (props) => {
             style={{ width: "100%" }}
           >
             <Form.Item label="Customer">
-              <Input value={serverAllocation?.customer?.companyName} readOnly />
+              <Input.TextArea 
+                value={serverAllocation?.customer?.companyName}
+                autoSize={{ minRows: 1, maxRows: 6 }}
+                readOnly 
+                disabled
+              />
             </Form.Item>
             <Form.Item label="Customer Note">
-              <Input value={serverAllocation?.note} readOnly />
+              <Input.TextArea
+                value={serverAllocation?.note}
+                autoSize={{ minRows: 1, maxRows: 6 }}
+                readOnly
+                disabled
+              />
             </Form.Item>
             <Form.Item
               name="serialNumber"
-              label="Server Serial Number"
+              label="Serial Number"
               rules={[{ required: true, min: 6, max: 255 }]}
+            // rules={[
+            //   { required: true },
 
-              // rules={[
-              //   { required: true },
-
-              //   {
-              //     pattern: new RegExp(/^\b(\w+\W*){1,2000}\b/),
-              //     message: "Server Serial Number no more than 2000 words",
-              //   },
-              // ]}
+            //   {
+            //     pattern: new RegExp(/^\b(\w+\W*){1,2000}\b/),
+            //     message: "Server Serial Number no more than 2000 words",
+            //   },
+            // ]}
             >
-              <Input placeholder="Power" allowClear />
+              <Input.TextArea
+                value={serverAllocation?.serialNumber}
+                autoSize={{ minRows: 1, maxRows: 6 }}
+                placeholder="Serial Number"
+                allowClear
+              />
             </Form.Item>
             <Form.Item
               name="name"
@@ -155,7 +169,7 @@ const ModalUpdate: React.FC<Props> = (props) => {
               <Input placeholder="Technical Note" allowClear />
             </Form.Item>
             {/* <Form.Item name="note" label="Note">
-              <Input placeholder="Note" allowClear />
+              <Input placeholder="Note" disabled />
             </Form.Item> */}
             {/* <Form.Item
               name="status"

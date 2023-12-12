@@ -334,7 +334,7 @@ const HeaderComponent: React.FC<Props> = (props) => {
         >
           <Space>
             <Avatar style={{ backgroundColor: "#fde3cf", color: "#f56a00" }}>
-              {session?.user.userName.charAt(0)}
+              {session?.user.userName?.charAt(0)}
             </Avatar>
           </Space>
         </Dropdown>

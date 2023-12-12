@@ -1,8 +1,10 @@
 import React, { useRef, useState } from "react";
-import { Button, Input, Modal, Select } from "antd";
+import { Button, Input, Modal, Select, Space } from "antd";
 import { Form } from "antd";
+import { CloseOutlined } from '@ant-design/icons';
 import { SHCCreateModel } from "@models/serverHardwareConfig";
 import useSelector from "@hooks/use-selector";
+import Card from "antd/es/card/Card";
 const { Option } = Select;
 const { confirm } = Modal;
 
@@ -53,12 +55,19 @@ const ModalCreate: React.FC<Props> = (props) => {
                 confirm({
                   title: "Do you want to save?",
                   async onOk() {
-                    onSubmit({
-                      information: form.getFieldValue("information"),
-                      capacity: form.getFieldValue("capacity"),
-                      componentId: form.getFieldValue("component").value,
-                    } as SHCCreateModel);
-                    form.resetFields();
+                    const formData = {
+                      descriptions: form.getFieldValue('descriptions').map((item, index) => ({
+                        serialNumber: form.getFieldValue(['descriptions', index, 'serialNumber']),
+                        model: form.getFieldValue(['descriptions', index, 'model']),
+                        capacity: form.getFieldValue(['descriptions', index, 'capacity']),
+                        description: form.getFieldValue(['descriptions', index, 'description']),
+                      })),
+                      componentId: form.getFieldValue('component').value,
+                    } as SHCCreateModel;
+            
+                    // Call the provided onSubmit function with the formData
+                    onSubmit(formData);
+                    //form.resetFields();
                   },
                   onCancel() {},
                 });
@@ -75,27 +84,8 @@ const ModalCreate: React.FC<Props> = (props) => {
             labelCol={{ span: 8 }}
             wrapperCol={{ span: 16 }}
             style={{ width: "100%" }}
+            name="dynamic_form_complex"
           >
-            <Form.Item
-              name="information"
-              label="Information"
-              rules={[{ required: true }]}
-            >
-              <Input placeholder="Information" allowClear />
-            </Form.Item>
-            <Form.Item
-              name="capacity"
-              label="Capacity"
-              rules={[
-                { required: true },
-                {
-                  pattern: new RegExp(/^[0-9]+$/),
-                  message: "Capacity must be a number greater than 0",
-                },
-              ]}
-            >
-              <Input placeholder="Capacity" allowClear />
-            </Form.Item>
             <Form.Item
               name="component"
               label="Component"
@@ -108,17 +98,94 @@ const ModalCreate: React.FC<Props> = (props) => {
                     component: {
                       value: value,
                       label: option.label,
+                      requireCapacity: option.requireCapacity,
                     },
                   });
                 }}
               >
                 {componentOptions.map((l, index) => (
-                  <Option value={l.id} label={l?.name} key={index}>
-                    {`${l.name}`}
+                  <Option value={l.id} label={l?.name} key={index} requireCapacity={l?.requireCapacity}>
+                    {`${l.name} - ${l.isRequired == true ? "Required" : "Optional"} - ${l.requireCapacity == true ? "Capacity Required" : "Capacity Optional"}`}
                   </Option>
                 ))}
               </Select>
             </Form.Item>
+            <Form.List name="descriptions">
+              {(fields, { add, remove }) => (
+                <div style={{ display: 'flex', rowGap: 16, flexDirection: 'column' }}>
+                  {fields.map((field) => (
+                    <Card
+                      size="small"
+                      title={`Hardware ${field.name + 1}`}
+                      key={field.key}
+                      extra={
+                        <CloseOutlined
+                          onClick={() => {
+                            remove(field.name);
+                          }}
+                        />
+                      }
+                    >
+                      <Form.Item
+                        label="Serial Number"
+                        name={[field.name, 'serialNumber']}
+                        rules={[{required: true, min: 20, max: 255}]}>
+                        <Input.TextArea
+                          autoSize={{ minRows: 1, maxRows: 6 }}
+                          allowClear
+                          placeholder="Serial Number"
+                        />
+                      </Form.Item>
+                      <Form.Item
+                        label="Model Name"
+                        name={[field.name, 'model']}
+                        rules={[{required: true, min: 8, max: 255}]}>
+                        <Input.TextArea
+                          autoSize={{ minRows: 1, maxRows: 6 }}
+                          allowClear
+                          placeholder="Model Name"
+                        />
+                      </Form.Item>
+                      <Form.Item
+                        label="Capacity (GB)"
+                        name={[field.name, 'capacity']}
+                        rules={[
+                          {
+                            required: form.getFieldValue(['component', 'requireCapacity']),
+                            message: 'Capacity is required',
+                          },
+                          {
+                            pattern: new RegExp(/^[0-9]+$/),
+                            message: 'Capacity must be a number greater than 0',
+                          },
+                        ]}
+                      >
+                        <Input
+                          allowClear
+                          placeholder="Capacity (GB)"
+                        />
+                      </Form.Item>
+                      <Form.Item
+                        label="Description"
+                        name={[field.name, 'description']}
+                        rules={[
+                          { max: 2000},
+                        ]}
+                      >
+                        <Input
+                          allowClear
+                          placeholder="Description"
+                        />
+                      </Form.Item>
+                    </Card>
+                  ))}
+
+                  <Button type="dashed" onClick={() => add()} block>
+                    + Add Hardware
+                  </Button>
+                </div>
+              )}
+            </Form.List>
           </Form>
         </div>
       </Modal>
