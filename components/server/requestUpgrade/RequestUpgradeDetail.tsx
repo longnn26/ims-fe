@@ -20,9 +20,6 @@ const RequestUpgradeDetailInfor: React.FC<Props> = (props) => {
         <Descriptions.Item label="Id">
           {requestUpgradeDetail?.id}
         </Descriptions.Item>
-        <Descriptions.Item label="Capacity">
-          {requestUpgradeDetail?.capacity}
-        </Descriptions.Item>
         <Descriptions.Item label="Status">
           <Tag
             className="text-center"
