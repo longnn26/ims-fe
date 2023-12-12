@@ -34,7 +34,7 @@ const getCompanyByTax = async (
   taxNumber: string
 ): Promise<any> => {
   const response = await httpClient.get({
-    url: apiLinks.customer.getByTax,
+    url: apiLinks.customer.getByTax + `/${taxNumber}`,
     data: taxNumber,
   });
   return response.data;
