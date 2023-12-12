@@ -18,10 +18,8 @@ interface Props {
 interface DataType {
   key: React.Key;
   id: number;
-  unit: string;
   name: string;
   description: string;
-  type: string;
   dateCreated: string;
   dateUpdated: string;
   isRequired: boolean;
@@ -87,8 +85,6 @@ const ComponentTable: React.FC<Props> = (props) => {
       id: componentData?.data[i].id,
       name: componentData?.data[i].name,
       description: componentData?.data[i].description,
-      unit: componentData?.data[i].unit,
-      type: componentData?.data[i].type,
       isRequired: componentData?.data[i].isRequired,
       dateCreated: moment(componentData?.data[i].dateCreated).format(
         dateAdvFormat
