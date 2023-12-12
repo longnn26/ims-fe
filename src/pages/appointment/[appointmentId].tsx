@@ -43,6 +43,8 @@ import ModalUpdate from "@components/server/requestUpgrade/ModalUpdate";
 import ModalComplete from "@components/appointment/ModalComplete";
 import ModalFail from "@components/appointment/ModalFail";
 import RequestExpandTable from "@components/server/requestExpand/RequestExpandTable";
+import ModalAccept from "@components/appointment/ModalAccept";
+import ModalDeny from "@components/appointment/ModalDeny";
 const { confirm } = Modal;
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
@@ -83,6 +85,8 @@ const Appoinment: React.FC = () => {
     RequestUpgrade | undefined
   >(undefined);
 
+  const [openModalDeny, setOpenModalDeny] = useState<boolean>(false);
+  const [openModalAccept, setOpenModalAccept] = useState<boolean>(false);
   const [openComplete, setOpenComplete] = useState<boolean>(false);
   const [openFail, setOpenFail] = useState<boolean>(false);
   const { requestUpgradeData, requestExpandData } = useSelector(
@@ -115,69 +119,13 @@ const Appoinment: React.FC = () => {
         getData();
       })
       .catch((errors) => {
-        message.error(errors.message);
+        message.error(errors.response.data);
       })
       .finally(() => {
         setLoadingUploadDocument(false);
         setFileInspectionReport([]);
         setFileReceiptOfRecipient([]);
       });
-  };
-
-  const acceptAppointment = async () => {
-    confirm({
-      title: "Accept",
-      content: (
-        <Alert
-          message={`Do you want to accept with Id ${appointmentDetail?.id}?`}
-          type="warning"
-        />
-      ),
-      async onOk() {
-        await appointmentService
-          .acceptAppointment(
-            session?.user.access_token!,
-            appointmentDetail?.id + ""
-          )
-          .then((res) => {
-            message.success("Accept appointment successful!");
-            getData();
-          })
-          .catch((errors) => {
-            message.error(errors.message);
-          })
-          .finally(() => {});
-      },
-      onCancel() {},
-    });
-  };
-
-  const denyAppointment = async () => {
-    confirm({
-      title: "Deny",
-      content: (
-        <Alert
-          message={`Do you want to deny with Id ${appointmentDetail?.id}?`}
-          type="warning"
-        />
-      ),
-      async onOk() {
-        await appointmentService
-          .denyAppointment(
-            session?.user.access_token!,
-            appointmentDetail?.id + ""
-          )
-          .then((res) => {
-            message.success("Deny appointment successful!");
-            getData();
-          })
-          .catch((errors) => {
-            message.error(errors.message);
-          })
-          .finally(() => {});
-      },
-      onCancel() {},
-    });
   };
 
   const completeAppointment = async (data: AppointmentComplete) => {
@@ -192,7 +140,7 @@ const Appoinment: React.FC = () => {
         getData();
       })
       .catch((errors) => {
-        message.error(errors.message);
+        message.error(errors.response.data);
       })
       .finally(() => {
         setOpenComplete(false);
@@ -211,7 +159,7 @@ const Appoinment: React.FC = () => {
         getData();
       })
       .catch((errors) => {
-        message.error(errors.message);
+        message.error(errors.response.data);
       })
       .finally(() => {});
   };
@@ -407,6 +355,26 @@ const Appoinment: React.FC = () => {
             )}
           </div>
 
+          {appointmentDetail?.status === "Waiting" && (
+            <FloatButton.Group
+              trigger="hover"
+              type="primary"
+              style={{ right: 60, bottom: 500 }}
+              icon={<AiOutlineFileDone />}
+            >
+              <FloatButton
+                icon={<MdCancel color="red" />}
+                tooltip="Deny"
+                onClick={() => setOpenModalDeny(true)}
+              />
+              <FloatButton
+                onClick={() => setOpenModalAccept(true)}
+                icon={<AiOutlineFileDone color="green" />}
+                tooltip="Accept"
+              />
+            </FloatButton.Group>
+          )}
+
           <Tabs className="m-5" defaultActiveKey="1" items={items} />
           <ModalUpdate
             requestUpgrade={requestUpgradeUpdate!}
@@ -426,26 +394,18 @@ const Appoinment: React.FC = () => {
             onSubmit={(value) => failAppointment(value)}
             onClose={() => setOpenFail(false)}
           />
-
-          {appointmentDetail?.status === "Waiting" && (
-            <FloatButton.Group
-              trigger="hover"
-              type="primary"
-              style={{ right: 60, bottom: 500 }}
-              icon={<AiOutlineFileDone />}
-            >
-              <FloatButton
-                icon={<MdCancel color="red" />}
-                tooltip="Deny"
-                onClick={() => denyAppointment()}
-              />
-              <FloatButton
-                onClick={() => acceptAppointment()}
-                icon={<AiOutlineFileDone color="green" />}
-                tooltip="Accept"
-              />
-            </FloatButton.Group>
-          )}
+          <ModalAccept
+            open={openModalAccept}
+            onClose={() => setOpenModalAccept(false)}
+            appointmentId={appointmentDetail?.id!}
+            getData={() => getData()}
+          />
+          <ModalDeny
+            open={openModalDeny}
+            onClose={() => setOpenModalDeny(false)}
+            appointmentId={appointmentDetail?.id!}
+            getData={() => getData()}
+          />
 
           {appointmentDetail?.status === "Accepted" && (
             <FloatButton.Group

@@ -34,9 +34,6 @@ const ServerDetail: React.FC<Props> = (props) => {
         <Descriptions.Item label="Customer" span={4}>
           {serverAllocationDetail?.customer.companyName}
         </Descriptions.Item>
-        <Descriptions.Item label="Technical Staff's Note" span={4}>
-          {serverAllocationDetail?.techNote}
-        </Descriptions.Item>
         <Descriptions.Item label="Server's IP" span={0}>
           {serverAllocationDetail?.masterIp?.address}
         </Descriptions.Item>
@@ -55,24 +52,24 @@ const ServerDetail: React.FC<Props> = (props) => {
         <Descriptions.Item label="Location">
           {serverAllocationDetail?.location}
         </Descriptions.Item>
-        <Descriptions.Item label="Receipt Of Recipient (Installation)" span={4}>
+        <Descriptions.Item label="Delivery Report (Installation)" span={4}>
           {serverAllocationDetail?.receiptOfRecipientFilePath !== null && (
             <a href={`${serverAllocationDetail?.receiptOfRecipientFilePath}`}>
-              Biên bản giao nhận thêm Server
+              Biên bản giao nhận lắp đặt thiết bị
             </a>
           )}
         </Descriptions.Item>
-        <Descriptions.Item label="Inspection Report" span={4}>
+        <Descriptions.Item label="Acceptance Report" span={4}>
           {serverAllocationDetail?.inspectionRecordFilePath !== null && (
             <a href={`${serverAllocationDetail?.inspectionRecordFilePath}`}>
               Biên bản nghiệm thu
             </a>
           )}
         </Descriptions.Item>
-        <Descriptions.Item label="Receipt Of Recipient (Removal)">
+        <Descriptions.Item label="Delivery Report (Removal)">
           {serverAllocationDetail?.removalFilePath !== null && (
             <a href={`${serverAllocationDetail?.removalFilePath}`}>
-              Biên bản giao nhận gỡ Server
+              Biên bản giao nhận gỡ thiết bị
             </a>
           )}
         </Descriptions.Item>
