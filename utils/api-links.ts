@@ -1,12 +1,13 @@
 export const url = "https://imsapi.hisoft.vn";
 export const urlServerSide = "http://192.168.40.83:8001";
 export const url3rdParty = "https://api.vietqr.io/v2/business";
-//export const urlServerSide = "https://imsapi.hisoft.vn";
+// export const urlServerSide = "https://imsapi.hisoft.vn";
 
 const apiLinks = {
   user: {
     login: `${urlServerSide}/api/User/Login`,
     getUserTech: `${url}/api/User/Tech`,
+    seenCurrenNoticeCount: `${url}/api/User/SeenCurrenNoticeCount`,
   },
 
   serverAllocation: {
@@ -41,7 +42,7 @@ const apiLinks = {
     create: `${url}/api/Customer`,
     update: `${url}/api/Customer`,
     delete: `${url}/api/Customer`,
-    getServerAllocationById: `${url}/api/Customer`
+    getServerAllocationById: `${url}/api/Customer`,
   },
 
   requestUpgrade: {
@@ -128,6 +129,11 @@ const apiLinks = {
     update: `${url}/api/RequestHost`,
     getIpAdress: `${url}/api/RequestHost`,
     upload: `${url}/api/RequestHost`,
+  },
+
+  notification: {
+    get: `${url}/api/Notification`,
+    seenNotification: `${url}/api/Notification/SeenNotification`,
   },
 };
 

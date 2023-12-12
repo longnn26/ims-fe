@@ -1,5 +1,5 @@
 import { ParamGet } from "@models/base";
-import { LoginResponse, UserTechData } from "@models/user";
+import { LoginResponse, User, UserTechData } from "@models/user";
 import apiLinks from "@utils/api-links";
 import httpClient from "@utils/http-client";
 
@@ -29,9 +29,18 @@ const getUserTechData = async (
   return response.data;
 };
 
+const seenCurrenNoticeCount = async (token: string): Promise<User> => {
+  const response = await httpClient.post({
+    url: apiLinks.user.seenCurrenNoticeCount,
+    token: token,
+  });
+  return response.data;
+};
+
 const authService = {
   login,
   getUserTechData,
+  seenCurrenNoticeCount,
 };
 
 export default authService;
