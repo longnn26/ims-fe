@@ -66,7 +66,7 @@ const ModalCreate: React.FC<Props> = (props) => {
             
                     // Call the provided onSubmit function with the formData
                     onSubmit(formData);
-                    //form.resetFields();
+                    form.resetFields();
                   },
                   onCancel() {},
                 });

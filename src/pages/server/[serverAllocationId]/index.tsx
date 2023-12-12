@@ -59,6 +59,7 @@ const Customer: React.FC = () => {
     ServerHardwareConfig | undefined
   >(undefined);
   const [openModalCreate, setOpenModalCreate] = useState<boolean>(false);
+  const [openModalUpdate, setOpenModalUpdate] = useState<boolean>(false);
   const [serverAllocationDetail, setServerAllocationDetail] =
     useState<ServerAllocation>();
   const [itemBreadcrumbs, setItemBreadcrumbs] = useState<ItemType[]>([]);
@@ -134,7 +135,7 @@ const Customer: React.FC = () => {
         message.error(errors.message);
       })
       .finally(() => {
-        setServerHardwareConfigUpdate(undefined);
+        setOpenModalUpdate(false);
       });
   };
 
@@ -240,13 +241,6 @@ const Customer: React.FC = () => {
               </Button>
             </div>
           </div>
-          <ModalUpdate
-            serverHardwareConfig={serverHardwareConfigUpdate!}
-            onClose={() => setServerHardwareConfigUpdate(undefined)}
-            onSubmit={(data: SHCUpdateModel) => {
-              updateData(data);
-            }}
-          />
           <ModalCreate
             open={openModalCreate}
             onClose={() => setOpenModalCreate(false)}

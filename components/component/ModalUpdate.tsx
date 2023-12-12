@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Button, Input, Modal, Radio, Select } from "antd";
+import { Button, Input, Modal, Radio, Select, Card } from "antd";
 import { Form } from "antd";
 import { ComponentUpdateModel, ComponentObj } from "@models/component";
 import { optionStatus } from "@utils/constants";
