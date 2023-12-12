@@ -55,11 +55,19 @@ const ModalCreate: React.FC<Props> = (props) => {
                 confirm({
                   title: "Do you want to save?",
                   async onOk() {
-                    onSubmit({
-                      information: form.getFieldValue("descriptions"),
-                      componentId: form.getFieldValue("component").value,
-                    } as SHCCreateModel);
-                    form.resetFields();
+                    const formData = {
+                      descriptions: form.getFieldValue('descriptions').map((item, index) => ({
+                        serialNumber: form.getFieldValue(['descriptions', index, 'serialNumber']),
+                        model: form.getFieldValue(['descriptions', index, 'model']),
+                        capacity: form.getFieldValue(['descriptions', index, 'capacity']),
+                        description: form.getFieldValue(['descriptions', index, 'description']),
+                      })),
+                      componentId: form.getFieldValue('component').value,
+                    } as SHCCreateModel;
+            
+                    // Call the provided onSubmit function with the formData
+                    onSubmit(formData);
+                    //form.resetFields();
                   },
                   onCancel() {},
                 });
@@ -96,13 +104,13 @@ const ModalCreate: React.FC<Props> = (props) => {
                 }}
               >
                 {componentOptions.map((l, index) => (
-                  <Option value={l.id} label={l?.name} key={index}>
-                    {`${l.name} - ${l.isRequired == true ? "Required" : "Optional"}`}
+                  <Option value={l.id} label={l?.name} key={index} requireCapacity={l?.requireCapacity}>
+                    {`${l.name} - ${l.isRequired == true ? "Required" : "Optional"} - ${l.requireCapacity == true ? "Capacity Required" : "Capacity Optional"}`}
                   </Option>
                 ))}
               </Select>
             </Form.Item>
-            <Form.List name="description">
+            <Form.List name="descriptions">
               {(fields, { add, remove }) => (
                 <div style={{ display: 'flex', rowGap: 16, flexDirection: 'column' }}>
                   {fields.map((field) => (
@@ -120,7 +128,7 @@ const ModalCreate: React.FC<Props> = (props) => {
                     >
                       <Form.Item
                         label="Serial Number"
-                        name={[field.name, 'serialNumer']}
+                        name={[field.name, 'serialNumber']}
                         rules={[{required: true, min: 20, max: 255}]}>
                         <Input.TextArea
                           autoSize={{ minRows: 1, maxRows: 6 }}
@@ -142,10 +150,13 @@ const ModalCreate: React.FC<Props> = (props) => {
                         label="Capacity (GB)"
                         name={[field.name, 'capacity']}
                         rules={[
-                          { required: form.getFieldValue(['component', 'requireCapacity']), message: 'Capacity is required' },
+                          {
+                            required: form.getFieldValue(['component', 'requireCapacity']),
+                            message: 'Capacity is required',
+                          },
                           {
                             pattern: new RegExp(/^[0-9]+$/),
-                            message: "Capacity must be a number greater than 0",
+                            message: 'Capacity must be a number greater than 0',
                           },
                         ]}
                       >
