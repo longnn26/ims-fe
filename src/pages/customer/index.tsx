@@ -102,7 +102,7 @@ const Customer: React.FC = () => {
             message.success(`Delete customer successful!`);
           })
           .catch((errors) => {
-            message.error(errors.message ?? "Delete customer failed");
+            message.error(errors.response.data ?? "Delete customer failed");
             setLoadingSubmit(false);
           });
       },

@@ -45,7 +45,12 @@ const CustomerTable: React.FC<Props> = (props) => {
       key: "email",
     },
     { title: "Phone number", dataIndex: "phoneNumber", key: "phoneNumber" },
-    { title: "Status", dataIndex: "isDeleted", key: "isDeleted" },
+    { title: "Status",
+      key: "isDeleted",
+      render: (record: Customer) => (
+        `${record.isDeleted != true ? "Active" : "Removed"}`
+      ),
+    },
     { title: "Date Created", dataIndex: "dateCreated", key: "dateCreated" },
     { title: "Date Updated", dataIndex: "dateUpdated", key: "dateUpdated" },
     {

@@ -1,22 +1,21 @@
-import React, { useEffect, useRef, useState } from "react";
-import { Button, DatePicker, Input, Modal, Select, Switch } from "antd";
-import { Form } from "antd";
-import { ComponentUpdateModel, ComponentObj } from "@models/component";
-import { dateAdvFormat, optionStatus } from "@utils/constants";
-import { Appointment, AppointmentComplete } from "@models/appointment";
-import { convertDatePicker } from "@utils/helpers";
+import appointment from "@services/appointment";
+import { Button, Form, Input, Modal, message } from "antd";
+import { useSession } from "next-auth/react";
+import React, { useRef, useState } from "react";
 const { confirm } = Modal;
 
 interface Props {
   open: boolean;
   onClose: () => void;
-  onSubmit: (data: string) => void;
+  getData: () => void;
+  appointmentId: number;
 }
 
-const ModalFail: React.FC<Props> = (props) => {
+const ModalDeny: React.FC<Props> = (props) => {
   const formRef = useRef(null);
   const [form] = Form.useForm();
-  const { onSubmit, onClose, open } = props;
+  const { open, onClose, appointmentId, getData } = props;
+  const { data: session } = useSession();
 
   const [confirmLoading, setConfirmLoading] = useState(false);
 
@@ -33,7 +32,7 @@ const ModalFail: React.FC<Props> = (props) => {
   return (
     <>
       <Modal
-        title={<span className="inline-block m-auto">Fail Appointment</span>}
+        title={<span className="inline-block m-auto">Deny Appointment</span>}
         open={open}
         confirmLoading={confirmLoading}
         onCancel={() => {
@@ -42,23 +41,35 @@ const ModalFail: React.FC<Props> = (props) => {
         }}
         footer={[
           <Button
-            // loading={loadingSubmit}
             className="btn-submit"
             key="submit"
             onClick={async () => {
               if (!(await disabled()))
                 confirm({
-                  title: "Do you want to fail appointment?",
+                  title: "Do you want to deny?",
                   async onOk() {
-                    onSubmit(form.getFieldValue("techNote"));
+                    await appointment
+                      .denyAppointment(
+                        session?.user.access_token!,
+                        appointmentId + "",
+                        form.getFieldValue("saleNote")
+                      )
+                      .then((res) => {
+                        message.success("Deny Appointment successful!");
+                        getData();
+                        onClose();
+                      })
+                      .catch((errors) => {
+                        message.error(errors.message);
+                      })
+                      .finally(() => {});
                     form.resetFields();
-                    onClose();
                   },
                   onCancel() {},
                 });
             }}
           >
-            Submit
+            Deny
           </Button>,
         ]}
       >
@@ -66,12 +77,12 @@ const ModalFail: React.FC<Props> = (props) => {
           <Form
             ref={formRef}
             form={form}
-            labelCol={{ span: 8 }}
-            wrapperCol={{ span: 16 }}
+            labelCol={{ span: 4 }}
+            wrapperCol={{ span: 20 }}
             style={{ width: "100%" }}
           >
             <Form.Item
-              name="techNote"
+              name="saleNote"
               label="Note"
               rules={[{ required: true }]}
             >
@@ -84,4 +95,4 @@ const ModalFail: React.FC<Props> = (props) => {
   );
 };
 
-export default ModalFail;
+export default ModalDeny;

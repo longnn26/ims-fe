@@ -3,7 +3,11 @@ import { Button, DatePicker, Input, Modal, Select, Switch } from "antd";
 import { Form } from "antd";
 import { ComponentUpdateModel, ComponentObj } from "@models/component";
 import { dateAdvFormat, optionStatus } from "@utils/constants";
-import { Appointment, AppointmentComplete } from "@models/appointment";
+import {
+  Appointment,
+  AppointmentComplete,
+  DocumentModelAppointment,
+} from "@models/appointment";
 import { convertDatePicker } from "@utils/helpers";
 const { confirm } = Modal;
 
@@ -61,6 +65,7 @@ const ModalComplete: React.FC<Props> = (props) => {
         title={
           <span className="inline-block m-auto">Complete Appointment</span>
         }
+        width={700}
         open={open}
         confirmLoading={confirmLoading}
         onCancel={() => {
@@ -69,7 +74,7 @@ const ModalComplete: React.FC<Props> = (props) => {
         }}
         footer={[
           <Button
-            // loading={loadingSubmit}
+            // loading={confirmLoading}
             className="btn-submit"
             key="submit"
             onClick={async () => {
@@ -77,17 +82,33 @@ const ModalComplete: React.FC<Props> = (props) => {
                 confirm({
                   title: "Do you want to complete appointment?",
                   async onOk() {
-                    onSubmit({
+                    var documentModel = {
+                      number: form.getFieldValue("number"),
+                      customerName: form.getFieldValue("customerName"),
+                      customerPosition: form.getFieldValue("customerPosition"),
+                      qtName: form.getFieldValue("qtName"),
+                      position: form.getFieldValue("position"),
+                      location: form.getFieldValue("location"),
+                      username: form.getFieldValue("username"),
+                      isSendMS: form.getFieldValue("isSendMS"),
+                      good: form.getFieldValue("good"),
+                      guid: form.getFieldValue("guid"),
+                      note: form.getFieldValue("note"),
+                    } as DocumentModelAppointment;
+
+                    var model = {
+                      documentModel: documentModel,
                       dateCheckedIn: form
                         .getFieldValue("dateCheckedIn")
                         ?.format(dateAdvFormat),
                       dateCheckedOut: form
                         .getFieldValue("dateCheckedOut")
                         ?.format(dateAdvFormat),
-                      techNote: form.getFieldValue("techNote"),
                       isCorrectPerson: form.getFieldValue("isCorrectPerson"),
-                    } as AppointmentComplete);
-                    form.resetFields();
+                    } as AppointmentComplete;
+
+                    onSubmit(model);
+                    // form.resetFields();
                   },
                   onCancel() {},
                 });
@@ -101,10 +122,101 @@ const ModalComplete: React.FC<Props> = (props) => {
           <Form
             ref={formRef}
             form={form}
-            labelCol={{ span: 8 }}
-            wrapperCol={{ span: 16 }}
-            style={{ width: "100%" }}
+            labelCol={{ span: 9 }}
+            labelAlign="left"
+            size="small"
+            wrapperCol={{ span: 10 }}
+            style={{ width: "130%" }}
           >
+            <Form.Item
+              name="number"
+              label="Contract number"
+              rules={[{ required: true, min: 6, max: 255 }]}
+            >
+              <Input placeholder="Contract number" allowClear />
+            </Form.Item>
+            <Form.Item
+              name="customerName"
+              label="Customer name"
+              rules={[{ required: true, min: 6, max: 255 }]}
+            >
+              <Input placeholder="Customer name" allowClear />
+            </Form.Item>
+            <Form.Item
+              name="customerPosition"
+              label="Customer Position"
+              rules={[{ required: true, min: 6, max: 255 }]}
+            >
+              <Input placeholder="Customer Position" allowClear />
+            </Form.Item>
+            <Form.Item
+              name="qtName"
+              label="Representor"
+              rules={[{ required: true, min: 6, max: 255 }]}
+            >
+              <Input placeholder="Representor" allowClear />
+            </Form.Item>
+            <Form.Item
+              name="position"
+              label="Representor position"
+              rules={[{ required: true, min: 6, max: 255 }]}
+            >
+              <Input placeholder="Representor position" allowClear />
+            </Form.Item>
+            <Form.Item
+              name="location"
+              label="Location of Inspection Report"
+              rules={[{ required: true, min: 6, max: 2000 }]}
+            >
+              <Input placeholder="Location of Inspection Report" allowClear />
+            </Form.Item>
+            <Form.Item name="username" label="Username" rules={[{ max: 255 }]}>
+              <Input placeholder="Username" allowClear />
+            </Form.Item>
+            <Form.Item name="isSendMS" label="SMS Password message send">
+              <Switch
+                onChange={(value) =>
+                  form.setFieldsValue({
+                    isSendMS: value,
+                  })
+                }
+              />{" "}
+            </Form.Item>
+            <Form.Item name="good" label="Good">
+              <Switch
+                onChange={(value) =>
+                  form.setFieldsValue({
+                    good: value,
+                  })
+                }
+              />{" "}
+            </Form.Item>
+            <Form.Item
+              name="guid"
+              label={
+                <span style={{ width: "200px", display: "inline-block" }}>
+                  Instructed customers to change password after the 1st login
+                </span>
+              }
+            >
+              <Switch
+                onChange={(value) =>
+                  form.setFieldsValue({
+                    guid: value,
+                  })
+                }
+              />{" "}
+            </Form.Item>
+            <Form.Item
+              name="deviceCondition"
+              label="Device condition"
+              rules={[{ max: 2000 }]}
+            >
+              <Input placeholder="Device condition" allowClear />
+            </Form.Item>
+            <Form.Item name="note" label="Note" rules={[{ max: 2000 }]}>
+              <Input placeholder="Note" allowClear />
+            </Form.Item>
             <Form.Item
               name="dateCheckedIn"
               label="Date CheckedIn"
@@ -138,13 +250,6 @@ const ModalComplete: React.FC<Props> = (props) => {
                   })
                 }
               />{" "}
-            </Form.Item>
-            <Form.Item
-              name="techNote"
-              label="Tech Note"
-              rules={[{ required: true }]}
-            >
-              <Input placeholder="Tech Note" allowClear />
             </Form.Item>
 
             <Form.Item name="isCorrectPerson" label="Correct Person">

@@ -69,11 +69,6 @@ const RequestExpandTable: React.FC<Props> = (props) => {
         <p className="text-[#b75c3c] hover:text-[#ee4623]">{text}</p>
       ),
     },
-    {
-      title: "Customer",
-      key: "customer",
-      render: (_, record) => <p className="">{record.customer.customerName}</p>,
-    },
     { title: "Expand size (U)", dataIndex: "size", key: "size" },
     {
       title: "Status",

@@ -22,7 +22,6 @@ import { useRouter } from "next/router";
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
 });
-
 const { confirm } = Modal;
 
 const Customer: React.FC = () => {
@@ -121,6 +120,7 @@ const Customer: React.FC = () => {
     session && getData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session, paramGet]);
+
   return (
     <AntdLayoutNoSSR
       content={
