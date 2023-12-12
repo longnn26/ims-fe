@@ -135,8 +135,11 @@ const HeaderComponent: React.FC<Props> = (props) => {
       default:
         break;
     }
-    getNotifications();
   }, []);
+
+  useEffect(() => {
+    session && getNotifications();
+  }, [session]);
 
   useEffect(() => {
     if (session != null) {
@@ -145,11 +148,11 @@ const HeaderComponent: React.FC<Props> = (props) => {
         .start()
         .then(() => {
           newConnection.on("newNotify", async (data: any) => {
-            if (showNotification) {
+            // if (showNotification) {
               var list = notifications.reverse();
               list.push(data);
               setNotifications(list.reverse());
-            }
+            // }
             toast(
               <div
                 id="toast-notification"
