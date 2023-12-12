@@ -62,14 +62,14 @@ const Customer: React.FC = () => {
             session?.user.access_token!,
             router.query.customerId + ""
         )
-        .then((result) => {
-            setServerList(result);
-            setTotalServerListSize(result?.totalSize ?? 0);
-            var res = result as ServerAllocationData;
-            if (res.totalPage < paramGet.PageIndex && res.totalPage != 0) {
-                setParamGet({ ...paramGet, PageIndex: res.totalPage });
-            }
-        });
+            .then((result) => {
+                setServerList(result);
+                setTotalServerListSize(result?.totalSize ?? 0);
+                var res = result as ServerAllocationData;
+                if (res.totalPage < paramGet.PageIndex && res.totalPage != 0) {
+                    setParamGet({ ...paramGet, PageIndex: res.totalPage });
+                }
+            });
     };
 
     const updateData = async (data: SAUpdateModel) => {
@@ -90,13 +90,18 @@ const Customer: React.FC = () => {
     const handleBreadCumb = () => {
         var itemBrs = [] as ItemType[];
         var items = router.asPath.split("/").filter((_) => _ != "");
+        if (customerDetail?.companyName) {
+            items.push(customerDetail?.companyName);
+        }
         var path = "";
         items.forEach((element) => {
-            path += `/${element}`;
-            itemBrs.push({
-                href: path,
-                title: element,
-            });
+            if (element !== customerDetail?.id + "") {
+                path += `/${element}`;
+                itemBrs.push({
+                    href: path,
+                    title: element,
+                });
+            }
         });
         setItemBreadcrumbs(itemBrs);
     };
@@ -139,13 +144,13 @@ const Customer: React.FC = () => {
                         data={serverList}
                         onEdit={(record) => {
                             setUpdate(record);
-                        }}/>
+                        }} />
                     {totalServerListSize > 0 && (
                         <Pagination
                             className="text-end m-4"
                             current={paramGet.PageIndex}
                             pageSize={totalServerListSize ?? 10}
-                            total={totalServerListSize }
+                            total={totalServerListSize}
                             onChange={(page, pageSize) => {
                                 setParamGet({
                                     ...paramGet,
