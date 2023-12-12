@@ -17,8 +17,8 @@ const RequestUpgradeDetailInfor: React.FC<Props> = (props) => {
         <h3>Request upgrade information </h3>
       </Divider>{" "}
       <Descriptions className="p-5">
-        <Descriptions.Item label="Id">
-          {requestUpgradeDetail?.id}
+        <Descriptions.Item label="Customer" span={4}>
+          {requestUpgradeDetail?.customer.companyName}
         </Descriptions.Item>
         <Descriptions.Item label="Status">
           <Tag
@@ -36,11 +36,32 @@ const RequestUpgradeDetailInfor: React.FC<Props> = (props) => {
             }
           </Tag>
         </Descriptions.Item>
-        <Descriptions.Item label="Component" span={4}>
+        <Descriptions.Item label="Component">
           {requestUpgradeDetail?.component.name}
         </Descriptions.Item>
-        <Descriptions.Item label="Date Created" span={4}>
+        <Descriptions.Item label="Request Type" span={2}>
+          {requestUpgradeDetail?.requestType}
+        </Descriptions.Item>
+        <Descriptions.Item label="Customer Note" span={4}>
+          {requestUpgradeDetail?.note}
+        </Descriptions.Item>
+        <Descriptions.Item label="Sale Staff" span={4}>
+          {requestUpgradeDetail?.evaluator?.fullname}
+        </Descriptions.Item>
+        <Descriptions.Item label="Sale Staff's Note" span={4}>
+          {requestUpgradeDetail?.saleNote}
+        </Descriptions.Item>
+        <Descriptions.Item label="Tech Staff" span={4}>
+          {requestUpgradeDetail?.executor?.fullname}
+        </Descriptions.Item>
+        <Descriptions.Item label="Tech Staff'sNote" span={4}>
+          {requestUpgradeDetail?.techNote}
+        </Descriptions.Item>
+        <Descriptions.Item label="Date Created" span={1}>
           {moment(requestUpgradeDetail?.dateCreated).format(dateAdvFormat)}
+        </Descriptions.Item>
+        <Descriptions.Item label="Nearest Updated" span={2}>
+          {moment(requestUpgradeDetail?.dateUpdated).format(dateAdvFormat)}
         </Descriptions.Item>
       </Descriptions>
     </div>

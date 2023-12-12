@@ -62,10 +62,10 @@ const ServerDetail: React.FC<Props> = (props) => {
           {appointmentDetail?.techNote}
         </Descriptions.Item>
 
-        <Descriptions.Item label="Created">
+        <Descriptions.Item label="Date Created">
           {moment(appointmentDetail?.dateCreated).format(dateAdvFormat)}
         </Descriptions.Item>
-        <Descriptions.Item label="Updated" span={2}>
+        <Descriptions.Item label="Date Updated" span={2}>
           {moment(appointmentDetail?.dateUpdated).format(dateAdvFormat)}
         </Descriptions.Item>
         <Descriptions.Item label="Acceptance Report" span={4}>
