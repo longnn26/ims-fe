@@ -107,6 +107,7 @@ const ModalUpdate: React.FC<Props> = (props) => {
                 value={serverAllocation?.customer?.companyName}
                 autoSize={{ minRows: 1, maxRows: 6 }}
                 readOnly 
+                disabled
               />
             </Form.Item>
             <Form.Item label="Customer Note">
@@ -114,11 +115,13 @@ const ModalUpdate: React.FC<Props> = (props) => {
                 value={serverAllocation?.note}
                 autoSize={{ minRows: 1, maxRows: 6 }}
                 readOnly
+                disabled
               />
             </Form.Item>
             <Form.Item
-              label="Server Serial Number"
-              // rules={[{ required: true, min: 6, max: 255 }]}
+              name="serialNumber"
+              label="Serial Number"
+              rules={[{ required: true, min: 6, max: 255 }]}
             // rules={[
             //   { required: true },
 
@@ -131,8 +134,8 @@ const ModalUpdate: React.FC<Props> = (props) => {
               <Input.TextArea
                 value={serverAllocation?.serialNumber}
                 autoSize={{ minRows: 1, maxRows: 6 }}
-                placeholder="Power"
-                readOnly
+                placeholder="Serial Number"
+                allowClear
               />
             </Form.Item>
             <Form.Item
