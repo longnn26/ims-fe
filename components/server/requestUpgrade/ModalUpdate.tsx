@@ -35,8 +35,6 @@ const ModalUpdate: React.FC<Props> = (props) => {
     if (formRef.current)
       form.setFieldsValue({
         id: requestUpgrade.id,
-        information: requestUpgrade.information,
-        capacity: requestUpgrade.capacity,
         componentId: requestUpgrade.componentId,
         serverAllocationId: requestUpgrade.serverAllocationId,
       });
