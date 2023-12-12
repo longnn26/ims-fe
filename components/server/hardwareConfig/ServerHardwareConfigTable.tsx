@@ -1,9 +1,7 @@
 "use client";
 
-import useSelector from "@hooks/use-selector";
-import { dateAdvFormat } from "@utils/constants";
-import { Divider, TableColumnsType } from "antd";
-import { Button, Space, Table, Tooltip } from "antd";
+import React from "react";
+import { Button, Space, Table, Tooltip, Divider, TableColumnsType } from "antd";
 import { BiEdit } from "react-icons/bi";
 import { AiFillDelete } from "react-icons/ai";
 import moment from "moment";
@@ -12,6 +10,8 @@ import {
   ServerHardwareConfig,
 } from "@models/serverHardwareConfig";
 import { ComponentObj } from "@models/component";
+import useSelector from "@hooks/use-selector";
+import { dateAdvFormat } from "@utils/constants";
 
 interface Props {
   onEdit: (data: ServerHardwareConfig) => void;
@@ -26,12 +26,8 @@ interface DataType {
   serialNumber: Descriptions[];
   model: Descriptions[];
   capacity: Descriptions[];
+  description: Descriptions[];
   dateCreated: string;
-
-  // information: string;
-  // serverAllocationId: number;
-  // componentId: number;
-  // dateUpdated: string;
 }
 
 const ServerHardwareConfigTable: React.FC<Props> = (props) => {
@@ -46,55 +42,16 @@ const ServerHardwareConfigTable: React.FC<Props> = (props) => {
       key: "id",
       fixed: "left",
     },
-    // { title: "Description", dataIndex: "description", key: "description" },
     {
       title: "Component",
       key: "component",
-      render: (record: ServerHardwareConfig) => (
-        // <p>{`${record.component?.name} - ${record.component?.unit} - ${record.component?.type}`}</p>
-        <p>{record.component?.name}</p>
-      ),
+      render: (record: ServerHardwareConfig) => <p>{record.component?.name}</p>,
     },
     {
-      title: "Serial Number",
-      dataIndex: "serialNumber",
-      render: (record: Descriptions[]) =>
-        record.map((des) => {
-          return (
-            <>
-              {des.serialNumber}
-              <br />
-            </>
-          );
-        }),
+      title: "Date Created",
+      dataIndex: "dateCreated",
+      key: "dateCreated",
     },
-    {
-      title: "Model",
-      dataIndex: "model",
-      render: (record: Descriptions[]) =>
-        record.map((des) => {
-          return (
-            <>
-              {des.model} <br />
-            </>
-          );
-        }),
-    },
-
-    {
-      title: "Capacity",
-      dataIndex: "capacity",
-      render: (record: Descriptions[]) =>
-        record.map((des) => {
-          return (
-            <>
-              {des.capacity} <br />
-            </>
-          );
-        }),
-    },
-    { title: "Date Created", dataIndex: "dateCreated", key: "dateCreated" },
-    // { title: "Date Updated", dataIndex: "dateUpdated", key: "dateUpdated" },
     Boolean(serverStatus !== "Working")
       ? {
           title: "Action",
@@ -117,6 +74,47 @@ const ServerHardwareConfigTable: React.FC<Props> = (props) => {
       : {},
   ];
 
+  const expandedRowRender = (record: DataType) => {
+    const nestedColumns = [
+      {
+        title: "Serial Number",
+        dataIndex: "serialNumber",
+        key: "serialNumber",
+      },
+      {
+        title: "Model",
+        dataIndex: "model",
+        key: "model",
+      },
+      {
+        title: "Capacity",
+        dataIndex: "capacity",
+        key: "capacity",
+      },
+      {
+        title: "Description",
+        dataIndex: "description",
+        key: "description",
+      },
+    ];
+
+    const nestedData = record.serialNumber.map((des, index) => ({
+      key: index,
+      serialNumber: record.serialNumber[index].serialNumber,
+      model: record.model[index].model,
+      capacity: record.capacity[index].capacity,
+      description: record.description[index].description,
+    }));
+
+    return (
+      <Table
+        columns={nestedColumns}
+        dataSource={nestedData}
+        pagination={false}
+      />
+    );
+  };
+
   const data: DataType[] = [];
   for (let i = 0; i < serverHardwareConfigData?.data?.length; ++i) {
     data.push({
@@ -126,6 +124,7 @@ const ServerHardwareConfigTable: React.FC<Props> = (props) => {
       serialNumber: serverHardwareConfigData?.data[i].descriptions,
       model: serverHardwareConfigData?.data[i].descriptions,
       capacity: serverHardwareConfigData?.data[i].descriptions,
+      description: serverHardwareConfigData?.data[i].descriptions,
       dateCreated: moment(serverHardwareConfigData?.data[i].dateCreated).format(
         dateAdvFormat
       ),
@@ -145,11 +144,12 @@ const ServerHardwareConfigTable: React.FC<Props> = (props) => {
         <h3>Hardware Config</h3>
       </Divider>
       <Table
-        loading={serverHardwareConfigDataLoading}
         columns={columns}
         dataSource={data}
+        expandable={{ expandedRowRender }}
         scroll={{ x: 1300 }}
         pagination={false}
+        loading={serverHardwareConfigDataLoading} // Thêm dòng này
         className="cursor-pointer"
       />
     </div>

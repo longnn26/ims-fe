@@ -54,7 +54,7 @@ const ModalCompletetHost: React.FC<Props> = (props) => {
     <>
       <Modal
         title={
-          <span className="inline-block m-auto">Complete request host</span>
+          <span className="inline-block m-auto">Complete Request Host</span>
         }
         open={open}
         confirmLoading={confirmLoading}

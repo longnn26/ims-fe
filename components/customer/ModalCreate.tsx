@@ -3,6 +3,7 @@ import { Button, Input, Modal, Select } from "antd";
 import { Form } from "antd";
 import { CustomerCreateModel } from "@models/customer";
 import useSelector from "@hooks/use-selector";
+import customerService from "@services/customer";
 const { Option } = Select;
 const { confirm } = Modal;
 
@@ -36,13 +37,12 @@ const ModalCreate: React.FC<Props> = (props) => {
       return;
     }
 
-    const response = await fetch(`https://api.vietqr.io/v2/business/${taxNumber}`);
-    const data = await response.json();
+    const response = await customerService.getCompanyByTax(taxNumber);
     form.resetFields();
     form.setFieldsValue({
       taxNumber,
-      companyName: data.data.name,
-      address: data.data.address,
+      companyName: response.data.name,
+      address: response.data.address,
     });
   }
 
@@ -108,13 +108,13 @@ const ModalCreate: React.FC<Props> = (props) => {
               name="companyName"
               label="Company name"
             >
-              <Input placeholder="Company name" readOnly disabled/>
+              <Input placeholder="Company name" allowClear/>
             </Form.Item>
             <Form.Item
               name="address"
               label="Address"
             >
-              <Input placeholder="Address" readOnly disabled/>
+              <Input placeholder="Address" allowClear/>
             </Form.Item>
             <Form.Item name="email" label="Email" rules={[{ required: true }]}>
               <Input placeholder="Email" allowClear />

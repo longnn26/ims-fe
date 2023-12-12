@@ -25,9 +25,24 @@ export interface ParamGetExtend extends ParamGet {
   Id: number;
 }
 
+export interface DocumentModelAppointment {
+  number: string;
+  customerName: string;
+  customerPosition: string;
+  qtName: string;
+  position: string;
+  location: string;
+  username: string;
+  isSendMS: boolean;
+  good: boolean;
+  guid: boolean;
+  note: string;
+  deviceCondition: string;
+}
+
 export interface AppointmentComplete {
+  documentModel: DocumentModelAppointment;
   dateCheckedIn: string;
   dateCheckedOut: string;
-  techNote: string;
   isCorrectPerson: boolean;
 }
