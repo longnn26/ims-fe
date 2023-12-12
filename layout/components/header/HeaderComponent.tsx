@@ -135,8 +135,11 @@ const HeaderComponent: React.FC<Props> = (props) => {
       default:
         break;
     }
-    getNotifications();
   }, []);
+
+  useEffect(() => {
+    session && getNotifications();
+  }, [session]);
 
   useEffect(() => {
     if (session != null) {
