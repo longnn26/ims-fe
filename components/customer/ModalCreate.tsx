@@ -92,17 +92,13 @@ const ModalCreate: React.FC<Props> = (props) => {
             style={{ width: "100%" }}
           >
             
+            <Button key="fetchData" onClick={handleFetchData} style={{float:'right'}}>Search</Button>
             <Form.Item
               name="taxNumber"
               label="Tax number"
               rules={[{ required: true }]}
             >
               <Input placeholder="Tax number" allowClear />
-            </Form.Item>
-            <Form.Item
-            name="button"
-            >
-            <Button key="fetchData" onClick={handleFetchData}>Save</Button>
             </Form.Item>
             <Form.Item
               name="companyName"
