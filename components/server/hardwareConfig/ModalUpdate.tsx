@@ -40,8 +40,6 @@ const ModalUpdate: React.FC<Props> = (props) => {
     if (formRef.current)
       form.setFieldsValue({
         id: serverHardwareConfig.id,
-        information: serverHardwareConfig.information,
-        capacity: serverHardwareConfig.capacity,
         component: component
           ? {
               value: component?.id!,
@@ -137,7 +135,7 @@ const ModalUpdate: React.FC<Props> = (props) => {
               <Select allowClear>
                 {componentOptions.map((l, index) => (
                   <Option value={l.id} label={l?.name} key={index}>
-                    {`${l.name} - ${l.unit} - ${l.type}`}
+                    {`${l.name}`}
                   </Option>
                 ))}
               </Select>

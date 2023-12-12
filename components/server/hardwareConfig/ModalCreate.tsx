@@ -114,7 +114,7 @@ const ModalCreate: React.FC<Props> = (props) => {
               >
                 {componentOptions.map((l, index) => (
                   <Option value={l.id} label={l?.name} key={index}>
-                    {`${l.name} - ${l.unit} - ${l.type}`}
+                    {`${l.name}`}
                   </Option>
                 ))}
               </Select>
