@@ -34,34 +34,44 @@ const ModalUpdate: React.FC<Props> = (props) => {
     }
     return result;
   };
+  const showAllDescriptions = () => {
+    const descriptions = form.getFieldValue('descriptions');
+  };
 
   const setFieldsValueInitial = () => {
+    console.log("Setting initial values:", serverHardwareConfig);
     var component = componentOptions.find(
-      (_) => _.id === serverHardwareConfig.componentId
+      (_) => _.id === serverHardwareConfig.component?.id
     );
-    if (formRef.current)
+
+    if (formRef.current) {
       form.setFieldsValue({
         id: serverHardwareConfig.id,
-        component: component
-          ? {
-              value: component?.id!,
-              label: component.name!,
-            }
-          : undefined,
-          descriptions: serverHardwareConfig.descriptions?.map((description, index) => ({
-            serialNumber: description.serialNumber,
-            model: description.model,
-            capacity: description.capacity,
-            description: description.description,
-          })),
+        component: serverHardwareConfig.component ? {
+          value: serverHardwareConfig.component.id!,
+          label: serverHardwareConfig.component.name!,
+        } : undefined,
         serverAllocationId: serverHardwareConfig.serverAllocationId,
       });
+      const descriptions = serverHardwareConfig.descriptions?.map((description, index) => ({
+        serialNumber: description.serialNumber,
+        model: description.model,
+        capacity: description.capacity,
+        description: description.description,
+      }));
+
+      form.setFieldsValue({
+        descriptions: descriptions || [],
+      });
+    }
   };
+
 
   useEffect(() => {
     // refresh after submit for fileList
-    if (serverHardwareConfig) {
+    if (serverHardwareConfig && formRef.current) {
       setFieldsValueInitial();
+      showAllDescriptions();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [serverHardwareConfig]);
@@ -70,7 +80,7 @@ const ModalUpdate: React.FC<Props> = (props) => {
     <>
       <Modal
         title={
-          <span className="inline-block m-auto">Create hardware config</span>
+          <span className="inline-block m-auto">Update hardware config</span>
         }
         open={open}
         confirmLoading={confirmLoading}
@@ -96,13 +106,14 @@ const ModalUpdate: React.FC<Props> = (props) => {
                         description: form.getFieldValue(['descriptions', index, 'description']),
                       })),
                       componentId: form.getFieldValue('component').value,
+                      id: serverHardwareConfig.id,
                     } as SHCUpdateModel;
-            
+
                     // Call the provided onSubmit function with the formData
                     onSubmit(formData);
                     //form.resetFields();
                   },
-                  onCancel() {},
+                  onCancel() { },
                 });
             }}
           >
@@ -138,7 +149,7 @@ const ModalUpdate: React.FC<Props> = (props) => {
               >
                 {componentOptions.map((l, index) => (
                   <Option value={l.id} label={l?.name} key={index} requireCapacity={l?.requireCapacity}>
-                    {`${l.name} - ${l.isRequired == true ? "Required" : "Optional"} - ${l.requireCapacity == true ? "Capacity Required" : "Capacity Optional"}`}
+                    {`${l.name} - ${l.isRequired == true ? "Required" : "Optional"} ${l.requireCapacity == true ? " - Capacity Required" : ""}`}
                   </Option>
                 ))}
               </Select>
@@ -152,17 +163,19 @@ const ModalUpdate: React.FC<Props> = (props) => {
                       title={`Hardware ${field.name + 1}`}
                       key={field.key}
                       extra={
-                        <CloseOutlined
-                          onClick={() => {
-                            remove(field.name);
-                          }}
-                        />
+                        fields.length > 1 && (
+                          <CloseOutlined
+                            onClick={() => {
+                              remove(field.name);
+                            }}
+                          />
+                        )
                       }
                     >
                       <Form.Item
                         label="Serial Number"
                         name={[field.name, 'serialNumber']}
-                        rules={[{required: true, min: 20, max: 255}]}>
+                        rules={[{ required: true, min: 20, max: 255 }]}>
                         <Input.TextArea
                           autoSize={{ minRows: 1, maxRows: 6 }}
                           allowClear
@@ -172,37 +185,39 @@ const ModalUpdate: React.FC<Props> = (props) => {
                       <Form.Item
                         label="Model Name"
                         name={[field.name, 'model']}
-                        rules={[{required: true, min: 8, max: 255}]}>
+                        rules={[{ required: true, min: 8, max: 255 }]}>
                         <Input.TextArea
                           autoSize={{ minRows: 1, maxRows: 6 }}
                           allowClear
                           placeholder="Model Name"
                         />
                       </Form.Item>
-                      <Form.Item
-                        label="Capacity (GB)"
-                        name={[field.name, 'capacity']}
-                        rules={[
-                          {
-                            required: form.getFieldValue(['component', 'requireCapacity']),
-                            message: 'Capacity is required',
-                          },
-                          {
-                            pattern: new RegExp(/^[0-9]+$/),
-                            message: 'Capacity must be a number greater than 0',
-                          },
-                        ]}
-                      >
-                        <Input
-                          allowClear
-                          placeholder="Capacity (GB)"
-                        />
-                      </Form.Item>
+                      {form.getFieldValue(['component', 'requireCapacity']) && (
+                        <Form.Item
+                          label="Capacity (GB)"
+                          name={[field.name, 'capacity']}
+                          rules={[
+                            {
+                              required: true,
+                              message: 'Capacity is required',
+                            },
+                            {
+                              pattern: new RegExp(/^[0-9]+$/),
+                              message: 'Capacity must be a number greater than 0',
+                            },
+                          ]}
+                        >
+                          <Input
+                            allowClear
+                            placeholder="Capacity (GB)"
+                          />
+                        </Form.Item>
+                      )}
                       <Form.Item
                         label="Description"
                         name={[field.name, 'description']}
                         rules={[
-                          { max: 2000},
+                          { max: 2000 },
                         ]}
                       >
                         <Input

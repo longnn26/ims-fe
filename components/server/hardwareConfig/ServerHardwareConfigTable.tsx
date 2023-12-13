@@ -26,7 +26,7 @@ interface DataType {
   serialNumber: DescriptionsObj[];
   model: DescriptionsObj[];
   capacity: DescriptionsObj[];
-  description: DescriptionsObj[];
+  descriptions: DescriptionsObj[];
   dateCreated: string;
 }
 
@@ -87,7 +87,7 @@ const ServerHardwareConfigTable: React.FC<Props> = (props) => {
         key: "model",
       },
       {
-        title: "Capacity",
+        title: "Capacity (GB)",
         dataIndex: "capacity",
         key: "capacity",
       },
@@ -103,7 +103,7 @@ const ServerHardwareConfigTable: React.FC<Props> = (props) => {
       serialNumber: record.serialNumber[index].serialNumber,
       model: record.model[index].model,
       capacity: record.capacity[index].capacity,
-      description: record.description[index].description,
+      description: record.descriptions[index].description,
     }));
 
     return (
@@ -124,17 +124,10 @@ const ServerHardwareConfigTable: React.FC<Props> = (props) => {
       serialNumber: serverHardwareConfigData?.data[i].descriptions,
       model: serverHardwareConfigData?.data[i].descriptions,
       capacity: serverHardwareConfigData?.data[i].descriptions,
-      description: serverHardwareConfigData?.data[i].descriptions,
+      descriptions: serverHardwareConfigData?.data[i].descriptions,
       dateCreated: moment(serverHardwareConfigData?.data[i].dateCreated).format(
         dateAdvFormat
       ),
-
-      // information: serverHardwareConfigData?.data[i].information,
-      // serverAllocationId: serverHardwareConfigData?.data[i].serverAllocationId,
-      // componentId: serverHardwareConfigData?.data[i].componentId,
-      // dateUpdated: moment(serverHardwareConfigData?.data[i].dateUpdated).format(
-      //   dateAdvFormat
-      // ),
     });
   }
 
