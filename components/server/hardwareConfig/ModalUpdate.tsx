@@ -39,7 +39,6 @@ const ModalUpdate: React.FC<Props> = (props) => {
   };
 
   const setFieldsValueInitial = () => {
-    console.log("Setting initial values:", serverHardwareConfig);
     var component = componentOptions.find(
       (_) => _.id === serverHardwareConfig.component?.id
     );
