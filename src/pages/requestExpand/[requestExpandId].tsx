@@ -266,7 +266,7 @@ const RequestExpandDetail: React.FC = () => {
       );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [session, rUAppointmentParamGet]);
+  }, [session, rUAppointmentParamGet, router.query.requestExpandId]);
 
   return (
     <AntdLayoutNoSSR

@@ -22,6 +22,7 @@ import moment from "moment";
 import { FaDotCircle } from "react-icons/fa";
 import { TypeOptions, toast } from "react-toastify";
 import { MdReportProblem } from "react-icons/md";
+import { RequestExpand, RequestExpandParseJson } from "@models/requestExpand";
 
 const { Header } = Layout;
 
@@ -84,6 +85,20 @@ const HeaderComponent: React.FC<Props> = (props) => {
         notifications[noti].seen = true;
         setNotifications([...notifications]);
       });
+  };
+
+  const handleNotification = async (notification: Notification) => {
+    switch (notification.data.key) {
+      case "RequestExpand":
+        var requestExpand = JSON.parse(
+          notification.data.value
+        ) as RequestExpandParseJson;
+        router.push(`/requestExpand/${requestExpand.Id}`);
+        break;
+
+      default:
+        break;
+    }
   };
   const items: MenuProps["items"] = [
     {
@@ -149,15 +164,16 @@ const HeaderComponent: React.FC<Props> = (props) => {
         .then(() => {
           newConnection.on("newNotify", async (data: any) => {
             // if (showNotification) {
-              var list = notifications.reverse();
-              list.push(data);
-              setNotifications(list.reverse());
+            var list = notifications.reverse();
+            list.push(data);
+            setNotifications(list.reverse());
             // }
             toast(
               <div
                 id="toast-notification"
                 className="w-full max-w-xs p-4 text-gray-900 bg-white"
                 role="alert"
+                onClick={() => handleNotification(data)}
               >
                 <div className="flex items-center mb-3">
                   <span className="mb-1 text-sm font-semibold text-gray-900 dark:text-white">
@@ -283,6 +299,10 @@ const HeaderComponent: React.FC<Props> = (props) => {
                   <div
                     key={index}
                     className="h-24 flex px-4 py-3 hover:bg-gray-100 hover:cursor-pointer"
+                    onClick={() => {
+                      handleNotification(noti);
+                      seenNotification(noti.id);
+                    }}
                   >
                     <div className="flex-shrink-0"></div>
                     <div className="w-full pl-3">
@@ -290,10 +310,9 @@ const HeaderComponent: React.FC<Props> = (props) => {
                         <span className="font-semibold text-gray-900">
                           {`${noti.title} `}
                         </span>
-                        {`(${noti.action}) `}
-                        <span className="font-semibold text-gray-900">
-                          {`${noti.body} `}
-                        </span>
+                      </div>
+                      <div className="text-gray-500 text-sm mb-1.5">
+                        <span className="text-gray-900">{`${noti.body} `}</span>
                       </div>
                       <div
                         className={`text-xs ${

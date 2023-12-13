@@ -46,3 +46,7 @@ export interface RequestedLocation {
   rackId: number;
   startPosition: number;
 }
+
+export interface RequestExpandParseJson {
+  Id: number;
+}

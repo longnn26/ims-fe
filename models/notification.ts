@@ -9,4 +9,10 @@ export interface Notification extends BaseWithIdNumber {
   action: string;
   title: string;
   body: string;
+  data: Payload;
+}
+
+export interface Payload {
+  key: string;
+  value: string;
 }
