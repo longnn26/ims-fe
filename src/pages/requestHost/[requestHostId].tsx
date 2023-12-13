@@ -143,14 +143,22 @@ const RequestDetail: React.FC = () => {
 
   const getProvideIps = async () => {
     if (requestHostDetail?.quantity) {
-      provideIpsParamGet.Quantity = requestHostDetail?.quantity!;
-      await ipSubnet
-        .getSuggestAdditional(session?.user.access_token!, {
+      if (serverAllocationDetail?.id) {
+        setProvideIpsParamGet({
           ...provideIpsParamGet,
-        })
-        .then((res) => {
-          setProvideIpsData(res);
+          ServerAllocationId: serverAllocationDetail.id,
         });
+  
+        await ipSubnet
+          .getSuggestAdditional(session?.user.access_token!, {
+            ...provideIpsParamGet,
+          })
+          .then((res) => {
+            setProvideIpsData(res);
+          });
+      } else {
+        console.error('serverAllocationId not found in requestHostDetail');
+      } 
     }
   };
 

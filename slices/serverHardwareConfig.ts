@@ -15,7 +15,7 @@ const initialState: State = {
 
 const TYPE_PREFIX = "serverHardwareConfig";
 
-const getserverHardwareConfigData = createAsyncThunk(
+const getServerHardwareConfigData = createAsyncThunk(
   `${TYPE_PREFIX}/getData`,
   async (arg: { token: string; paramGet: ParamGet }) => {
     const result =
@@ -32,25 +32,25 @@ const slice = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(getserverHardwareConfigData.pending, (state) => ({
+    builder.addCase(getServerHardwareConfigData.pending, (state) => ({
       ...state,
       serverHardwareConfigDataLoading: true,
     }));
     builder.addCase(
-      getserverHardwareConfigData.fulfilled,
+      getServerHardwareConfigData.fulfilled,
       (state, { payload }) => ({
         ...state,
         serverHardwareConfigData: payload,
         serverHardwareConfigDataLoading: false,
       })
     );
-    builder.addCase(getserverHardwareConfigData.rejected, (state) => ({
+    builder.addCase(getServerHardwareConfigData.rejected, (state) => ({
       ...state,
       serverHardwareConfigDataLoading: false,
     }));
   },
 });
 
-export { getserverHardwareConfigData };
+export { getServerHardwareConfigData };
 
 export default slice.reducer;

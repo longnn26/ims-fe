@@ -19,7 +19,7 @@ import serverAllocationService from "@services/serverAllocation";
 import serverHardwareConfigService from "@services/serverHardwareConfig";
 import ipAddressService from "@services/ipAddress";
 import { getComponentAll } from "@slices/component";
-import { getserverHardwareConfigData } from "@slices/serverHardwareConfig";
+import { getServerHardwareConfigData } from "@slices/serverHardwareConfig";
 import { Alert, Button, FloatButton, Modal, Pagination, message } from "antd";
 import { ItemType } from "antd/es/breadcrumb/Breadcrumb";
 import { useSession } from "next-auth/react";
@@ -59,6 +59,7 @@ const Customer: React.FC = () => {
     ServerHardwareConfig | undefined
   >(undefined);
   const [openModalCreate, setOpenModalCreate] = useState<boolean>(false);
+  const [openModalUpdate, setOpenModalUpdate] = useState<boolean>(false);
   const [serverAllocationDetail, setServerAllocationDetail] =
     useState<ServerAllocation>();
   const [itemBreadcrumbs, setItemBreadcrumbs] = useState<ItemType[]>([]);
@@ -81,7 +82,7 @@ const Customer: React.FC = () => {
         setServerAllocationDetail(res);
       });
     dispatch(
-      getserverHardwareConfigData({
+      getServerHardwareConfigData({
         token: session?.user.access_token!,
         paramGet: { ...paramGet },
       })
@@ -134,7 +135,7 @@ const Customer: React.FC = () => {
         message.error(errors.message);
       })
       .finally(() => {
-        setServerHardwareConfigUpdate(undefined);
+        setOpenModalUpdate(false);
       });
   };
 
@@ -240,13 +241,6 @@ const Customer: React.FC = () => {
               </Button>
             </div>
           </div>
-          <ModalUpdate
-            serverHardwareConfig={serverHardwareConfigUpdate!}
-            onClose={() => setServerHardwareConfigUpdate(undefined)}
-            onSubmit={(data: SHCUpdateModel) => {
-              updateData(data);
-            }}
-          />
           <ModalCreate
             open={openModalCreate}
             onClose={() => setOpenModalCreate(false)}
@@ -257,12 +251,27 @@ const Customer: React.FC = () => {
               createData(data);
             }}
           />
+           <ModalUpdate
+            open={openModalUpdate}
+            serverHardwareConfig={serverHardwareConfigUpdate!}
+            onClose={() => {
+              setServerHardwareConfigUpdate(undefined);
+              setOpenModalUpdate(false);
+            }}
+            onSubmit={(data: SHCUpdateModel) => {
+              data.serverAllocationId = parseInt(
+                router.query!.serverAllocationId!.toString()
+              );
+              updateData(data);
+            }}
+          />
           <ServerDetail
             serverAllocationDetail={serverAllocationDetail!}
           ></ServerDetail>
           <ServerHardwareConfigTable
             onEdit={(record) => {
               setServerHardwareConfigUpdate(record);
+              setOpenModalUpdate(true);
             }}
             onDelete={async (record) => {
               deleteData(record);

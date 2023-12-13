@@ -23,8 +23,7 @@ export interface SHCCreateModel {
 }
 export interface SHCUpdateModel {
   id: number;
-  information: string;
-  capacity: number;
+  descriptions: DescriptionsObj[];
   componentId: number;
   serverAllocationId: number;
 }

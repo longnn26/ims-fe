@@ -63,12 +63,12 @@ const ModalCreate: React.FC<Props> = (props) => {
                       })),
                       componentId: form.getFieldValue('component').value,
                     } as SHCCreateModel;
-            
+
                     // Call the provided onSubmit function with the formData
                     onSubmit(formData);
-                    //form.resetFields();
+                    form.resetFields();
                   },
-                  onCancel() {},
+                  onCancel() { },
                 });
             }}
           >
@@ -104,7 +104,7 @@ const ModalCreate: React.FC<Props> = (props) => {
               >
                 {componentOptions.map((l, index) => (
                   <Option value={l.id} label={l?.name} key={index} requireCapacity={l?.requireCapacity}>
-                    {`${l.name} - ${l.isRequired == true ? "Required" : "Optional"} - ${l.requireCapacity == true ? "Capacity Required" : "Capacity Optional"}`}
+                    {`${l.name} - ${l.isRequired == true ? "Required" : "Optional"} ${l.requireCapacity == true ? " - Capacity Required" : ""}`}
                   </Option>
                 ))}
               </Select>
@@ -128,7 +128,7 @@ const ModalCreate: React.FC<Props> = (props) => {
                       <Form.Item
                         label="Serial Number"
                         name={[field.name, 'serialNumber']}
-                        rules={[{required: true, min: 20, max: 255}]}>
+                        rules={[{ required: true, min: 20, max: 255 }]}>
                         <Input.TextArea
                           autoSize={{ minRows: 1, maxRows: 6 }}
                           allowClear
@@ -138,37 +138,39 @@ const ModalCreate: React.FC<Props> = (props) => {
                       <Form.Item
                         label="Model Name"
                         name={[field.name, 'model']}
-                        rules={[{required: true, min: 8, max: 255}]}>
+                        rules={[{ required: true, min: 8, max: 255 }]}>
                         <Input.TextArea
                           autoSize={{ minRows: 1, maxRows: 6 }}
                           allowClear
                           placeholder="Model Name"
                         />
                       </Form.Item>
-                      <Form.Item
-                        label="Capacity (GB)"
-                        name={[field.name, 'capacity']}
-                        rules={[
-                          {
-                            required: form.getFieldValue(['component', 'requireCapacity']),
-                            message: 'Capacity is required',
-                          },
-                          {
-                            pattern: new RegExp(/^[0-9]+$/),
-                            message: 'Capacity must be a number greater than 0',
-                          },
-                        ]}
-                      >
-                        <Input
-                          allowClear
-                          placeholder="Capacity (GB)"
-                        />
-                      </Form.Item>
+                      {form.getFieldValue(['component', 'requireCapacity']) && (
+                        <Form.Item
+                          label="Capacity (GB)"
+                          name={[field.name, 'capacity']}
+                          rules={[
+                            {
+                              required: true,
+                              message: 'Capacity is required',
+                            },
+                            {
+                              pattern: new RegExp(/^[0-9]+$/),
+                              message: 'Capacity must be a number greater than 0',
+                            },
+                          ]}
+                        >
+                          <Input
+                            allowClear
+                            placeholder="Capacity (GB)"
+                          />
+                        </Form.Item>
+                      )}
                       <Form.Item
                         label="Description"
                         name={[field.name, 'description']}
                         rules={[
-                          { max: 2000},
+                          { max: 2000 },
                         ]}
                       >
                         <Input

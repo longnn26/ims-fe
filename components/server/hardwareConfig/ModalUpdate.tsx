@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Button, Input, Modal, Select } from "antd";
+import { Button, Input, Modal, Select, Card } from "antd";
 import { Form } from "antd";
+import { CloseOutlined } from '@ant-design/icons';
 import {
   SHCUpdateModel,
   ServerHardwareConfig,
@@ -10,6 +11,7 @@ const { Option } = Select;
 const { confirm } = Modal;
 
 interface Props {
+  open: boolean;
   serverHardwareConfig: ServerHardwareConfig;
   onClose: () => void;
   onSubmit: (saCreateModel: SHCUpdateModel) => void;
@@ -18,7 +20,7 @@ interface Props {
 const ModalUpdate: React.FC<Props> = (props) => {
   const formRef = useRef(null);
   const [form] = Form.useForm();
-  const { onSubmit, serverHardwareConfig, onClose } = props;
+  const { onSubmit, serverHardwareConfig, onClose, open } = props;
 
   const [confirmLoading, setConfirmLoading] = useState(false);
   const { componentOptions } = useSelector((state) => state.component);
@@ -32,28 +34,44 @@ const ModalUpdate: React.FC<Props> = (props) => {
     }
     return result;
   };
+  const showAllDescriptions = () => {
+    const descriptions = form.getFieldValue('descriptions');
+  };
 
   const setFieldsValueInitial = () => {
+    console.log("Setting initial values:", serverHardwareConfig);
     var component = componentOptions.find(
-      (_) => _.id === serverHardwareConfig.componentId
+      (_) => _.id === serverHardwareConfig.component?.id
     );
-    if (formRef.current)
+
+    if (formRef.current) {
       form.setFieldsValue({
         id: serverHardwareConfig.id,
-        component: component
-          ? {
-              value: component?.id!,
-              label: component.name!,
-            }
-          : undefined,
+        component: serverHardwareConfig.component ? {
+          value: serverHardwareConfig.component.id!,
+          label: serverHardwareConfig.component.name!,
+        } : undefined,
         serverAllocationId: serverHardwareConfig.serverAllocationId,
       });
+      const descriptions = serverHardwareConfig.descriptions?.map((description, index) => ({
+        serialNumber: description.serialNumber,
+        model: description.model,
+        capacity: description.capacity,
+        description: description.description,
+      }));
+
+      form.setFieldsValue({
+        descriptions: descriptions || [],
+      });
+    }
   };
+
 
   useEffect(() => {
     // refresh after submit for fileList
-    if (serverHardwareConfig) {
+    if (serverHardwareConfig && formRef.current) {
       setFieldsValueInitial();
+      showAllDescriptions();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [serverHardwareConfig]);
@@ -64,10 +82,11 @@ const ModalUpdate: React.FC<Props> = (props) => {
         title={
           <span className="inline-block m-auto">Update hardware config</span>
         }
-        open={Boolean(serverHardwareConfig)}
+        open={open}
         confirmLoading={confirmLoading}
         onCancel={() => {
           onClose();
+          form.resetFields();
         }}
         footer={[
           <Button
@@ -79,19 +98,22 @@ const ModalUpdate: React.FC<Props> = (props) => {
                 confirm({
                   title: "Do you want to save?",
                   async onOk() {
-                    onSubmit({
-                      id: form.getFieldValue("id"),
-                      componentId:
-                        form.getFieldValue("component").value ||
-                        form.getFieldValue("component"),
-                      serverAllocationId:
-                        form.getFieldValue("serverAllocationId"),
-                      information: form.getFieldValue("information"),
-                      capacity: form.getFieldValue("capacity"),
-                    } as SHCUpdateModel);
-                    form.resetFields();
+                    const formData = {
+                      descriptions: form.getFieldValue('descriptions').map((item, index) => ({
+                        serialNumber: form.getFieldValue(['descriptions', index, 'serialNumber']),
+                        model: form.getFieldValue(['descriptions', index, 'model']),
+                        capacity: form.getFieldValue(['descriptions', index, 'capacity']),
+                        description: form.getFieldValue(['descriptions', index, 'description']),
+                      })),
+                      componentId: form.getFieldValue('component').value,
+                      id: serverHardwareConfig.id,
+                    } as SHCUpdateModel;
+
+                    // Call the provided onSubmit function with the formData
+                    onSubmit(formData);
+                    //form.resetFields();
                   },
-                  onCancel() {},
+                  onCancel() { },
                 });
             }}
           >
@@ -106,40 +128,112 @@ const ModalUpdate: React.FC<Props> = (props) => {
             labelCol={{ span: 8 }}
             wrapperCol={{ span: 16 }}
             style={{ width: "100%" }}
+            name="dynamic_form_complex"
           >
-            <Form.Item
-              name="information"
-              label="Information"
-              rules={[{ required: true }]}
-            >
-              <Input placeholder="information" allowClear />
-            </Form.Item>
-            <Form.Item
-              name="capacity"
-              label="Capacity"
-              rules={[
-                { required: true },
-                {
-                  pattern: new RegExp(/^[0-9]+$/),
-                  message: "Capacity must be a number greater than 0",
-                },
-              ]}
-            >
-              <Input placeholder="Capacity" allowClear />
-            </Form.Item>
             <Form.Item
               name="component"
               label="Component"
               rules={[{ required: true }]}
             >
-              <Select allowClear>
+              <Select
+                allowClear
+                onSelect={(value, option) => {
+                  form.setFieldsValue({
+                    component: {
+                      value: value,
+                      label: option.label,
+                      requireCapacity: option.requireCapacity,
+                    },
+                  });
+                }}
+              >
                 {componentOptions.map((l, index) => (
-                  <Option value={l.id} label={l?.name} key={index}>
-                    {`${l.name}`}
+                  <Option value={l.id} label={l?.name} key={index} requireCapacity={l?.requireCapacity}>
+                    {`${l.name} - ${l.isRequired == true ? "Required" : "Optional"} ${l.requireCapacity == true ? " - Capacity Required" : ""}`}
                   </Option>
                 ))}
               </Select>
             </Form.Item>
+            <Form.List name="descriptions">
+              {(fields, { add, remove }) => (
+                <div style={{ display: 'flex', rowGap: 16, flexDirection: 'column' }}>
+                  {fields.map((field) => (
+                    <Card
+                      size="small"
+                      title={`Hardware ${field.name + 1}`}
+                      key={field.key}
+                      extra={
+                        fields.length > 1 && (
+                          <CloseOutlined
+                            onClick={() => {
+                              remove(field.name);
+                            }}
+                          />
+                        )
+                      }
+                    >
+                      <Form.Item
+                        label="Serial Number"
+                        name={[field.name, 'serialNumber']}
+                        rules={[{ required: true, min: 20, max: 255 }]}>
+                        <Input.TextArea
+                          autoSize={{ minRows: 1, maxRows: 6 }}
+                          allowClear
+                          placeholder="Serial Number"
+                        />
+                      </Form.Item>
+                      <Form.Item
+                        label="Model Name"
+                        name={[field.name, 'model']}
+                        rules={[{ required: true, min: 8, max: 255 }]}>
+                        <Input.TextArea
+                          autoSize={{ minRows: 1, maxRows: 6 }}
+                          allowClear
+                          placeholder="Model Name"
+                        />
+                      </Form.Item>
+                      {form.getFieldValue(['component', 'requireCapacity']) && (
+                        <Form.Item
+                          label="Capacity (GB)"
+                          name={[field.name, 'capacity']}
+                          rules={[
+                            {
+                              required: true,
+                              message: 'Capacity is required',
+                            },
+                            {
+                              pattern: new RegExp(/^[0-9]+$/),
+                              message: 'Capacity must be a number greater than 0',
+                            },
+                          ]}
+                        >
+                          <Input
+                            allowClear
+                            placeholder="Capacity (GB)"
+                          />
+                        </Form.Item>
+                      )}
+                      <Form.Item
+                        label="Description"
+                        name={[field.name, 'description']}
+                        rules={[
+                          { max: 2000 },
+                        ]}
+                      >
+                        <Input
+                          allowClear
+                          placeholder="Description"
+                        />
+                      </Form.Item>
+                    </Card>
+                  ))}
+
+                  <Button type="dashed" onClick={() => add()} block>
+                    + Add Hardware
+                  </Button>
+                </div>
+              )}
+            </Form.List>
           </Form>
         </div>
       </Modal>
