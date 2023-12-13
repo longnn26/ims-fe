@@ -46,10 +46,7 @@ const ModalUpdate: React.FC<Props> = (props) => {
     if (formRef.current) {
       form.setFieldsValue({
         id: serverHardwareConfig.id,
-        component: serverHardwareConfig.component ? {
-          value: serverHardwareConfig.component.id!,
-          label: serverHardwareConfig.component.name!,
-        } : undefined,
+        component: `${serverHardwareConfig.component.name} - ${serverHardwareConfig.component.isRequired == true ? "Required": "Optional"} ${serverHardwareConfig.component.requireCapacity == true ? "- Capacity Required": ""} `,
         serverAllocationId: serverHardwareConfig.serverAllocationId,
       });
       const descriptions = serverHardwareConfig.descriptions?.map((description, index) => ({
@@ -104,7 +101,7 @@ const ModalUpdate: React.FC<Props> = (props) => {
                         capacity: form.getFieldValue(['descriptions', index, 'capacity']),
                         description: form.getFieldValue(['descriptions', index, 'description']),
                       })),
-                      componentId: form.getFieldValue('component').value,
+                      componentId: serverHardwareConfig.component.id,
                       id: serverHardwareConfig.id,
                     } as SHCUpdateModel;
 
@@ -132,26 +129,22 @@ const ModalUpdate: React.FC<Props> = (props) => {
             <Form.Item
               name="component"
               label="Component"
-              rules={[{ required: true }]}
+              rules={[
+                ({ getFieldValue }) => ({
+                  validator(_, component) {
+                    const isRequired = getFieldValue("component").isRequired === true;
+                    const hasDescriptions = getFieldValue('descriptions')?.length > 0;
+                    console.log(isRequired + "," + hasDescriptions)
+                    if (isRequired && !hasDescriptions) {
+                      return Promise.reject('At least one description is required for the selected component.');
+                    }
+
+                    return Promise.resolve();
+                  },
+                }),
+              ]}
             >
-              <Select
-                allowClear
-                onSelect={(value, option) => {
-                  form.setFieldsValue({
-                    component: {
-                      value: value,
-                      label: option.label,
-                      requireCapacity: option.requireCapacity,
-                    },
-                  });
-                }}
-              >
-                {componentOptions.map((l, index) => (
-                  <Option value={l.id} label={l?.name} key={index} requireCapacity={l?.requireCapacity}>
-                    {`${l.name} - ${l.isRequired == true ? "Required" : "Optional"} ${l.requireCapacity == true ? " - Capacity Required" : ""}`}
-                  </Option>
-                ))}
-              </Select>
+              <Input readOnly/>
             </Form.Item>
             <Form.List name="descriptions">
               {(fields, { add, remove }) => (
