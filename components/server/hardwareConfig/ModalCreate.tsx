@@ -112,12 +112,19 @@ const ModalCreate: React.FC<Props> = (props) => {
                       value: value,
                       label: option.label,
                       isRequired: option.isRequired,
+                      requireCapacity: option.requireCapacity,
                     },
                   });
                 }}
               >
                 {componentOptions.map((l, index) => (
-                  <Option value={l.id} label={`${l.name} - ${l.isRequired == true ? "Required" : "Optional"} ${l.requireCapacity == true ? " - Capacity Required" : ""}`} key={index} isRequired={l?.isRequired}>
+                  <Option 
+                    value={l.id}
+                    label={`${l.name} - ${l.isRequired == true ? "Required" : "Optional"} ${l.requireCapacity == true ? " - Capacity Required" : ""}`}
+                    key={index} 
+                    isRequired={l?.isRequired}
+                    requireCapacity={l?.requireCapacity}
+                  >
                     {`${l.name} - ${l.isRequired == true ? "Required" : "Optional"} ${l.requireCapacity == true ? " - Capacity Required" : ""}`}
                   </Option>
                 ))}
