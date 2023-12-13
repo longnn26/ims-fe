@@ -88,7 +88,21 @@ const ModalCreate: React.FC<Props> = (props) => {
             <Form.Item
               name="component"
               label="Component"
-              rules={[{ required: true }]}
+              rules={[
+                { required: true, message: 'Please select a component.' },
+                ({ getFieldValue }) => ({
+                  validator(_, component) {
+                    const isRequired = getFieldValue("component").isRequired === true;
+                    const hasDescriptions = getFieldValue('descriptions')?.length > 0;
+                    console.log(isRequired + "," + hasDescriptions)
+                    if (isRequired && !hasDescriptions) {
+                      return Promise.reject('At least one description is required for the selected component.');
+                    }
+
+                    return Promise.resolve();
+                  },
+                }),
+              ]}
             >
               <Select
                 allowClear
@@ -97,13 +111,13 @@ const ModalCreate: React.FC<Props> = (props) => {
                     component: {
                       value: value,
                       label: option.label,
-                      requireCapacity: option.requireCapacity,
+                      isRequired: option.isRequired,
                     },
                   });
                 }}
               >
                 {componentOptions.map((l, index) => (
-                  <Option value={l.id} label={l?.name} key={index} requireCapacity={l?.requireCapacity}>
+                  <Option value={l.id} label={`${l.name} - ${l.isRequired == true ? "Required" : "Optional"} ${l.requireCapacity == true ? " - Capacity Required" : ""}`} key={index} isRequired={l?.isRequired}>
                     {`${l.name} - ${l.isRequired == true ? "Required" : "Optional"} ${l.requireCapacity == true ? " - Capacity Required" : ""}`}
                   </Option>
                 ))}
