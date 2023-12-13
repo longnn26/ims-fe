@@ -52,4 +52,9 @@ export const sliderMenu = [
     icon: <MdUpgrade />,
     label: "Hardware Upgrade Request",
   },
+  {
+    key: "staffAccount",
+    icon: <FaUser />,
+    label: "Staff Account Management",
+  },
 ] as SliderMenuItem[];
