@@ -23,6 +23,7 @@ export interface RequestExpand extends BaseWithIdNumber {
   evaluator: Evaluator;
   executor: Executor;
   saleNote: string;
+  chosenLocation: string;
 }
 
 export interface RequestExpandData extends PagingModel {

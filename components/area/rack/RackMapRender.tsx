@@ -94,12 +94,19 @@ const RackMapRender: React.FC<Props> = (props) => {
               onClick={(e) => {
                 record.serverAllocation &&
                   router.push(`/server/${record.serverAllocation.id}`);
+                record.requestedServerAllocation &&
+                  router.push(`/server/${record.requestedServerAllocation.id}`);
               }}
             >
               {record.serverAllocation
-                ? `${record.serverAllocation?.masterIp.address} - ${record.serverAllocation?.customer.companyName}`
+                ? `${record.serverAllocation?.masterIp?.address} - ${record.serverAllocation?.customer.companyName}`
                 : record.requestedServerAllocation
-                ? `${record.requestedServerAllocation?.masterIp.address} - ${record.requestedServerAllocation?.customer.companyName}`
+                ? `${
+                    record.requestedServerAllocation?.masterIp
+                      ? record.requestedServerAllocation?.masterIp.address +
+                        " - "
+                      : ""
+                  }  ${record.requestedServerAllocation?.customer.companyName}`
                 : ``}
             </p>
           ),

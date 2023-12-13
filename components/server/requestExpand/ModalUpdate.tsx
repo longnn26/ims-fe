@@ -158,7 +158,7 @@ const ModalUpdate: React.FC<Props> = (props) => {
             {Boolean(requestExpand?.requestedLocation) && (
               <Alert
                 message="Location"
-                description={`${requestExpand.requestedLocation} - ${requestExpand.requestedLocation.startPosition}`}
+                description={`${requestExpand.chosenLocation}`}
                 type="info"
                 showIcon
               />
