@@ -18,6 +18,7 @@ import { ComponentObj } from "@models/component";
 import { dateAdvFormat, requestUpgradeStatus } from "@utils/constants";
 import useSelector from "@hooks/use-selector";
 import { useRouter } from "next/router";
+import requestUpgrade from "@services/requestUpgrade";
 
 interface Props {
   typeGet?: string;
@@ -106,16 +107,20 @@ const RequestUpgradeTable: React.FC<Props> = (props) => {
               <BiSolidCommentDetail />
             </Button>
           </Tooltip>
-          <Tooltip title="Edit" color={"black"}>
-            <Button onClick={() => onEdit(record)}>
-              <BiEdit />
-            </Button>
-          </Tooltip>
-          <Tooltip title="Delete" color={"black"}>
-            <Button onClick={() => onDelete(record)}>
-              <AiFillDelete />
-            </Button>
-          </Tooltip>
+          {record.status !== "Success" && (
+            <>
+              <Tooltip title="Edit" color={"black"}>
+                <Button onClick={() => onEdit(record)}>
+                  <BiEdit />
+                </Button>
+              </Tooltip>
+              <Tooltip title="Delete" color={"black"}>
+                <Button onClick={() => onDelete(record)}>
+                  <AiFillDelete />
+                </Button>
+              </Tooltip>
+            </>
+          )}
         </Space>
       ),
     },
