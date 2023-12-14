@@ -165,13 +165,7 @@ const RequestHost: React.FC = () => {
           <div className="flex flex-wrap items-center justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
             <BreadcrumbComponent itemBreadcrumbs={itemBreadcrumbs} />
           </div>
-          <ModalUpdate
-            requestUpgrade={requestUpgradeUpdate!}
-            onClose={() => setRequestUpgradeUpdate(undefined)}
-            onSubmit={(data: RequestUpgradeUpdateModel) => {
-              updateData(data);
-            }}
-          />
+
           <ModalCreate
             open={openModalCreate}
             onClose={() => setOpenModalCreate(false)}

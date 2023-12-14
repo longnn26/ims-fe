@@ -1,8 +1,6 @@
 "use client";
 import BreadcrumbComponent from "@components/BreadcrumbComponent";
 import RequestHostTable from "@components/server/requestHost/RequestHostTable";
-import ModalCreate from "@components/server/requestUpgrade/ModalCreate";
-import ModalUpdate from "@components/server/requestUpgrade/ModalUpdate";
 import useDispatch from "@hooks/use-dispatch";
 import useSelector from "@hooks/use-selector";
 import { getRequestHostData } from "@slices/requestHost";
@@ -12,10 +10,7 @@ import { useSession } from "next-auth/react";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
-import {
-    RequestHostData,
-    RequestHost,
-} from "@models/requestHost";
+import { RequestHostData, RequestHost } from "@models/requestHost";
 import { ParamGet } from "@models/base";
 import requestHostService from "@services/requestHost";
 import { getRequestHostDataAll } from "@slices/requestHost";
@@ -34,18 +29,17 @@ const RequestHostList: React.FC = () => {
     PageIndex: 1,
     PageSize: 7,
   } as ParamGet);
-  
+
   const [loadingSubmit, setLoadingSubmit] = useState<boolean>(false);
-  const [ requestHost, setRequestHost] =
-    useState<RequestHostData>();
+  const [requestHost, setRequestHost] = useState<RequestHostData>();
 
   const [itemBreadcrumbs, setItemBreadcrumbs] = useState<ItemType[]>([]);
 
   const getData = async () => {
     dispatch(
-        getRequestHostDataAll({
-          token: session?.user.access_token!,
-          paramGet: { ...paramGet },
+      getRequestHostDataAll({
+        token: session?.user.access_token!,
+        paramGet: { ...paramGet },
       })
     ).then(({ payload }) => {
       var res = payload as RequestHostData;

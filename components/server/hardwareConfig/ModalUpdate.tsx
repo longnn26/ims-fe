@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Button, Input, Modal, Select, Card } from "antd";
 import { Form } from "antd";
-import { CloseOutlined } from '@ant-design/icons';
+import { CloseOutlined } from "@ant-design/icons";
 import {
   SHCUpdateModel,
   ServerHardwareConfig,
@@ -35,7 +35,7 @@ const ModalUpdate: React.FC<Props> = (props) => {
     return result;
   };
   const showAllDescriptions = () => {
-    const descriptions = form.getFieldValue('descriptions');
+    const descriptions = form.getFieldValue("descriptions");
   };
 
   const setFieldsValueInitial = () => {
@@ -46,26 +46,35 @@ const ModalUpdate: React.FC<Props> = (props) => {
     if (formRef.current) {
       form.setFieldsValue({
         id: serverHardwareConfig.id,
-        component: `${serverHardwareConfig.component.name} - ${serverHardwareConfig.component.isRequired == true ? "Required": "Optional"} ${serverHardwareConfig.component.requireCapacity == true ? "- Capacity Required": ""} `,
+        component: `${serverHardwareConfig.component.name} - ${
+          serverHardwareConfig.component.isRequired == true
+            ? "Required"
+            : "Optional"
+        } ${
+          serverHardwareConfig.component.requireCapacity == true
+            ? "- Capacity Required"
+            : ""
+        } `,
         serverAllocationId: serverHardwareConfig.serverAllocationId,
       });
 
       const requireCapacity = component?.requireCapacity || false;
 
-      const descriptions = serverHardwareConfig.descriptions?.map((description, index) => ({
-        serialNumber: description.serialNumber,
-        model: description.model,
-        capacity: description.capacity,
-        description: description.description,
-      }));
+      const descriptions = serverHardwareConfig.descriptions?.map(
+        (description, index) => ({
+          serialNumber: description.serialNumber,
+          model: description.model,
+          capacity: description.capacity,
+          description: description.description,
+        })
+      );
 
       form.setFieldsValue({
         descriptions: descriptions || [],
-        requireCapacity : requireCapacity,
+        requireCapacity: requireCapacity,
       });
     }
   };
-
 
   useEffect(() => {
     // refresh after submit for fileList
@@ -99,12 +108,30 @@ const ModalUpdate: React.FC<Props> = (props) => {
                   title: "Do you want to save?",
                   async onOk() {
                     const formData = {
-                      descriptions: form.getFieldValue('descriptions').map((item, index) => ({
-                        serialNumber: form.getFieldValue(['descriptions', index, 'serialNumber']),
-                        model: form.getFieldValue(['descriptions', index, 'model']),
-                        capacity: form.getFieldValue(['descriptions', index, 'capacity']),
-                        description: form.getFieldValue(['descriptions', index, 'description']),
-                      })),
+                      descriptions: form
+                        .getFieldValue("descriptions")
+                        .map((item, index) => ({
+                          serialNumber: form.getFieldValue([
+                            "descriptions",
+                            index,
+                            "serialNumber",
+                          ]),
+                          model: form.getFieldValue([
+                            "descriptions",
+                            index,
+                            "model",
+                          ]),
+                          capacity: form.getFieldValue([
+                            "descriptions",
+                            index,
+                            "capacity",
+                          ]),
+                          description: form.getFieldValue([
+                            "descriptions",
+                            index,
+                            "description",
+                          ]),
+                        })),
                       componentId: serverHardwareConfig.component.id,
                       id: serverHardwareConfig.id,
                     } as SHCUpdateModel;
@@ -113,7 +140,7 @@ const ModalUpdate: React.FC<Props> = (props) => {
                     onSubmit(formData);
                     //form.resetFields();
                   },
-                  onCancel() { },
+                  onCancel() {},
                 });
             }}
           >
@@ -136,11 +163,15 @@ const ModalUpdate: React.FC<Props> = (props) => {
               rules={[
                 ({ getFieldValue }) => ({
                   validator(_, component) {
-                    const isRequired = getFieldValue("component").isRequired === true;
-                    const hasDescriptions = getFieldValue('descriptions')?.length > 0;
-                    console.log(isRequired + "," + hasDescriptions)
+                    const isRequired =
+                      getFieldValue("component").isRequired === true;
+                    const hasDescriptions =
+                      getFieldValue("descriptions")?.length > 0;
+                    console.log(isRequired + "," + hasDescriptions);
                     if (isRequired && !hasDescriptions) {
-                      return Promise.reject('At least one description is required for the selected component.');
+                      return Promise.reject(
+                        "At least one description is required for the selected component."
+                      );
                     }
 
                     return Promise.resolve();
@@ -148,11 +179,17 @@ const ModalUpdate: React.FC<Props> = (props) => {
                 }),
               ]}
             >
-              <Input readOnly/>
+              <Input readOnly />
             </Form.Item>
             <Form.List name="descriptions">
               {(fields, { add, remove }) => (
-                <div style={{ display: 'flex', rowGap: 16, flexDirection: 'column' }}>
+                <div
+                  style={{
+                    display: "flex",
+                    rowGap: 16,
+                    flexDirection: "column",
+                  }}
+                >
                   {fields.map((field) => (
                     <Card
                       size="small"
@@ -170,8 +207,9 @@ const ModalUpdate: React.FC<Props> = (props) => {
                     >
                       <Form.Item
                         label="Serial Number"
-                        name={[field.name, 'serialNumber']}
-                        rules={[{ required: true, min: 20, max: 255 }]}>
+                        name={[field.name, "serialNumber"]}
+                        rules={[{ required: true, min: 20, max: 255 }]}
+                      >
                         <Input.TextArea
                           autoSize={{ minRows: 1, maxRows: 6 }}
                           allowClear
@@ -180,46 +218,40 @@ const ModalUpdate: React.FC<Props> = (props) => {
                       </Form.Item>
                       <Form.Item
                         label="Model Name"
-                        name={[field.name, 'model']}
-                        rules={[{ required: true, min: 8, max: 255 }]}>
+                        name={[field.name, "model"]}
+                        rules={[{ required: true, min: 8, max: 255 }]}
+                      >
                         <Input.TextArea
                           autoSize={{ minRows: 1, maxRows: 6 }}
                           allowClear
                           placeholder="Model Name"
                         />
                       </Form.Item>
-                      {form.getFieldValue(['requireCapacity']) && (
+                      {form.getFieldValue(["requireCapacity"]) && (
                         <Form.Item
                           label="Capacity (GB)"
-                          name={[field.name, 'capacity']}
+                          name={[field.name, "capacity"]}
                           rules={[
                             {
                               required: true,
-                              message: 'Capacity is required',
+                              message: "Capacity is required",
                             },
                             {
                               pattern: new RegExp(/^[0-9]+$/),
-                              message: 'Capacity must be a number greater than 0',
+                              message:
+                                "Capacity must be a number greater than 0",
                             },
                           ]}
                         >
-                          <Input
-                            allowClear
-                            placeholder="Capacity (GB)"
-                          />
+                          <Input allowClear placeholder="Capacity (GB)" />
                         </Form.Item>
                       )}
                       <Form.Item
                         label="Description"
-                        name={[field.name, 'description']}
-                        rules={[
-                          { max: 2000 },
-                        ]}
+                        name={[field.name, "description"]}
+                        rules={[{ max: 2000 }]}
                       >
-                        <Input
-                          allowClear
-                          placeholder="Description"
-                        />
+                        <Input allowClear placeholder="Description" />
                       </Form.Item>
                     </Card>
                   ))}

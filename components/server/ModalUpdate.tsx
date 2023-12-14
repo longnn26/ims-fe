@@ -86,7 +86,7 @@ const ModalUpdate: React.FC<Props> = (props) => {
                     } as SAUpdateModel);
                     form.resetFields();
                   },
-                  onCancel() { },
+                  onCancel() {},
                 });
             }}
           >
@@ -103,10 +103,10 @@ const ModalUpdate: React.FC<Props> = (props) => {
             style={{ width: "100%" }}
           >
             <Form.Item label="Customer">
-              <Input.TextArea 
+              <Input.TextArea
                 value={serverAllocation?.customer?.companyName}
                 autoSize={{ minRows: 1, maxRows: 6 }}
-                readOnly 
+                readOnly
                 disabled
               />
             </Form.Item>
@@ -122,14 +122,14 @@ const ModalUpdate: React.FC<Props> = (props) => {
               name="serialNumber"
               label="Serial Number"
               rules={[{ required: true, min: 6, max: 255 }]}
-            // rules={[
-            //   { required: true },
+              // rules={[
+              //   { required: true },
 
-            //   {
-            //     pattern: new RegExp(/^\b(\w+\W*){1,2000}\b/),
-            //     message: "Server Serial Number no more than 2000 words",
-            //   },
-            // ]}
+              //   {
+              //     pattern: new RegExp(/^\b(\w+\W*){1,2000}\b/),
+              //     message: "Server Serial Number no more than 2000 words",
+              //   },
+              // ]}
             >
               <Input.TextArea
                 value={serverAllocation?.serialNumber}
@@ -147,7 +147,7 @@ const ModalUpdate: React.FC<Props> = (props) => {
             </Form.Item>
             <Form.Item
               name="power"
-              label="Server Power (w)"
+              label="Server Power (W)"
               rules={[
                 {
                   required: true,

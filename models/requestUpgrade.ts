@@ -37,10 +37,8 @@ export interface RequestUpgradeCreateModel {
 
 export interface RequestUpgradeUpdateModel {
   id: number;
-  information: string;
-  capacity: number;
   componentId: number;
-  component: ComponentObj;
+  descriptions: Descriptions[];
   serverAllocationId: number;
 }
 

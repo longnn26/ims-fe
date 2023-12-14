@@ -35,7 +35,7 @@ interface DataType {
   serialNumber: Descriptions[];
   model: Descriptions[];
   capacity: Descriptions[];
-  description: Descriptions[];
+  descriptions: Descriptions[];
   serverAllocationId: number;
   componentId: number;
   status: string;
@@ -126,21 +126,6 @@ const RequestUpgradeTable: React.FC<Props> = (props) => {
     },
   ];
 
-  const getStatusColor = (status: string) => {
-    // Define your color mapping logic here based on different statuses
-    // For example, assuming "Pending", "Approved", "Rejected"
-    switch (status) {
-      case "Pending":
-        return "orange";
-      case "Approved":
-        return "green";
-      case "Rejected":
-        return "red";
-      default:
-        return "defaultColor"; // Set a default color or handle other cases
-    }
-  };
-
   const expandedRowRender = (record: DataType) => {
     const nestedColumns = [
       {
@@ -170,7 +155,7 @@ const RequestUpgradeTable: React.FC<Props> = (props) => {
       serialNumber: record.serialNumber[index].serialNumber,
       model: record.model[index].model,
       capacity: record.capacity[index].capacity,
-      description: record.description[index].description,
+      description: record.descriptions[index].description,
     }));
 
     return (
@@ -194,7 +179,7 @@ const RequestUpgradeTable: React.FC<Props> = (props) => {
       serialNumber: listData?.data[i].descriptions,
       model: listData?.data[i].descriptions,
       capacity: listData?.data[i].descriptions,
-      description: listData?.data[i].descriptions,
+      descriptions: listData?.data[i].descriptions,
       dateCreated: moment(listData?.data[i].dateCreated).format(dateAdvFormat),
       dateUpdated: moment(listData?.data[i].dateUpdated).format(dateAdvFormat),
     });

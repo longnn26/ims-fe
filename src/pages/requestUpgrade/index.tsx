@@ -96,14 +96,6 @@ const Customer: React.FC = () => {
         <>
           <div className="flex justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50"></div>
 
-          <ModalUpdate
-            requestUpgrade={requestUpgradeUpdate!}
-            onClose={() => setRequestUpgradeUpdate(undefined)}
-            onSubmit={(data: RequestUpgradeUpdateModel) => {
-              updateData(data);
-            }}
-          />
-
           <RequestUpgradeTable
             urlOncell=""
             onEdit={(record) => {

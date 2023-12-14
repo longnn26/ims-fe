@@ -85,6 +85,7 @@ const Appoinment: React.FC = () => {
     RequestUpgrade | undefined
   >(undefined);
 
+  const [openModalUpdate, setOpenModalUpdate] = useState<boolean>(false);
   const [openModalDeny, setOpenModalDeny] = useState<boolean>(false);
   const [openModalAccept, setOpenModalAccept] = useState<boolean>(false);
   const [openComplete, setOpenComplete] = useState<boolean>(false);
@@ -377,12 +378,20 @@ const Appoinment: React.FC = () => {
 
           <Tabs className="m-5" defaultActiveKey="1" items={items} />
           <ModalUpdate
+            open={openModalUpdate}
             requestUpgrade={requestUpgradeUpdate!}
-            onClose={() => setRequestUpgradeUpdate(undefined)}
+            onClose={() => {
+              setRequestUpgradeUpdate(undefined);
+              setOpenModalUpdate(false);
+            }}
             onSubmit={(data: RequestUpgradeUpdateModel) => {
+              data.serverAllocationId = parseInt(
+                router.query!.serverAllocationId!.toString()
+              );
               updateRequestUpgrade(data);
             }}
           />
+
           <ModalComplete
             open={openComplete}
             appointment={appointmentDetail!}

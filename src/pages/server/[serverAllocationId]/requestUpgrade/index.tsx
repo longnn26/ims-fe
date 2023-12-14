@@ -7,8 +7,8 @@ import useDispatch from "@hooks/use-dispatch";
 import useSelector from "@hooks/use-selector";
 import { getRequestUpgradeData } from "@slices/requestUpgrade";
 import {
-  RequestUpgradeCreateModel,
   RequestUpgrade,
+  RequestUpgradeCreateModel,
   RequestUpgradeData,
   RequestUpgradeUpdateModel,
   RUParamGet,
@@ -57,6 +57,7 @@ const RequestUpgrade: React.FC = () => {
     RequestUpgrade | undefined
   >(undefined);
   const [openModalCreate, setOpenModalCreate] = useState<boolean>(false);
+  const [openModalUpdate, setOpenModalUpdate] = useState<boolean>(false);
   const [serverAllocationDetail, setServerAllocationDetail] =
     useState<ServerAllocation>();
 
@@ -110,7 +111,7 @@ const RequestUpgrade: React.FC = () => {
         message.error(errors.message);
       })
       .finally(() => {
-        setRequestUpgradeUpdate(undefined);
+        setOpenModalUpdate(false);
       });
   };
 
@@ -191,9 +192,16 @@ const RequestUpgrade: React.FC = () => {
             /> */}
           </div>
           <ModalUpdate
+            open={openModalUpdate}
             requestUpgrade={requestUpgradeUpdate!}
-            onClose={() => setRequestUpgradeUpdate(undefined)}
+            onClose={() => {
+              setRequestUpgradeUpdate(undefined);
+              setOpenModalUpdate(false);
+            }}
             onSubmit={(data: RequestUpgradeUpdateModel) => {
+              data.serverAllocationId = parseInt(
+                router.query!.serverAllocationId!.toString()
+              );
               updateData(data);
             }}
           />
@@ -215,6 +223,7 @@ const RequestUpgrade: React.FC = () => {
             serverAllocationId={serverAllocationDetail?.id.toString()}
             onEdit={(record) => {
               setRequestUpgradeUpdate(record);
+              setOpenModalUpdate(true);
             }}
             onDelete={async (record) => {
               deleteData(record);

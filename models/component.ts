@@ -3,7 +3,6 @@ import { BaseWithIdNumber, PagingModel } from "./base";
 export interface ComponentObj extends BaseWithIdNumber {
   name: string;
   description: string;
-
   isRequired: boolean;
   requireCapacity: boolean;
   dateCreated: string;
