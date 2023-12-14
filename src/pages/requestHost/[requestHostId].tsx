@@ -91,8 +91,8 @@ const RequestDetail: React.FC = () => {
             session?.user.access_token!,
             res.serverAllocationId + ""
           )
-          .then((res) => {
-            setServerAllocationDetail(res);
+          .then((result) => {
+            setServerAllocationDetail(result);
           });
         setRequestHostDetail(res);
       });
@@ -142,24 +142,16 @@ const RequestDetail: React.FC = () => {
   };
 
   const getProvideIps = async () => {
-    if (requestHostDetail?.quantity) {
-      if (serverAllocationDetail?.id) {
-        setProvideIpsParamGet({
-          ...provideIpsParamGet,
-          ServerAllocationId: serverAllocationDetail.id,
-        });
-  
-        await ipSubnet
-          .getSuggestAdditional(session?.user.access_token!, {
-            ...provideIpsParamGet,
-          })
-          .then((res) => {
-            setProvideIpsData(res);
-          });
-      } else {
-        console.error('serverAllocationId not found in requestHostDetail');
-      } 
-    }
+      provideIpsParamGet.ServerAllocationId= serverAllocationDetail?.id!,
+      provideIpsParamGet.Quantity= requestHostDetail?.quantity!,
+
+    await ipSubnet
+      .getSuggestAdditional(session?.user.access_token!, {
+        ...provideIpsParamGet,
+      })
+      .then((res) => {
+        setProvideIpsData(res);
+      });
   };
 
   const uploadDocument = async () => {
@@ -225,7 +217,6 @@ const RequestDetail: React.FC = () => {
                 <Button
                   type="primary"
                   className="mb-2 mr-3"
-                  // icon={<EditOutlined />}
                   onClick={async () => {
                     getProvideIps();
                   }}
