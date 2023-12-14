@@ -12,16 +12,20 @@ export interface LoginResponse {
 }
 
 export interface User extends Base {
+  id: string;
   phoneNumber?: string;
   userName: string;
-  firstName?: string;
-  lastName?: string;
+  fullname?: string;
   email: string;
   address?: string;
-  fullname?: string;
   currenNoticeCount: number;
+  roles: string[];
 }
 
 export interface UserTechData extends PagingModel {
+  data: User[];
+}
+
+export interface UserData extends PagingModel {
   data: User[];
 }

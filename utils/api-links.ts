@@ -8,6 +8,7 @@ const apiLinks = {
     login: `${urlServerSide}/api/User/Login`,
     getUserTech: `${url}/api/User/Tech`,
     seenCurrenNoticeCount: `${url}/api/User/SeenCurrenNoticeCount`,
+    get: `${url}/api/User`,
   },
 
   serverAllocation: {
