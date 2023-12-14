@@ -49,6 +49,9 @@ const ModalUpdate: React.FC<Props> = (props) => {
         component: `${serverHardwareConfig.component.name} - ${serverHardwareConfig.component.isRequired == true ? "Required": "Optional"} ${serverHardwareConfig.component.requireCapacity == true ? "- Capacity Required": ""} `,
         serverAllocationId: serverHardwareConfig.serverAllocationId,
       });
+
+      const requireCapacity = component?.requireCapacity || false;
+
       const descriptions = serverHardwareConfig.descriptions?.map((description, index) => ({
         serialNumber: description.serialNumber,
         model: description.model,
@@ -58,6 +61,7 @@ const ModalUpdate: React.FC<Props> = (props) => {
 
       form.setFieldsValue({
         descriptions: descriptions || [],
+        requireCapacity : requireCapacity,
       });
     }
   };
@@ -184,7 +188,7 @@ const ModalUpdate: React.FC<Props> = (props) => {
                           placeholder="Model Name"
                         />
                       </Form.Item>
-                      {form.getFieldValue(['component', 'requireCapacity']) && (
+                      {form.getFieldValue(['requireCapacity']) && (
                         <Form.Item
                           label="Capacity (GB)"
                           name={[field.name, 'capacity']}
