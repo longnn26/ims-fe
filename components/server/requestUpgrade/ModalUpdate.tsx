@@ -68,7 +68,6 @@ const ModalUpdate: React.FC<Props> = (props) => {
           description: description.description,
         })
       );
-      console.log("Descriptions:", descriptions); // Thêm dòng này
 
       form.setFieldsValue({
         descriptions: descriptions || [],
@@ -168,7 +167,6 @@ const ModalUpdate: React.FC<Props> = (props) => {
                       getFieldValue("component").isRequired === true;
                     const hasDescriptions =
                       getFieldValue("descriptions")?.length > 0;
-                    console.log(isRequired + "," + hasDescriptions);
                     if (isRequired && !hasDescriptions) {
                       return Promise.reject(
                         "At least one description is required for the selected component."
