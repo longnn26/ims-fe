@@ -52,3 +52,7 @@ export interface Descriptions {
   capacity: number;
   description: string;
 }
+
+export interface RequestUpgradeParseJson {
+  Id: number;
+}

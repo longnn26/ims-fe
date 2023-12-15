@@ -196,6 +196,8 @@ const RequestDetail: React.FC = () => {
 
   useEffect(() => {
     if (router.query.requestId && session) {
+      getData();
+      handleBreadCumb();
       rUAppointmentParamGet.Id = parseInt(router.query.requestId!.toString());
       dispatch(
         getAppointmentData({
@@ -205,7 +207,7 @@ const RequestDetail: React.FC = () => {
       );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [session, rUAppointmentParamGet]);
+  }, [session, rUAppointmentParamGet, router.query.requestId]);
 
   return (
     <AntdLayoutNoSSR
@@ -271,7 +273,10 @@ const RequestDetail: React.FC = () => {
             </FloatButton.Group>
           )}
 
-          {Boolean(requestUpgradeDetail?.status === "Accepted" && requestUpgradeDetail?.succeededAppointment?.status === "Success") && (
+          {Boolean(
+            requestUpgradeDetail?.status === "Accepted" &&
+              requestUpgradeDetail?.succeededAppointment?.status === "Success"
+          ) && (
             <FloatButton.Group
               trigger="hover"
               type="primary"

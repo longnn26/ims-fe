@@ -24,6 +24,8 @@ import { TypeOptions, toast } from "react-toastify";
 import { MdReportProblem } from "react-icons/md";
 import { RequestExpand, RequestExpandParseJson } from "@models/requestExpand";
 import { AppointmentParseJson } from "@models/appointment";
+import { RequestUpgradeParseJson } from "@models/requestUpgrade";
+import { RequestHostParseJson } from "@models/requestHost";
 
 const { Header } = Layout;
 
@@ -101,6 +103,18 @@ const HeaderComponent: React.FC<Props> = (props) => {
           notification.data.value
         ) as AppointmentParseJson;
         router.push(`/appointment/${apppointment.Id}`);
+        break;
+      case "RequestUpgrade":
+        var requestUpgrade = JSON.parse(
+          notification.data.value
+        ) as RequestUpgradeParseJson;
+        router.push(`/requestUpgrade/${requestUpgrade.Id}`);
+        break;
+      case "RequestHost":
+        var requestHost = JSON.parse(
+          notification.data.value
+        ) as RequestHostParseJson;
+        router.push(`/requestHost/${requestHost.Id}`);
         break;
 
       default:

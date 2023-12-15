@@ -71,3 +71,7 @@ export interface RequestHostRejectModel {
   saleNote: string;
   techNote: string;
 }
+
+export interface RequestHostParseJson {
+  Id: number;
+}

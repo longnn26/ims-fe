@@ -81,7 +81,7 @@ const RequestDetail: React.FC = () => {
     useState<boolean>(false);
   const [disabledInspectionReport, setDisabledInspectionReport] =
     useState<boolean>(false);
-  
+
   const getData = async () => {
     await requestHostService
       .getDetail(session?.user.access_token!, router.query.requestHostId + "")
@@ -142,16 +142,15 @@ const RequestDetail: React.FC = () => {
   };
 
   const getProvideIps = async () => {
-      provideIpsParamGet.ServerAllocationId= serverAllocationDetail?.id!,
-      provideIpsParamGet.Quantity= requestHostDetail?.quantity!,
-
-    await ipSubnet
-      .getSuggestAdditional(session?.user.access_token!, {
-        ...provideIpsParamGet,
-      })
-      .then((res) => {
-        setProvideIpsData(res);
-      });
+    (provideIpsParamGet.ServerAllocationId = serverAllocationDetail?.id!),
+      (provideIpsParamGet.Quantity = requestHostDetail?.quantity!),
+      await ipSubnet
+        .getSuggestAdditional(session?.user.access_token!, {
+          ...provideIpsParamGet,
+        })
+        .then((res) => {
+          setProvideIpsData(res);
+        });
   };
 
   const uploadDocument = async () => {
@@ -187,6 +186,7 @@ const RequestDetail: React.FC = () => {
 
   useEffect(() => {
     if (router.query.requestHostId && session) {
+      getData();
       handleBreadCumb();
       rUIpAddressParamGet.Id = parseInt(router.query.requestHostId!.toString());
       dispatch(
@@ -197,7 +197,7 @@ const RequestDetail: React.FC = () => {
       );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [session, rUIpAddressParamGet]);
+  }, [session, rUIpAddressParamGet, router.query.requestHostId]);
 
   return (
     <AntdLayoutNoSSR

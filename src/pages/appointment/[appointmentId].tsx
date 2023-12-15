@@ -206,6 +206,7 @@ const Appoinment: React.FC = () => {
   useEffect(() => {
     if (router.query.appointmentId && session) {
       getData();
+      handleBreadCumb();
       paramGetExtend.Id = parseInt(router.query.appointmentId!.toString());
       paramGetExpandExtend.Id = parseInt(
         router.query.appointmentId!.toString()
