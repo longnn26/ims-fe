@@ -1,5 +1,5 @@
 import { ParamGet } from "@models/base";
-import { LoginResponse, User, UserTechData, UserData } from "@models/user";
+import { LoginResponse, User, UserTechData, UserData, UserCreateModel } from "@models/user";
 import apiLinks from "@utils/api-links";
 import httpClient from "@utils/http-client";
 
@@ -60,12 +60,25 @@ const getUserDetailData = async (
   return response.data;
 }
 
+const create = async (
+  token: string,
+  data: UserCreateModel
+): Promise<any> => {
+  const response = await httpClient.post({
+    token: token,
+    url: apiLinks.user.create,
+    data: data,
+  });
+  return response.data;
+}
+
 const authService = {
   login,
   getUserTechData,
   seenCurrenNoticeCount,
   getUserData,
   getUserDetailData,
+  create,
 };
 
 export default authService;

@@ -60,5 +60,10 @@ export async function middleware(req: NextRequest) {
         return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/signin`);
       }
       break;
+    case "/staffAccount":
+      if (!token || !isExpiredTimeToken(token.loginDate, token.expiresIn)) {
+        return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/signin`);
+      }
+      break;
   }
 }
