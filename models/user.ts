@@ -29,3 +29,13 @@ export interface UserTechData extends PagingModel {
 export interface UserData extends PagingModel {
   data: User[];
 }
+
+export interface UserCreateModel {
+  userName: string,
+  password: string,
+  email: string,
+  fullname?: string;
+  address?: string;
+  phoneNumber?: string;
+  roles: string[];
+}
