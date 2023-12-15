@@ -23,6 +23,7 @@ import { FaDotCircle } from "react-icons/fa";
 import { TypeOptions, toast } from "react-toastify";
 import { MdReportProblem } from "react-icons/md";
 import { RequestExpand, RequestExpandParseJson } from "@models/requestExpand";
+import { AppointmentParseJson } from "@models/appointment";
 
 const { Header } = Layout;
 
@@ -94,6 +95,12 @@ const HeaderComponent: React.FC<Props> = (props) => {
           notification.data.value
         ) as RequestExpandParseJson;
         router.push(`/requestExpand/${requestExpand.Id}`);
+        break;
+      case "Appointment":
+        var apppointment = JSON.parse(
+          notification.data.value
+        ) as AppointmentParseJson;
+        router.push(`/appointment/${apppointment.Id}`);
         break;
 
       default:

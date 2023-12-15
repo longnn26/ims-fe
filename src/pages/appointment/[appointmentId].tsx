@@ -205,6 +205,7 @@ const Appoinment: React.FC = () => {
 
   useEffect(() => {
     if (router.query.appointmentId && session) {
+      getData();
       paramGetExtend.Id = parseInt(router.query.appointmentId!.toString());
       paramGetExpandExtend.Id = parseInt(
         router.query.appointmentId!.toString()
@@ -225,7 +226,12 @@ const Appoinment: React.FC = () => {
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [session, paramGetExtend, paramGetExpandExtend]);
+  }, [
+    session,
+    paramGetExtend,
+    paramGetExpandExtend,
+    router.query.appointmentId,
+  ]);
 
   const items: TabsProps["items"] = [
     {

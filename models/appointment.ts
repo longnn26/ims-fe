@@ -46,3 +46,7 @@ export interface AppointmentComplete {
   dateCheckedOut: string;
   isCorrectPerson: boolean;
 }
+
+export interface AppointmentParseJson {
+  Id: number;
+}

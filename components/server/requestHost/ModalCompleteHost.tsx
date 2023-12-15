@@ -123,10 +123,10 @@ const ModalCompletetHost: React.FC<Props> = (props) => {
             </Form.Item>
             <Form.Item
               name="qtName"
-              label="Representor"
+              label="QTSC Representor"
               rules={[{ required: true, min: 6, max: 255 }]}
             >
-              <Input placeholder="Representor" allowClear />
+              <Input placeholder="QTSC Representor" allowClear />
             </Form.Item>
 
             <Form.Item

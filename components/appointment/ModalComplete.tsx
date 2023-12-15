@@ -151,10 +151,10 @@ const ModalComplete: React.FC<Props> = (props) => {
             </Form.Item>
             <Form.Item
               name="qtName"
-              label="Representor"
+              label="QTSC Representor"
               rules={[{ required: true, min: 6, max: 255 }]}
             >
-              <Input placeholder="Representor" allowClear />
+              <Input placeholder="QTSC Representor" allowClear />
             </Form.Item>
             <Form.Item
               name="position"
@@ -165,10 +165,10 @@ const ModalComplete: React.FC<Props> = (props) => {
             </Form.Item>
             <Form.Item
               name="location"
-              label="Location of Inspection Report"
+              label="Installation/ Delivery location"
               rules={[{ required: true, min: 6, max: 2000 }]}
             >
-              <Input placeholder="Location of Inspection Report" allowClear />
+              <Input placeholder="Installation/ Delivery location" allowClear />
             </Form.Item>
             <Form.Item name="username" label="Username" rules={[{ max: 255 }]}>
               <Input placeholder="Username" allowClear />
