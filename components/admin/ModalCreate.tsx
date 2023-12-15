@@ -88,7 +88,16 @@ const ModalCreate: React.FC<Props> = (props) => {
                 name="userName"
                 rules={[
                     { required: true, message: 'Please enter staff username'}, 
-                    { min: 6, max: 255, message: 'Username must be between 6 and 255 characters ' }
+                    { min: 6, max: 255, message: 'Username must be between 6 and 255 characters ' },
+                    ({ getFieldValue }) => ({
+                      validator(_, userName) {
+                        const hasDescriptions = getFieldValue('roles')?.length > 0;
+                        if (!hasDescriptions) {
+                          return Promise.reject('At least one roles is required for the account.');
+                        }    
+                        return Promise.resolve();
+                      },
+                    }),
                 ]}
             >
                 <Input.TextArea
