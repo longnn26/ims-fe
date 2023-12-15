@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Button, Empty } from "antd";
+import { Button, Empty, message } from "antd";
 import { useRouter } from "next/router";
 import dynamic from "next/dynamic";
 import { useSession } from "next-auth/react";
@@ -9,7 +9,8 @@ import { ParamGet } from "@models/base";
 //import ModalCreate from "@components/admin/ModalCreate";
 import { 
   UserData,
-  User
+  User,
+  UserCreateModel
 } from "@models/user";
 import {
   getUserData
@@ -18,6 +19,7 @@ import userService from "@services/user";
 import useSelector from "@hooks/use-selector";
 import StaffAccountTable from "@components/admin/StaffAccountTable";
 import StaffAccountDetail from "@components/admin/StaffAccountDetail";
+import ModalCreate from "@components/admin/ModalCreate";
 
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
@@ -50,6 +52,21 @@ const StaffAccountPage: React.FC = () => {
     });
   };
 
+  const createData = async (data: UserCreateModel) => {
+    await userService
+      .create(session?.user.access_token!, data)
+      .then((res) => {
+        message.success("Create successful!");
+        getData();
+      })
+      .catch((errors) => {
+        message.error(errors.response.data);
+      })
+      .finally(() => {
+        setOpenModalCreate(false);
+      });
+  };
+
   useEffect(() => {
     session && getData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -70,6 +87,13 @@ const StaffAccountPage: React.FC = () => {
               Create
             </Button>
           </div>
+          <ModalCreate
+            open={openModalCreate}
+            onClose={() => setOpenModalCreate(false)}
+            onSubmit={(data: UserCreateModel) => {
+              createData(data);
+            }}
+          />
           <div className="flex justify-between">
             {/* Left side: StaffAccountTable */}
             <div style={{ width: 'calc(100% - 70%)' }}>
