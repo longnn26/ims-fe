@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Button, Empty, message } from "antd";
+import { Button, Empty, message, Pagination } from "antd";
 import { useRouter } from "next/router";
 import dynamic from "next/dynamic";
 import { useSession } from "next-auth/react";
@@ -104,6 +104,21 @@ const StaffAccountPage: React.FC = () => {
                     setStaffAccountDetail(selectedUser);
                 }}}
               />
+              {userData.totalPage > 0 && (
+            <Pagination
+              className="text-end m-4"
+              current={paramGet.PageIndex}
+              pageSize={userData.pageSize ?? 10}
+              total={userData.totalSize}
+              onChange={(page, pageSize) => {
+                setParamGet({
+                  ...paramGet,
+                  PageIndex: page,
+                  PageSize: pageSize,
+                });
+              }}
+            />
+          )}
             </div>
 
             {/* Right side */}
