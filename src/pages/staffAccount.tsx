@@ -35,7 +35,7 @@ const StaffAccountPage: React.FC = () => {
 
   const [paramGet, setParamGet] = useState<ParamGet>({
     PageIndex: 1,
-    PageSize: 7,
+    PageSize: 10,
   } as ParamGet);
 
   const getData = async () => {
