@@ -58,14 +58,21 @@ const StaffAccountTable: React.FC<Props> = (props) => {
             default:
               positionName = "No positions assigned.";
           }
-          const positionElement = <span key={index}>{positionName}</span>;
-    
-          return index === positions.length - 1 ? positionElement : [positionElement, <br/>];
+      
+          // Use a unique key for each position element
+          const key = `${record.id}_${index}`;
+          
+          // Use span and br to render each position
+          return (
+            <span key={key}>
+              {positionName}
+              {index !== positions.length - 1 && <br />}
+            </span>
+          );
         });
-    
+      
         return <>{positionElements}</>;
-      },
-    
+      },    
     },
   ];
 
