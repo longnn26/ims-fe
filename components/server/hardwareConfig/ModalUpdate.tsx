@@ -95,7 +95,8 @@ const ModalUpdate: React.FC<Props> = (props) => {
         confirmLoading={confirmLoading}
         onCancel={() => {
           onClose();
-          form.resetFields();
+          setFieldsValueInitial();
+          showAllDescriptions();
         }}
         footer={[
           <Button

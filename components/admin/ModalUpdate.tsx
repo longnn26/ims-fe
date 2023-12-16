@@ -1,8 +1,8 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { Button, Input, Modal, Select, Space, Card } from "antd";
 import { Form } from "antd";
 import { CloseOutlined } from '@ant-design/icons';
-import { UserCreateModel } from "@models/user";
+import { UserUpdateModel, User } from "@models/user";
 import useSelector from "@hooks/use-selector";
 const { Option } = Select;
 const { confirm } = Modal;
@@ -10,13 +10,14 @@ const { confirm } = Modal;
 interface Props {
   open: boolean;
   onClose: () => void;
-  onSubmit: (uCreateModel: UserCreateModel) => void;
+  data: User | undefined;
+  onSubmit: (uUpdate: UserUpdateModel) => void;
 }
 
-const ModalCreate: React.FC<Props> = (props) => {
+const ModalUpdate: React.FC<Props> = (props) => {
   const formRef = useRef(null);
   const [form] = Form.useForm();
-  const { onSubmit, open, onClose } = props;
+  const { onSubmit, open, onClose, data } = props;
 
   const [confirmLoading, setConfirmLoading] = useState(false);
   const { componentOptions } = useSelector((state) => state.component);
@@ -31,17 +32,34 @@ const ModalCreate: React.FC<Props> = (props) => {
     return result;
   };
 
+  const setFieldsValueInitial = () => {
+    if (formRef.current)
+      form.setFieldsValue({
+        email: data?.email,
+        fullname: data?.fullname,
+        address: data?.address,
+        phoneNumber: data?.phoneNumber,
+      });
+  };
+
+  useEffect(() => {
+    // refresh after submit for fileList
+    if (data && formRef.current) {
+      setFieldsValueInitial();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data]);
+
   return (
     <>
       <Modal
         title={
-          <span className="inline-block m-auto">Create staff account</span>
+          <span className="inline-block m-auto">Update staff account information</span>
         }
         open={open}
         confirmLoading={confirmLoading}
         onCancel={() => {
           onClose();
-          form.resetFields();
         }}
         footer={[
           <Button
@@ -53,13 +71,12 @@ const ModalCreate: React.FC<Props> = (props) => {
                   title: "Do you want to save?",
                   async onOk() {
                     const formData = {
-                        userName: form.getFieldValue("userName"),
+                        id: data?.id!,
                         password: "P@ssword123",
                         email: form.getFieldValue("email"),
                         fullname: form.getFieldValue("fullname"),
                         address: form.getFieldValue("address"),
                         phoneNumber: form.getFieldValue("phoneNumber"),
-                        roles: form.getFieldValue('roles').map((role => role.roleName)),
                     };
 
                     // Call the provided onSubmit function with the formData
@@ -84,26 +101,12 @@ const ModalCreate: React.FC<Props> = (props) => {
             name="dynamic_form_complex"
           >
             <Form.Item
-                label="Username"
-                name="userName"
-                rules={[
-                    { required: true, message: 'Please enter staff username'}, 
-                    { min: 6, max: 255, message: 'Username must be between 6 and 255 characters ' },
-                    ({ getFieldValue }) => ({
-                      validator(_, userName) {
-                        const hasDescriptions = getFieldValue('roles')?.length > 0;
-                        if (!hasDescriptions) {
-                          return Promise.reject('At least one roles is required for the account.');
-                        }    
-                        return Promise.resolve();
-                      },
-                    }),
-                ]}
+                label="Default Password"
+                name="password"
             >
-                <Input.TextArea
-                    autoSize={{ minRows: 1, maxRows: 6 }}
-                    allowClear
-                    placeholder="Username"
+                <Input
+                    readOnly
+                    defaultValue="P@ssword123"
                     />
             </Form.Item>
             <Form.Item
@@ -172,59 +175,7 @@ const ModalCreate: React.FC<Props> = (props) => {
                     allowClear
                     placeholder="Phone Number"
                     />
-            </Form.Item>            
-            <Form.List name="roles">
-              {(fields, { add, remove }) => (
-                <div style={{ display: 'flex', rowGap: 16, flexDirection: 'column' }}>
-                  {fields.map((field) => (
-                    <Card
-                      size="small"
-                      title={`Role ${field.name + 1}`}
-                      key={field.key}
-                      extra={
-                        <CloseOutlined
-                          onClick={() => {
-                            remove(field.name);
-                          }}
-                        />
-                      }
-                    >
-                        <Form.Item
-                            label="Role"
-                            name={[field.name, 'roleName']}
-                            rules={[
-                                { required: true },
-                                ({ getFieldValue }) => ({
-                                  validator(_, value) {
-                                    // Check if the role in the current field is different from the previous one
-                                        const roles = getFieldValue('roles').map((roleField) => roleField.role);
-                                        const isRoleUnique = roles.indexOf(value) === roles.lastIndexOf(value);
-
-                                        if (!isRoleUnique) {
-                                            return Promise.reject(new Error('All roles must be unique'));
-                                        }
-                                        return Promise.resolve();
-                                    },
-                                }),
-                              ]}
-                        >
-                            <Select
-                                placeholder="Select a role"
-                                allowClear
-                            >
-                                <Select.Option value="Sale">Sales Staff</Select.Option>
-                                <Select.Option value="Tech">Technical Staff</Select.Option>
-                                <Select.Option value="Admin">Admin</Select.Option>
-                            </Select>
-                        </Form.Item>
-                    </Card>
-                  ))}
-                  <Button type="dashed" onClick={() => add()} block>
-                    + Add Role
-                  </Button>
-                </div>
-              )}
-            </Form.List>
+            </Form.Item>
           </Form>
         </div>
       </Modal>
@@ -232,4 +183,4 @@ const ModalCreate: React.FC<Props> = (props) => {
   );
 };
 
-export default ModalCreate;
+export default ModalUpdate;

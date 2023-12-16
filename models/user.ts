@@ -19,7 +19,7 @@ export interface User extends Base {
   email: string;
   address?: string;
   currenNoticeCount: number;
-  roles: string[];
+  positions: string[];
 }
 
 export interface UserTechData extends PagingModel {
@@ -37,5 +37,19 @@ export interface UserCreateModel {
   fullname?: string;
   address?: string;
   phoneNumber?: string;
+  roles: string[];
+}
+
+export interface UserUpdateModel {
+  id: string,
+  password: string,
+  email: string,
+  fullname?: string;
+  address?: string;
+  phoneNumber?: string;
+}
+
+export interface UserUpdateRole {
+  id: string,
   roles: string[];
 }

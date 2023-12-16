@@ -1,5 +1,5 @@
 import { ParamGet } from "@models/base";
-import { LoginResponse, User, UserTechData, UserData, UserCreateModel } from "@models/user";
+import { LoginResponse, User, UserTechData, UserData, UserCreateModel, UserUpdateModel, UserUpdateRole } from "@models/user";
 import apiLinks from "@utils/api-links";
 import httpClient from "@utils/http-client";
 
@@ -72,6 +72,42 @@ const create = async (
   return response.data;
 }
 
+const update = async (
+  token: string,
+  data: UserUpdateModel
+): Promise<any> => {
+  const response = await httpClient.patch({
+    token: token,
+    url: apiLinks.user.update,
+    data: data,
+  });
+  return response.data;
+}
+
+const addRole = async (
+  token: string,
+  data: UserUpdateRole
+): Promise<any> => {
+  const response = await httpClient.post({
+    token: token,
+    url: apiLinks.user.updateRole,
+    data: data,
+  });
+  return response.data;
+}
+
+const deleteRole = async (
+  token: string,
+  data: UserUpdateRole
+): Promise<any> => {
+  const response = await httpClient.delete({
+    token: token,
+    url: apiLinks.user.updateRole,
+    data: data,
+  });
+  return response.data;
+}
+
 const authService = {
   login,
   getUserTechData,
@@ -79,6 +115,9 @@ const authService = {
   getUserData,
   getUserDetailData,
   create,
+  update,
+  addRole,
+  deleteRole,
 };
 
 export default authService;

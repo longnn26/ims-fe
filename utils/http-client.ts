@@ -65,6 +65,9 @@ const httpClient = {
   put: (arg: Options): Promise<AxiosResponse> => {
     return request({ ...arg, method: "PUT", token: arg.token });
   },
+  patch: (arg: Options): Promise<AxiosResponse> => {
+    return request({ ...arg, method: "PATCH", token: arg.token });
+  },
   delete: (arg: Options): Promise<AxiosResponse> => {
     return request({ ...arg, method: "DELETE", token: arg.token });
   },

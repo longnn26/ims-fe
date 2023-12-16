@@ -9,7 +9,9 @@ const apiLinks = {
     getUserTech: `${url}/api/User/Tech`,
     seenCurrenNoticeCount: `${url}/api/User/SeenCurrenNoticeCount`,
     get: `${url}/api/User`,
-    create: `${url}/api/User/Register`
+    create: `${url}/api/User/Register`,
+    update: `${url}/api/User/MyAccount`,
+    updateRole: `${url}/api/User/Position`,
   },
 
   serverAllocation: {

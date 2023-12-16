@@ -7,10 +7,12 @@ import { useSession } from "next-auth/react";
 import useDispatch from "@hooks/use-dispatch";
 import { ParamGet } from "@models/base";
 //import ModalCreate from "@components/admin/ModalCreate";
-import { 
+import {
   UserData,
   User,
-  UserCreateModel
+  UserCreateModel,
+  UserUpdateModel,
+  UserUpdateRole
 } from "@models/user";
 import {
   getUserData
@@ -19,7 +21,10 @@ import userService from "@services/user";
 import useSelector from "@hooks/use-selector";
 import StaffAccountTable from "@components/admin/StaffAccountTable";
 import StaffAccountDetail from "@components/admin/StaffAccountDetail";
+import StaffRole from "@components/admin/StaffRole";
 import ModalCreate from "@components/admin/ModalCreate";
+import ModalUpdate from "@components/admin/ModalUpdate";
+import ModalUpdateRole from "@components/admin/ModalUpdateRole";
 
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
@@ -31,6 +36,10 @@ const StaffAccountPage: React.FC = () => {
   const { data: session } = useSession();
   const { userData } = useSelector((state) => state.user);
   const [openModalCreate, setOpenModalCreate] = useState<boolean>(false);
+  const [openModalUpdate, setOpenModalUpdate] = useState<boolean>(false);
+  const [openModalUpdateRole, setOpenModalUpdateRole] = useState<boolean>(false);
+  const [isDelete, setIsDelete] = useState<boolean>(false);
+  const [reloadStaffRole, setReloadStaffRole] = useState<boolean>(false);
   const [staffAccountDetail, setStaffAccountDetail] = useState<User | undefined>(undefined);
 
   const [paramGet, setParamGet] = useState<ParamGet>({
@@ -56,7 +65,7 @@ const StaffAccountPage: React.FC = () => {
     await userService
       .create(session?.user.access_token!, data)
       .then((res) => {
-        message.success("Create successful!");
+        message.success("Create successfully!");
         getData();
       })
       .catch((errors) => {
@@ -64,6 +73,50 @@ const StaffAccountPage: React.FC = () => {
       })
       .finally(() => {
         setOpenModalCreate(false);
+      });
+  };
+  const updateData = async (data: UserUpdateModel) => {
+    await userService
+      .update(session?.user.access_token!, data)
+      .then((res) => {
+        message.success("Update successfully!");
+        getData();
+      })
+      .catch((errors) => {
+        message.error(errors.response.data);
+      })
+      .finally(() => {
+        setOpenModalUpdate(false);
+      });
+  };
+  const deleteRole = async (data: UserUpdateRole) => {
+    await userService
+      .deleteRole(session?.user.access_token!, data)
+      .then((res) => {
+        if (!res) {
+          message.success("Delete position(s) successfully!");
+        }
+      })
+      .catch((errors) => {
+        message.error(errors.response.data);
+      })
+      .finally(() => {
+        setOpenModalUpdateRole(false);
+      });
+  };
+  const addRole = async (data: UserUpdateRole) => {
+    await userService
+      .addRole(session?.user.access_token!, data)
+      .then((res) => {
+        if (!res) {
+          message.success("Add position(s) successfully!");
+        }
+      })
+      .catch((errors) => {
+        message.error(errors.response.data);
+      })
+      .finally(() => {
+        setOpenModalUpdateRole(false);
       });
   };
 
@@ -86,6 +139,15 @@ const StaffAccountPage: React.FC = () => {
             >
               Create
             </Button>
+            <Button
+              type="primary"
+              htmlType="submit"
+              onClick={() => {
+                setOpenModalUpdate(true);
+              }}
+            >
+              Update Information
+            </Button>
           </div>
           <ModalCreate
             open={openModalCreate}
@@ -94,37 +156,93 @@ const StaffAccountPage: React.FC = () => {
               createData(data);
             }}
           />
+          <ModalUpdate
+            open={openModalUpdate}
+            onClose={() => setOpenModalUpdate(false)}
+            data={staffAccountDetail}
+            onSubmit={(data: UserUpdateModel) => {
+              updateData(data);
+            }}
+          />
+          <ModalUpdateRole
+            open={openModalUpdateRole}
+            onClose={() => setOpenModalUpdateRole(false)}
+            data={staffAccountDetail}
+            isDelete={isDelete}
+            onSubmit={(data: UserUpdateRole) => {
+              if (isDelete) {
+                deleteRole(data);
+              } else {
+                addRole(data);
+              }
+            }}
+          />
           <div className="flex justify-between">
             {/* Left side: StaffAccountTable */}
             <div style={{ width: 'calc(100% - 70%)' }}>
-              <StaffAccountTable 
+              <StaffAccountTable
                 onRowClick={(record) => {
                   const selectedUser = userData?.data.find(user => user.id === record.id);
                   if (selectedUser) {
                     setStaffAccountDetail(selectedUser);
-                }}}
+                  }
+                }}
               />
               {userData.totalPage > 0 && (
-            <Pagination
-              className="text-end m-4"
-              current={paramGet.PageIndex}
-              pageSize={userData.pageSize ?? 10}
-              total={userData.totalSize}
-              onChange={(page, pageSize) => {
-                setParamGet({
-                  ...paramGet,
-                  PageIndex: page,
-                  PageSize: pageSize,
-                });
-              }}
-            />
-          )}
+                <Pagination
+                  className="text-end m-4"
+                  current={paramGet.PageIndex}
+                  pageSize={userData.pageSize ?? 10}
+                  total={userData.totalSize}
+                  onChange={(page, pageSize) => {
+                    setParamGet({
+                      ...paramGet,
+                      PageIndex: page,
+                      PageSize: pageSize,
+                    });
+                  }}
+                />
+              )}
             </div>
 
             {/* Right side */}
             <div>
               <StaffAccountDetail
                 staffAccountDetail={staffAccountDetail}
+              />
+              <div className="flex justify-end mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
+                {staffAccountDetail === undefined ||
+                  staffAccountDetail.positions.length < 3 && (
+                    <Button
+                      type="primary"
+                      className="ml-auto mr-2"
+                      htmlType="submit"
+                      onClick={() => {
+                        setOpenModalUpdateRole(true);
+                        setIsDelete(false);
+                      }}
+                    >
+                      (+) Add Position
+                    </Button>
+                  )}
+                {staffAccountDetail !== undefined &&
+                  staffAccountDetail.positions.length > 1 &&
+                  staffAccountDetail.positions.length <= 3 && (
+                    <Button
+                      type="primary"
+                      htmlType="submit"
+                      onClick={() => {
+                        setOpenModalUpdateRole(true);
+                        setIsDelete(true);
+                      }}
+                    >
+                      (X) Delete Position
+                    </Button>
+                  )}
+              </div>
+              <StaffRole
+                // reload={reloadStaffRole}
+                staffRole={staffAccountDetail?.positions}
               />
             </div>
           </div>

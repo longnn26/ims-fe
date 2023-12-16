@@ -23,7 +23,7 @@ interface DataType {
   email: string;
   address?: string;
   currenNoticeCount: number;
-  roles: string[];
+  positions: string[];
 }
 
 const StaffAccountTable: React.FC<Props> = (props) => {
@@ -52,7 +52,7 @@ const StaffAccountTable: React.FC<Props> = (props) => {
       email: userData?.data[i].email,
       address: userData?.data[i].address,
       currenNoticeCount: userData?.data[i].currenNoticeCount,
-      roles: userData?.data[i].roles,
+      positions: userData?.data[i].positions,
     });
   }
 
