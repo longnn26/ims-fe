@@ -177,7 +177,7 @@ const StaffAccountPage: React.FC = () => {
               }
             }}
           />
-          <div className="flex justify-between">
+          <div className="flex justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
             {/* Left side: StaffAccountTable */}
             <div style={{ width: 'calc(100% - 70%)' }}>
               <StaffAccountTable

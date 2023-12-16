@@ -39,6 +39,35 @@ const StaffAccountTable: React.FC<Props> = (props) => {
       fixed: "left",
     },
     { title: "Staff Name", dataIndex: "fullname", key: "fullname" },
+    { title: "Positions", 
+      key: "positions",
+      render: (record: DataType) => {
+        const positions = record.positions;
+        const positionElements = positions.map((position, index) => {
+          let positionName;
+          switch (position) {
+            case "Sale":
+              positionName = "Sales Staff";
+              break;
+            case "Tech":
+              positionName = "Technical Staff";
+              break;
+            case "Admin":
+              positionName = "Administrator";
+              break;
+            default:
+              positionName = "No positions assigned.";
+          }
+          const positionElement = <span key={index}>{positionName}</span>;
+    
+          // Add a line break after each position except the last one
+          return index === positions.length - 1 ? positionElement : [positionElement, <br/>];
+        });
+    
+        return <>{positionElements}</>;
+      },
+    
+    },
   ];
 
   const data: DataType[] = [];
@@ -62,7 +91,7 @@ const StaffAccountTable: React.FC<Props> = (props) => {
         loading={userDataLoading}
         columns={columns}
         dataSource={data}
-        scroll={{ x: 400 }}
+        scroll={{ x: 500 }}
         pagination={false}
         onRow={(record, rowIndex) => {
           return {
