@@ -212,7 +212,7 @@ const ModalCreate: React.FC<Props> = (props) => {
                                 placeholder="Select a role"
                                 allowClear
                             >
-                                <Select.Option value="Sales">Sales Staff</Select.Option>
+                                <Select.Option value="Sale">Sales Staff</Select.Option>
                                 <Select.Option value="Tech">Technical Staff</Select.Option>
                                 <Select.Option value="Admin">Admin</Select.Option>
                             </Select>
