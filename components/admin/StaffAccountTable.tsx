@@ -60,7 +60,6 @@ const StaffAccountTable: React.FC<Props> = (props) => {
           }
           const positionElement = <span key={index}>{positionName}</span>;
     
-          // Add a line break after each position except the last one
           return index === positions.length - 1 ? positionElement : [positionElement, <br/>];
         });
     
