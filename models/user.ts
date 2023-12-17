@@ -9,6 +9,7 @@ export interface LoginResponse {
   email: string;
   phoneNumber?: string;
   currenNoticeCount: number;
+  roles: string[];
 }
 
 export interface User extends Base {
@@ -20,6 +21,7 @@ export interface User extends Base {
   address?: string;
   currenNoticeCount: number;
   positions: string[];
+  roles: string[];
 }
 
 export interface UserTechData extends PagingModel {
