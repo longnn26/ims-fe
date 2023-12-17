@@ -52,7 +52,7 @@ const ServerHardwareConfigTable: React.FC<Props> = (props) => {
       dataIndex: "dateCreated",
       key: "dateCreated",
     },
-    Boolean(serverStatus !== "Working")
+    Boolean(serverStatus !== "Working" && serverStatus !== "Removed")
       ? {
           title: "Action",
           key: "operation",

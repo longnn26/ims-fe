@@ -107,7 +107,11 @@ const RequestUpgradeTable: React.FC<Props> = (props) => {
               <BiSolidCommentDetail />
             </Button>
           </Tooltip>
-          {record.status !== "Success" && (
+          {Boolean(
+            record.status !== "Success" &&
+              record.status !== "Failed" &&
+              record.status !== "Denied"
+          ) && (
             <>
               <Tooltip title="Edit" color={"black"}>
                 <Button onClick={() => onEdit(record)}>
