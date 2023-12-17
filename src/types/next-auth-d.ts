@@ -10,6 +10,7 @@ declare module "next-auth" {
       expiresIn: number;
       userName: string;
       currenNoticeCount: number;
+      roles: string[];
     } & DefaultSession["user"];
   }
 
@@ -21,6 +22,7 @@ declare module "next-auth" {
     userName: string;
     loginDate: string;
     currenNoticeCount: number;
+    roles: string[];
   }
 }
 
@@ -33,6 +35,7 @@ declare module "next-auth/jwt" {
     userName: string;
     loginDate: string;
     currenNoticeCount: number;
+    roles: string[];
   }
 }
 declare module "antd/es/tree" {
