@@ -22,3 +22,12 @@ export const customJsonParse = (jsonString: string) => {
     return value;
   });
 };
+
+export const areInArray = (arr: any[], ...elements: any[]) => {
+  for (let element of elements) {
+    if (arr?.includes(element)) {
+      return true;
+    }
+  }
+  return false;
+};

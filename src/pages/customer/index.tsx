@@ -18,6 +18,8 @@ import ModalCreate from "@components/customer/ModalCreate";
 import customerService from "@services/customer";
 import ModalUpdate from "@components/customer/ModalUpdate";
 import CustomerTable from "@components/customer/CustomerTable";
+import { areInArray } from "@utils/helpers";
+import { ROLE_SALES, ROLE_TECH } from "@utils/constants";
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
 });
@@ -119,15 +121,17 @@ const Customer: React.FC = () => {
       content={
         <>
           <div className="flex justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
-            <Button
-              type="primary"
-              htmlType="submit"
-              onClick={() => {
-                setOpenModalCreate(true);
-              }}
-            >
-              Create
-            </Button>
+            {areInArray(session?.user.roles!, ROLE_SALES) && (
+              <Button
+                type="primary"
+                htmlType="submit"
+                onClick={() => {
+                  setOpenModalCreate(true);
+                }}
+              >
+                Create
+              </Button>
+            )}
             {/* <SearchComponent
               placeholder="Search Name, Description..."
               setSearchValue={(value) =>
@@ -135,14 +139,33 @@ const Customer: React.FC = () => {
               }
             /> */}
           </div>
-          <CustomerTable
-            onEdit={(record) => {
-              setCustomerUpdate(record);
-            }}
-            onDelete={async (record) => {
-              deleteComponent(record);
-            }}
-          />
+          {areInArray(session?.user.roles!, ROLE_SALES, ROLE_TECH) && (
+            <>
+              <CustomerTable
+                onEdit={(record) => {
+                  setCustomerUpdate(record);
+                }}
+                onDelete={async (record) => {
+                  deleteComponent(record);
+                }}
+              />
+              {customerData.totalPage > 0 && (
+                <Pagination
+                  className="text-end m-4"
+                  current={paramGet.PageIndex}
+                  pageSize={customerData.pageSize ?? 10}
+                  total={customerData.totalSize}
+                  onChange={(page, pageSize) => {
+                    setParamGet({
+                      ...paramGet,
+                      PageIndex: page,
+                      PageSize: pageSize,
+                    });
+                  }}
+                />
+              )}
+            </>
+          )}
 
           <ModalCreate
             open={openModalCreate}
@@ -158,21 +181,6 @@ const Customer: React.FC = () => {
               updateData(data);
             }}
           />
-          {customerData.totalPage > 0 && (
-            <Pagination
-              className="text-end m-4"
-              current={paramGet.PageIndex}
-              pageSize={customerData.pageSize ?? 10}
-              total={customerData.totalSize}
-              onChange={(page, pageSize) => {
-                setParamGet({
-                  ...paramGet,
-                  PageIndex: page,
-                  PageSize: pageSize,
-                });
-              }}
-            />
-          )}
         </>
       }
     />
