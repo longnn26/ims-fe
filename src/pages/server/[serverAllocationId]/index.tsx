@@ -217,7 +217,7 @@ const Customer: React.FC = () => {
             <BreadcrumbComponent itemBreadcrumbs={itemBreadcrumbs} />
             <div>
               {Boolean(
-                serverAllocationDetail?.masterIp?.address &&
+                !serverAllocationDetail?.masterIp?.address &&
                   serverAllocationDetail?.status !== "Removed"
               ) && (
                 <Button
