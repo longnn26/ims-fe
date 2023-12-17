@@ -18,12 +18,6 @@ const ServerDetail: React.FC<Props> = (props) => {
         <h3>Appointment </h3>
       </Divider>{" "}
       <Descriptions className="p-5">
-        <Descriptions.Item label="Id">
-          {appointmentDetail?.id}
-        </Descriptions.Item>
-        <Descriptions.Item label="Customer">
-          {appointmentDetail?.appointedCustomer}
-        </Descriptions.Item>
         <Descriptions.Item label="Status">
           <Tag
             className="text-center"
@@ -40,15 +34,35 @@ const ServerDetail: React.FC<Props> = (props) => {
             }
           </Tag>
         </Descriptions.Item>
+        <Descriptions.Item label="Purpose" span={2}>
+          {appointmentDetail?.purpose}
+        </Descriptions.Item>
+        <Descriptions.Item label="Date Created">
+          {moment(appointmentDetail?.dateCreated).format(dateAdvFormat)}
+        </Descriptions.Item>
+        <Descriptions.Item label="Date Updated" span={2}>
+          {moment(appointmentDetail?.dateUpdated).format(dateAdvFormat)}
+        </Descriptions.Item>
+        <Descriptions.Item label="Server IP's">
+          {appointmentDetail?.serverAllocation.masterIpAddress}
+        </Descriptions.Item>
+        <Descriptions.Item label="Serial Number">
+          {appointmentDetail?.serverAllocation.serialNumber}
+        </Descriptions.Item>
+        <Descriptions.Item label="Serial Name" span={2}>
+          {appointmentDetail?.serverAllocation.name}
+        </Descriptions.Item>
+        <Descriptions.Item label="Visiter">
+          {appointmentDetail?.appointedCustomer}
+        </Descriptions.Item>
+        <Descriptions.Item label="Customer" span={2}>
+          {appointmentDetail?.customer.companyName}
+        </Descriptions.Item>
+
         {/* <Descriptions.Item label="Appointed" span={4}>
           {moment(appointmentDetail?.dateAppointed).format(dateAdvFormat)}
         </Descriptions.Item> */}
-        <Descriptions.Item label="CheckedIn">
-          {moment(appointmentDetail?.dateCheckedIn).format(dateAdvFormat)}
-        </Descriptions.Item>
-        <Descriptions.Item label="CheckedOut" span={2}>
-          {moment(appointmentDetail?.dateCheckedOut).format(dateAdvFormat)}
-        </Descriptions.Item>
+
         <Descriptions.Item label="Note">
           {appointmentDetail?.note}
         </Descriptions.Item>
@@ -61,12 +75,11 @@ const ServerDetail: React.FC<Props> = (props) => {
         <Descriptions.Item label=" Techical Staff's Note" span={2}>
           {appointmentDetail?.techNote}
         </Descriptions.Item>
-
-        <Descriptions.Item label="Date Created">
-          {moment(appointmentDetail?.dateCreated).format(dateAdvFormat)}
+        <Descriptions.Item label="CheckedIn">
+          {moment(appointmentDetail?.dateCheckedIn).format(dateAdvFormat)}
         </Descriptions.Item>
-        <Descriptions.Item label="Date Updated" span={2}>
-          {moment(appointmentDetail?.dateUpdated).format(dateAdvFormat)}
+        <Descriptions.Item label="CheckedOut" span={2}>
+          {moment(appointmentDetail?.dateCheckedOut).format(dateAdvFormat)}
         </Descriptions.Item>
         <Descriptions.Item label="Acceptance Report" span={4}>
           {appointmentDetail?.inspectionReportFilePath !== null && (

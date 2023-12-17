@@ -1,4 +1,6 @@
 import { BaseWithIdNumber, PagingModel, ParamGet } from "./base";
+import { Customer } from "./customer";
+import { ServerAllocation } from "./serverAllocation";
 
 export interface Appointment extends BaseWithIdNumber {
   appointedCustomer: string;
@@ -15,6 +17,9 @@ export interface Appointment extends BaseWithIdNumber {
   inspectionReportFilePath: string;
   receiptOfRecipientFilePath: string;
   documentConfirm: boolean;
+  customer: Customer;
+  serverAllocation: ServerAllocation;
+  purpose: string;
 }
 
 export interface AppointmentData extends PagingModel {

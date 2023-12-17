@@ -37,6 +37,7 @@ interface DataType {
   status: string;
   dateCreated: string;
   dateUpdated: string;
+  purpose: string;
 }
 
 const AppointmentTable: React.FC<Props> = (props) => {
@@ -71,6 +72,11 @@ const AppointmentTable: React.FC<Props> = (props) => {
       title: "Date Appointed",
       dataIndex: "dateAppointed",
       key: "dateAppointed",
+    },
+    {
+      title: "Purpose",
+      dataIndex: "purpose",
+      key: "purpose",
     },
     {
       title: "Visiter",
@@ -159,6 +165,7 @@ const AppointmentTable: React.FC<Props> = (props) => {
       isCorrectPerson: listData?.data[i].isCorrectPerson,
       dateCreated: moment(listData?.data[i].dateCreated).format(dateAdvFormat),
       dateUpdated: moment(listData?.data[i].dateUpdated).format(dateAdvFormat),
+      purpose: listData?.data[i].purpose,
     });
   }
 

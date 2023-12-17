@@ -216,7 +216,10 @@ const Customer: React.FC = () => {
           <div className="flex flex-wrap items-center justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
             <BreadcrumbComponent itemBreadcrumbs={itemBreadcrumbs} />
             <div>
-              {!serverAllocationDetail?.masterIp?.address && (
+              {Boolean(
+                serverAllocationDetail?.masterIp?.address &&
+                  serverAllocationDetail?.status !== "Removed"
+              ) && (
                 <Button
                   type="primary"
                   htmlType="submit"
@@ -229,16 +232,18 @@ const Customer: React.FC = () => {
                   Assign IP
                 </Button>
               )}
-              <Button
-                type="primary"
-                htmlType="submit"
-                icon={<AppstoreAddOutlined />}
-                onClick={() => {
-                  setOpenModalCreate(true);
-                }}
-              >
-                Hardware Config
-              </Button>
+              {Boolean(serverAllocationDetail?.status !== "Removed") && (
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  icon={<AppstoreAddOutlined />}
+                  onClick={() => {
+                    setOpenModalCreate(true);
+                  }}
+                >
+                  Hardware Config
+                </Button>
+              )}
             </div>
           </div>
           <ModalCreate
@@ -251,7 +256,7 @@ const Customer: React.FC = () => {
               createData(data);
             }}
           />
-           <ModalUpdate
+          <ModalUpdate
             open={openModalUpdate}
             serverHardwareConfig={serverHardwareConfigUpdate!}
             onClose={() => {
