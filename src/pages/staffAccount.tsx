@@ -12,11 +12,9 @@ import {
   User,
   UserCreateModel,
   UserUpdateModel,
-  UserUpdateRole
+  UserUpdateRole,
 } from "@models/user";
-import {
-  getUserData
-} from "@slices/user"
+import { getUserData } from "@slices/user";
 import userService from "@services/user";
 import useSelector from "@hooks/use-selector";
 import StaffAccountTable from "@components/admin/StaffAccountTable";
@@ -37,10 +35,13 @@ const StaffAccountPage: React.FC = () => {
   const { userData } = useSelector((state) => state.user);
   const [openModalCreate, setOpenModalCreate] = useState<boolean>(false);
   const [openModalUpdate, setOpenModalUpdate] = useState<boolean>(false);
-  const [openModalUpdateRole, setOpenModalUpdateRole] = useState<boolean>(false);
+  const [openModalUpdateRole, setOpenModalUpdateRole] =
+    useState<boolean>(false);
   const [isDelete, setIsDelete] = useState<boolean>(false);
   const [reloadStaffRole, setReloadStaffRole] = useState<boolean>(false);
-  const [staffAccountDetail, setStaffAccountDetail] = useState<User | undefined>(undefined);
+  const [staffAccountDetail, setStaffAccountDetail] = useState<
+    User | undefined
+  >(undefined);
 
   const [paramGet, setParamGet] = useState<ParamGet>({
     PageIndex: 1,
@@ -55,8 +56,17 @@ const StaffAccountPage: React.FC = () => {
       })
     ).then(({ payload }) => {
       var res = payload as UserData;
-      if (res?.totalPage < paramGet.PageIndex && res.totalPage != 0) {
+      if (res?.totalPage < paramGet.PageIndex && res.totalPage !== 0) {
         setParamGet({ ...paramGet, PageIndex: res.totalPage });
+      }
+
+      // Fetch staff role data here
+      // For example, assuming staff roles are part of the user data
+      const selectedUser = res?.data.find(
+        (user) => user.id === staffAccountDetail?.id
+      );
+      if (selectedUser) {
+        setStaffAccountDetail(selectedUser);
       }
     });
   };
@@ -89,6 +99,7 @@ const StaffAccountPage: React.FC = () => {
         setOpenModalUpdate(false);
       });
   };
+
   const deleteRole = async (data: UserUpdateRole) => {
     await userService
       .deleteRole(session?.user.access_token!, data)
@@ -96,6 +107,17 @@ const StaffAccountPage: React.FC = () => {
         if (!res) {
           message.success("Delete position(s) successfully!");
         }
+
+        // Update staffAccountDetail with the latest data
+        setStaffAccountDetail((prev) => {
+          if (!prev) return prev;
+          return {
+            ...prev,
+            positions: res.updatedRoles || [],
+          };
+        });
+
+        getData(); // Add this line to fetch the latest data
       })
       .catch((errors) => {
         message.error(errors.response.data);
@@ -104,12 +126,14 @@ const StaffAccountPage: React.FC = () => {
         setOpenModalUpdateRole(false);
       });
   };
+
   const addRole = async (data: UserUpdateRole) => {
     await userService
       .addRole(session?.user.access_token!, data)
       .then((res) => {
         if (!res) {
           message.success("Add position(s) successfully!");
+          getData();
         }
       })
       .catch((errors) => {
@@ -179,10 +203,12 @@ const StaffAccountPage: React.FC = () => {
           />
           <div className="flex justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
             {/* Left side: StaffAccountTable */}
-            <div style={{ width: 'calc(100% - 70%)' }}>
+            <div style={{ width: "calc(100% - 70%)" }}>
               <StaffAccountTable
                 onRowClick={(record) => {
-                  const selectedUser = userData?.data.find(user => user.id === record.id);
+                  const selectedUser = userData?.data.find(
+                    (user) => user.id === record.id
+                  );
                   if (selectedUser) {
                     setStaffAccountDetail(selectedUser);
                   }
@@ -207,25 +233,26 @@ const StaffAccountPage: React.FC = () => {
 
             {/* Right side */}
             <div>
-              <StaffAccountDetail
-                staffAccountDetail={staffAccountDetail}
-              />
+              <StaffAccountDetail staffAccountDetail={staffAccountDetail} />
               <div className="flex justify-end mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
                 {staffAccountDetail === undefined ||
-                  staffAccountDetail.positions.length < 3 && (
-                    <Button
-                      type="primary"
-                      className="ml-auto mr-2"
-                      htmlType="submit"
-                      onClick={() => {
-                        setOpenModalUpdateRole(true);
-                        setIsDelete(false);
-                      }}
-                    >
-                      (+) Add Position
-                    </Button>
-                  )}
+                  (staffAccountDetail.positions &&
+                    staffAccountDetail.positions.length < 3 && (
+                      <Button
+                        type="primary"
+                        className="ml-auto mr-2"
+                        htmlType="submit"
+                        onClick={() => {
+                          setOpenModalUpdateRole(true);
+                          setIsDelete(false);
+                        }}
+                      >
+                        (+) Add Position
+                      </Button>
+                    ))}
+
                 {staffAccountDetail !== undefined &&
+                  staffAccountDetail.positions && // Check if positions is defined
                   staffAccountDetail.positions.length > 1 &&
                   staffAccountDetail.positions.length <= 3 && (
                     <Button
@@ -240,10 +267,7 @@ const StaffAccountPage: React.FC = () => {
                     </Button>
                   )}
               </div>
-              <StaffRole
-                // reload={reloadStaffRole}
-                staffRole={staffAccountDetail?.positions}
-              />
+              <StaffRole staffRole={staffAccountDetail?.positions} />
             </div>
           </div>
         </>

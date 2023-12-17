@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import { Button, Input, Modal, Select, Space, Card } from "antd";
 import { Form } from "antd";
-import { CloseOutlined } from '@ant-design/icons';
+import { CloseOutlined } from "@ant-design/icons";
 import { UserUpdateRole, User } from "@models/user";
 import useSelector from "@hooks/use-selector";
 const { Option } = Select;
@@ -37,10 +37,13 @@ const ModalUpdateRole: React.FC<Props> = (props) => {
     if (formRef.current) {
       const initialValues = {
         id: data?.id,
-        positions: data?.positions.map((position, index) => ({
-          roleName: getRoleNameFromPosition(position),
-          key: index.toString(),
-        })),
+        userName: data?.userName,
+        fullname: data?.fullname,
+        positions:
+          data?.positions?.map((position, index) => ({
+            roleName: getRoleNameFromPosition(position),
+            key: index.toString(),
+          })) || [], // Provide an empty array as a default value if data?.positions is undefined
       };
       form.setFieldsValue(initialValues);
     }
@@ -81,7 +84,9 @@ const ModalUpdateRole: React.FC<Props> = (props) => {
     <>
       <Modal
         title={
-          <span className="inline-block m-auto">Update staff account information</span>
+          <span className="inline-block m-auto">
+            Update staff account information
+          </span>
         }
         open={open}
         confirmLoading={confirmLoading}
@@ -100,21 +105,29 @@ const ModalUpdateRole: React.FC<Props> = (props) => {
                   async onOk() {
                     let formData: UserUpdateRole = {
                       id: data?.id!,
-                      roles: []
+                      roles: [],
                     };
                     if (!isDelete) {
-                      const selectedRoles = form.getFieldValue("positions").map((position) => mapRoleName(position.roleName));
-                      const submitRoles = selectedRoles.filter((role) => !data?.positions.includes(role))!;
+                      const selectedRoles = form
+                        .getFieldValue("positions")
+                        .map((position) => mapRoleName(position.roleName));
+                      const submitRoles = selectedRoles.filter(
+                        (role) => !data?.positions.includes(role)
+                      )!;
                       formData.roles = submitRoles || [];
                     } else if (isDelete) {
-                      const selectedRoles = form.getFieldValue("positions").map((position) => mapRoleName(position.roleName));
-                      const submitRoles = data?.positions.filter((position) => !selectedRoles.includes(position));
+                      const selectedRoles = form
+                        .getFieldValue("positions")
+                        .map((position) => mapRoleName(position.roleName));
+                      const submitRoles = data?.positions.filter(
+                        (position) => !selectedRoles.includes(position)
+                      );
                       formData.roles = submitRoles || [];
                     }
                     onSubmit(formData);
                     form.resetFields();
                   },
-                  onCancel() { },
+                  onCancel() {},
                 });
             }}
           >
@@ -131,32 +144,28 @@ const ModalUpdateRole: React.FC<Props> = (props) => {
             style={{ width: "100%" }}
             name="dynamic_form_complex"
           >
-            <Form.Item
-              label="Username"
-            >
-              <Input
-                readOnly
-                defaultValue={data?.userName}
-              />
+            <Form.Item label="Username" name="userName">
+              <Input readOnly />
             </Form.Item>
-            <Form.Item
-              label="Fullname"
-            >
-              <Input
-                readOnly
-                defaultValue={data?.fullname}
-              />
+            <Form.Item label="Fullname" name="fullname">
+              <Input readOnly />
             </Form.Item>
             <Form.List name="positions">
               {(fields, { add, remove }) => (
-                <div style={{ display: 'flex', rowGap: 16, flexDirection: 'column' }}>
+                <div
+                  style={{
+                    display: "flex",
+                    rowGap: 16,
+                    flexDirection: "column",
+                  }}
+                >
                   {fields.map((field, index) => (
                     <Card
                       size="small"
                       title={`Position ${field.name + 1}`}
                       key={field.key}
                       extra={
-                        (index >= data?.positions.length! || isDelete) ? (
+                        index >= data?.positions.length! || isDelete ? (
                           <CloseOutlined
                             onClick={() => {
                               remove(field.name);
@@ -167,22 +176,25 @@ const ModalUpdateRole: React.FC<Props> = (props) => {
                     >
                       <Form.Item
                         label="Position"
-                        name={[field.name, 'roleName']}
+                        name={[field.name, "roleName"]}
                         rules={[
                           {
                             required: true,
-                            message: 'Please select a position',
+                            message: "Please select a position",
                           },
                           ({ getFieldValue }) => ({
                             validator(_, value) {
-                              const selectedRoles = getFieldValue('positions')
+                              const selectedRoles = getFieldValue("positions")
                                 .filter((position, i) => i < index) // Filter only the previous positions
                                 .map((position) => position.roleName);
 
-                              if (!value || selectedRoles.indexOf(value) === -1) {
+                              if (
+                                !value ||
+                                selectedRoles.indexOf(value) === -1
+                              ) {
                                 return Promise.resolve();
                               }
-                              return Promise.reject('Position must be unique');
+                              return Promise.reject("Position must be unique");
                             },
                           }),
                         ]}
@@ -192,18 +204,21 @@ const ModalUpdateRole: React.FC<Props> = (props) => {
                         ) : (
                           <Select>
                             <Option value="Sales Staff">Sales Staff</Option>
-                            <Option value="Technical Staff">Technical Staff</Option>
+                            <Option value="Technical Staff">
+                              Technical Staff
+                            </Option>
                             <Option value="Administrator">Administrator</Option>
                           </Select>
                         )}
                       </Form.Item>
                     </Card>
                   ))}
-                  {!isDelete && fields.length < 3 && ( // Limit max selected roles to 3
-                    <Button type="dashed" onClick={() => add()} block>
-                      + Add Position
-                    </Button>
-                  )}
+                  {!isDelete &&
+                    fields.length < 3 && ( // Limit max selected roles to 3
+                      <Button type="dashed" onClick={() => add()} block>
+                        + Add Position
+                      </Button>
+                    )}
                 </div>
               )}
             </Form.List>
