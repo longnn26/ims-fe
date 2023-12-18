@@ -350,7 +350,7 @@ const Customer: React.FC = () => {
               tooltip="Request expand"
             />
             <FloatButton
-              tooltip="Request host"
+              tooltip="IP's Request"
               icon={<GrHost />}
               onClick={() =>
                 router.push(`/server/${serverAllocationDetail?.id}/requestHost`)
