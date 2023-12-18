@@ -27,37 +27,20 @@ const RequestExpandDetailInfor: React.FC<Props> = (props) => {
           {requestExpandDetail?.requestType}
         </Descriptions.Item>
         <Descriptions.Item label="Status">
-          {Boolean(requestExpandDetail?.requestType == "Expand") ? (
-            <Tag
-              className="text-center"
-              color={
-                requestUpgradeStatus.find(
-                  (_) => _.value === requestExpandDetail?.status
-                )?.color
-              }
-            >
-              {
-                requestUpgradeStatus.find(
-                  (_) => _.value === requestExpandDetail?.status
-                )?.value
-              }
-            </Tag>
-          ) : (
-            <Tag
-              className="text-center"
-              color={
-                requestUpgradeStatus.find(
-                  (_) => _.value === requestExpandDetail?.removalStatus
-                )?.color
-              }
-            >
-              {
-                requestUpgradeStatus.find(
-                  (_) => _.value === requestExpandDetail?.removalStatus
-                )?.value
-              }
-            </Tag>
-          )}
+          <Tag
+            className="text-center"
+            color={
+              requestUpgradeStatus.find(
+                (_) => _.value === requestExpandDetail?.status
+              )?.color
+            }
+          >
+            {
+              requestUpgradeStatus.find(
+                (_) => _.value === requestExpandDetail?.status
+              )?.value
+            }
+          </Tag>
         </Descriptions.Item>
         <Descriptions.Item label="Customer" span={4}>
           {requestExpandDetail?.customer?.companyName}

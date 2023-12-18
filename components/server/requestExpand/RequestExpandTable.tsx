@@ -70,6 +70,7 @@ const RequestExpandTable: React.FC<Props> = (props) => {
       ),
     },
     { title: "Expand size (U)", dataIndex: "size", key: "size" },
+    { title: "Type", dataIndex: "requestType", key: "requestType" },
     {
       title: "Status",
       key: "status",
