@@ -76,6 +76,12 @@ const ModalUpdate: React.FC<Props> = (props) => {
                       address: form.getFieldValue("address"),
                       email: form.getFieldValue("email"),
                       phoneNumber: form.getFieldValue("phoneNumber"),
+                      representor: form.getFieldValue("representor"),
+                      representorPosition: form.getFieldValue(
+                        "representorPosition"
+                      ),
+                      contractNumber: form.getFieldValue("contractNumber"),
+                      contacts: form.getFieldValue("contacts"),
                     });
                     form.resetFields();
                   },
