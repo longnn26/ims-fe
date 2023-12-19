@@ -28,7 +28,12 @@ import requestUpgradeService from "@services/requestUpgrade";
 import serverAllocationService from "@services/serverAllocation";
 import { useRouter } from "next/router";
 import { ServerAllocation } from "@models/serverAllocation";
-import { dateAdvFormat } from "@utils/constants";
+import {
+  ROLE_CUSTOMER,
+  ROLE_SALES,
+  ROLE_TECH,
+  dateAdvFormat,
+} from "@utils/constants";
 import { IoIosSend } from "react-icons/io";
 import moment from "moment";
 import ModalCreate from "@components/server/requestUpgrade/ModalCreate";
@@ -37,6 +42,7 @@ import RequestUpgradeTable from "@components/server/requestUpgrade/RequestUpgrad
 import { ItemType } from "antd/es/breadcrumb/Breadcrumb";
 import BreadcrumbComponent from "@components/BreadcrumbComponent";
 import ServerDetail from "@components/server/ServerDetail";
+import { areInArray } from "@utils/helpers";
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
 });
@@ -173,16 +179,18 @@ const RequestUpgrade: React.FC = () => {
         <>
           <div className="flex flex-wrap items-center justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
             <BreadcrumbComponent itemBreadcrumbs={itemBreadcrumbs} />
-            <Button
-              type="primary"
-              htmlType="submit"
-              icon={<IoIosSend />}
-              onClick={() => {
-                setOpenModalCreate(true);
-              }}
-            >
-              Request upgrade
-            </Button>
+            {areInArray(session?.user.roles!, ROLE_CUSTOMER) && (
+              <Button
+                type="primary"
+                htmlType="submit"
+                icon={<IoIosSend />}
+                onClick={() => {
+                  setOpenModalCreate(true);
+                }}
+              >
+                (+) Request upgrade
+              </Button>
+            )}
 
             {/* <SearchComponent
               placeholder="Search Name, Description..."
@@ -215,34 +223,43 @@ const RequestUpgrade: React.FC = () => {
               createData(data);
             }}
           />
-          <ServerDetail
-            serverAllocationDetail={serverAllocationDetail!}
-          ></ServerDetail>
-          <RequestUpgradeTable
-            urlOncell={`/server/${serverAllocationDetail?.id}`}
-            serverAllocationId={serverAllocationDetail?.id.toString()}
-            onEdit={(record) => {
-              setRequestUpgradeUpdate(record);
-              setOpenModalUpdate(true);
-            }}
-            onDelete={async (record) => {
-              deleteData(record);
-            }}
-          />
-          {requestUpgradeData?.totalPage > 0 && (
-            <Pagination
-              className="text-end m-4"
-              current={paramGet?.PageIndex}
-              pageSize={requestUpgradeData?.pageSize ?? 10}
-              total={requestUpgradeData?.totalSize}
-              onChange={(page, pageSize) => {
-                setParamGet({
-                  ...paramGet,
-                  PageIndex: page,
-                  PageSize: pageSize,
-                });
-              }}
-            />
+          {areInArray(
+            session?.user.roles!,
+            ROLE_SALES,
+            ROLE_TECH,
+            ROLE_CUSTOMER
+          ) && (
+            <>
+              <ServerDetail
+                serverAllocationDetail={serverAllocationDetail!}
+              ></ServerDetail>
+              <RequestUpgradeTable
+                urlOncell={`/server/${serverAllocationDetail?.id}`}
+                serverAllocationId={serverAllocationDetail?.id.toString()}
+                onEdit={(record) => {
+                  setRequestUpgradeUpdate(record);
+                  setOpenModalUpdate(true);
+                }}
+                onDelete={async (record) => {
+                  deleteData(record);
+                }}
+              />
+              {requestUpgradeData?.totalPage > 0 && (
+                <Pagination
+                  className="text-end m-4"
+                  current={paramGet?.PageIndex}
+                  pageSize={requestUpgradeData?.pageSize ?? 10}
+                  total={requestUpgradeData?.totalSize}
+                  onChange={(page, pageSize) => {
+                    setParamGet({
+                      ...paramGet,
+                      PageIndex: page,
+                      PageSize: pageSize,
+                    });
+                  }}
+                />
+              )}
+            </>
           )}
         </>
       }

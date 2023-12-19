@@ -1,7 +1,11 @@
 "use client";
 
 import useSelector from "@hooks/use-selector";
-import { dateAdvFormat, serverAllocationStatus } from "@utils/constants";
+import {
+  ROLE_TECH,
+  dateAdvFormat,
+  serverAllocationStatus,
+} from "@utils/constants";
 import { TableColumnsType, Tag } from "antd";
 import { Button, Space, Table, Tooltip } from "antd";
 import { BiEdit } from "react-icons/bi";
@@ -12,6 +16,8 @@ import { ServerAllocation } from "@models/serverAllocation";
 import { useRouter } from "next/router";
 import { Customer } from "@models/customer";
 import { IpAddress } from "@models/ipAddress";
+import { areInArray } from "@utils/helpers";
+import { useSession } from "next-auth/react";
 
 interface Props {
   onEdit: (data: ServerAllocation) => void;
@@ -35,6 +41,8 @@ interface DataType {
 
 const ServerAllocationTable: React.FC<Props> = (props) => {
   const { onEdit, onDelete } = props;
+  const { data: session } = useSession();
+
   const router = useRouter();
   const { serverAllocationDataLoading, serverAllocationData } = useSelector(
     (state) => state.serverAllocation
@@ -91,7 +99,10 @@ const ServerAllocationTable: React.FC<Props> = (props) => {
               <BiSolidCommentDetail />
             </Button>
           </Tooltip>
-          {Boolean(record.status === "Waiting") && (
+          {Boolean(
+            record.status === "Waiting" &&
+              areInArray(session?.user.roles!, ROLE_TECH)
+          ) && (
             <>
               <Tooltip title="Edit" color={"black"}>
                 <Button onClick={() => onEdit(record)}>

@@ -116,18 +116,19 @@ const CustomerTable: React.FC<Props> = (props) => {
             </Button>
           </Tooltip>
           {areInArray(session?.user.roles!, ROLE_SALES) && (
-            <Tooltip title="Edit" color={"black"}>
-              <Button onClick={() => onEdit(record)}>
-                <BiEdit />
-              </Button>
-            </Tooltip>
+            <>
+              <Tooltip title="Edit" color={"black"}>
+                <Button onClick={() => onEdit(record)}>
+                  <BiEdit />
+                </Button>
+              </Tooltip>
+              <Tooltip title="Delete" color={"black"}>
+                <Button onClick={() => onDelete(record)}>
+                  <AiFillDelete />
+                </Button>
+              </Tooltip>
+            </>
           )}
-
-          <Tooltip title="Delete" color={"black"}>
-            <Button onClick={() => onDelete(record)}>
-              <AiFillDelete />
-            </Button>
-          </Tooltip>
         </Space>
       ),
     },

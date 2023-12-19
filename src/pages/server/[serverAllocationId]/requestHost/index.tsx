@@ -19,6 +19,8 @@ import requestUpgradeService from "@services/requestUpgrade";
 import serverAllocationService from "@services/serverAllocation";
 import { getRequestExpandData } from "@slices/requestExpand";
 import { getRequestHostData } from "@slices/requestHost";
+import { ROLE_CUSTOMER, ROLE_SALES, ROLE_TECH } from "@utils/constants";
+import { areInArray } from "@utils/helpers";
 import { Alert, FloatButton, Modal, Pagination, message } from "antd";
 import { ItemType } from "antd/es/breadcrumb/Breadcrumb";
 import { useSession } from "next-auth/react";
@@ -176,35 +178,42 @@ const RequestHost: React.FC = () => {
               createData(data);
             }}
           />
-          <ServerDetail
-            serverAllocationDetail={serverAllocationDetail!}
-          ></ServerDetail>
-          <RequestHostTable
-            urlOncell={`/server/${serverAllocationDetail?.id}`}
-            serverAllocationId={serverAllocationDetail?.id.toString()}
-            onEdit={(record) => {
-              setRequestUpgradeUpdate(record);
-            }}
-            onDelete={async (record) => {
-              deleteData(record);
-            }}
-          />
-          {requestHostData?.totalPage > 0 && (
-            <Pagination
-              className="text-end m-4"
-              current={paramGet?.PageIndex}
-              pageSize={requestHostData?.pageSize ?? 10}
-              total={requestHostData?.totalSize}
-              onChange={(page, pageSize) => {
-                setParamGet({
-                  ...paramGet,
-                  PageIndex: page,
-                  PageSize: pageSize,
-                });
-              }}
-            />
-          )}
-          {/* {Boolean(true) && (
+          {areInArray(
+            session?.user.roles!,
+            ROLE_SALES,
+            ROLE_TECH,
+            ROLE_CUSTOMER
+          ) && (
+            <>
+              <ServerDetail
+                serverAllocationDetail={serverAllocationDetail!}
+              ></ServerDetail>
+              <RequestHostTable
+                urlOncell={`/server/${serverAllocationDetail?.id}`}
+                serverAllocationId={serverAllocationDetail?.id.toString()}
+                onEdit={(record) => {
+                  setRequestUpgradeUpdate(record);
+                }}
+                onDelete={async (record) => {
+                  deleteData(record);
+                }}
+              />
+              {requestHostData?.totalPage > 0 && (
+                <Pagination
+                  className="text-end m-4"
+                  current={paramGet?.PageIndex}
+                  pageSize={requestHostData?.pageSize ?? 10}
+                  total={requestHostData?.totalSize}
+                  onChange={(page, pageSize) => {
+                    setParamGet({
+                      ...paramGet,
+                      PageIndex: page,
+                      PageSize: pageSize,
+                    });
+                  }}
+                />
+              )}
+              {/* {Boolean(true) && (
             <FloatButton.Group
               trigger="hover"
               type="primary"
@@ -223,6 +232,8 @@ const RequestHost: React.FC = () => {
               />
             </FloatButton.Group>
           )} */}
+            </>
+          )}
         </>
       }
     />

@@ -11,7 +11,9 @@ import {
 } from "@models/serverHardwareConfig";
 import { ComponentObj } from "@models/component";
 import useSelector from "@hooks/use-selector";
-import { dateAdvFormat } from "@utils/constants";
+import { ROLE_TECH, dateAdvFormat } from "@utils/constants";
+import { areInArray } from "@utils/helpers";
+import { useSession } from "next-auth/react";
 
 interface Props {
   onEdit: (data: ServerHardwareConfig) => void;
@@ -32,6 +34,8 @@ interface DataType {
 
 const ServerHardwareConfigTable: React.FC<Props> = (props) => {
   const { onEdit, onDelete, serverStatus } = props;
+  const { data: session } = useSession();
+
   const { serverHardwareConfigDataLoading, serverHardwareConfigData } =
     useSelector((state) => state.serverHardwareConfig);
 
@@ -52,7 +56,11 @@ const ServerHardwareConfigTable: React.FC<Props> = (props) => {
       dataIndex: "dateCreated",
       key: "dateCreated",
     },
-    Boolean(serverStatus !== "Working" && serverStatus !== "Removed")
+    Boolean(
+      serverStatus !== "Working" &&
+        serverStatus !== "Removed" &&
+        areInArray(session?.user.roles!, ROLE_TECH)
+    )
       ? {
           title: "Action",
           key: "operation",

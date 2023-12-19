@@ -21,6 +21,8 @@ import ServerAllocationTable from "@components/server/ServerAllocationTable";
 import ModalCreate from "@components/server/ModalCreate";
 import serverAllocationService from "@services/serverAllocation";
 import ModalUpdate from "@components/server/ModalUpdate";
+import { areInArray } from "@utils/helpers";
+import { ROLE_CUSTOMER, ROLE_SALES, ROLE_TECH } from "@utils/constants";
 
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
@@ -145,61 +147,72 @@ const Customer: React.FC = () => {
       content={
         <>
           <div className="flex justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
-            <Button
-              type="primary"
-              htmlType="submit"
-              onClick={() => {
-                setOpenModalCreate(true);
-              }}
-            >
-              Create
-            </Button>
+            {areInArray(session?.user.roles!, ROLE_CUSTOMER) && (
+              <Button
+                type="primary"
+                htmlType="submit"
+                onClick={() => {
+                  setOpenModalCreate(true);
+                }}
+              >
+                Create
+              </Button>
+            )}
             {/* <SearchComponent
-              placeholder="Search Name, Description..."
-              setSearchValue={(value) =>
-                setParamGet({ ...paramGet, SearchValue: value })
-              }
-            /> */}
+            placeholder="Search Name, Description..."
+            setSearchValue={(value) =>
+              setParamGet({ ...paramGet, SearchValue: value })
+            }
+          /> */}
           </div>
-          <ServerAllocationTable
-            onEdit={(record) => {
-              setServerAllocationUpdate(record);
-            }}
-            onDelete={async (record) => {
-              deleteServerAllocation(record);
-            }}
-          />
+          {areInArray(
+            session?.user.roles!,
+            ROLE_SALES,
+            ROLE_TECH,
+            ROLE_CUSTOMER
+          ) && (
+            <>
+              <ServerAllocationTable
+                onEdit={(record) => {
+                  setServerAllocationUpdate(record);
+                }}
+                onDelete={async (record) => {
+                  deleteServerAllocation(record);
+                }}
+              />
 
-          <ModalCreate
-            open={openModalCreate}
-            onClose={() => setOpenModalCreate(false)}
-            onSubmit={(data: SACreateModel) => {
-              createData(data);
-            }}
-            customerParamGet={customerSelectParamGet}
-            setCustomerParamGet={setCustomerSelectParamGet}
-          />
-          <ModalUpdate
-            serverAllocation={serverAllocationUpdate!}
-            onClose={() => setServerAllocationUpdate(undefined)}
-            onSubmit={(data: SAUpdateModel) => {
-              updateData(data);
-            }}
-          />
-          {serverAllocationData?.totalPage > 0 && (
-            <Pagination
-              className="text-end m-4"
-              current={paramGet.PageIndex}
-              pageSize={serverAllocationData?.pageSize ?? 10}
-              total={serverAllocationData?.totalSize}
-              onChange={(page, pageSize) => {
-                setParamGet({
-                  ...paramGet,
-                  PageIndex: page,
-                  PageSize: pageSize,
-                });
-              }}
-            />
+              <ModalCreate
+                open={openModalCreate}
+                onClose={() => setOpenModalCreate(false)}
+                onSubmit={(data: SACreateModel) => {
+                  createData(data);
+                }}
+                customerParamGet={customerSelectParamGet}
+                setCustomerParamGet={setCustomerSelectParamGet}
+              />
+              <ModalUpdate
+                serverAllocation={serverAllocationUpdate!}
+                onClose={() => setServerAllocationUpdate(undefined)}
+                onSubmit={(data: SAUpdateModel) => {
+                  updateData(data);
+                }}
+              />
+              {serverAllocationData?.totalPage > 0 && (
+                <Pagination
+                  className="text-end m-4"
+                  current={paramGet.PageIndex}
+                  pageSize={serverAllocationData?.pageSize ?? 10}
+                  total={serverAllocationData?.totalSize}
+                  onChange={(page, pageSize) => {
+                    setParamGet({
+                      ...paramGet,
+                      PageIndex: page,
+                      PageSize: pageSize,
+                    });
+                  }}
+                />
+              )}
+            </>
           )}
         </>
       }

@@ -26,6 +26,8 @@ import useSelector from "@hooks/use-selector";
 import useDispatch from "@hooks/use-dispatch";
 import AppointmentTable from "@components/server/requestUpgrade/AppointmentTable";
 import ModalUpdate from "@components/server/requestExpand/ModalUpdate";
+import { areInArray } from "@utils/helpers";
+import { ROLE_CUSTOMER, ROLE_SALES, ROLE_TECH } from "@utils/constants";
 const { confirm } = Modal;
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
@@ -281,7 +283,15 @@ const RequestExpandDetail: React.FC = () => {
         <>
           <div className="flex flex-wrap items-center justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
             <BreadcrumbComponent itemBreadcrumbs={itemBreadcrumbs} />
-            {requestExpandDetail?.status === "Accepted" && (
+            {Boolean(
+              requestExpandDetail?.status === "Accepted" &&
+                areInArray(
+                  session?.user.roles!,
+                  ROLE_SALES,
+                  ROLE_TECH,
+                  ROLE_CUSTOMER
+                )
+            ) && (
               <div>
                 <Button
                   type="primary"
@@ -310,91 +320,100 @@ const RequestExpandDetail: React.FC = () => {
               </div>
             )}
           </div>
-
-          <div className="md:flex">
-            <ServerDetail
-              serverAllocationDetail={serverAllocationDetail!}
-            ></ServerDetail>
-            <RequestExpandDetailInfor
-              requestExpandDetail={requestExpandDetail!}
-            />
-          </div>
-
-          <AppointmentTable
-            typeGet="ByRequestExpandId"
-            urlOncell=""
-            onEdit={(record) => {}}
-            onDelete={async (record) => {}}
-          />
-          {appointmentData?.totalPage > 0 && (
-            <Pagination
-              className="text-end m-4"
-              current={rUAppointmentParamGet?.PageIndex}
-              pageSize={appointmentData?.pageSize ?? 10}
-              total={appointmentData?.totalSize}
-              onChange={(page, pageSize) => {
-                setRUAppointmentParamGet({
-                  ...rUAppointmentParamGet,
-                  PageIndex: page,
-                  PageSize: pageSize,
-                });
-              }}
-            />
-          )}
-
-          {requestExpandDetail?.status === "Waiting" && (
-            <FloatButton.Group
-              trigger="hover"
-              type="primary"
-              style={{ right: 60, bottom: 500 }}
-              icon={<AiOutlineFileDone />}
-            >
-              <FloatButton
-                icon={<MdCancel color="red" />}
-                tooltip="Deny"
-                onClick={() => denyRequestExpand()}
-              />
-              <FloatButton
-                onClick={() => acceptRequestExpand()}
-                icon={<AiOutlineFileDone color="green" />}
-                tooltip="Accept"
-              />
-            </FloatButton.Group>
-          )}
-          {Boolean(
-            requestExpandDetail?.status === "Accepted" &&
-              requestExpandDetail?.succeededAppointment?.status === "Success"
+          {areInArray(
+            session?.user.roles!,
+            ROLE_SALES,
+            ROLE_TECH,
+            ROLE_CUSTOMER
           ) && (
-            <FloatButton.Group
-              trigger="hover"
-              type="primary"
-              style={{ right: 60, bottom: 500 }}
-              icon={<AiOutlineFileDone />}
-            >
-              <FloatButton
-                icon={<MdCancel color="red" />}
-                tooltip="Fail"
-                onClick={() => rejectRequestExpand()}
+            <>
+              <div className="md:flex">
+                <ServerDetail
+                  serverAllocationDetail={serverAllocationDetail!}
+                ></ServerDetail>
+                <RequestExpandDetailInfor
+                  requestExpandDetail={requestExpandDetail!}
+                />
+              </div>
+
+              <AppointmentTable
+                typeGet="ByRequestExpandId"
+                urlOncell=""
+                onEdit={(record) => {}}
+                onDelete={async (record) => {}}
               />
-              <FloatButton
-                onClick={() => completeRequestExpand()}
-                icon={<AiOutlineFileDone color="green" />}
-                tooltip="Complete"
+              {appointmentData?.totalPage > 0 && (
+                <Pagination
+                  className="text-end m-4"
+                  current={rUAppointmentParamGet?.PageIndex}
+                  pageSize={appointmentData?.pageSize ?? 10}
+                  total={appointmentData?.totalSize}
+                  onChange={(page, pageSize) => {
+                    setRUAppointmentParamGet({
+                      ...rUAppointmentParamGet,
+                      PageIndex: page,
+                      PageSize: pageSize,
+                    });
+                  }}
+                />
+              )}
+
+              {requestExpandDetail?.status === "Waiting" && (
+                <FloatButton.Group
+                  trigger="hover"
+                  type="primary"
+                  style={{ right: 60, bottom: 500 }}
+                  icon={<AiOutlineFileDone />}
+                >
+                  <FloatButton
+                    icon={<MdCancel color="red" />}
+                    tooltip="Deny"
+                    onClick={() => denyRequestExpand()}
+                  />
+                  <FloatButton
+                    onClick={() => acceptRequestExpand()}
+                    icon={<AiOutlineFileDone color="green" />}
+                    tooltip="Accept"
+                  />
+                </FloatButton.Group>
+              )}
+              {Boolean(
+                requestExpandDetail?.status === "Accepted" &&
+                  requestExpandDetail?.succeededAppointment?.status ===
+                    "Success"
+              ) && (
+                <FloatButton.Group
+                  trigger="hover"
+                  type="primary"
+                  style={{ right: 60, bottom: 500 }}
+                  icon={<AiOutlineFileDone />}
+                >
+                  <FloatButton
+                    icon={<MdCancel color="red" />}
+                    tooltip="Fail"
+                    onClick={() => rejectRequestExpand()}
+                  />
+                  <FloatButton
+                    onClick={() => completeRequestExpand()}
+                    icon={<AiOutlineFileDone color="green" />}
+                    tooltip="Complete"
+                  />
+                </FloatButton.Group>
+              )}
+              <ModalUpdate
+                onSaveLocation={(data) => saveLocation(data)}
+                suggestLocation={suggestLocation}
+                requestExpand={requestExpandUpdate!}
+                onClose={() => {
+                  setRequestExpandUpdate(undefined);
+                  setSuggestLocation(undefined);
+                }}
+                onSubmit={(value) => {
+                  updateData(value);
+                }}
               />
-            </FloatButton.Group>
+            </>
           )}
-          <ModalUpdate
-            onSaveLocation={(data) => saveLocation(data)}
-            suggestLocation={suggestLocation}
-            requestExpand={requestExpandUpdate!}
-            onClose={() => {
-              setRequestExpandUpdate(undefined);
-              setSuggestLocation(undefined);
-            }}
-            onSubmit={(value) => {
-              updateData(value);
-            }}
-          />
         </>
       }
     />
