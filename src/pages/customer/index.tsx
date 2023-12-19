@@ -33,7 +33,7 @@ const Customer: React.FC = () => {
 
   const [paramGet, setParamGet] = useState<ParamGet>({
     PageIndex: 1,
-    PageSize: 7,
+    PageSize: 10,
   } as ParamGet);
   const [loadingSubmit, setLoadingSubmit] = useState<boolean>(false);
   const [customerUpdate, setCustomerUpdate] = useState<Customer | undefined>(

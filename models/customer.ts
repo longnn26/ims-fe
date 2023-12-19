@@ -6,6 +6,10 @@ export interface Customer extends BaseWithIdNumber {
   taxNumber: string;
   email: string;
   phoneNumber: string;
+  representor: string;
+  representorPosition: string;
+  contractNumber: string;
+  contacts: Contacts[];
   isDeleted: boolean;
 }
 
@@ -19,6 +23,10 @@ export interface CustomerCreateModel {
   taxNumber: string;
   email: string;
   phoneNumber: string;
+  representor: string;
+  representorPosition: string;
+  contractNumber: string;
+  contacts: Contacts[];
 }
 
 export interface CustomerUpdateModel {
@@ -27,4 +35,15 @@ export interface CustomerUpdateModel {
   address: string;
   email: string;
   phoneNumber: string;
+  representor: string;
+  representorPosition: string;
+  contractNumber: string;
+  contacts: Contacts[];
+}
+
+export interface Contacts {
+  name: string;
+  position: string;
+  phoneNumber: string;
+  email: string;
 }

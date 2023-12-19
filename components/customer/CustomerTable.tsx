@@ -5,9 +5,10 @@ import { dateAdvFormat } from "@utils/constants";
 import { TableColumnsType } from "antd";
 import { Button, Space, Table, Tooltip } from "antd";
 import { BiEdit, BiSolidCommentDetail } from "react-icons/bi";
+import { CiSquareMinus , CiSquarePlus } from "react-icons/ci";
 import { AiFillDelete } from "react-icons/ai";
 import moment from "moment";
-import { Customer } from "@models/customer";
+import { Contacts, Customer } from "@models/customer";
 import { useRouter } from "next/router";
 
 interface Props {
@@ -23,9 +24,13 @@ interface DataType {
   taxNumber: string;
   email: string;
   phoneNumber: string;
+  representor: string;
+  representorPosition: string;
+  contractNumber: string;
   isDeleted: boolean;
   dateCreated: string;
   dateUpdated: string;
+  contacts: Contacts[];
 }
 
 const CustomerTable: React.FC<Props> = (props) => {
@@ -35,15 +40,45 @@ const CustomerTable: React.FC<Props> = (props) => {
     (state) => state.customer
   );
 
+  const nestedRowRender = (data: DataType) => {
+    const contacts = data.contacts;
+
+    if (!contacts || contacts.length === 0) {
+      return null; // No contacts to display
+    } else {
+    const nestedColumns = [
+      { title: "Contacts" },
+      { title: 'Name', dataIndex: 'name', key: 'name' },
+      { title: 'Position', dataIndex: 'position', key: 'position' },
+      { title: 'Email', dataIndex: 'email', key: 'email' },
+      { title: 'Phone Number', dataIndex: 'phoneNumber', key: 'phoneNumber' },
+    ];
+
+    const nestedData = data.contacts.map((des, index) => ({
+      key: index,
+      name: data.contacts[index].name,
+      position:  data.contacts[index].position,
+      email:  data.contacts[index].email,
+      phoneNumber:  data.contacts[index].phoneNumber,
+    }));
+
+    return (
+      <Table
+        columns={nestedColumns}
+        dataSource={nestedData}
+        pagination={false}
+      />
+    );}
+  };
+
   const columns: TableColumnsType<DataType> = [
     { title: "Company Name", dataIndex: "companyName", key: "companyName", fixed: "left" },
     { title: "Address", dataIndex: "address", key: "address" },
     { title: "Tax number", dataIndex: "taxNumber", key: "taxNumber" },
-    {
-      title: "Email",
-      dataIndex: "email",
-      key: "email",
-    },
+    { title: "Contract Number", dataIndex: "contractNumber", key: "contractNumber" },
+    { title: "Representor", dataIndex:"representor", key: "representor" },
+    { title: "Position", dataIndex:"representorPosition", key: "representorPosition" },
+    { title: "Email", dataIndex: "email", key: "email" },
     { title: "Phone number", dataIndex: "phoneNumber", key: "phoneNumber" },
     { title: "Status",
       key: "isDeleted",
@@ -52,7 +87,6 @@ const CustomerTable: React.FC<Props> = (props) => {
       ),
     },
     { title: "Date Created", dataIndex: "dateCreated", key: "dateCreated" },
-    { title: "Date Updated", dataIndex: "dateUpdated", key: "dateUpdated" },
     {
       title: "Action",
       key: "operation",
@@ -88,6 +122,10 @@ const CustomerTable: React.FC<Props> = (props) => {
       taxNumber: customerData?.data[i].taxNumber,
       email: customerData?.data[i].email,
       phoneNumber: customerData?.data[i].phoneNumber,
+      representor: customerData?.data[i].representor,
+      representorPosition: customerData.data[i].representorPosition,
+      contacts: customerData.data[i].contacts,
+      contractNumber:customerData.data[i].contractNumber,
       isDeleted: customerData?.data[i].isDeleted,
       dateCreated: moment(customerData?.data[i].dateCreated).format(
         dateAdvFormat
@@ -105,7 +143,11 @@ const CustomerTable: React.FC<Props> = (props) => {
         columns={columns}
         dataSource={data}
         scroll={{ x: 1300 }}
-        pagination={false}
+        pagination={false}        
+        expandable={{
+          expandedRowRender: nestedRowRender,
+          rowExpandable: (record) => record.contacts ? true: false,
+        }}
       />
     </>
   );
