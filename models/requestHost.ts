@@ -8,6 +8,7 @@ export interface RequestHost extends BaseWithIdNumber {
   saleNote: string;
   techNote: string;
   isRemoval: boolean;
+  isUpgrade: boolean;
   type: string;
   status: string;
   inspectionReportFilePath: string;
@@ -20,6 +21,17 @@ export interface RequestHost extends BaseWithIdNumber {
   serverAllocation: ServerAllocation;
   evaluator: Evaluator;
   documentConfirm: boolean;
+  capacities: number[];
+  ipAddresses: ipAddresses[];
+}
+
+export interface ipAddresses {
+  ipAddress: ipAddress;
+  capacity: number;
+}
+
+export interface ipAddress {
+  address: string;
 }
 
 export interface RequestHostData extends PagingModel {

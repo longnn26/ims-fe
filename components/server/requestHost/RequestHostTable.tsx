@@ -2,7 +2,7 @@
 
 import useSelector from "@hooks/use-selector";
 import { Customer } from "@models/customer";
-import { RequestHost } from "@models/requestHost";
+import { RequestHost, ipAddress, ipAddresses } from "@models/requestHost";
 import { RequestUpgrade } from "@models/requestUpgrade";
 import { ServerAllocation } from "@models/serverAllocation";
 import { dateAdvFormat, requestHostStatus } from "@utils/constants";
@@ -37,6 +37,8 @@ interface DataType {
   purpose: boolean;
   quantity: number;
   status: string;
+  isUpgrade: boolean;
+  isRemoval: boolean;
 }
 
 const RequestHostTable: React.FC<Props> = (props) => {
@@ -83,11 +85,7 @@ const RequestHostTable: React.FC<Props> = (props) => {
       render: (_, record) => {
         return (
           <>
-            {Boolean(record.type === "Additional") ? (
-              <p>IP</p>
-            ) : (
-              <p>{record.type}</p>
-            )}
+            <p>{record.type}</p>
           </>
         );
       },
@@ -96,7 +94,17 @@ const RequestHostTable: React.FC<Props> = (props) => {
       title: "Purpose",
       dataIndex: "purpose",
       render: (_, record) => {
-        return <>{Boolean(record.purpose) ? <p>Remove</p> : <p>Add</p>}</>;
+        return (
+          <>
+            {Boolean(record.isRemoval) ? (
+              <p>Remove</p>
+            ) : record.isUpgrade ? (
+              <p>Upgrade</p>
+            ) : (
+              <p>Add</p>
+            )}
+          </>
+        );
       },
     },
     { title: "Quantity", dataIndex: "quantity", key: "quantity" },
@@ -155,6 +163,8 @@ const RequestHostTable: React.FC<Props> = (props) => {
       purpose: listData?.data[i].isRemoval,
       quantity: listData?.data[i].quantity,
       status: listData?.data[i].status,
+      isRemoval: listData?.data[i].isRemoval,
+      isUpgrade: listData?.data[i].isUpgrade,
     });
   }
 

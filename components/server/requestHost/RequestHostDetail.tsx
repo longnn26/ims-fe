@@ -1,6 +1,7 @@
 import { RequestHost } from "@models/requestHost";
 import { dateAdvFormat, requestHostStatus } from "@utils/constants";
 import { Descriptions, Divider, Tag } from "antd";
+import { count } from "console";
 import moment from "moment";
 import React from "react";
 
@@ -17,11 +18,7 @@ const RequestHostDetailInfor: React.FC<Props> = (props) => {
         <h3>Request host information </h3>
       </Divider>{" "}
       <Descriptions className="p-5">
-        <Descriptions.Item label="Date Created" span={2}>
-          {moment(requestHostDetail?.dateCreated).format(dateAdvFormat)}
-        </Descriptions.Item>
-
-        <Descriptions.Item label="Request's Status" span={2}>
+        <Descriptions.Item label="Request's Status">
           <Tag
             className="text-center"
             color={
@@ -37,28 +34,50 @@ const RequestHostDetailInfor: React.FC<Props> = (props) => {
             }
           </Tag>
         </Descriptions.Item>
-
-        <Descriptions.Item label="Customer" span={2}>
+        <Descriptions.Item label="Type">
+          {requestHostDetail?.type}
+        </Descriptions.Item>
+        <Descriptions.Item label="Date Created">
+          {moment(requestHostDetail?.dateCreated).format(dateAdvFormat)}
+        </Descriptions.Item>
+        <Descriptions.Item label="Customer" span={4}>
           {requestHostDetail?.customer.companyName}
         </Descriptions.Item>
-        <Descriptions.Item label="Type" span={2}>
-          {requestHostDetail?.type === "Additional"
-            ? "Ip"
-            : requestHostDetail?.type}
+        <Descriptions.Item label="Purpose">
+          {requestHostDetail?.isRemoval
+            ? "Remove"
+            : requestHostDetail?.isUpgrade
+            ? "Upgrade"
+            : "Add"}
         </Descriptions.Item>
-        <Descriptions.Item label="Purpose" span={2}>
-          {requestHostDetail?.isRemoval ? "Remove" : "Add"}
-        </Descriptions.Item>
-        <Descriptions.Item label="Quantity" span={2}>
+        <Descriptions.Item
+          label="Quantity"
+          span={
+            requestHostDetail?.type === "Port" &&
+            (requestHostDetail?.ipAddresses === null ||
+              requestHostDetail?.ipAddresses.length === 0)
+              ? 0
+              : 2
+          }
+        >
           {requestHostDetail?.quantity}
         </Descriptions.Item>
-        <Descriptions.Item label="Sales Staff" span={2}>
+        {Boolean(
+          requestHostDetail?.type === "Port" &&
+            (requestHostDetail?.ipAddresses === null ||
+              requestHostDetail?.ipAddresses.length === 0)
+        ) && (
+          <Descriptions.Item label="Capacity">
+            {requestHostDetail?.capacities.join(", ")}
+          </Descriptions.Item>
+        )}
+        <Descriptions.Item label="Sales Staff">
           {requestHostDetail?.evaluator?.fullname}
         </Descriptions.Item>
         <Descriptions.Item label="Sale Staff's Note" span={2}>
           {requestHostDetail?.saleNote}
         </Descriptions.Item>
-        <Descriptions.Item label="Technical Staff" span={2}>
+        <Descriptions.Item label="Technical Staff">
           {requestHostDetail?.executor?.fullname}
         </Descriptions.Item>
         <Descriptions.Item label="Technical Staff's Note" span={2}>

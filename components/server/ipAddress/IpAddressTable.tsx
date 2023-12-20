@@ -44,26 +44,13 @@ const IpAddressTable: React.FC<Props> = (props) => {
       title: "Assignment Type",
       key: "assignmentType",
       render: (record) => (
-        <p className="">{record.assignmentType === "Additional" ? "IP" : record.assignmentType}</p>
+        <p className="">
+          {record.assignmentType === "Additional"
+            ? "IP"
+            : record.assignmentType}
+        </p>
       ),
     },
-    // {
-    //   title: "Action",
-    //   key: "operation",
-    //   render: (record: RequestHost) => (
-    //     <Space wrap>
-    //       <Tooltip title="View detail" color={"black"}>
-    //         <Button
-    //           onClick={() =>
-    //             router.push(`${urlOncell}/requestHost/${record.id}`)
-    //           }
-    //         >
-    //           <BiSolidCommentDetail />
-    //         </Button>
-    //       </Tooltip>
-    //     </Space>
-    //   ),
-    // },
   ];
 
   const data: DataType[] = [];
