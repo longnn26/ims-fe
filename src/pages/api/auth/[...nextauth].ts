@@ -38,8 +38,8 @@ export default NextAuth({
       },
     }),
     CredentialsProvider({
-      id: "customer_credentials",
-      name: "CustomerCredentials",
+      id: "cus_credentials",
+      name: "CusCredentials",
       credentials: {
         email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" },

@@ -37,7 +37,7 @@ const Signin: React.FC<Props> = (props) => {
 
     if (isCustomer) {
       // For customer login
-      res = await signIn("customer_credentials", {
+      res = await signIn("cus_credentials", {
         redirect: false,
         email: values.username,
         password: values.password,
