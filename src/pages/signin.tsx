@@ -51,7 +51,7 @@ const Signin: React.FC<Props> = (props) => {
       });
     }
     if (res.error) {
-      return message.error(res.error);
+      return message.error("Wrong login account information!");
     } else {
       message.success("Login successfully!");
       return router.push("/");

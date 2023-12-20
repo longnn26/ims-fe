@@ -26,8 +26,8 @@ interface DataType {
   taxNumber: string;
   email: string;
   phoneNumber: string;
-  representor: string;
-  representorPosition: string;
+  representator: string;
+  representatorPosition: string;
   contractNumber: string;
   isDeleted: boolean;
   dateCreated: string;
@@ -90,11 +90,11 @@ const CustomerTable: React.FC<Props> = (props) => {
       dataIndex: "contractNumber",
       key: "contractNumber",
     },
-    { title: "Representor", dataIndex: "representor", key: "representor" },
+    { title: "Representator", dataIndex: "representator", key: "representator" },
     {
       title: "Position",
-      dataIndex: "representorPosition",
-      key: "representorPosition",
+      dataIndex: "representatorPosition",
+      key: "representatorPosition",
     },
     { title: "Email", dataIndex: "email", key: "email" },
     { title: "Phone number", dataIndex: "phoneNumber", key: "phoneNumber" },
@@ -144,8 +144,8 @@ const CustomerTable: React.FC<Props> = (props) => {
       taxNumber: customerData?.data[i].taxNumber,
       email: customerData?.data[i].email,
       phoneNumber: customerData?.data[i].phoneNumber,
-      representor: customerData?.data[i].representor,
-      representorPosition: customerData.data[i].representorPosition,
+      representator: customerData?.data[i].representator,
+      representatorPosition: customerData.data[i].representatorPosition,
       contacts: customerData.data[i].contacts,
       contractNumber: customerData.data[i].contractNumber,
       isDeleted: customerData?.data[i].isDeleted,
@@ -168,7 +168,7 @@ const CustomerTable: React.FC<Props> = (props) => {
         pagination={false}
         expandable={{
           expandedRowRender: nestedRowRender,
-          rowExpandable: (record) => (record.contacts ? true : false),
+          rowExpandable: (record) => ((record.contacts === null || record.contacts.length === 0 ) ? false : true),
         }}
       />
     </>
