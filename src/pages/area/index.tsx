@@ -14,6 +14,8 @@ import areaService from "@services/area";
 import ModalUpdate from "@components/area/ModalUpdate";
 import AreaTable from "@components/area/AreaTable";
 import AreaCollap from "@components/area/AreaCollap";
+import { ROLE_TECH } from "@utils/constants";
+import { areInArray } from "@utils/helpers";
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
 });
@@ -117,33 +119,37 @@ const Area: React.FC = () => {
     <AntdLayoutNoSSR
       content={
         <>
-          <div className="flex justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
-            <Button
-              type="primary"
-              htmlType="submit"
-              onClick={() => {
-                setOpenModalCreate(true);
-              }}
-            >
-              Create
-            </Button>
-          </div>
-          <AreaCollap />
+          {areInArray(session?.user.roles!, ROLE_TECH) && (
+            <>
+              <div className="flex justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  onClick={() => {
+                    setOpenModalCreate(true);
+                  }}
+                >
+                  Create
+                </Button>
+              </div>
+              <AreaCollap />
 
-          <ModalCreate
-            open={openModalCreate}
-            onClose={() => setOpenModalCreate(false)}
-            onSubmit={(data: AreaCreateModel) => {
-              createData(data);
-            }}
-          />
-          <ModalUpdate
-            area={areaUpdate!}
-            onClose={() => setAreaUpdate(undefined)}
-            onSubmit={(data: AreaUpdateModel) => {
-              updateData(data);
-            }}
-          />
+              <ModalCreate
+                open={openModalCreate}
+                onClose={() => setOpenModalCreate(false)}
+                onSubmit={(data: AreaCreateModel) => {
+                  createData(data);
+                }}
+              />
+              <ModalUpdate
+                area={areaUpdate!}
+                onClose={() => setAreaUpdate(undefined)}
+                onSubmit={(data: AreaUpdateModel) => {
+                  updateData(data);
+                }}
+              />
+            </>
+          )}
         </>
       }
     />

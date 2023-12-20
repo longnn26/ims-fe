@@ -14,6 +14,8 @@ import { RequestHostData, RequestHost } from "@models/requestHost";
 import { ParamGet } from "@models/base";
 import requestHostService from "@services/requestHost";
 import { getRequestHostDataAll } from "@slices/requestHost";
+import { ROLE_SALES, ROLE_TECH } from "@utils/constants";
+import { areInArray } from "@utils/helpers";
 
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
@@ -72,30 +74,32 @@ const RequestHostList: React.FC = () => {
     <AntdLayoutNoSSR
       content={
         <>
-          <div className="flex flex-wrap items-center justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
-            <BreadcrumbComponent itemBreadcrumbs={itemBreadcrumbs} />
-          </div>
-          <RequestHostTable
-            urlOncell=""
-            onEdit={(record) => {}}
-            onDelete={async (record) => {}}
-          />
-          {requestHostData?.totalPage > 0 && (
-            <Pagination
-              className="text-end m-4"
-              current={paramGet?.PageIndex}
-              pageSize={requestHostData?.pageSize ?? 10}
-              total={requestHostData?.totalSize}
-              onChange={(page, pageSize) => {
-                setParamGet({
-                  ...paramGet,
-                  PageIndex: page,
-                  PageSize: pageSize,
-                });
-              }}
-            />
-          )}
-          {/* {Boolean(true) && (
+          {areInArray(session?.user.roles!, ROLE_TECH, ROLE_SALES) && (
+            <>
+              <div className="flex flex-wrap items-center justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
+                <BreadcrumbComponent itemBreadcrumbs={itemBreadcrumbs} />
+              </div>
+              <RequestHostTable
+                urlOncell=""
+                onEdit={(record) => {}}
+                onDelete={async (record) => {}}
+              />
+              {requestHostData?.totalPage > 0 && (
+                <Pagination
+                  className="text-end m-4"
+                  current={paramGet?.PageIndex}
+                  pageSize={requestHostData?.pageSize ?? 10}
+                  total={requestHostData?.totalSize}
+                  onChange={(page, pageSize) => {
+                    setParamGet({
+                      ...paramGet,
+                      PageIndex: page,
+                      PageSize: pageSize,
+                    });
+                  }}
+                />
+              )}
+              {/* {Boolean(true) && (
             <FloatButton.Group
               trigger="hover"
               type="primary"
@@ -114,6 +118,8 @@ const RequestHostList: React.FC = () => {
               />
             </FloatButton.Group>
           )} */}
+            </>
+          )}
         </>
       }
     />

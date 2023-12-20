@@ -21,11 +21,12 @@ import rackService from "@services/rack";
 import ModalUpdate from "@components/area/rack/ModalUpdate";
 import { useRouter } from "next/router";
 import moment from "moment";
-import { dateAdvFormat } from "@utils/constants";
+import { ROLE_TECH, dateAdvFormat } from "@utils/constants";
 import { ItemType } from "antd/es/breadcrumb/Breadcrumb";
 import BreadcrumbComponent from "@components/BreadcrumbComponent";
 import RackTable from "@components/area/rack/RackRender";
 import { Rack, RackCreateModel, RackUpdateModel } from "@models/rack";
+import { areInArray } from "@utils/helpers";
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
 });
@@ -136,48 +137,52 @@ const AreaDetail: React.FC = () => {
     <AntdLayoutNoSSR
       content={
         <>
-          <div className="flex justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
-            <BreadcrumbComponent itemBreadcrumbs={itemBreadcrumbs} />
-            <Button
-              type="primary"
-              htmlType="submit"
-              onClick={() => {
-                setOpenModalCreate(true);
-              }}
-            >
-              Create
-            </Button>
-            {/* <SearchComponent
+          {areInArray(session?.user.roles!, ROLE_TECH) && (
+            <>
+              <div className="flex justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
+                <BreadcrumbComponent itemBreadcrumbs={itemBreadcrumbs} />
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  onClick={() => {
+                    setOpenModalCreate(true);
+                  }}
+                >
+                  Create
+                </Button>
+                {/* <SearchComponent
               placeholder="Search Name, Description..."
               setSearchValue={(value) =>
                 setParamGet({ ...paramGet, SearchValue: value })
               }
             /> */}
-          </div>
-          <Divider orientation="left" plain>
-            <h3>Area Information</h3>
-          </Divider>{" "}
-          {/* <Descriptions className="p-5" items={itemDetails} /> */}
-          <RackTable
-            area={areaDetail!}
-            onEdit={(record) => {
-              setRackUpdate(record!);
-            }}
-          />
-          <ModalCreate
-            open={openModalCreate}
-            onClose={() => setOpenModalCreate(false)}
-            onSubmit={(data: RackCreateModel) => {
-              createData(data);
-            }}
-          />
-          <ModalUpdate
-            rack={rackUpdate!}
-            onClose={() => setRackUpdate(undefined)}
-            onSubmit={(data: RackUpdateModel) => {
-              updateData(data);
-            }}
-          />
+              </div>
+              <Divider orientation="left" plain>
+                <h3>Area Information</h3>
+              </Divider>{" "}
+              {/* <Descriptions className="p-5" items={itemDetails} /> */}
+              <RackTable
+                area={areaDetail!}
+                onEdit={(record) => {
+                  setRackUpdate(record!);
+                }}
+              />
+              <ModalCreate
+                open={openModalCreate}
+                onClose={() => setOpenModalCreate(false)}
+                onSubmit={(data: RackCreateModel) => {
+                  createData(data);
+                }}
+              />
+              <ModalUpdate
+                rack={rackUpdate!}
+                onClose={() => setRackUpdate(undefined)}
+                onSubmit={(data: RackUpdateModel) => {
+                  updateData(data);
+                }}
+              />
+            </>
+          )}
         </>
       }
     />

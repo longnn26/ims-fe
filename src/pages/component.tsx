@@ -18,6 +18,8 @@ import ModalCreate from "@components/component/ModalCreate";
 import componentService from "@services/component";
 import ModalUpdate from "@components/component/ModalUpdate";
 import ComponentTable from "@components/component/ComponentTable";
+import { areInArray } from "@utils/helpers";
+import { ROLE_TECH } from "@utils/constants";
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
 });
@@ -118,60 +120,64 @@ const Customer: React.FC = () => {
     <AntdLayoutNoSSR
       content={
         <>
-          <div className="flex justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
-            <Button
-              type="primary"
-              htmlType="submit"
-              onClick={() => {
-                setOpenModalCreate(true);
-              }}
-            >
-              Create
-            </Button>
-            {/* <SearchComponent
+          {areInArray(session?.user.roles!, ROLE_TECH) && (
+            <>
+              <div className="flex justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  onClick={() => {
+                    setOpenModalCreate(true);
+                  }}
+                >
+                  Create
+                </Button>
+                {/* <SearchComponent
               placeholder="Search Name, Description..."
               setSearchValue={(value) =>
                 setParamGet({ ...paramGet, SearchValue: value })
               }
             /> */}
-          </div>
-          <ComponentTable
-            onEdit={(record) => {
-              setComponentUpdate(record);
-            }}
-            onDelete={async (record) => {
-              deleteComponent(record);
-            }}
-          />
+              </div>
+              <ComponentTable
+                onEdit={(record) => {
+                  setComponentUpdate(record);
+                }}
+                onDelete={async (record) => {
+                  deleteComponent(record);
+                }}
+              />
 
-          <ModalCreate
-            open={openModalCreate}
-            onClose={() => setOpenModalCreate(false)}
-            onSubmit={(data: ComponentCreateModel) => {
-              createData(data);
-            }}
-          />
-          <ModalUpdate
-            component={componentUpdate!}
-            onClose={() => setComponentUpdate(undefined)}
-            onSubmit={(data: ComponentUpdateModel) => {
-              updateData(data);
-            }}
-          />
-          {componentData.totalPage > 0 && (
-            <Pagination
-              className="text-end m-4"
-              current={paramGet.PageIndex}
-              pageSize={componentData.pageSize ?? 10}
-              total={componentData.totalSize}
-              onChange={(page, pageSize) => {
-                setParamGet({
-                  ...paramGet,
-                  PageIndex: page,
-                  PageSize: pageSize,
-                });
-              }}
-            />
+              <ModalCreate
+                open={openModalCreate}
+                onClose={() => setOpenModalCreate(false)}
+                onSubmit={(data: ComponentCreateModel) => {
+                  createData(data);
+                }}
+              />
+              <ModalUpdate
+                component={componentUpdate!}
+                onClose={() => setComponentUpdate(undefined)}
+                onSubmit={(data: ComponentUpdateModel) => {
+                  updateData(data);
+                }}
+              />
+              {componentData.totalPage > 0 && (
+                <Pagination
+                  className="text-end m-4"
+                  current={paramGet.PageIndex}
+                  pageSize={componentData.pageSize ?? 10}
+                  total={componentData.totalSize}
+                  onChange={(page, pageSize) => {
+                    setParamGet({
+                      ...paramGet,
+                      PageIndex: page,
+                      PageSize: pageSize,
+                    });
+                  }}
+                />
+              )}
+            </>
           )}
         </>
       }

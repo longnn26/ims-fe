@@ -5,6 +5,8 @@ import RackMapRender from "@components/area/rack/RackMapRender";
 import PieChartComponent from "@components/chartComponent/Pie";
 import { Rack, RackMap } from "@models/rack";
 import area from "@services/rack";
+import { ROLE_TECH } from "@utils/constants";
+import { areInArray } from "@utils/helpers";
 import { Avatar, Button, List } from "antd";
 import { useSession } from "next-auth/react";
 import dynamic from "next/dynamic";
@@ -50,31 +52,35 @@ const AreaDetail: React.FC = () => {
     <AntdLayoutNoSSR
       content={
         <>
-          <div className="flex justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
-            {/* <BreadcrumbComponent itemBreadcrumbs={itemBreadcrumbs} /> */}
-            <Button
-              type="primary"
-              className="mb-2"
-              icon={<CaretLeftOutlined />}
-              onClick={() => router.back()}
-            ></Button>
-          </div>
+          {areInArray(session?.user.roles!, ROLE_TECH) && (
+            <>
+              <div className="flex justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
+                {/* <BreadcrumbComponent itemBreadcrumbs={itemBreadcrumbs} /> */}
+                <Button
+                  type="primary"
+                  className="mb-2"
+                  icon={<CaretLeftOutlined />}
+                  onClick={() => router.back()}
+                ></Button>
+              </div>
 
-          <RackDetail rackDetail={rackDetail!} />
-          <div className="flex ">
-            <div className="w-2/3">
-              <RackMapRender rackMapList={rackMapList} />
-            </div>
-            <div className="w-1/3">
-              <PieChartComponent
-                data={[
-                  { name: "Available", value: available, color: "#e1efd8" },
-                  { name: "Booked", value: booked, color: "#c2e4ea" },
-                  { name: "Reserved", value: reserved, color: "#fbe4d4" },
-                ]}
-              />
-            </div>
-          </div>
+              <RackDetail rackDetail={rackDetail!} />
+              <div className="flex ">
+                <div className="w-2/3">
+                  <RackMapRender rackMapList={rackMapList} />
+                </div>
+                <div className="w-1/3">
+                  <PieChartComponent
+                    data={[
+                      { name: "Available", value: available, color: "#e1efd8" },
+                      { name: "Booked", value: booked, color: "#c2e4ea" },
+                      { name: "Reserved", value: reserved, color: "#fbe4d4" },
+                    ]}
+                  />
+                </div>
+              </div>
+            </>
+          )}
         </>
       }
     />
