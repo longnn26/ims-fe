@@ -15,6 +15,8 @@ import requestUpgradeService from "@services/requestUpgrade";
 import ModalUpdate from "@components/server/requestUpgrade/ModalUpdate";
 import dynamic from "next/dynamic";
 import React, { useEffect, useState } from "react";
+import { ROLE_SALES, ROLE_TECH } from "@utils/constants";
+import { areInArray } from "@utils/helpers";
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
 });
@@ -94,32 +96,36 @@ const Customer: React.FC = () => {
     <AntdLayoutNoSSR
       content={
         <>
-          <div className="flex justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50"></div>
+          {areInArray(session?.user.roles!, ROLE_TECH, ROLE_SALES) && (
+            <>
+              <div className="flex justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50"></div>
 
-          <RequestUpgradeTable
-            urlOncell=""
-            onEdit={(record) => {
-              setRequestUpgradeUpdate(record);
-            }}
-            onDelete={async (record) => {
-              deleteData(record);
-            }}
-          />
+              <RequestUpgradeTable
+                urlOncell=""
+                onEdit={(record) => {
+                  setRequestUpgradeUpdate(record);
+                }}
+                onDelete={async (record) => {
+                  deleteData(record);
+                }}
+              />
 
-          {requestUpgradeData.totalPage > 0 && (
-            <Pagination
-              className="text-end m-4"
-              current={paramGet?.PageIndex}
-              pageSize={requestUpgradeData?.pageSize ?? 10}
-              total={requestUpgradeData?.totalSize}
-              onChange={(page, pageSize) => {
-                setParamGet({
-                  ...paramGet,
-                  PageIndex: page,
-                  PageSize: pageSize,
-                });
-              }}
-            />
+              {requestUpgradeData.totalPage > 0 && (
+                <Pagination
+                  className="text-end m-4"
+                  current={paramGet?.PageIndex}
+                  pageSize={requestUpgradeData?.pageSize ?? 10}
+                  total={requestUpgradeData?.totalSize}
+                  onChange={(page, pageSize) => {
+                    setParamGet({
+                      ...paramGet,
+                      PageIndex: page,
+                      PageSize: pageSize,
+                    });
+                  }}
+                />
+              )}
+            </>
           )}
         </>
       }

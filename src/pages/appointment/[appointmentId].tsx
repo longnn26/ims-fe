@@ -45,6 +45,8 @@ import ModalFail from "@components/appointment/ModalFail";
 import RequestExpandTable from "@components/server/requestExpand/RequestExpandTable";
 import ModalAccept from "@components/appointment/ModalAccept";
 import ModalDeny from "@components/appointment/ModalDeny";
+import { areInArray } from "@utils/helpers";
+import { ROLE_CUSTOMER, ROLE_SALES, ROLE_TECH } from "@utils/constants";
 const { confirm } = Modal;
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
@@ -302,145 +304,160 @@ const Appoinment: React.FC = () => {
     <AntdLayoutNoSSR
       content={
         <>
-          <div className="scroll-auto flex flex-wrap items-center justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
-            <div>
-              <Button
-                type="primary"
-                className="mb-2"
-                icon={<CaretLeftOutlined />}
-                onClick={() => router.back()}
-              ></Button>
-              <BreadcrumbComponent itemBreadcrumbs={itemBreadcrumbs} />
-            </div>
-            <AppointmentDetail appointmentDetail={appointmentDetail!} />
-            {Boolean(
-              appointmentDetail?.status === "Success" &&
-                !appointmentDetail.documentConfirm
-            ) && (
-              <>
-                <div className="w-full md:m-5 md:flex">
-                  <div className="md:w-1/2 md:pr-5">
-                    <UploadComponent
-                      fileList={fileInspectionReport}
-                      title="Inspection report"
-                      setFileList={setFileInspectionReport}
-                      multiple={false}
-                      maxCount={1}
-                      disabled={setDisabledInspectionReport}
-                    />
-                  </div>
-                  <div className="md:w-1/2 md:pl-5 h-28">
-                    <UploadComponent
-                      fileList={fileReceiptOfRecipient}
-                      title="Receipt of recipient"
-                      setFileList={setFileReceiptOfRecipient}
-                      multiple={false}
-                      maxCount={1}
-                      disabled={setDisabledReceiptOfRecipient}
-                    />
-                  </div>
+          {areInArray(
+            session?.user.roles!,
+            ROLE_TECH,
+            ROLE_SALES,
+            ROLE_CUSTOMER
+          ) && (
+            <>
+              <div className="scroll-auto flex flex-wrap items-center justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
+                <div>
+                  <Button
+                    type="primary"
+                    className="mb-2"
+                    icon={<CaretLeftOutlined />}
+                    onClick={() => router.back()}
+                  ></Button>
+                  <BreadcrumbComponent itemBreadcrumbs={itemBreadcrumbs} />
                 </div>
-                <Button
-                  icon={<UploadOutlined />}
-                  loading={loadingUploadDocument}
-                  className="w-full m-5"
+                <AppointmentDetail appointmentDetail={appointmentDetail!} />
+                {Boolean(
+                  appointmentDetail?.status === "Success" &&
+                    !appointmentDetail.documentConfirm
+                ) && (
+                  <>
+                    <div className="w-full md:m-5 md:flex">
+                      <div className="md:w-1/2 md:pr-5">
+                        <UploadComponent
+                          fileList={fileInspectionReport}
+                          title="Inspection report"
+                          setFileList={setFileInspectionReport}
+                          multiple={false}
+                          maxCount={1}
+                          disabled={setDisabledInspectionReport}
+                        />
+                      </div>
+                      <div className="md:w-1/2 md:pl-5 h-28">
+                        <UploadComponent
+                          fileList={fileReceiptOfRecipient}
+                          title="Receipt of recipient"
+                          setFileList={setFileReceiptOfRecipient}
+                          multiple={false}
+                          maxCount={1}
+                          disabled={setDisabledReceiptOfRecipient}
+                        />
+                      </div>
+                    </div>
+                    <Button
+                      icon={<UploadOutlined />}
+                      loading={loadingUploadDocument}
+                      className="w-full m-5"
+                      type="primary"
+                      disabled={
+                        !Boolean(
+                          fileInspectionReport.length > 0 &&
+                            fileReceiptOfRecipient.length > 0
+                        ) ||
+                        disabledInspectionReport ||
+                        disabledReceiptOfRecipient
+                      }
+                      onClick={() => {
+                        uploadDocument();
+                      }}
+                    >
+                      Upload
+                    </Button>
+                  </>
+                )}
+              </div>
+
+              {Boolean(
+                appointmentDetail?.status === "Waiting" &&
+                  areInArray(session?.user.roles!, ROLE_SALES)
+              ) && (
+                <FloatButton.Group
+                  trigger="hover"
                   type="primary"
-                  disabled={
-                    !Boolean(
-                      fileInspectionReport.length > 0 &&
-                        fileReceiptOfRecipient.length > 0
-                    ) ||
-                    disabledInspectionReport ||
-                    disabledReceiptOfRecipient
-                  }
-                  onClick={() => {
-                    uploadDocument();
-                  }}
+                  style={{ right: 60, bottom: 500 }}
+                  icon={<AiOutlineFileDone />}
                 >
-                  Upload
-                </Button>
-              </>
-            )}
-          </div>
+                  <FloatButton
+                    icon={<MdCancel color="red" />}
+                    tooltip="Deny"
+                    onClick={() => setOpenModalDeny(true)}
+                  />
+                  <FloatButton
+                    onClick={() => setOpenModalAccept(true)}
+                    icon={<AiOutlineFileDone color="green" />}
+                    tooltip="Accept"
+                  />
+                </FloatButton.Group>
+              )}
 
-          {appointmentDetail?.status === "Waiting" && (
-            <FloatButton.Group
-              trigger="hover"
-              type="primary"
-              style={{ right: 60, bottom: 500 }}
-              icon={<AiOutlineFileDone />}
-            >
-              <FloatButton
-                icon={<MdCancel color="red" />}
-                tooltip="Deny"
-                onClick={() => setOpenModalDeny(true)}
+              <Tabs className="m-5" defaultActiveKey="1" items={items} />
+              <ModalUpdate
+                open={openModalUpdate}
+                requestUpgrade={requestUpgradeUpdate!}
+                onClose={() => {
+                  setRequestUpgradeUpdate(undefined);
+                  setOpenModalUpdate(false);
+                }}
+                onSubmit={(data: RequestUpgradeUpdateModel) => {
+                  data.serverAllocationId = parseInt(
+                    router.query!.serverAllocationId!.toString()
+                  );
+                  updateRequestUpgrade(data);
+                }}
               />
-              <FloatButton
-                onClick={() => setOpenModalAccept(true)}
-                icon={<AiOutlineFileDone color="green" />}
-                tooltip="Accept"
-              />
-            </FloatButton.Group>
-          )}
 
-          <Tabs className="m-5" defaultActiveKey="1" items={items} />
-          <ModalUpdate
-            open={openModalUpdate}
-            requestUpgrade={requestUpgradeUpdate!}
-            onClose={() => {
-              setRequestUpgradeUpdate(undefined);
-              setOpenModalUpdate(false);
-            }}
-            onSubmit={(data: RequestUpgradeUpdateModel) => {
-              data.serverAllocationId = parseInt(
-                router.query!.serverAllocationId!.toString()
-              );
-              updateRequestUpgrade(data);
-            }}
-          />
-
-          <ModalComplete
-            open={openComplete}
-            appointment={appointmentDetail!}
-            onSubmit={(value) => completeAppointment(value)}
-            onClose={() => setOpenComplete(false)}
-          />
-          <ModalFail
-            open={openFail}
-            onSubmit={(value) => failAppointment(value)}
-            onClose={() => setOpenFail(false)}
-          />
-          <ModalAccept
-            open={openModalAccept}
-            onClose={() => setOpenModalAccept(false)}
-            appointmentId={appointmentDetail?.id!}
-            getData={() => getData()}
-          />
-          <ModalDeny
-            open={openModalDeny}
-            onClose={() => setOpenModalDeny(false)}
-            appointmentId={appointmentDetail?.id!}
-            getData={() => getData()}
-          />
-
-          {appointmentDetail?.status === "Accepted" && (
-            <FloatButton.Group
-              trigger="hover"
-              type="primary"
-              style={{ right: 60, bottom: 500 }}
-              icon={<AiOutlineFileDone />}
-            >
-              <FloatButton
-                icon={<MdCancel color="red" />}
-                tooltip="Fail"
-                onClick={() => setOpenFail(true)}
+              <ModalComplete
+                open={openComplete}
+                appointment={appointmentDetail!}
+                onSubmit={(value) => completeAppointment(value)}
+                onClose={() => setOpenComplete(false)}
               />
-              <FloatButton
-                onClick={() => setOpenComplete(true)}
-                icon={<AiOutlineFileDone color="green" />}
-                tooltip="Complete"
+              <ModalFail
+                open={openFail}
+                onSubmit={(value) => failAppointment(value)}
+                onClose={() => setOpenFail(false)}
               />
-            </FloatButton.Group>
+              <ModalAccept
+                open={openModalAccept}
+                onClose={() => setOpenModalAccept(false)}
+                appointmentId={appointmentDetail?.id!}
+                getData={() => getData()}
+              />
+              <ModalDeny
+                open={openModalDeny}
+                onClose={() => setOpenModalDeny(false)}
+                appointmentId={appointmentDetail?.id!}
+                getData={() => getData()}
+              />
+
+              {Boolean(
+                appointmentDetail?.status === "Accepted" &&
+                  areInArray(session?.user.roles!, ROLE_TECH)
+              ) && (
+                <FloatButton.Group
+                  trigger="hover"
+                  type="primary"
+                  style={{ right: 60, bottom: 500 }}
+                  icon={<AiOutlineFileDone />}
+                >
+                  <FloatButton
+                    icon={<MdCancel color="red" />}
+                    tooltip="Fail"
+                    onClick={() => setOpenFail(true)}
+                  />
+                  <FloatButton
+                    onClick={() => setOpenComplete(true)}
+                    icon={<AiOutlineFileDone color="green" />}
+                    tooltip="Complete"
+                  />
+                </FloatButton.Group>
+              )}
+            </>
           )}
         </>
       }

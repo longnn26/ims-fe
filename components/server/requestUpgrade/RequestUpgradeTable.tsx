@@ -15,10 +15,16 @@ import { AiFillDelete } from "react-icons/ai";
 import moment from "moment";
 import { Descriptions, RequestUpgrade } from "@models/requestUpgrade";
 import { ComponentObj } from "@models/component";
-import { dateAdvFormat, requestUpgradeStatus } from "@utils/constants";
+import {
+  ROLE_TECH,
+  dateAdvFormat,
+  requestUpgradeStatus,
+} from "@utils/constants";
 import useSelector from "@hooks/use-selector";
 import { useRouter } from "next/router";
 import requestUpgrade from "@services/requestUpgrade";
+import { areInArray } from "@utils/helpers";
+import { useSession } from "next-auth/react";
 
 interface Props {
   typeGet?: string;
@@ -46,6 +52,7 @@ interface DataType {
 const RequestUpgradeTable: React.FC<Props> = (props) => {
   const { onEdit, onDelete, urlOncell, typeGet } = props;
   const router = useRouter();
+  const { data: session } = useSession();
 
   const { requestUpgradeDataLoading, requestUpgradeData } = useSelector(
     (state) => state.requestUpgrade
@@ -110,7 +117,8 @@ const RequestUpgradeTable: React.FC<Props> = (props) => {
           {Boolean(
             record.status !== "Success" &&
               record.status !== "Failed" &&
-              record.status !== "Denied"
+              record.status !== "Denied" &&
+              areInArray(session?.user.roles!, ROLE_TECH)
           ) && (
             <>
               <Tooltip title="Edit" color={"black"}>

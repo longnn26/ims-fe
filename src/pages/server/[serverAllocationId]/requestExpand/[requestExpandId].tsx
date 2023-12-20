@@ -283,41 +283,44 @@ const RequestExpandDetail: React.FC = () => {
         <>
           <div className="flex flex-wrap items-center justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
             <BreadcrumbComponent itemBreadcrumbs={itemBreadcrumbs} />
+
             {Boolean(
               requestExpandDetail?.status === "Accepted" &&
                 areInArray(
                   session?.user.roles!,
                   ROLE_SALES,
-                  ROLE_TECH,
-                  ROLE_CUSTOMER
+                  ROLE_TECH
+                  // ROLE_CUSTOMER
                 )
             ) && (
-              <div>
-                <Button
-                  type="primary"
-                  className="mb-2"
-                  icon={<EditOutlined />}
-                  onClick={async () => {
-                    setRequestExpandUpdate(requestExpandDetail);
-                    if (
-                      !requestExpandDetail?.requestedLocation &&
-                      requestExpandDetail?.size! > 0
-                    ) {
-                      await requestExpandService
-                        .getSuggestLocation(
-                          session?.user.access_token!,
-                          requestExpandDetail?.id!
-                        )
-                        .then((res) => {
-                          setSuggestLocation(res);
-                        })
-                        .catch((e) => {});
-                    }
-                  }}
-                >
-                  Update
-                </Button>
-              </div>
+              <>
+                <div>
+                  <Button
+                    type="primary"
+                    className="mb-2"
+                    icon={<EditOutlined />}
+                    onClick={async () => {
+                      setRequestExpandUpdate(requestExpandDetail);
+                      if (
+                        !requestExpandDetail?.requestedLocation &&
+                        requestExpandDetail?.size! > 0
+                      ) {
+                        await requestExpandService
+                          .getSuggestLocation(
+                            session?.user.access_token!,
+                            requestExpandDetail?.id!
+                          )
+                          .then((res) => {
+                            setSuggestLocation(res);
+                          })
+                          .catch((e) => {});
+                      }
+                    }}
+                  >
+                    Update
+                  </Button>
+                </div>
+              </>
             )}
           </div>
           {areInArray(
@@ -358,7 +361,10 @@ const RequestExpandDetail: React.FC = () => {
                 />
               )}
 
-              {requestExpandDetail?.status === "Waiting" && (
+              {Boolean(
+                requestExpandDetail?.status === "Waiting" &&
+                  areInArray(session?.user.roles!, ROLE_SALES)
+              ) && (
                 <FloatButton.Group
                   trigger="hover"
                   type="primary"

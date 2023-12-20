@@ -23,6 +23,8 @@ import StaffRole from "@components/admin/StaffRole";
 import ModalCreate from "@components/admin/ModalCreate";
 import ModalUpdate from "@components/admin/ModalUpdate";
 import ModalUpdateRole from "@components/admin/ModalUpdateRole";
+import { areInArray } from "@utils/helpers";
+import { ROLE_ADMIN } from "@utils/constants";
 
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
@@ -153,123 +155,127 @@ const StaffAccountPage: React.FC = () => {
     <AntdLayoutNoSSR
       content={
         <>
-          <div className="flex justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
-            <Button
-              type="primary"
-              htmlType="submit"
-              onClick={() => {
-                setOpenModalCreate(true);
-              }}
-            >
-              Create
-            </Button>
-            <Button
-              type="primary"
-              htmlType="submit"
-              onClick={() => {
-                setOpenModalUpdate(true);
-              }}
-            >
-              Update Information
-            </Button>
-          </div>
-          <ModalCreate
-            open={openModalCreate}
-            onClose={() => setOpenModalCreate(false)}
-            onSubmit={(data: UserCreateModel) => {
-              createData(data);
-            }}
-          />
-          <ModalUpdate
-            open={openModalUpdate}
-            onClose={() => setOpenModalUpdate(false)}
-            data={staffAccountDetail}
-            onSubmit={(data: UserUpdateModel) => {
-              updateData(data);
-            }}
-          />
-          <ModalUpdateRole
-            open={openModalUpdateRole}
-            onClose={() => setOpenModalUpdateRole(false)}
-            data={staffAccountDetail}
-            isDelete={isDelete}
-            onSubmit={(data: UserUpdateRole) => {
-              if (isDelete) {
-                deleteRole(data);
-              } else {
-                addRole(data);
-              }
-            }}
-          />
-          <div className="flex justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
-            {/* Left side: StaffAccountTable */}
-            <div style={{ width: "calc(100% - 70%)" }}>
-              <StaffAccountTable
-                onRowClick={(record) => {
-                  const selectedUser = userData?.data.find(
-                    (user) => user.id === record.id
-                  );
-                  if (selectedUser) {
-                    setStaffAccountDetail(selectedUser);
+          {areInArray(session?.user.roles!, ROLE_ADMIN) && (
+            <>
+              <div className="flex justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  onClick={() => {
+                    setOpenModalCreate(true);
+                  }}
+                >
+                  Create
+                </Button>
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  onClick={() => {
+                    setOpenModalUpdate(true);
+                  }}
+                >
+                  Update Information
+                </Button>
+              </div>
+              <ModalCreate
+                open={openModalCreate}
+                onClose={() => setOpenModalCreate(false)}
+                onSubmit={(data: UserCreateModel) => {
+                  createData(data);
+                }}
+              />
+              <ModalUpdate
+                open={openModalUpdate}
+                onClose={() => setOpenModalUpdate(false)}
+                data={staffAccountDetail}
+                onSubmit={(data: UserUpdateModel) => {
+                  updateData(data);
+                }}
+              />
+              <ModalUpdateRole
+                open={openModalUpdateRole}
+                onClose={() => setOpenModalUpdateRole(false)}
+                data={staffAccountDetail}
+                isDelete={isDelete}
+                onSubmit={(data: UserUpdateRole) => {
+                  if (isDelete) {
+                    deleteRole(data);
+                  } else {
+                    addRole(data);
                   }
                 }}
               />
-              {userData.totalPage > 0 && (
-                <Pagination
-                  className="text-end m-4"
-                  current={paramGet.PageIndex}
-                  pageSize={userData.pageSize ?? 10}
-                  total={userData.totalSize}
-                  onChange={(page, pageSize) => {
-                    setParamGet({
-                      ...paramGet,
-                      PageIndex: page,
-                      PageSize: pageSize,
-                    });
-                  }}
-                />
-              )}
-            </div>
-
-            {/* Right side */}
-            <div>
-              <StaffAccountDetail staffAccountDetail={staffAccountDetail} />
-              <div className="flex justify-end mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
-                {staffAccountDetail === undefined ||
-                  (staffAccountDetail.positions &&
-                    staffAccountDetail.positions.length < 3 && (
-                      <Button
-                        type="primary"
-                        className="ml-auto mr-2"
-                        htmlType="submit"
-                        onClick={() => {
-                          setOpenModalUpdateRole(true);
-                          setIsDelete(false);
-                        }}
-                      >
-                        (+) Add Position
-                      </Button>
-                    ))}
-
-                {staffAccountDetail !== undefined &&
-                  staffAccountDetail.positions && // Check if positions is defined
-                  staffAccountDetail.positions.length > 1 &&
-                  staffAccountDetail.positions.length <= 3 && (
-                    <Button
-                      type="primary"
-                      htmlType="submit"
-                      onClick={() => {
-                        setOpenModalUpdateRole(true);
-                        setIsDelete(true);
+              <div className="flex justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
+                {/* Left side: StaffAccountTable */}
+                <div style={{ width: "calc(100% - 70%)" }}>
+                  <StaffAccountTable
+                    onRowClick={(record) => {
+                      const selectedUser = userData?.data.find(
+                        (user) => user.id === record.id
+                      );
+                      if (selectedUser) {
+                        setStaffAccountDetail(selectedUser);
+                      }
+                    }}
+                  />
+                  {userData.totalPage > 0 && (
+                    <Pagination
+                      className="text-end m-4"
+                      current={paramGet.PageIndex}
+                      pageSize={userData.pageSize ?? 10}
+                      total={userData.totalSize}
+                      onChange={(page, pageSize) => {
+                        setParamGet({
+                          ...paramGet,
+                          PageIndex: page,
+                          PageSize: pageSize,
+                        });
                       }}
-                    >
-                      (X) Delete Position
-                    </Button>
+                    />
                   )}
+                </div>
+
+                {/* Right side */}
+                <div>
+                  <StaffAccountDetail staffAccountDetail={staffAccountDetail} />
+                  <div className="flex justify-end mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
+                    {staffAccountDetail === undefined ||
+                      (staffAccountDetail.positions &&
+                        staffAccountDetail.positions.length < 3 && (
+                          <Button
+                            type="primary"
+                            className="ml-auto mr-2"
+                            htmlType="submit"
+                            onClick={() => {
+                              setOpenModalUpdateRole(true);
+                              setIsDelete(false);
+                            }}
+                          >
+                            (+) Add Position
+                          </Button>
+                        ))}
+
+                    {staffAccountDetail !== undefined &&
+                      staffAccountDetail.positions && // Check if positions is defined
+                      staffAccountDetail.positions.length > 1 &&
+                      staffAccountDetail.positions.length <= 3 && (
+                        <Button
+                          type="primary"
+                          htmlType="submit"
+                          onClick={() => {
+                            setOpenModalUpdateRole(true);
+                            setIsDelete(true);
+                          }}
+                        >
+                          (X) Delete Position
+                        </Button>
+                      )}
+                  </div>
+                  <StaffRole staffRole={staffAccountDetail?.positions} />
+                </div>
               </div>
-              <StaffRole staffRole={staffAccountDetail?.positions} />
-            </div>
-          </div>
+            </>
+          )}
         </>
       }
     />

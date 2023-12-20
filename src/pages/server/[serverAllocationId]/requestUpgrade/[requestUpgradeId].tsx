@@ -220,9 +220,6 @@ const RequestUpgradeDetail: React.FC = () => {
     <AntdLayoutNoSSR
       content={
         <>
-          <div className="flex flex-wrap items-center justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
-            <BreadcrumbComponent itemBreadcrumbs={itemBreadcrumbs} />
-          </div>
           {areInArray(
             session?.user.roles!,
             ROLE_SALES,
@@ -230,6 +227,9 @@ const RequestUpgradeDetail: React.FC = () => {
             ROLE_CUSTOMER
           ) && (
             <>
+              <div className="flex flex-wrap items-center justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
+                <BreadcrumbComponent itemBreadcrumbs={itemBreadcrumbs} />
+              </div>
               <div className="md:flex">
                 <ServerDetail
                   serverAllocationDetail={serverAllocationDetail!}

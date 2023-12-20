@@ -4,6 +4,8 @@ import useDispatch from "@hooks/use-dispatch";
 import useSelector from "@hooks/use-selector";
 import { RUAppointmentParamGet } from "@models/requestUpgrade";
 import { getListAppointment } from "@slices/appointment";
+import { ROLE_SALES, ROLE_TECH } from "@utils/constants";
+import { areInArray } from "@utils/helpers";
 import { Pagination } from "antd";
 import { ItemType } from "antd/es/breadcrumb/Breadcrumb";
 import { useSession } from "next-auth/react";
@@ -47,26 +49,30 @@ const Appoinment: React.FC = () => {
     <AntdLayoutNoSSR
       content={
         <>
-          <AppointmentTable
-            typeGet="All"
-            urlOncell=""
-            onEdit={(record) => {}}
-            onDelete={async (record) => {}}
-          />
-          {listAppointmentData?.totalPage > 0 && (
-            <Pagination
-              className="text-end m-4"
-              current={rUAppointmentParamGet?.PageIndex}
-              pageSize={listAppointmentData?.pageSize ?? 10}
-              total={listAppointmentData?.totalSize}
-              onChange={(page, pageSize) => {
-                setRUAppointmentParamGet({
-                  ...rUAppointmentParamGet,
-                  PageIndex: page,
-                  PageSize: pageSize,
-                });
-              }}
-            />
+          {areInArray(session?.user.roles!, ROLE_TECH, ROLE_SALES) && (
+            <>
+              <AppointmentTable
+                typeGet="All"
+                urlOncell=""
+                onEdit={(record) => {}}
+                onDelete={async (record) => {}}
+              />
+              {listAppointmentData?.totalPage > 0 && (
+                <Pagination
+                  className="text-end m-4"
+                  current={rUAppointmentParamGet?.PageIndex}
+                  pageSize={listAppointmentData?.pageSize ?? 10}
+                  total={listAppointmentData?.totalSize}
+                  onChange={(page, pageSize) => {
+                    setRUAppointmentParamGet({
+                      ...rUAppointmentParamGet,
+                      PageIndex: page,
+                      PageSize: pageSize,
+                    });
+                  }}
+                />
+              )}
+            </>
           )}
         </>
       }

@@ -19,6 +19,8 @@ import { IpSubnet, IpSubnetCreateModel } from "@models/ipSubnet";
 import { ParamGetWithId } from "@models/base";
 import { getIpAddressData } from "@slices/ipSubnet";
 import IpAddressTable from "@components/ipSubnet/IpAddressTable";
+import { ROLE_TECH } from "@utils/constants";
+import { areInArray } from "@utils/helpers";
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
 });
@@ -83,38 +85,42 @@ const IpSubnetDetail: React.FC = () => {
     <AntdLayoutNoSSR
       content={
         <>
-          <div className="flex flex-wrap items-center justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
-            <div>
-              <Button
-                type="primary"
-                className="mb-2"
-                icon={<CaretLeftOutlined />}
-                onClick={() => router.back()}
-              ></Button>
-              <BreadcrumbComponent itemBreadcrumbs={itemBreadcrumbs} />
-            </div>
-          </div>
-          <IpSubnetDetailInfor
-            ipSubnetDetail={ipSubnetDetail!}
-          ></IpSubnetDetailInfor>
-          <IpAddressTable
-            onEdit={(record) => {}}
-            onDelete={async (record) => {}}
-          />
-          {ipAddressData?.totalPage > 0 && (
-            <Pagination
-              className="text-end m-4"
-              current={ipAddressParamGet?.PageIndex}
-              pageSize={ipAddressData?.pageSize ?? 10}
-              total={ipAddressData?.totalSize}
-              onChange={(page, pageSize) => {
-                setIpAddressParamGet({
-                  ...ipAddressParamGet,
-                  PageIndex: page,
-                  PageSize: pageSize,
-                });
-              }}
-            />
+          {areInArray(session?.user.roles!, ROLE_TECH) && (
+            <>
+              <div className="flex flex-wrap items-center justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
+                <div>
+                  <Button
+                    type="primary"
+                    className="mb-2"
+                    icon={<CaretLeftOutlined />}
+                    onClick={() => router.back()}
+                  ></Button>
+                  <BreadcrumbComponent itemBreadcrumbs={itemBreadcrumbs} />
+                </div>
+              </div>
+              <IpSubnetDetailInfor
+                ipSubnetDetail={ipSubnetDetail!}
+              ></IpSubnetDetailInfor>
+              <IpAddressTable
+                onEdit={(record) => {}}
+                onDelete={async (record) => {}}
+              />
+              {ipAddressData?.totalPage > 0 && (
+                <Pagination
+                  className="text-end m-4"
+                  current={ipAddressParamGet?.PageIndex}
+                  pageSize={ipAddressData?.pageSize ?? 10}
+                  total={ipAddressData?.totalSize}
+                  onChange={(page, pageSize) => {
+                    setIpAddressParamGet({
+                      ...ipAddressParamGet,
+                      PageIndex: page,
+                      PageSize: pageSize,
+                    });
+                  }}
+                />
+              )}
+            </>
           )}
         </>
       }

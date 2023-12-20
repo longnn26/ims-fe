@@ -162,20 +162,6 @@ const RequestExpand: React.FC = () => {
     <AntdLayoutNoSSR
       content={
         <>
-          <div className="flex flex-wrap items-center justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
-            <BreadcrumbComponent itemBreadcrumbs={itemBreadcrumbs} />
-          </div>
-
-          <ModalCreate
-            open={openModalCreate}
-            onClose={() => setOpenModalCreate(false)}
-            onSubmit={(data: RequestUpgradeCreateModel) => {
-              data.serverAllocationId = parseInt(
-                router.query!.serverAllocationId!.toString()
-              );
-              createData(data);
-            }}
-          />
           {areInArray(
             session?.user.roles!,
             ROLE_SALES,
@@ -183,6 +169,20 @@ const RequestExpand: React.FC = () => {
             ROLE_CUSTOMER
           ) && (
             <>
+              <div className="flex flex-wrap items-center justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
+                <BreadcrumbComponent itemBreadcrumbs={itemBreadcrumbs} />
+              </div>
+
+              <ModalCreate
+                open={openModalCreate}
+                onClose={() => setOpenModalCreate(false)}
+                onSubmit={(data: RequestUpgradeCreateModel) => {
+                  data.serverAllocationId = parseInt(
+                    router.query!.serverAllocationId!.toString()
+                  );
+                  createData(data);
+                }}
+              />
               <ServerDetail
                 serverAllocationDetail={serverAllocationDetail!}
               ></ServerDetail>

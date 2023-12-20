@@ -20,6 +20,8 @@ import ModalCreate from "@components/ipSubnet/ModalCreate";
 import ipSubnetService from "@services/ipSubnet";
 import type { DataNode, DirectoryTreeProps } from "antd/es/tree";
 import { useRouter } from "next/router";
+import { areInArray } from "@utils/helpers";
+import { ROLE_TECH } from "@utils/constants";
 
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
@@ -110,38 +112,40 @@ const IpSubnet: React.FC = () => {
     <AntdLayoutNoSSR
       content={
         <>
-          <div className="flex justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
-            <Button
-              type="primary"
-              htmlType="submit"
-              onClick={() => {
-                setOpenModalCreate(true);
-              }}
-            >
-              Create
-            </Button>
-          </div>
+          {areInArray(session?.user.roles!, ROLE_TECH) && (
+            <>
+              <div className="flex justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  onClick={() => {
+                    setOpenModalCreate(true);
+                  }}
+                >
+                  Create
+                </Button>
+              </div>
 
-          <ModalCreate
-            open={openModalCreate}
-            onClose={() => setOpenModalCreate(false)}
-            onRefresh={() => {
-              getData();
-            }}
-          />
-          {/* <IpSubnetTable
+              <ModalCreate
+                open={openModalCreate}
+                onClose={() => setOpenModalCreate(false)}
+                onRefresh={() => {
+                  getData();
+                }}
+              />
+              {/* <IpSubnetTable
             onEdit={(record) => {}}
             onDelete={async (record) => {}}
           /> */}
-          <div className="p-3">
-            <Tree
-              showLine={true}
-              onSelect={onSelect}
-              treeData={treeData}
-              selectedKeys={[ipSubnetSelected!]}
-            />
-          </div>
-          {/* {ipSubnetData.totalPage > 0 && (
+              <div className="p-3">
+                <Tree
+                  showLine={true}
+                  onSelect={onSelect}
+                  treeData={treeData}
+                  selectedKeys={[ipSubnetSelected!]}
+                />
+              </div>
+              {/* {ipSubnetData.totalPage > 0 && (
             <Pagination
               className="text-end m-4"
               current={paramGet.PageIndex}
@@ -156,6 +160,8 @@ const IpSubnet: React.FC = () => {
               }}
             />
           )} */}
+            </>
+          )}
         </>
       }
     />
