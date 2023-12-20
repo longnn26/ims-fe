@@ -1,5 +1,6 @@
 import React, { useRef, useState } from "react";
-import { Button, Col, Input, Modal, Row, Select } from "antd";
+import { Button, Col, Input, Modal, Row, Select, Card } from "antd";
+import { CloseOutlined } from "@ant-design/icons";
 import { Form } from "antd";
 import { CustomerCreateModel } from "@models/customer";
 import useSelector from "@hooks/use-selector";
@@ -68,10 +69,37 @@ const ModalCreate: React.FC<Props> = (props) => {
                   async onOk() {
                     onSubmit({
                       companyName: form.getFieldValue("companyName"),
-                      address: form.getFieldValue("address"),
                       taxNumber: form.getFieldValue("taxNumber"),
+                      address: form.getFieldValue("address"),
                       email: form.getFieldValue("email"),
                       phoneNumber: form.getFieldValue("phoneNumber"),
+                      representator: form.getFieldValue("representator"),
+                      representatorPosition: form.getFieldValue("representatorPosition"),
+                      contractNumber: form.getFieldValue("contractNumber"),
+                      contacts: form
+                      .getFieldValue("contacts")
+                      .map((item, index) => ({
+                        name: form.getFieldValue([
+                          "contacts",
+                          index,
+                          "name",
+                        ]),
+                        position: form.getFieldValue([
+                          "contacts",
+                          index,
+                          "position",
+                        ]),
+                        email: form.getFieldValue([
+                          "contacts",
+                          index,
+                          "email",
+                        ]),
+                        phoneNumber: form.getFieldValue([
+                          "contacts",
+                          index,
+                          "phoneNumber",
+                        ]),
+                      })),                    
                     } as CustomerCreateModel);
                     form.resetFields();
                   },
@@ -112,7 +140,6 @@ const ModalCreate: React.FC<Props> = (props) => {
                 </Button>
               </Col>
             </Row>
-
             <Form.Item
               name="companyName"
               label="Company name"
@@ -127,7 +154,28 @@ const ModalCreate: React.FC<Props> = (props) => {
             >
               <Input placeholder="Address" allowClear />
             </Form.Item>
-            <Form.Item 
+            <Form.Item
+              name="contractNumber"
+              label="Contract number"
+              rules={[{ required: true }]}
+            >
+              <Input placeholder="Contract number" allowClear />
+            </Form.Item>
+            <Form.Item
+              name="representator"
+              label="Representator"
+              rules={[{ required: true }]}
+            >
+              <Input placeholder="Representator name" allowClear />
+            </Form.Item>
+            <Form.Item
+              name="representatorPosition"
+              label="Representator Position"
+              rules={[{ required: true }]}
+            >
+              <Input placeholder="Representator position" allowClear />
+            </Form.Item>
+            <Form.Item
               name="email"
               label="Email"
               rules={[
@@ -141,24 +189,89 @@ const ModalCreate: React.FC<Props> = (props) => {
                   max: 255,
                   message: 'Email must be between 6 and 255 characters',
                 },
-              ]}
-            >
+              ]}>
               <Input placeholder="Email" allowClear />
             </Form.Item>
             <Form.Item
               name="phoneNumber"
               label="Phone number"
-              rules={[{ required: true }]}
+              rules={[ 
+                { required: true, message: 'Please enter staff phone number' },
+                {
+                    pattern: /^(0|84)(2(0[3-9]|1[0-689]|2[0-25-9]|3[2-9]|4[0-9]|5[124-9]|6[0369]|7[0-7]|8[0-9]|9[012346789])|3[2-9]|5[25689]|7[06-9]|8[0-9]|9[012346789])([0-9]{7})$/gm,
+                    message: 'Please enter a valid phone number',
+                },
+              ]}
             >
               <Input placeholder="Phone number" allowClear />
             </Form.Item>
-            {/* <Form.Item
-              name="customerName"
-              label="Customer name"
-              rules={[{ required: true }]}
-            >
-              <Input placeholder="Customer name" allowClear />
-            </Form.Item> */}
+            <Form.List name="contacts">
+              {(fields, { add, remove }) => (
+                <div
+                  style={{
+                    display: "flex",
+                    rowGap: 16,
+                    flexDirection: "column",
+                  }}
+                >
+                  {fields.map((field) => (
+                    <Card
+                      size="small"
+                      title={`Contact ${field.name + 1}`}
+                      key={field.key}
+                      extra={
+                          <CloseOutlined
+                            onClick={() => {
+                              remove(field.name);
+                            }}
+                          />
+                      }
+                    >
+                      <Form.Item
+                        label="Name"
+                        name={[field.name, "name"]}
+                        rules={[{ required: true, min: 8, max: 255 }]}
+                      >
+                        <Input.TextArea
+                          autoSize={{ minRows: 1, maxRows: 6 }}
+                          allowClear
+                          placeholder="Name"
+                        />
+                      </Form.Item>
+                      <Form.Item
+                        label="Position"
+                        name={[field.name, "position"]}
+                        rules={[{ required: true, min: 8, max: 255 }]}
+                      >
+                        <Input.TextArea
+                          autoSize={{ minRows: 1, maxRows: 6 }}
+                          allowClear
+                          placeholder="Position"
+                        />
+                      </Form.Item>
+                      <Form.Item
+                        label="Email"
+                        name={[field.name, "email"]}
+                        rules={[{ required: true } , { max: 2000 }]}
+                      >
+                        <Input allowClear placeholder="Email" />
+                      </Form.Item>
+                      <Form.Item
+                        label="Phone Number"
+                        name={[field.name, "phoneNumber"]}
+                        rules={[{ required: true } , {max: 2000 }]}
+                      >
+                        <Input allowClear placeholder="Phone Number" />
+                      </Form.Item>
+                    </Card>
+                  ))}
+
+                  <Button type="dashed" onClick={() => add()} block>
+                    + Add Contact
+                  </Button>
+                </div>
+              )}
+            </Form.List>
           </Form>
         </div>
       </Modal>
