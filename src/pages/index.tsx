@@ -79,7 +79,7 @@ const Customer: React.FC = () => {
         getData();
       })
       .catch((errors) => {
-        message.error(errors.message);
+        message.error(errors.response.data);
       })
       .finally(() => {
         setServerAllocationUpdate(undefined);
@@ -108,7 +108,9 @@ const Customer: React.FC = () => {
             message.success(`Delete server allocation successful`);
           })
           .catch((errors) => {
-            message.error(errors.message ?? "Delete server allocation failed");
+            message.error(
+              errors.response.data ?? "Delete server allocation failed"
+            );
             setLoadingSubmit(false);
           });
       },

@@ -134,7 +134,7 @@ const Customer: React.FC = () => {
         getData();
       })
       .catch((errors) => {
-        message.error(errors.message);
+        message.error(errors.response.data);
       })
       .finally(() => {
         setOpenModalUpdate(false);
@@ -163,7 +163,9 @@ const Customer: React.FC = () => {
             message.success(`Delete hardware config successful`);
           })
           .catch((errors) => {
-            message.error(errors.message ?? "Delete hardware config failed");
+            message.error(
+              errors.response.data ?? "Delete hardware config failed"
+            );
             setLoadingSubmit(false);
           });
       },

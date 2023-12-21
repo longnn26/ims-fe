@@ -78,7 +78,7 @@ const Customer: React.FC = () => {
         getData();
       })
       .catch((errors) => {
-        message.error(errors.message);
+        message.error(errors.response.data);
       })
       .finally(() => {
         setComponentUpdate(undefined);
@@ -104,7 +104,7 @@ const Customer: React.FC = () => {
             message.success(`Delete component successful!`);
           })
           .catch((errors) => {
-            message.error(errors.message ?? "Delete component failed");
+            message.error(errors.response.data ?? "Delete component failed");
             setLoadingSubmit(false);
           });
       },

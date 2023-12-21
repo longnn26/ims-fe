@@ -189,7 +189,7 @@ const Appoinment: React.FC = () => {
         getData();
       })
       .catch((errors) => {
-        message.error(errors.message);
+        message.error(errors.response.data);
       })
       .finally(() => {
         setRequestUpgradeUpdate(undefined);

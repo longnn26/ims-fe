@@ -81,7 +81,7 @@ const RequestDetail: React.FC = () => {
             getData();
           })
           .catch((errors) => {
-            message.error(errors.message);
+            message.error(errors.response.data);
           })
           .finally(() => {});
       },
@@ -109,7 +109,7 @@ const RequestDetail: React.FC = () => {
             getData();
           })
           .catch((errors) => {
-            message.error(errors.message);
+            message.error(errors.response.data);
           })
           .finally(() => {});
       },
@@ -137,7 +137,7 @@ const RequestDetail: React.FC = () => {
             getData();
           })
           .catch((errors) => {
-            message.error(errors.message);
+            message.error(errors.response.data);
           })
           .finally(() => {});
       },
@@ -165,7 +165,7 @@ const RequestDetail: React.FC = () => {
             getData();
           })
           .catch((errors) => {
-            message.error(errors.message);
+            message.error(errors.response.data);
           })
           .finally(() => {});
       },

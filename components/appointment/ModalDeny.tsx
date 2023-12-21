@@ -60,7 +60,7 @@ const ModalDeny: React.FC<Props> = (props) => {
                         onClose();
                       })
                       .catch((errors) => {
-                        message.error(errors.message);
+                        message.error(errors.response.data);
                       })
                       .finally(() => {});
                     form.resetFields();

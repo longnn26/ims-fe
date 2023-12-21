@@ -92,7 +92,7 @@ const RequestExpandDetail: React.FC = () => {
             getData();
           })
           .catch((errors) => {
-            message.error(errors.message);
+            message.error(errors.response.data);
           })
           .finally(() => {});
       },
@@ -120,7 +120,7 @@ const RequestExpandDetail: React.FC = () => {
             getData();
           })
           .catch((errors) => {
-            message.error(errors.message);
+            message.error(errors.response.data);
           })
           .finally(() => {});
       },
@@ -148,7 +148,7 @@ const RequestExpandDetail: React.FC = () => {
             getData();
           })
           .catch((errors) => {
-            message.error(errors.message);
+            message.error(errors.response.data);
           })
           .finally(() => {});
       },
@@ -176,7 +176,7 @@ const RequestExpandDetail: React.FC = () => {
             getData();
           })
           .catch((errors) => {
-            message.error(errors.message);
+            message.error(errors.response.data);
           })
           .finally(() => {});
       },
@@ -221,7 +221,7 @@ const RequestExpandDetail: React.FC = () => {
         // getData();
       })
       .catch((errors) => {
-        message.error(errors.message);
+        message.error(errors.response.data);
       });
   };
 
@@ -247,7 +247,7 @@ const RequestExpandDetail: React.FC = () => {
         getData();
       })
       .catch((errors) => {
-        message.error(errors.message);
+        message.error(errors.response.data);
       })
       .finally(() => {
         setRequestExpandUpdate(undefined);

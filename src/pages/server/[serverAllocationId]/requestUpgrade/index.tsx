@@ -115,7 +115,7 @@ const RequestUpgrade: React.FC = () => {
         getData();
       })
       .catch((errors) => {
-        message.error(errors.message);
+        message.error(errors.response.data);
       })
       .finally(() => {
         setOpenModalUpdate(false);
@@ -141,7 +141,9 @@ const RequestUpgrade: React.FC = () => {
             message.success(`Delete request upgrade successful`);
           })
           .catch((errors) => {
-            message.error(errors.message ?? "Delete request upgrade failed");
+            message.error(
+              errors.response.data ?? "Delete request upgrade failed"
+            );
             setLoadingSubmit(false);
           });
       },

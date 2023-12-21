@@ -106,7 +106,7 @@ const Customer: React.FC = () => {
         getData();
       })
       .catch((errors) => {
-        message.error(errors.message);
+        message.error(errors.response.data);
       })
       .finally(() => {
         setServerAllocationUpdate(undefined);
@@ -135,11 +135,11 @@ const Customer: React.FC = () => {
             message.success(`Delete server allocation successful!`);
           })
           .catch((errors) => {
-            message.error(errors.message ?? "Delete allocation failed");
+            message.error(errors.response.data ?? "Delete allocation failed");
             setLoadingSubmit(false);
           });
       },
-      onCancel() { },
+      onCancel() {},
     });
   };
 
@@ -191,49 +191,49 @@ const Customer: React.FC = () => {
             ROLE_TECH,
             ROLE_CUSTOMER
           ) && (
-              <>
-                <ServerAllocationTable
-                  onEdit={(record) => {
-                    setServerAllocationUpdate(record);
-                  }}
-                  onDelete={async (record) => {
-                    deleteServerAllocation(record);
-                  }}
-                />
+            <>
+              <ServerAllocationTable
+                onEdit={(record) => {
+                  setServerAllocationUpdate(record);
+                }}
+                onDelete={async (record) => {
+                  deleteServerAllocation(record);
+                }}
+              />
 
-                <ModalCreate
-                  open={openModalCreate}
-                  onClose={() => setOpenModalCreate(false)}
-                  onSubmit={(data: SACreateModel) => {
-                    createData(data);
+              <ModalCreate
+                open={openModalCreate}
+                onClose={() => setOpenModalCreate(false)}
+                onSubmit={(data: SACreateModel) => {
+                  createData(data);
+                }}
+                customerParamGet={customerSelectParamGet}
+                setCustomerParamGet={setCustomerSelectParamGet}
+              />
+              <ModalUpdate
+                serverAllocation={serverAllocationUpdate!}
+                onClose={() => setServerAllocationUpdate(undefined)}
+                onSubmit={(data: SAUpdateModel) => {
+                  updateData(data);
+                }}
+              />
+              {serverAllocationData?.totalPage > 0 && (
+                <Pagination
+                  className="text-end m-4"
+                  current={paramGet.PageIndex}
+                  pageSize={serverAllocationData?.pageSize ?? 10}
+                  total={serverAllocationData?.totalSize}
+                  onChange={(page, pageSize) => {
+                    setParamGet({
+                      ...paramGet,
+                      PageIndex: page,
+                      PageSize: pageSize,
+                    });
                   }}
-                  customerParamGet={customerSelectParamGet}
-                  setCustomerParamGet={setCustomerSelectParamGet}
                 />
-                <ModalUpdate
-                  serverAllocation={serverAllocationUpdate!}
-                  onClose={() => setServerAllocationUpdate(undefined)}
-                  onSubmit={(data: SAUpdateModel) => {
-                    updateData(data);
-                  }}
-                />
-                {serverAllocationData?.totalPage > 0 && (
-                  <Pagination
-                    className="text-end m-4"
-                    current={paramGet.PageIndex}
-                    pageSize={serverAllocationData?.pageSize ?? 10}
-                    total={serverAllocationData?.totalSize}
-                    onChange={(page, pageSize) => {
-                      setParamGet({
-                        ...paramGet,
-                        PageIndex: page,
-                        PageSize: pageSize,
-                      });
-                    }}
-                  />
-                )}
-              </>
-            )}
+              )}
+            </>
+          )}
         </>
       }
     />

@@ -79,7 +79,7 @@ const AreaDetail: React.FC = () => {
         getData();
       })
       .catch((errors) => {
-        message.error(errors.message);
+        message.error(errors.response.data);
       })
       .finally(() => {
         setRackUpdate(undefined);
@@ -105,7 +105,7 @@ const AreaDetail: React.FC = () => {
             message.success(`Delete rack successful!`);
           })
           .catch((errors) => {
-            message.error(errors.message ?? "Delete rack failed");
+            message.error(errors.response.data ?? "Delete rack failed");
             setLoadingSubmit(false);
           });
       },

@@ -77,7 +77,7 @@ const Area: React.FC = () => {
         getData();
       })
       .catch((errors) => {
-        message.error(errors.message);
+        message.error(errors.response.data);
       })
       .finally(() => {
         setAreaUpdate(undefined);
@@ -103,7 +103,7 @@ const Area: React.FC = () => {
             message.success(`Delete area successful!`);
           })
           .catch((errors) => {
-            message.error(errors.message ?? "Delete area failed");
+            message.error(errors.response.data ?? "Delete area failed");
             setLoadingSubmit(false);
           });
       },

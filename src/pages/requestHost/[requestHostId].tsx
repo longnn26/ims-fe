@@ -125,7 +125,7 @@ const RequestDetail: React.FC = () => {
         getData();
       })
       .catch((errors) => {
-        message.error(errors.message);
+        message.error(errors.response.data);
       });
   };
 
@@ -171,7 +171,7 @@ const RequestDetail: React.FC = () => {
         getData();
       })
       .catch((errors) => {
-        message.error(errors.message);
+        message.error(errors.response.data);
       })
       .finally(() => {
         setLoadingUploadDocument(false);
