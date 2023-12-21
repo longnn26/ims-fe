@@ -1,5 +1,6 @@
 "use client";
 import dynamic from "next/dynamic";
+import { AppstoreAddOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import React from "react";
@@ -184,7 +185,7 @@ const RequestUpgrade: React.FC = () => {
               ROLE_TECH,
               ROLE_CUSTOMER
             ) && <BreadcrumbComponent itemBreadcrumbs={itemBreadcrumbs} />}
-            {areInArray(session?.user.roles!, ROLE_CUSTOMER) && (
+            {areInArray(session?.user.roles!, ROLE_TECH, ROLE_CUSTOMER) && (
               <Button
                 type="primary"
                 htmlType="submit"
