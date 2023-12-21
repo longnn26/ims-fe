@@ -6,7 +6,7 @@ import { useRouter } from "next/router";
 import { Form, Input, Space, message, Button } from "antd";
 import { useEffect, useState } from "react";
 
-interface Props { }
+interface Props {}
 
 const Signin: React.FC<Props> = (props) => {
   const [form] = Form.useForm();
@@ -26,14 +26,15 @@ const Signin: React.FC<Props> = (props) => {
   }, [form, values]);
 
   const isValidEmail = (username) => {
-    const emailRegex = /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/;
+    const emailRegex =
+      /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/;
     return emailRegex.test(username);
-  }
+  };
 
   const onFinish = async (values) => {
     let res;
 
-    const isCustomer = isValidEmail(values.username)
+    const isCustomer = isValidEmail(values.username);
 
     if (isCustomer) {
       // For customer login
@@ -70,11 +71,7 @@ const Signin: React.FC<Props> = (props) => {
         </div>
         <div className="m-auto max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow-2xl relative">
           <div className="flex justify-center">
-            <img
-              src="/images/logo.jpeg"
-              className="h-20 mr-3"
-              alt="Logo"
-            />
+            <img src="/images/logo.jpeg" className="h-20 mr-3" alt="Logo" />
           </div>
           <Form
             form={form}
@@ -94,7 +91,11 @@ const Signin: React.FC<Props> = (props) => {
               label="Password"
               rules={[{ required: true }, { type: "string", min: 6, max: 32 }]}
             >
-              <Input placeholder="password" type="password" className="h-9" />
+              <Input.Password
+                placeholder="password"
+                type="password"
+                className="h-9"
+              />
             </Form.Item>
             <Form.Item>
               <Button
