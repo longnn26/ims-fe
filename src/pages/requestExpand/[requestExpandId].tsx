@@ -292,30 +292,32 @@ const RequestExpandDetail: React.FC = () => {
                   <BreadcrumbComponent itemBreadcrumbs={itemBreadcrumbs} />
                 </div>
                 <div>
-                  <Button
-                    type="primary"
-                    className="mb-2"
-                    icon={<EditOutlined />}
-                    onClick={async () => {
-                      setRequestExpandUpdate(requestExpandDetail);
-                      if (
-                        !requestExpandDetail?.requestedLocation &&
-                        requestExpandDetail?.size! > 0
-                      ) {
-                        await requestExpandService
-                          .getSuggestLocation(
-                            session?.user.access_token!,
-                            requestExpandDetail?.id!
-                          )
-                          .then((res) => {
-                            setSuggestLocation(res);
-                          })
-                          .catch((e) => {});
-                      }
-                    }}
-                  >
-                    Update
-                  </Button>
+                  {areInArray(session?.user.roles!, ROLE_TECH) && (
+                    <Button
+                      type="primary"
+                      className="mb-2"
+                      icon={<EditOutlined />}
+                      onClick={async () => {
+                        setRequestExpandUpdate(requestExpandDetail);
+                        if (
+                          !requestExpandDetail?.requestedLocation &&
+                          requestExpandDetail?.size! > 0
+                        ) {
+                          await requestExpandService
+                            .getSuggestLocation(
+                              session?.user.access_token!,
+                              requestExpandDetail?.id!
+                            )
+                            .then((res) => {
+                              setSuggestLocation(res);
+                            })
+                            .catch((e) => {});
+                        }
+                      }}
+                    >
+                      Update
+                    </Button>
+                  )}
                 </div>
               </div>
               <div className="md:flex">
