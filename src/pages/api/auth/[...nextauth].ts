@@ -60,6 +60,8 @@ export default NextAuth({
             userId: result.userId,
             userName: result.userName,
             tokenType: result.tokenType,
+            currenNoticeCount: result.currenNoticeCount,
+            roles: result.roles,
           } as User;
           return user;
         } else {
