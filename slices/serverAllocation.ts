@@ -34,6 +34,17 @@ const getServerAllocationData = createAsyncThunk(
   }
 );
 
+const getCustomerServerAllocationData = createAsyncThunk(
+  `${TYPE_PREFIX}/getData`,
+  async (arg: { token: string; id: string }) => {
+    const result = await customerService.getServerById(
+      arg.token,
+      arg.id
+    );
+    return result;
+  }
+);
+
 const getCustomerData = createAsyncThunk(
   `${TYPE_PREFIX}/getCustomerData`,
   async (arg: { token: string; paramGet: ParamGet }) => {
@@ -87,6 +98,6 @@ const slice = createSlice({
   },
 });
 
-export { getServerAllocationData, getCustomerData, getServerIpAdressData };
+export { getServerAllocationData, getCustomerData, getServerIpAdressData, getCustomerServerAllocationData };
 
 export default slice.reducer;

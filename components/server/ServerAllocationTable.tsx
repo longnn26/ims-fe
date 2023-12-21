@@ -49,15 +49,15 @@ const ServerAllocationTable: React.FC<Props> = (props) => {
   );
 
   const columns: TableColumnsType<DataType> = [
-    {
-      title: "Id",
-      dataIndex: "id",
-      key: "id",
-      fixed: "left",
-      render: (text) => (
-        <p className="text-[#b75c3c] hover:text-[#ee4623]">{text}</p>
-      ),
-    },
+    // {
+    //   title: "Id",
+    //   dataIndex: "id",
+    //   key: "id",
+    //   fixed: "left",
+    //   render: (text) => (
+    //     <p className="text-[#b75c3c] hover:text-[#ee4623]">{text}</p>
+    //   ),
+    // },
     {
       title: "Server' IP",
       key: "masterIp",

@@ -8,6 +8,7 @@ import useDispatch from "@hooks/use-dispatch";
 import useSelector from "@hooks/use-selector";
 import {
   getCustomerData,
+  getCustomerServerAllocationData,
   getServerAllocationData,
 } from "@slices/serverAllocation";
 import {
@@ -21,7 +22,7 @@ import ServerAllocationTable from "@components/server/ServerAllocationTable";
 import ModalCreate from "@components/server/ModalCreate";
 import serverAllocationService from "@services/serverAllocation";
 import ModalUpdate from "@components/server/ModalUpdate";
-import { areInArray } from "@utils/helpers";
+import { areInArray, parseJwt } from "@utils/helpers";
 import { ROLE_CUSTOMER, ROLE_SALES, ROLE_TECH } from "@utils/constants";
 
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
@@ -58,6 +59,21 @@ const Customer: React.FC = () => {
       getServerAllocationData({
         token: session?.user.access_token!,
         paramGet: { ...paramGet },
+      })
+    ).then(({ payload }) => {
+      var res = payload as ServerAllocationData;
+      if (res?.totalPage < paramGet.PageIndex && res.totalPage != 0) {
+        setParamGet({ ...paramGet, PageIndex: res.totalPage });
+      }
+    });
+  };
+
+  const getCustomerServerData = async () => {
+    const id = parseJwt(session?.user.access_token).UserId;
+    dispatch(
+      getCustomerServerAllocationData({
+        token: session?.user.access_token!,
+        id: id,
       })
     ).then(({ payload }) => {
       var res = payload as ServerAllocationData;
@@ -123,12 +139,16 @@ const Customer: React.FC = () => {
             setLoadingSubmit(false);
           });
       },
-      onCancel() {},
+      onCancel() { },
     });
   };
 
   useEffect(() => {
-    session && getData();
+    if (areInArray(session?.user.roles!, ROLE_CUSTOMER)) {
+      session && getCustomerServerData();
+    } else {
+      session && getData();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session, paramGet]);
 
@@ -171,49 +191,49 @@ const Customer: React.FC = () => {
             ROLE_TECH,
             ROLE_CUSTOMER
           ) && (
-            <>
-              <ServerAllocationTable
-                onEdit={(record) => {
-                  setServerAllocationUpdate(record);
-                }}
-                onDelete={async (record) => {
-                  deleteServerAllocation(record);
-                }}
-              />
-
-              <ModalCreate
-                open={openModalCreate}
-                onClose={() => setOpenModalCreate(false)}
-                onSubmit={(data: SACreateModel) => {
-                  createData(data);
-                }}
-                customerParamGet={customerSelectParamGet}
-                setCustomerParamGet={setCustomerSelectParamGet}
-              />
-              <ModalUpdate
-                serverAllocation={serverAllocationUpdate!}
-                onClose={() => setServerAllocationUpdate(undefined)}
-                onSubmit={(data: SAUpdateModel) => {
-                  updateData(data);
-                }}
-              />
-              {serverAllocationData?.totalPage > 0 && (
-                <Pagination
-                  className="text-end m-4"
-                  current={paramGet.PageIndex}
-                  pageSize={serverAllocationData?.pageSize ?? 10}
-                  total={serverAllocationData?.totalSize}
-                  onChange={(page, pageSize) => {
-                    setParamGet({
-                      ...paramGet,
-                      PageIndex: page,
-                      PageSize: pageSize,
-                    });
+              <>
+                <ServerAllocationTable
+                  onEdit={(record) => {
+                    setServerAllocationUpdate(record);
+                  }}
+                  onDelete={async (record) => {
+                    deleteServerAllocation(record);
                   }}
                 />
-              )}
-            </>
-          )}
+
+                <ModalCreate
+                  open={openModalCreate}
+                  onClose={() => setOpenModalCreate(false)}
+                  onSubmit={(data: SACreateModel) => {
+                    createData(data);
+                  }}
+                  customerParamGet={customerSelectParamGet}
+                  setCustomerParamGet={setCustomerSelectParamGet}
+                />
+                <ModalUpdate
+                  serverAllocation={serverAllocationUpdate!}
+                  onClose={() => setServerAllocationUpdate(undefined)}
+                  onSubmit={(data: SAUpdateModel) => {
+                    updateData(data);
+                  }}
+                />
+                {serverAllocationData?.totalPage > 0 && (
+                  <Pagination
+                    className="text-end m-4"
+                    current={paramGet.PageIndex}
+                    pageSize={serverAllocationData?.pageSize ?? 10}
+                    total={serverAllocationData?.totalSize}
+                    onChange={(page, pageSize) => {
+                      setParamGet({
+                        ...paramGet,
+                        PageIndex: page,
+                        PageSize: pageSize,
+                      });
+                    }}
+                  />
+                )}
+              </>
+            )}
         </>
       }
     />
