@@ -1,6 +1,12 @@
 import { getToken } from "next-auth/jwt";
 import { NextRequest, NextResponse } from "next/server";
-import { isExpiredTimeToken } from "../utils/helpers";
+import { areInArray, isExpiredTimeToken } from "../utils/helpers";
+import {
+  ROLE_ADMIN,
+  ROLE_CUSTOMER,
+  ROLE_SALES,
+  ROLE_TECH,
+} from "@utils/constants";
 
 export async function middleware(req: NextRequest) {
   const { pathname, origin } = req.nextUrl;
@@ -12,38 +18,66 @@ export async function middleware(req: NextRequest) {
   if (req.url.includes(`/server`)) {
     if (!token || !isExpiredTimeToken(token.loginDate, token.expiresIn)) {
       return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/signin`);
+    } else {
+      if (!areInArray(token?.roles, ROLE_TECH, ROLE_SALES, ROLE_CUSTOMER)) {
+        return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/empty`);
+      }
     }
   }
   if (req.url.includes(`/ipSubnet`)) {
     if (!token || !isExpiredTimeToken(token.loginDate, token.expiresIn)) {
       return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/signin`);
+    } else {
+      if (!areInArray(token?.roles, ROLE_TECH, ROLE_SALES)) {
+        return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/empty`);
+      }
     }
   }
   if (req.url.includes(`/requestUpgrade`)) {
     if (!token || !isExpiredTimeToken(token.loginDate, token.expiresIn)) {
       return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/signin`);
+    } else {
+      if (!areInArray(token?.roles, ROLE_TECH, ROLE_SALES)) {
+        return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/empty`);
+      }
     }
   }
   if (req.url.includes(`/appointment`)) {
     if (!token || !isExpiredTimeToken(token.loginDate, token.expiresIn)) {
       return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/signin`);
+    } else {
+      if (!areInArray(token?.roles, ROLE_TECH, ROLE_SALES)) {
+        return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/empty`);
+      }
     }
   }
   if (req.url.includes(`/area`)) {
     if (!token || !isExpiredTimeToken(token.loginDate, token.expiresIn)) {
       return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/signin`);
+    } else {
+      if (!areInArray(token?.roles, ROLE_TECH)) {
+        return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/empty`);
+      }
     }
   }
   if (req.url.includes(`/requestHost`)) {
     if (!token || !isExpiredTimeToken(token.loginDate, token.expiresIn)) {
       return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/signin`);
+    } else {
+      if (!areInArray(token?.roles, ROLE_TECH, ROLE_SALES, ROLE_CUSTOMER)) {
+        return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/empty`);
+      }
     }
   }
   if (req.url.includes(`/customer`)) {
     if (!token || !isExpiredTimeToken(token.loginDate, token.expiresIn)) {
       return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/signin`);
+    } else {
+      if (!areInArray(token?.roles, ROLE_TECH, ROLE_SALES)) {
+        return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/empty`);
+      }
     }
-  }  
+  }
   if (req.url.includes(`/requestExpand`)) {
     if (!token || !isExpiredTimeToken(token.loginDate, token.expiresIn)) {
       return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/signin`);
@@ -63,11 +97,19 @@ export async function middleware(req: NextRequest) {
     case "/component":
       if (!token || !isExpiredTimeToken(token.loginDate, token.expiresIn)) {
         return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/signin`);
+      } else {
+        if (!areInArray(token?.roles, ROLE_TECH)) {
+          return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/empty`);
+        }
       }
       break;
     case "/staffAccount":
       if (!token || !isExpiredTimeToken(token.loginDate, token.expiresIn)) {
         return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/signin`);
+      } else {
+        if (!areInArray(token?.roles, ROLE_ADMIN)) {
+          return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/empty`);
+        }
       }
       break;
   }

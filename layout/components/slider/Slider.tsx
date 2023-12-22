@@ -6,6 +6,9 @@ import { sliderMenu } from "@utils/global";
 import useDispatch from "@hooks/use-dispatch";
 import { setSliderMenuItemSelectedKey } from "@slices/global";
 import { useRouter } from "next/router";
+import { ROLE_TECH } from "@utils/constants";
+import { useSession } from "next-auth/react";
+import { areInArray } from "@utils/helpers";
 
 const { Sider } = Layout;
 const SliderComponent: React.FC = () => {
@@ -17,7 +20,9 @@ const SliderComponent: React.FC = () => {
   const { collapsed, sliderMenuItemSelectedKey } = useSelector(
     (state) => state.global
   );
+  const { data: session } = useSession();
 
+  console.log(session?.user.roles);
   return (
     <Sider
       trigger={null}
@@ -29,7 +34,9 @@ const SliderComponent: React.FC = () => {
       <Menu
         mode="inline"
         selectedKeys={[sliderMenuItemSelectedKey]}
-        items={sliderMenu}
+        items={sliderMenu.filter((t) =>
+          areInArray(session?.user.roles!, ...t.roles)
+        )}
         onClick={async (info) => {
           dispatch(setSliderMenuItemSelectedKey(info.key));
           router.push(`/${info.key}`);

@@ -4,11 +4,13 @@ import { BiServer, BiSolidComponent } from "react-icons/bi";
 import { BsFillHddNetworkFill } from "react-icons/bs";
 import { GrHost, GrSchedules } from "react-icons/gr";
 import { MdUpgrade } from "react-icons/md";
+import { ROLE_ADMIN, ROLE_CUSTOMER, ROLE_SALES, ROLE_TECH } from "./constants";
 
 export interface SliderMenuItem {
   key: string;
   icon: ReactNode;
   label: string;
+  roles: string[];
 }
 
 export const sliderMenu = [
@@ -16,45 +18,54 @@ export const sliderMenu = [
     key: "customer",
     icon: <FaUser />,
     label: "Customer",
+    roles: [ROLE_TECH, ROLE_SALES],
   },
   {
     key: "server",
     icon: <BiServer />,
     label: "Server",
+    roles: [ROLE_SALES, ROLE_TECH, ROLE_CUSTOMER],
   },
   {
     key: "component",
     icon: <BiSolidComponent />,
     label: "Component",
+    roles: [ROLE_TECH],
   },
   {
     key: "area",
     icon: <FaChartArea />,
     label: "Rack map",
+    roles: [ROLE_TECH],
   },
   {
     key: "requestHost",
     icon: <GrHost />,
     label: "IP's Request",
+    roles: [ROLE_CUSTOMER, ROLE_SALES, ROLE_TECH],
   },
   {
     key: "ipSubnet",
     icon: <BsFillHddNetworkFill />,
     label: "IP Subnet",
+    roles: [ROLE_SALES, ROLE_TECH],
   },
   {
     key: "appointment",
     icon: <GrSchedules />,
     label: "Appointment",
+    roles: [ROLE_SALES, ROLE_TECH],
   },
   {
     key: "requestUpgrade",
     icon: <MdUpgrade />,
     label: "Hardware Upgrade Request",
+    roles: [ROLE_SALES, ROLE_TECH],
   },
   {
     key: "staffAccount",
     icon: <FaUser />,
     label: "Staff Account Management",
+    roles: [ROLE_ADMIN],
   },
 ] as SliderMenuItem[];
