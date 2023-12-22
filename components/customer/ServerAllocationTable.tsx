@@ -23,6 +23,7 @@ import { useSession } from "next-auth/react";
 interface Props {
   data: ServerAllocationData | undefined;
   onEdit: (data: ServerAllocation) => void;
+  urlOncell?: string;
 }
 
 interface DataType {
@@ -38,7 +39,7 @@ interface DataType {
 }
 
 const ServerAllocationTable: React.FC<Props> = (props) => {
-  const { data, onEdit } = props;
+  const { data, onEdit, urlOncell } = props;
   const { data: session } = useSession();
   const router = useRouter();
   const { serverAllocationDataLoading, serverAllocationData } = useSelector(
@@ -92,7 +93,7 @@ const ServerAllocationTable: React.FC<Props> = (props) => {
       render: (record: ServerAllocation) => (
         <Space wrap>
           <Tooltip title="View detail" color={"black"}>
-            <Button onClick={() => router.push(`/server/${record.id}`)}>
+            <Button onClick={() => router.push(`${urlOncell}/server/${record.id}`)}>
               <BiSolidCommentDetail />
             </Button>
           </Tooltip>

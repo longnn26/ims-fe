@@ -21,8 +21,6 @@ const SliderComponent: React.FC = () => {
     (state) => state.global
   );
   const { data: session } = useSession();
-
-  console.log(session?.user.roles);
   return (
     <Sider
       trigger={null}

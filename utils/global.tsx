@@ -15,16 +15,16 @@ export interface SliderMenuItem {
 
 export const sliderMenu = [
   {
-    key: "customer",
-    icon: <FaUser />,
-    label: "Customer",
-    roles: [ROLE_TECH, ROLE_SALES],
-  },
-  {
     key: "server",
     icon: <BiServer />,
     label: "Server",
     roles: [ROLE_SALES, ROLE_TECH, ROLE_CUSTOMER],
+  },
+  {
+    key: "customer",
+    icon: <FaUser />,
+    label: "Customer",
+    roles: [ROLE_TECH, ROLE_SALES],
   },
   {
     key: "component",
