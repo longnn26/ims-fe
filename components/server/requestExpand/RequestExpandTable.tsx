@@ -91,7 +91,7 @@ const RequestExpandTable: React.FC<Props> = (props) => {
     {
       title: "Action",
       key: "operation",
-      render: (record: RequestUpgrade) => (
+      render: (record: RequestExpand) => (
         <Space wrap>
           <Tooltip title="View detail" color={"black"}>
             <Button

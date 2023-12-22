@@ -24,6 +24,7 @@ import ServerAllocationTable from "@components/customer/ServerAllocationTable";
 import { getServerAllocationData } from "@slices/customer";
 import { areInArray } from "@utils/helpers";
 import { ROLE_CUSTOMER, ROLE_SALES, ROLE_TECH } from "@utils/constants";
+import ModalEmpty from "@components/ModalEmpty";
 
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
@@ -56,8 +57,11 @@ const Customer: React.FC = () => {
         session?.user.access_token!,
         router.query.customerId + ""
       )
-      .then((res) => {
+      .then(async (res) => {
         setCustomerDetail(res);
+      })
+      .catch((res) => {
+        setCustomerDetail(undefined);
       });
     await customerService
       .getServerById(session?.user.access_token!, router.query.customerId + "")
@@ -118,6 +122,10 @@ const Customer: React.FC = () => {
     <AntdLayoutNoSSR
       content={
         <>
+        { customerDetail === undefined ? (
+          <ModalEmpty/>
+        ) : (
+          <>
           <div className="flex flex-wrap items-center justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
             <BreadcrumbComponent itemBreadcrumbs={itemBreadcrumbs} />
             {/* <SearchComponent
@@ -134,15 +142,18 @@ const Customer: React.FC = () => {
               updateData(data);
             }}
           />
+          </>
+        )}
           {areInArray(
             session?.user.roles!,
             ROLE_SALES,
             ROLE_TECH,
             ROLE_CUSTOMER
-          ) && (
+          ) && (customerDetail !== undefined) && (
             <>
               <CustomerDetail customerDetail={customerDetail!}></CustomerDetail>
               <ServerAllocationTable
+                urlOncell={`/customer/${customerDetail?.id}`}
                 data={serverList}
                 onEdit={(record) => {
                   setUpdate(record);
