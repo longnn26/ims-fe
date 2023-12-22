@@ -265,7 +265,7 @@ const RequestHostDetail: React.FC = () => {
             ROLE_SALES,
             ROLE_TECH,
             ROLE_CUSTOMER
-          )  && (serverAllocationDetail && requestHostDetail !== undefined) && (
+          ) && (serverAllocationDetail && requestHostDetail !== undefined) && (
               <>
                 <div className="md:flex">
                   <ServerDetail
