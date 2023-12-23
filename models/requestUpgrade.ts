@@ -31,6 +31,7 @@ export interface RequestUpgradeData extends PagingModel {
 export interface RequestUpgradeCreateModel {
   componentId: number;
   serverAllocationId: number;
+  descriptions: Descriptions[];
 }
 
 export interface RequestUpgradeUpdateModel {

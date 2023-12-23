@@ -38,6 +38,15 @@ export interface RequestHostData extends PagingModel {
   data: RequestHost[];
 }
 
+export interface RequestHostCreateModel {
+  note: string;
+  quantity: number;
+  capacities: null;
+  type: string;
+  isRemoval: boolean;
+  serverAllocationId: number;
+}
+
 export interface RequestHostUpdateModel {
   id: number;
   note: string;

@@ -4,6 +4,7 @@ import {
   RUIpAdressParamGet,
   RequestHost,
   RequestHostCompleteModel,
+  RequestHostCreateModel,
   RequestHostData,
   RequestHostRejectModel,
   RequestHostUpdateModel,
@@ -26,7 +27,7 @@ const getData = async (
 
 const getDataAll = async (
   token: string,
-  params: ParamGet,
+  params: ParamGet
 ): Promise<RequestHostData> => {
   const response = await httpClient.get({
     token: token,
@@ -36,13 +37,22 @@ const getDataAll = async (
   return response.data;
 };
 
-const getDetail = async (
-  token: string,
-  id: string
-): Promise<RequestHost> => {
+const getDetail = async (token: string, id: string): Promise<RequestHost> => {
   const response = await httpClient.get({
     url: apiLinks.requestHost.getById + `/${id}`,
     token: token,
+  });
+  return response.data;
+};
+
+const createData = async (
+  token: string,
+  data: RequestHostCreateModel
+): Promise<any> => {
+  const response = await httpClient.post({
+    token: token,
+    url: apiLinks.requestHost.create,
+    data: data,
   });
   return response.data;
 };
@@ -153,6 +163,7 @@ const uploadDocument = async (
 const requestHost = {
   getData,
   getDetail,
+  createData,
   denyRequestHost,
   acceptRequestHost,
   completeRequestHost,

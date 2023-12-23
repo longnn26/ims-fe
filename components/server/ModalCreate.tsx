@@ -88,7 +88,6 @@ const ModalCreate: React.FC<Props> = (props) => {
                       serialNumber: form.getFieldValue("serialNumber"),
                       power: form.getFieldValue("power"),
                       note: form.getFieldValue("note"),
-                      customerId: form.getFieldValue("customer").value,
                     } as SACreateModel);
                     form.resetFields();
                   },
@@ -139,29 +138,6 @@ const ModalCreate: React.FC<Props> = (props) => {
             </Form.Item>
             <Form.Item name="note" label="Note">
               <Input placeholder="Note" allowClear />
-            </Form.Item>
-            <Form.Item
-              name="customer"
-              label="Customer"
-              labelAlign="right"
-              rules={[{ required: true, message: "Customer not empty" }]}
-            >
-              <Select
-                labelInValue
-                allowClear
-                listHeight={160}
-                onPopupScroll={async (e: any) => {
-                  const { target } = e;
-                  if (
-                    (target as any).scrollTop + (target as any).offsetHeight ===
-                    (target as any).scrollHeight
-                  ) {
-                    if (pageIndexCus < totalPageCus) {
-                      getMoreCustomer();
-                    }
-                  }
-                }}
-              />
             </Form.Item>
           </Form>
         </div>

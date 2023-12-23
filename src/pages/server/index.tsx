@@ -84,18 +84,44 @@ const Customer: React.FC = () => {
   };
 
   const createData = async (data: SACreateModel) => {
-    await serverAllocationService
-      .createServerAllocation(session?.user.access_token!, data)
-      .then((res) => {
-        message.success("Create successful!");
-        getData();
-      })
-      .catch((errors) => {
-        message.error(errors.response.data);
-      })
-      .finally(() => {
-        setOpenModalCreate(false);
-      });
+    setLoadingSubmit(true);
+
+    try {
+      // Truy cập quyền của người dùng hiện tại
+      const userRoles = session?.user.roles;
+
+      // Kiểm tra xem người dùng có quyền ROLE_CUSTOMER không
+      if (areInArray(userRoles ?? [], ROLE_CUSTOMER)) {
+        const userId = parseJwt(session?.user.access_token).UserId;
+
+        // Gọi hàm getCustomerServerData với id của người dùng
+        await serverAllocationService
+          .createServerAllocation(session?.user.access_token!, data)
+          .then(() => {
+            message.success("Create successful!");
+            getCustomerServerData(); // Cập nhật dữ liệu chỉ cho người dùng có quyền ROLE_CUSTOMER
+          });
+      } else {
+        // Người dùng không có quyền ROLE_CUSTOMER, gọi hàm getData như trước đó
+        await serverAllocationService
+          .createServerAllocation(session?.user.access_token!, data)
+          .then(() => {
+            message.success("Create successful!");
+            getData();
+          });
+      }
+    } catch (errors) {
+      if (errors instanceof Error) {
+        // If errors is an instance of the Error class, handle it accordingly
+        message.error(errors.message); // or handle it based on the error properties
+      } else {
+        // If errors is of unknown type, provide a default error message
+        message.error("An unknown error occurred");
+      }
+    } finally {
+      setLoadingSubmit(false);
+      setOpenModalCreate(false);
+    }
   };
 
   const updateData = async (data: SAUpdateModel) => {

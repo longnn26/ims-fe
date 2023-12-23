@@ -1,33 +1,33 @@
 "use client";
 import BreadcrumbComponent from "@components/BreadcrumbComponent";
 import ServerDetail from "@components/server/ServerDetail";
-import RequestExpandTable from "@components/server/requestExpand/RequestExpandTable";
 import RequestHostTable from "@components/server/requestHost/RequestHostTable";
-import ModalCreate from "@components/server/requestUpgrade/ModalCreate";
-import ModalUpdate from "@components/server/requestUpgrade/ModalUpdate";
+import ModalCreate from "@components/server/requestHost/ModalCreate";
 import useDispatch from "@hooks/use-dispatch";
 import useSelector from "@hooks/use-selector";
+import { RequestHostCreateModel } from "@models/requestHost";
 import {
   RUParamGet,
   RequestUpgrade,
-  RequestUpgradeCreateModel,
   RequestUpgradeData,
   RequestUpgradeUpdateModel,
 } from "@models/requestUpgrade";
 import { ServerAllocation } from "@models/serverAllocation";
 import requestUpgradeService from "@services/requestUpgrade";
+import requestHostService from "@services/requestHost";
 import serverAllocationService from "@services/serverAllocation";
 import { getRequestExpandData } from "@slices/requestExpand";
 import { getRequestHostData } from "@slices/requestHost";
 import { ROLE_CUSTOMER, ROLE_SALES, ROLE_TECH } from "@utils/constants";
 import { areInArray } from "@utils/helpers";
-import { Alert, FloatButton, Modal, Pagination, message } from "antd";
+import { Alert, Button, FloatButton, Modal, Pagination, message } from "antd";
 import { ItemType } from "antd/es/breadcrumb/Breadcrumb";
 import { useSession } from "next-auth/react";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { AiOutlineFileDone } from "react-icons/ai";
+import { IoIosSend } from "react-icons/io";
 import { MdCancel } from "react-icons/md";
 
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
@@ -78,8 +78,8 @@ const RequestHost: React.FC = () => {
     });
   };
 
-  const createData = async (data: RequestUpgradeCreateModel) => {
-    await requestUpgradeService
+  const createData = async (data: RequestHostCreateModel) => {
+    await requestHostService
       .createData(session?.user.access_token!, data)
       .then((res) => {
         message.success("Create successful!");
@@ -169,7 +169,7 @@ const RequestHost: React.FC = () => {
           <ModalCreate
             open={openModalCreate}
             onClose={() => setOpenModalCreate(false)}
-            onSubmit={(data: RequestUpgradeCreateModel) => {
+            onSubmit={(data: RequestHostCreateModel) => {
               data.serverAllocationId = parseInt(
                 router.query!.serverAllocationId!.toString()
               );
@@ -185,7 +185,20 @@ const RequestHost: React.FC = () => {
             <>
               <div className="flex flex-wrap items-center justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
                 <BreadcrumbComponent itemBreadcrumbs={itemBreadcrumbs} />
+                {areInArray(session?.user.roles!, ROLE_CUSTOMER) && (
+                  <Button
+                    type="primary"
+                    htmlType="submit"
+                    icon={<IoIosSend />}
+                    onClick={() => {
+                      setOpenModalCreate(true);
+                    }}
+                  >
+                    Create IP's Request
+                  </Button>
+                )}
               </div>
+
               <ServerDetail
                 serverAllocationDetail={serverAllocationDetail!}
               ></ServerDetail>
