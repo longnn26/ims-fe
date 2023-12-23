@@ -48,7 +48,7 @@ export const sliderMenu = [
     key: "ipSubnet",
     icon: <BsFillHddNetworkFill />,
     label: "IP Subnet",
-    roles: [ROLE_SALES, ROLE_TECH],
+    roles: [ROLE_TECH],
   },
   {
     key: "appointment",
