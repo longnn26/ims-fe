@@ -55,6 +55,7 @@ const RequestExpandDetail: React.FC = () => {
     useState<RequestExpand>();
   const { appointmentData } = useSelector((state) => state.requestExpand);
   const [permission, setPermission] = useState<boolean>(true);
+  const [content, setContent] = useState<string>("");
 
   const getData = async () => {
     await requestExpandService
@@ -64,6 +65,7 @@ const RequestExpandDetail: React.FC = () => {
       })
       .catch((errors) => {
         setRequestExpandDetail(undefined);
+        setContent(errors.response.data);
       });
     await serverAllocationService
       .getServerAllocationById(
@@ -76,6 +78,7 @@ const RequestExpandDetail: React.FC = () => {
       }).
       catch((errors) => {
         setServerAllocationDetail(undefined);
+        setContent(errors.response.data);
       });
   };
 
@@ -301,6 +304,7 @@ const RequestExpandDetail: React.FC = () => {
         <>
           <ModalEmpty
             isPermission = {false}
+            content={content}
           />
         </>
       } />)
@@ -312,6 +316,7 @@ const RequestExpandDetail: React.FC = () => {
             {!permission ? (
               <ModalEmpty
                 isPermission={true}
+                content={content}
               />
             ) : (
               <div className="flex flex-wrap items-center justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">

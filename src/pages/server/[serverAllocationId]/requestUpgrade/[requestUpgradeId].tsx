@@ -45,6 +45,7 @@ const RequestUpgradeDetail: React.FC = () => {
       RequestUpgradeId: router.query.requestUpgradeId ?? -1,
     } as unknown as RUAppointmentParamGet);  
   const [permission, setPermission] = useState<boolean>(true);
+  const [content, setContent] = useState<string>("");
 
   const getData = async () => {
     await serverAllocationService
@@ -55,8 +56,9 @@ const RequestUpgradeDetail: React.FC = () => {
         .then((res) => {
           setServerAllocationDetail(res);
         })
-        .catch((err) => {
+        .catch((errors) => {
           setServerAllocationDetail(undefined);
+          setContent(errors.response.data);
         });
     await requestUpgradeService
       .getDetail(
@@ -66,8 +68,9 @@ const RequestUpgradeDetail: React.FC = () => {
       .then(async (res) => {
         await setRequestUpgradeDetail(res);
       })
-      .catch((res) => {
+      .catch((errors) => {
         setRequestUpgradeDetail(undefined);
+        setContent(errors.response.data);
       });    
   };
 
@@ -242,6 +245,7 @@ const RequestUpgradeDetail: React.FC = () => {
         <>
           <ModalEmpty
             isPermission = {false}
+            content={content}
           />
         </>
       } />)
@@ -253,6 +257,7 @@ const RequestUpgradeDetail: React.FC = () => {
             {!permission && (
               <ModalEmpty
                 isPermission={true}
+                content={content}
               />
             )}
           {areInArray(

@@ -4,25 +4,27 @@ import { Button, Empty } from "antd";
 
 interface Props {
     isPermission: boolean;
+    content: string;
 }
 
 const ModalEmpty: React.FC<Props> = (props) => {
-    const { isPermission } = props;
+    const { isPermission, content } = props;
     const router = useRouter();
 
-    var content = "";
+    var display = "";
     if (isPermission) {
-        content = "You do not have permission to view this data!";
+        display = "You do not have permission to view this data";
     } else {
-        content = "This data is not exist!";
+        display = content;
     }
+    console.log(isPermission)
     return (
         <>
             <div className="h-screen flex justify-center items-center">
                 <div></div>
-                <Empty description={<span>`${content}</span>}>
+                <Empty description={<span>{display}!</span>}>
                     <Button onClick={() => router.push("/")} type="primary">
-                        Go home
+                        Go Home
                     </Button>
                 </Empty>
             </div>

@@ -16,6 +16,7 @@ const getListAppointments = async (
   token: string,
   params: RUAppointmentParamGet
 ): Promise<AppointmentData> => {
+  console.log(params);
   const response = await httpClient.get({
     url: apiLinks.appointment.get,
     token: token,

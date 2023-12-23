@@ -10,7 +10,7 @@ const EmptyPage: React.FC = () => {
       <div></div>
       <Empty description={<span>No data</span>}>
         <Button onClick={() => router.push("/")} type="primary">
-          Go home
+          Go Home
         </Button>
       </Empty>
     </div>

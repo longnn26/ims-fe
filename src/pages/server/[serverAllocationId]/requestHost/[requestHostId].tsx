@@ -85,6 +85,7 @@ const RequestHostDetail: React.FC = () => {
   const [disabledInspectionReport, setDisabledInspectionReport] =
     useState<boolean>(false);  
   const [permission, setPermission] = useState<boolean>(true);
+  const [content, setContent] = useState<string>("");
 
   const getData = async () => {
     await requestHost
@@ -94,6 +95,7 @@ const RequestHostDetail: React.FC = () => {
       })
       .catch((errors) => {
         setRequestHostDetail(undefined);
+        setContent(errors.response.data);
       });
     await serverAllocationService
     .getServerAllocationById(
@@ -103,8 +105,9 @@ const RequestHostDetail: React.FC = () => {
     .then((res) => {
       setServerAllocationDetail(res);
     })
-    .catch((err) => {
+    .catch((errors) => {
       setServerAllocationDetail(undefined);
+      setContent(errors.response.data);
     });
   };
 
@@ -227,6 +230,7 @@ const RequestHostDetail: React.FC = () => {
         <>
           <ModalEmpty
             isPermission = {false}
+            content={content}
           />
         </>
       } />)
@@ -238,6 +242,7 @@ const RequestHostDetail: React.FC = () => {
             {!permission ? (
               <ModalEmpty
                 isPermission={true}
+                content={content}
               />
             ) : (
             <div className="flex flex-wrap items-center justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">

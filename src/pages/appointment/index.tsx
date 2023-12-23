@@ -4,9 +4,9 @@ import useDispatch from "@hooks/use-dispatch";
 import useSelector from "@hooks/use-selector";
 import { RUAppointmentParamGet } from "@models/requestUpgrade";
 import { getListAppointment } from "@slices/appointment";
-import { ROLE_SALES, ROLE_TECH } from "@utils/constants";
-import { areInArray } from "@utils/helpers";
-import { Pagination } from "antd";
+import { ROLE_CUSTOMER, ROLE_SALES, ROLE_TECH } from "@utils/constants";
+import { areInArray, parseJwt } from "@utils/helpers";
+import { Pagination, Button } from "antd";
 import { ItemType } from "antd/es/breadcrumb/Breadcrumb";
 import { useSession } from "next-auth/react";
 import dynamic from "next/dynamic";
@@ -22,6 +22,7 @@ const Appoinment: React.FC = () => {
   const { listAppointmentData } = useSelector((state) => state.appointment);
 
   const [itemBreadcrumbs, setItemBreadcrumbs] = useState<ItemType[]>([]);
+  const [openModalCreate, setOpenModalCreate] = useState<boolean>(false);
   const [rUAppointmentParamGet, setRUAppointmentParamGet] =
     useState<RUAppointmentParamGet>({
       PageIndex: 1,
@@ -29,6 +30,9 @@ const Appoinment: React.FC = () => {
     } as unknown as RUAppointmentParamGet);
 
   const getData = async () => {
+    if (session?.user.roles.includes("Customer")) {
+      rUAppointmentParamGet.CustomerId = parseJwt(session.user.access_token).UserId;
+    }
     await dispatch(
       getListAppointment({
         token: session?.user.access_token!,
@@ -49,7 +53,18 @@ const Appoinment: React.FC = () => {
     <AntdLayoutNoSSR
       content={
         <>
-          {areInArray(session?.user.roles!, ROLE_TECH, ROLE_SALES) && (
+        {areInArray(session?.user.roles!, ROLE_CUSTOMER) && (
+              <Button
+                type="primary"
+                htmlType="submit"
+                onClick={() => {
+                  setOpenModalCreate(true);
+                }}
+              >
+                Create
+              </Button>
+            )}
+          {areInArray(session?.user.roles!, ROLE_TECH, ROLE_SALES, ROLE_CUSTOMER) && (
             <>
               <AppointmentTable
                 typeGet="All"

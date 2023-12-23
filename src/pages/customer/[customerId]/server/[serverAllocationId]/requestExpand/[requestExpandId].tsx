@@ -29,6 +29,8 @@ import ModalUpdate from "@components/server/requestExpand/ModalUpdate";
 import { areInArray } from "@utils/helpers";
 import { ROLE_CUSTOMER, ROLE_SALES, ROLE_TECH } from "@utils/constants";
 import ModalEmpty from "@components/ModalEmpty";
+import customerService from "@services/customer";
+import { Customer } from "@models/customer";
 
 const { confirm } = Modal;
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
@@ -57,6 +59,9 @@ const RequestExpandDetail: React.FC = () => {
   const [requestExpandUpdate, setRequestExpandUpdate] =
     useState<RequestExpand>();
   const { appointmentData } = useSelector((state) => state.requestExpand);
+  const [customerDetail, setCustomerDetail] = useState<Customer>();
+  const [content, setContent] = useState<string>("");
+  const [permission, setPermission] = useState<boolean>(true);
 
   const getData = async () => {
     await requestExpandService
@@ -76,6 +81,28 @@ const RequestExpandDetail: React.FC = () => {
         .then((res) => {
           setServerAllocationDetail(res);
         });
+    }
+    
+    await customerService
+      .getCustomerById(
+        session?.user.access_token!,
+        router.query.customerId + ""
+      )
+      .then(async (res) => {
+        setCustomerDetail(res);
+      })
+      .catch((errors) => {
+        setCustomerDetail(undefined);
+        setContent("Customer NOT EXISTED");
+      });
+  };
+
+  
+  const checkPermission = () => {
+    if (requestExpandDetail?.serverAllocation.id + "" !== router.query.serverAllocationId) {
+      setPermission(false);
+    } else {
+      setPermission(true);
     }
   };
 
@@ -284,13 +311,31 @@ const RequestExpandDetail: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session, rUAppointmentParamGet]);
 
-  return (
-    <AntdLayoutNoSSR
+  useEffect(() => {
+    checkPermission();
+  }, [requestExpandDetail]);
+
+  if (requestExpandDetail === undefined || serverAllocationDetail === undefined || customerDetail === undefined) {
+    return (<AntdLayoutNoSSR
       content={
         <>
-          {!serverAllocationDetail || requestExpandDetail === undefined ? (
-            <ModalEmpty />
-          ) : (
+          <ModalEmpty
+            isPermission = {false}
+            content={content}
+          />
+        </>
+      } />)
+  } else
+    return (
+      <AntdLayoutNoSSR
+        content={
+          <>
+            {!permission ? (
+              <ModalEmpty
+                isPermission={true}
+                content={content}
+              />
+            ) : (
             <div className="flex flex-wrap items-center justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
               <BreadcrumbComponent itemBreadcrumbs={itemBreadcrumbs} />
 

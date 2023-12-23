@@ -54,7 +54,7 @@ export const sliderMenu = [
     key: "appointment",
     icon: <GrSchedules />,
     label: "Appointment",
-    roles: [ROLE_SALES, ROLE_TECH],
+    roles: [ROLE_SALES, ROLE_TECH, ROLE_CUSTOMER],
   },
   {
     key: "requestUpgrade",
