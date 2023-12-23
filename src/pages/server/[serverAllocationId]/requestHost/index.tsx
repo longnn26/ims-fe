@@ -194,7 +194,7 @@ const RequestHost: React.FC = () => {
                       setOpenModalCreate(true);
                     }}
                   >
-                    Create IP's Request
+                    Create IP&apos;s Request
                   </Button>
                 )}
               </div>
