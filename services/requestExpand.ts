@@ -24,7 +24,10 @@ const getData = async (
   return response.data;
 };
 
-const getDetail = async (token: string, id: string): Promise<RequestExpand> => {
+const getDetail = async (
+  token: string, 
+  id: string
+): Promise<RequestExpand> => {
   const response = await httpClient.get({
     url: apiLinks.requestExpand.getById + `/${id}`,
     token: token,

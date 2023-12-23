@@ -43,7 +43,9 @@ const RequestUpgradeDetail: React.FC = () => {
       PageIndex: 1,
       PageSize: 10,
       RequestUpgradeId: router.query.requestUpgradeId ?? -1,
-    } as unknown as RUAppointmentParamGet);
+    } as unknown as RUAppointmentParamGet);  
+  const [permission, setPermission] = useState<boolean>(true);
+
   const getData = async () => {
     await serverAllocationService
         .getServerAllocationById(
@@ -63,15 +65,18 @@ const RequestUpgradeDetail: React.FC = () => {
       )
       .then(async (res) => {
         await setRequestUpgradeDetail(res);
-        if (requestUpgradeDetail?.serverAllocationId+"" !== router.query.serverAllocationId) {
-          setServerAllocationDetail(undefined);
-        }
       })
       .catch((res) => {
         setRequestUpgradeDetail(undefined);
-      });
-    console.log(requestUpgradeDetail?.serverAllocationId+"", router.query.serverAllocationId)
-    
+      });    
+  };
+
+  const checkPermission = () => {
+    if (requestUpgradeDetail?.serverAllocationId + "" !== router.query.serverAllocationId) {
+      setPermission(false);
+    } else {
+      setPermission(true);
+    }
   };
 
   const rejectRequestUpgrade = async () => {
@@ -227,20 +232,31 @@ const RequestUpgradeDetail: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session, rUAppointmentParamGet]);
 
-  return (
-    <AntdLayoutNoSSR
+  useEffect(() => {
+    checkPermission();
+  }, [requestUpgradeDetail]);
+
+  if (requestUpgradeDetail === undefined) {
+    return (<AntdLayoutNoSSR
       content={
         <>
-          {(!serverAllocationDetail || requestUpgradeDetail === undefined) && (
-            // <ModalEmpty />
-            <div></div>
-          )}
+          <ModalEmpty />
+        </>
+      } />)
+  } else
+    return (
+      <AntdLayoutNoSSR
+        content={
+          <>
+            {!permission && (
+              <ModalEmpty />
+            )}
           {areInArray(
             session?.user.roles!,
             ROLE_SALES,
             ROLE_TECH,
             ROLE_CUSTOMER
-          ) && (serverAllocationDetail && requestUpgradeDetail !== undefined) && (
+          ) && (permission) && (
               <>
                 <div className="flex flex-wrap items-center justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
                   <BreadcrumbComponent itemBreadcrumbs={itemBreadcrumbs} />

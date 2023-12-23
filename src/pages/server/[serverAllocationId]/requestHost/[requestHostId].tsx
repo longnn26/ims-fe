@@ -83,15 +83,14 @@ const RequestHostDetail: React.FC = () => {
   const [loadingUploadDocument, setLoadingUploadDocument] =
     useState<boolean>(false);
   const [disabledInspectionReport, setDisabledInspectionReport] =
-    useState<boolean>(false);
+    useState<boolean>(false);  
+  const [permission, setPermission] = useState<boolean>(true);
+
   const getData = async () => {
     await requestHost
       .getDetail(session?.user.access_token!, router.query.requestHostId + "")
       .then((res) => {
         setRequestHostDetail(res);
-        if (requestHostDetail?.serverAllocation.id+"" !== router.query.serverAllocationId) {
-          setServerAllocationDetail(undefined);
-        }
       })
       .catch((errors) => {
         setRequestHostDetail(undefined);
@@ -107,6 +106,14 @@ const RequestHostDetail: React.FC = () => {
     .catch((err) => {
       setServerAllocationDetail(undefined);
     });
+  };
+
+  const checkPermission = () => {
+    if (requestHostDetail?.serverAllocation.id + "" !== router.query.serverAllocationId) {
+      setPermission(false);
+    } else {
+      setPermission(true);
+    }
   };
 
   const updateData = async (data: RequestHostUpdateModel) => {
@@ -210,13 +217,25 @@ const RequestHostDetail: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session, rUIpAddressParamGet]);
 
-  return (
-    <AntdLayoutNoSSR
+  useEffect(() => {
+    checkPermission();
+  }, [requestHostDetail]);
+
+  if (requestHostDetail === undefined) {
+    return (<AntdLayoutNoSSR
       content={
         <>
-          {!serverAllocationDetail || requestHostDetail === undefined ? (
-            <ModalEmpty />
-          ) : (
+          <ModalEmpty />
+        </>
+      } />)
+  } else
+    return (
+      <AntdLayoutNoSSR
+        content={
+          <>
+            {!permission ? (
+              <ModalEmpty />
+            ) : (
             <div className="flex flex-wrap items-center justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
               <BreadcrumbComponent itemBreadcrumbs={itemBreadcrumbs} />
               <div>
@@ -228,7 +247,7 @@ const RequestHostDetail: React.FC = () => {
                     requestHostDetail?.status !== "Waiting" &&
                     areInArray(session?.user.roles!, ROLE_TECH)
                   )
-                ) && (
+                ) && permission && (
                     <Button
                       type="primary"
                       className="mb-2 mr-3"
@@ -249,7 +268,7 @@ const RequestHostDetail: React.FC = () => {
                     ROLE_TECH,
                     ROLE_CUSTOMER
                   )
-                ) && (
+                ) && permission && (
                     <Button
                       type="primary"
                       className="mb-2"
@@ -269,7 +288,7 @@ const RequestHostDetail: React.FC = () => {
             ROLE_SALES,
             ROLE_TECH,
             ROLE_CUSTOMER
-          ) && (serverAllocationDetail && requestHostDetail !== undefined) && (
+          ) && permission && (
               <>
                 <div className="md:flex">
                   <ServerDetail
