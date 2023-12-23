@@ -49,7 +49,7 @@ const RequestExpandDetail: React.FC = () => {
     useState<RUAppointmentParamGet>({
       PageIndex: 1,
       PageSize: 10,
-      RequestUpgradeId: router.query.requestExpandId ?? -1,
+      RequestExpandId: router.query.requestExpandId ?? -1,
     } as unknown as RUAppointmentParamGet);
 
   const [itemBreadcrumbs, setItemBreadcrumbs] = useState<ItemType[]>([]);
@@ -59,23 +59,25 @@ const RequestExpandDetail: React.FC = () => {
   const { appointmentData } = useSelector((state) => state.requestExpand);
 
   const getData = async () => {
+    await serverAllocationService
+      .getServerAllocationById(
+        session?.user.access_token!,
+        router.query.serverAllocationId + ""
+      )
+      .then((res) => {
+        setServerAllocationDetail(res);
+      }).
+      catch((errors) => {
+        setServerAllocationDetail(undefined);
+      });
     await requestExpandService
       .getDetail(session?.user.access_token!, router.query.requestExpandId + "")
-      .then(async (res) => {
+      .then((res) => {
         setRequestExpandDetail(res);
-      })
-      .catch((errors) => {
-        setRequestExpandDetail(undefined);
       });
-    if (requestExpandDetail?.serverAllocation.id === router.query.serverAllocationId) {
-      await serverAllocationService
-        .getServerAllocationById(
-          session?.user.access_token!,
-          router.query.serverAllocationId + ""
-        )
-        .then((res) => {
-          setServerAllocationDetail(res);
-        });
+
+    if (requestExpandDetail?.serverAllocation.id + "" !== router.query.serverAllocationId) {
+      setServerAllocationDetail(undefined);
     }
   };
 
@@ -262,14 +264,11 @@ const RequestExpandDetail: React.FC = () => {
   };
 
   useEffect(() => {
-    if (router.query.serverAllocationId && session) {
+    // if (router.query.serverAllocationId && session) {
+    //   getData();
+    // }
+    if (router.query.requestExpandId && router.query.serverAllocationId && session) {
       getData();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [session]);
-
-  useEffect(() => {
-    if (router.query.requestExpandId && session) {
       handleBreadCumb();
       rUAppointmentParamGet.Id = parseInt(
         router.query.requestExpandId!.toString()

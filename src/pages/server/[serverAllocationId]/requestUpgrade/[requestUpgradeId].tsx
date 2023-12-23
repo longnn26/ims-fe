@@ -45,27 +45,33 @@ const RequestUpgradeDetail: React.FC = () => {
       RequestUpgradeId: router.query.requestUpgradeId ?? -1,
     } as unknown as RUAppointmentParamGet);
   const getData = async () => {
-    await requestUpgradeService
-      .getDetail(
-        session?.user.access_token!,
-        router.query.requestUpgradeId + ""
-      )
-      .then(async (res) => {
-        setRequestUpgradeDetail(res);
-      })
-      .catch((res) => {
-        setRequestUpgradeDetail(undefined);
-      });
-    if (requestUpgradeDetail?.serverAllocationId === router.query.serverAllocationId) {
-      await serverAllocationService
+    await serverAllocationService
         .getServerAllocationById(
           session?.user.access_token!,
           router.query.serverAllocationId + ""
         )
         .then((res) => {
           setServerAllocationDetail(res);
+        })
+        .catch((err) => {
+          setServerAllocationDetail(undefined);
         });
-    }
+    await requestUpgradeService
+      .getDetail(
+        session?.user.access_token!,
+        router.query.requestUpgradeId + ""
+      )
+      .then(async (res) => {
+        await setRequestUpgradeDetail(res);
+        if (requestUpgradeDetail?.serverAllocationId+"" !== router.query.serverAllocationId) {
+          setServerAllocationDetail(undefined);
+        }
+      })
+      .catch((res) => {
+        setRequestUpgradeDetail(undefined);
+      });
+    console.log(requestUpgradeDetail?.serverAllocationId+"", router.query.serverAllocationId)
+    
   };
 
   const rejectRequestUpgrade = async () => {
@@ -226,7 +232,8 @@ const RequestUpgradeDetail: React.FC = () => {
       content={
         <>
           {(!serverAllocationDetail || requestUpgradeDetail === undefined) && (
-            <ModalEmpty />
+            // <ModalEmpty />
+            <div></div>
           )}
           {areInArray(
             session?.user.roles!,
