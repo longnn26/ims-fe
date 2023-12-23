@@ -1,4 +1,4 @@
-import { ParamGet } from "@models/base";
+import { ParamGet, ParamGetWithId } from "@models/base";
 import {
   CustomerCreateModel,
   CustomerUpdateModel,
@@ -43,12 +43,12 @@ const getCompanyByTax = async (
 
 const getServerById = async (
   token: string,
-  id: string,
+  params: ParamGetWithId
 ): Promise<any> => {
   const response = await httpClient.get({
     token: token,
-    url: apiLinks.customer.getServerAllocationById + "/" + id + "/ServerAllocation",
-    data: id
+    url: apiLinks.customer.getServerAllocationById + "/" + params.Id + "/ServerAllocation",
+    params: params,
   });
   return response.data;
 }

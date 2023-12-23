@@ -1,12 +1,16 @@
 "use client";
+import ModalCreate from "@components/appointment/ModalCreate";
 import AppointmentTable from "@components/server/requestUpgrade/AppointmentTable";
 import useDispatch from "@hooks/use-dispatch";
 import useSelector from "@hooks/use-selector";
+import { AppointmentCreateModel } from "@models/appointment";
+import { ParamGet } from "@models/base";
 import { RUAppointmentParamGet } from "@models/requestUpgrade";
+import appointmentService from "@services/appointment";
 import { getListAppointment } from "@slices/appointment";
 import { ROLE_CUSTOMER, ROLE_SALES, ROLE_TECH } from "@utils/constants";
 import { areInArray, parseJwt } from "@utils/helpers";
-import { Pagination, Button } from "antd";
+import { Pagination, Button, message } from "antd";
 import { ItemType } from "antd/es/breadcrumb/Breadcrumb";
 import { useSession } from "next-auth/react";
 import dynamic from "next/dynamic";
@@ -41,6 +45,21 @@ const Appoinment: React.FC = () => {
     );
   };
 
+  const createData = async (data: AppointmentCreateModel) => {
+    await appointmentService
+      .create(session?.user.access_token!, data)
+      .then((res) => {
+        message.success("Create successful!");
+        getData();
+      })
+      .catch((errors) => {
+        message.error(errors.response.data);
+      })
+      .finally(() => {
+        setOpenModalCreate(false);
+      });
+  };
+
   useEffect(() => {
     if (session) {
       getData();
@@ -66,6 +85,13 @@ const Appoinment: React.FC = () => {
             )}
           {areInArray(session?.user.roles!, ROLE_TECH, ROLE_SALES, ROLE_CUSTOMER) && (
             <>
+            <ModalCreate
+                open={openModalCreate}
+                onClose={() => setOpenModalCreate(false)}
+                onSubmit={(data: AppointmentCreateModel) => {
+                  createData(data);
+                }}
+              />
               <AppointmentTable
                 typeGet="All"
                 urlOncell=""

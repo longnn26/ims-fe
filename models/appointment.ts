@@ -55,3 +55,13 @@ export interface AppointmentComplete {
 export interface AppointmentParseJson {
   Id: number;
 }
+
+export interface AppointmentCreateModel {
+  appointedCustomer: string;
+  dateAppointed: string;
+  reason: string;
+  note: string;
+  serverAllocationId: number;
+  requestUpgradeIds: number[];
+  requestExpandId: number;
+}

@@ -42,7 +42,7 @@ export interface RequestUpgradeUpdateModel {
 
 export interface RUAppointmentParamGet extends ParamGet {
   Id: number;
-  CustomerId: string;
+  CustomerId?: string;
 }
 
 export interface Descriptions {

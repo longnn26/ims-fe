@@ -1,6 +1,7 @@
 import {
   Appointment,
   AppointmentComplete,
+  AppointmentCreateModel,
   AppointmentData,
   ParamGetExtend,
 } from "@models/appointment";
@@ -124,6 +125,18 @@ const uploadDocument = async (
   return response.data;
 };
 
+const create = async (
+  token: string,
+  data: AppointmentCreateModel,
+): Promise<any> => {
+  const response = await httpClient.post({
+    token: token,
+    url: apiLinks.appointment.create,
+    data: data,
+  });
+  return response.data;
+};
+
 const appointment = {
   getListAppointments,
   getDetail,
@@ -134,6 +147,7 @@ const appointment = {
   denyAppointment,
   completeAppointment,
   failAppointment,
+  create,
 };
 
 export default appointment;
