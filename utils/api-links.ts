@@ -47,7 +47,7 @@ const apiLinks = {
     update: `${url}/api/Customer`,
     delete: `${url}/api/Customer`,
     getServerAllocationById: `${url}/api/Customer`,
-    login: `${urlServerSide}/api/Customer/Login`
+    login: `${urlServerSide}/api/Customer/Login`,
   },
 
   requestUpgrade: {
@@ -127,6 +127,7 @@ const apiLinks = {
     get: `${url}/api/ServerAllocation`,
     getAll: `${url}/api/RequestHost`,
     getById: `${url}/api/RequestHost`,
+    create: `${url}/api/RequestHost`,
     accept: `${url}/api/RequestHost`,
     deny: `${url}/api/RequestHost`,
     complete: `${url}/api/RequestHost`,
