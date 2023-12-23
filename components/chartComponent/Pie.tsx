@@ -16,6 +16,10 @@ interface Props {
 const PieChartComponent: React.FC<Props> = (props) => {
   const { data } = props;
   const RADIAN = Math.PI / 180;
+
+  // Bước 1: Tính tổng tỷ lệ
+  const totalPercent = data.reduce((sum, rec) => sum + rec.value, 0);
+
   const renderCustomizedLabel = ({
     cx,
     cy,
@@ -29,28 +33,40 @@ const PieChartComponent: React.FC<Props> = (props) => {
     const x = cx + radius * Math.cos(-midAngle * RADIAN);
     const y = cy + radius * Math.sin(-midAngle * RADIAN);
 
-    return (
-      <text
-        x={x}
-        y={y}
-        fill="black"
-        textAnchor={x > cx ? "start" : "end"}
-        dominantBaseline="central"
-      >
-        {`${(percent * 100).toFixed(0)}%`}
-      </text>
-    );
+    // Sử dụng hàm render riêng biệt
+    const renderLabel = () => {
+      if (percent !== 0) {
+        return (
+          <text
+            x={x}
+            y={y}
+            fill="black"
+            textAnchor={x > cx ? "start" : "end"}
+            dominantBaseline="central"
+          >
+            {`${(percent * 100).toFixed(0)}%`}
+          </text>
+        );
+      } else {
+        return null; // Trả về null nếu percent là 0
+      }
+    };
+
+    return renderLabel();
   };
+
   return (
     <>
       <div className="mt-10">
-        {data.map((rec, index) => {
-          return (
-            <Tag key={index} color={rec.color}>
-              <span style={{ color: "black" }}>{rec.name}</span>
-            </Tag>
-          );
-        })}
+        {/* Bước 2: Kiểm tra và ẩn Tag nếu percent là 0 */}
+        {data.map(
+          (rec, index) =>
+            rec.value !== 0 && (
+              <Tag key={index} color={rec.color}>
+                <span style={{ color: "black" }}>{rec.name}</span>
+              </Tag>
+            )
+        )}
       </div>
       <PieChart width={400} height={400}>
         <Pie
@@ -63,9 +79,13 @@ const PieChartComponent: React.FC<Props> = (props) => {
           fill="#8884d8"
           dataKey="value"
         >
-          {data.map((entry, index) => (
-            <Cell key={`cell-${index}`} fill={data[index].color} />
-          ))}
+          {data.map(
+            (entry, index) =>
+              // Bước 2: Kiểm tra và ẩn Cell nếu percent là 0
+              entry.value !== 0 && (
+                <Cell key={`cell-${index}`} fill={data[index].color} />
+              )
+          )}
         </Pie>
       </PieChart>
     </>

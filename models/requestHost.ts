@@ -41,7 +41,7 @@ export interface RequestHostData extends PagingModel {
 export interface RequestHostCreateModel {
   note: string;
   quantity: number;
-  capacities: null;
+  capacities?: number[] | null;
   type: string;
   isRemoval: boolean;
   serverAllocationId: number;

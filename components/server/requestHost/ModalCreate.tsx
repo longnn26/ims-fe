@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { Button, Input, Modal, Select, Space, Card } from "antd";
 import { Form } from "antd";
 import { CloseOutlined } from "@ant-design/icons";
@@ -10,7 +10,6 @@ const { confirm } = Modal;
 interface Props {
   open: boolean;
   onClose: () => void;
-  // loadingSubmit: boolean;
   onSubmit: (saCreateModel: RequestHostCreateModel) => void;
 }
 
@@ -19,8 +18,11 @@ const ModalCreate: React.FC<Props> = (props) => {
   const [form] = Form.useForm();
   const { onSubmit, open, onClose } = props;
 
+  const [loadingSubmit, setLoadingSubmit] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
   const { componentOptions } = useSelector((state) => state.component);
+  const [selectedCapacities, setSelectedCapacities] = useState<number[]>([]);
+  const [hiddenQuantity, setHiddenQuantity] = useState(false);
 
   const disabled = async () => {
     var result = false;
@@ -34,15 +36,17 @@ const ModalCreate: React.FC<Props> = (props) => {
 
   const [requestType, setRequestType] = useState<string | undefined>(undefined);
 
-  const handleRequestTypeChange = (value: string) => {
-    setRequestType(value);
-  };
+  useEffect(() => {
+    // Khi requestType thay đổi, reset selectedCapacities và hiển thị/ẩn quantity
+    setSelectedCapacities([]);
+    setHiddenQuantity(requestType === "Port");
+  }, [requestType]);
 
   return (
     <>
       <Modal
         title={
-          <span className="inline-block m-auto">Create Request Upgrade</span>
+          <span className="inline-block m-auto">Create IP&apos;s Request</span>
         }
         open={open}
         confirmLoading={confirmLoading}
@@ -52,7 +56,7 @@ const ModalCreate: React.FC<Props> = (props) => {
         }}
         footer={[
           <Button
-            // loading={loadingSubmit}
+            loading={loadingSubmit}
             className="btn-submit"
             key="submit"
             onClick={async () => {
@@ -60,15 +64,36 @@ const ModalCreate: React.FC<Props> = (props) => {
                 confirm({
                   title: "Do you want to save?",
                   async onOk() {
-                    const formData = {
-                      type: form.getFieldValue("type"),
-                      quantity: form.getFieldValue("quantity"),
-                      capacities: form.getFieldValue("capacities"),
-                      note: form.getFieldValue("note"),
-                      isRemoval: false,
-                    } as RequestHostCreateModel;
+                    setLoadingSubmit(true); // Đặt trạng thái loading khi bắt đầu gửi dữ liệu
+                    let formData: RequestHostCreateModel;
+
+                    if (form.getFieldValue("type") === "Additional") {
+                      // Nếu type là "Additional", đặt capacities là null
+                      formData = {
+                        type: form.getFieldValue("type"),
+                        quantity: hiddenQuantity
+                          ? selectedCapacities.length
+                          : form.getFieldValue("quantity"),
+                        capacities: null,
+                        note: form.getFieldValue("note"),
+                        isRemoval: false,
+                      } as RequestHostCreateModel;
+                    } else {
+                      // Ngược lại, truyền bình thường với capacities từ selectedCapacities
+                      formData = {
+                        type: form.getFieldValue("type"),
+                        quantity: hiddenQuantity
+                          ? selectedCapacities.length
+                          : form.getFieldValue("quantity"),
+                        capacities: selectedCapacities,
+                        note: form.getFieldValue("note"),
+                        isRemoval: false,
+                      } as RequestHostCreateModel;
+                    }
+
                     // Call the provided onSubmit function with the formData
                     onSubmit(formData);
+                    setLoadingSubmit(false); // Đặt trạng thái loading về false sau khi hoàn thành
                     form.resetFields();
                   },
                   onCancel() {},
@@ -98,31 +123,16 @@ const ModalCreate: React.FC<Props> = (props) => {
               <Select
                 placeholder="Choose Request Type"
                 allowClear
-                onChange={handleRequestTypeChange}
+                onChange={(value) => setRequestType(value)}
               >
                 <Option value="Additional">Additional</Option>
                 <Option value="Port">Port</Option>
               </Select>
             </Form.Item>
-            <Form.Item
-              name="quantity"
-              label="Quantity IP"
-              rules={[
-                {
-                  required: true,
-                },
-                {
-                  pattern: new RegExp(/^[0-9]+$/),
-                  message: "Quantity IP must be a number",
-                },
-              ]}
-            >
-              <Input placeholder="Quantity IP" allowClear />
-            </Form.Item>
-            {form.getFieldValue("type") === "Port" && (
+            {!hiddenQuantity && (
               <Form.Item
-                name="capacities"
-                label="Capacity"
+                name="quantity"
+                label="Quantity IP"
                 rules={[
                   {
                     required: true,
@@ -134,6 +144,69 @@ const ModalCreate: React.FC<Props> = (props) => {
                 ]}
               >
                 <Input placeholder="Quantity IP" allowClear />
+              </Form.Item>
+            )}
+            {requestType === "Port" && (
+              <Form.Item label="Capacity (GB)">
+                <Form.List name="capacities">
+                  {(subFields, subOpt) => (
+                    <div
+                      style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        rowGap: 16,
+                      }}
+                    >
+                      {subFields.map((subField, index) => (
+                        <Space key={subField.key}>
+                          <Form.Item
+                            {...subField}
+                            name={[subField.name, "value"]}
+                            rules={[
+                              {
+                                required: true,
+                              },
+                              {
+                                pattern: new RegExp(/^(0(\.[1-9])?|1)$/),
+                                message: "Capacity must be 0, 0.1, or 1",
+                              },
+                            ]}
+                          >
+                            <Select
+                              placeholder="Choose Capacity"
+                              onChange={(value: number) => {
+                                setSelectedCapacities((prevCapacities) => {
+                                  const updatedCapacities = [...prevCapacities];
+                                  updatedCapacities[index] = value;
+                                  return updatedCapacities;
+                                });
+                              }}
+                              value={selectedCapacities[index]}
+                              style={{ width: "250px" }}
+                            >
+                              <Option value="0.1">0.1</Option>
+                              <Option value="1">1</Option>
+                            </Select>
+                          </Form.Item>
+                          <CloseOutlined
+                            style={{ paddingBottom: "25px" }}
+                            onClick={() => {
+                              subOpt.remove(subField.name);
+                              setSelectedCapacities((prevCapacities) => {
+                                const updatedCapacities = [...prevCapacities];
+                                updatedCapacities.splice(index, 1);
+                                return updatedCapacities;
+                              });
+                            }}
+                          />
+                        </Space>
+                      ))}
+                      <Button type="dashed" onClick={() => subOpt.add()} block>
+                        + Add Capacity
+                      </Button>
+                    </div>
+                  )}
+                </Form.List>
               </Form.Item>
             )}
             <Form.Item name="note" label="Note">

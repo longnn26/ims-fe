@@ -37,7 +37,7 @@ export async function middleware(req: NextRequest) {
     if (!token || !isExpiredTimeToken(token.loginDate, token.expiresIn)) {
       return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/signin`);
     } else {
-      if (!areInArray(token?.roles, ROLE_TECH, ROLE_SALES)) {
+      if (!areInArray(token?.roles, ROLE_TECH, ROLE_SALES, ROLE_CUSTOMER)) {
         return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/empty`);
       }
     }
@@ -46,7 +46,7 @@ export async function middleware(req: NextRequest) {
     if (!token || !isExpiredTimeToken(token.loginDate, token.expiresIn)) {
       return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/signin`);
     } else {
-      if (!areInArray(token?.roles, ROLE_TECH, ROLE_SALES)) {
+      if (!areInArray(token?.roles, ROLE_TECH, ROLE_SALES, ROLE_CUSTOMER)) {
         return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/empty`);
       }
     }
