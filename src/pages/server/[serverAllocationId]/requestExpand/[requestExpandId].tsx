@@ -299,7 +299,9 @@ const RequestExpandDetail: React.FC = () => {
     return (<AntdLayoutNoSSR
       content={
         <>
-          <ModalEmpty />
+          <ModalEmpty
+            isPermission = {false}
+          />
         </>
       } />)
   } else
@@ -308,7 +310,9 @@ const RequestExpandDetail: React.FC = () => {
         content={
           <>
             {!permission ? (
-              <ModalEmpty />
+              <ModalEmpty
+                isPermission={true}
+              />
             ) : (
               <div className="flex flex-wrap items-center justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
                 <BreadcrumbComponent itemBreadcrumbs={itemBreadcrumbs} />

@@ -240,7 +240,9 @@ const RequestUpgradeDetail: React.FC = () => {
     return (<AntdLayoutNoSSR
       content={
         <>
-          <ModalEmpty />
+          <ModalEmpty
+            isPermission = {false}
+          />
         </>
       } />)
   } else
@@ -249,7 +251,9 @@ const RequestUpgradeDetail: React.FC = () => {
         content={
           <>
             {!permission && (
-              <ModalEmpty />
+              <ModalEmpty
+                isPermission={true}
+              />
             )}
           {areInArray(
             session?.user.roles!,
