@@ -39,17 +39,14 @@ const RequestExpandDetail: React.FC = () => {
   const router = useRouter();
   const dispatch = useDispatch();
   const { data: session } = useSession();
-  const [serverAllocationDetail, setServerAllocationDetail] =
-    useState<ServerAllocation>();
-
-  const [requestExpandDetail, setRequestExpandDetail] =
-    useState<RequestExpand>();
+  const [serverAllocationDetail, setServerAllocationDetail] = useState<ServerAllocation>();
+  const [requestExpandDetail, setRequestExpandDetail] = useState<RequestExpand>();
 
   const [rUAppointmentParamGet, setRUAppointmentParamGet] =
     useState<RUAppointmentParamGet>({
       PageIndex: 1,
       PageSize: 10,
-      RequestUpgradeId: router.query.requestExpandId ?? -1,
+      RequestExpandId: router.query.requestExpandId ?? -1,
     } as unknown as RUAppointmentParamGet);
 
   const [itemBreadcrumbs, setItemBreadcrumbs] = useState<ItemType[]>([]);
@@ -57,25 +54,36 @@ const RequestExpandDetail: React.FC = () => {
   const [requestExpandUpdate, setRequestExpandUpdate] =
     useState<RequestExpand>();
   const { appointmentData } = useSelector((state) => state.requestExpand);
+  const [permission, setPermission] = useState<boolean>(true);
 
   const getData = async () => {
     await requestExpandService
       .getDetail(session?.user.access_token!, router.query.requestExpandId + "")
-      .then(async (res) => {
+      .then((res) => {
         setRequestExpandDetail(res);
       })
       .catch((errors) => {
         setRequestExpandDetail(undefined);
       });
-    if (requestExpandDetail?.serverAllocation.id === router.query.serverAllocationId) {
-      await serverAllocationService
-        .getServerAllocationById(
-          session?.user.access_token!,
-          router.query.serverAllocationId + ""
-        )
-        .then((res) => {
-          setServerAllocationDetail(res);
-        });
+    await serverAllocationService
+      .getServerAllocationById(
+        session?.user.access_token!,
+        router.query.serverAllocationId + ""
+      )
+      .then((res) => {
+        setServerAllocationDetail(res);
+        // checkPermission();
+      }).
+      catch((errors) => {
+        setServerAllocationDetail(undefined);
+      });
+  };
+
+  const checkPermission = () => {
+    if (requestExpandDetail?.serverAllocation.id + "" !== router.query.serverAllocationId) {
+      setPermission(false);
+    } else {
+      setPermission(true);
     }
   };
 
@@ -265,7 +273,6 @@ const RequestExpandDetail: React.FC = () => {
     if (router.query.serverAllocationId && session) {
       getData();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session]);
 
   useEffect(() => {
@@ -284,157 +291,169 @@ const RequestExpandDetail: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session, rUAppointmentParamGet]);
 
-  return (
-    <AntdLayoutNoSSR
+  useEffect(() => {
+    checkPermission();
+  }, [requestExpandDetail]);
+
+  if (requestExpandDetail === undefined) {
+    return (<AntdLayoutNoSSR
       content={
         <>
-          {!serverAllocationDetail || requestExpandDetail === undefined ? (
-            <ModalEmpty />
-          ) : (
-            <div className="flex flex-wrap items-center justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
-              <BreadcrumbComponent itemBreadcrumbs={itemBreadcrumbs} />
+          <ModalEmpty />
+        </>
+      } />)
+  } else
+    return (
+      <AntdLayoutNoSSR
+        content={
+          <>
+            {!permission ? (
+              <ModalEmpty />
+            ) : (
+              <div className="flex flex-wrap items-center justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
+                <BreadcrumbComponent itemBreadcrumbs={itemBreadcrumbs} />
 
-              {Boolean(
-                requestExpandDetail?.status === "Accepted" &&
-                areInArray(
-                  session?.user.roles!,
-                  ROLE_SALES,
-                  ROLE_TECH
-                  // ROLE_CUSTOMER
-                )
-              ) && (
-                  <>
-                    <div>
-                      <Button
-                        type="primary"
-                        className="mb-2"
-                        icon={<EditOutlined />}
-                        onClick={async () => {
-                          setRequestExpandUpdate(requestExpandDetail);
-                          if (
-                            !requestExpandDetail?.requestedLocation &&
-                            requestExpandDetail?.size! > 0
-                          ) {
-                            await requestExpandService
-                              .getSuggestLocation(
-                                session?.user.access_token!,
-                                requestExpandDetail?.id!
-                              )
-                              .then((res) => {
-                                setSuggestLocation(res);
-                              })
-                              .catch((e) => { });
-                          }
-                        }}
-                      >
-                        Update
-                      </Button>
-                    </div>
-                  </>
-                )}
-            </div>
-          )}
-          {areInArray(
-            session?.user.roles!,
-            ROLE_SALES,
-            ROLE_TECH,
-            ROLE_CUSTOMER
-          ) && (serverAllocationDetail && requestExpandDetail !== undefined) && (
-              <>
-                <div className="md:flex">
-                  <ServerDetail
-                    serverAllocationDetail={serverAllocationDetail!}
-                  ></ServerDetail>
-                  <RequestExpandDetailInfor
-                    requestExpandDetail={requestExpandDetail!}
-                  />
-                </div>
-
-                <AppointmentTable
-                  typeGet="ByRequestExpandId"
-                  urlOncell=""
-                  onEdit={(record) => { }}
-                  onDelete={async (record) => { }}
-                />
-                {appointmentData?.totalPage > 0 && (
-                  <Pagination
-                    className="text-end m-4"
-                    current={rUAppointmentParamGet?.PageIndex}
-                    pageSize={appointmentData?.pageSize ?? 10}
-                    total={appointmentData?.totalSize}
-                    onChange={(page, pageSize) => {
-                      setRUAppointmentParamGet({
-                        ...rUAppointmentParamGet,
-                        PageIndex: page,
-                        PageSize: pageSize,
-                      });
-                    }}
-                  />
-                )}
-
-                {Boolean(
-                  requestExpandDetail?.status === "Waiting" &&
-                  areInArray(session?.user.roles!, ROLE_SALES)
-                ) && (
-                    <FloatButton.Group
-                      trigger="hover"
-                      type="primary"
-                      style={{ right: 60, bottom: 500 }}
-                      icon={<AiOutlineFileDone />}
-                    >
-                      <FloatButton
-                        icon={<MdCancel color="red" />}
-                        tooltip="Deny"
-                        onClick={() => denyRequestExpand()}
-                      />
-                      <FloatButton
-                        onClick={() => acceptRequestExpand()}
-                        icon={<AiOutlineFileDone color="green" />}
-                        tooltip="Accept"
-                      />
-                    </FloatButton.Group>
-                  )}
                 {Boolean(
                   requestExpandDetail?.status === "Accepted" &&
-                  requestExpandDetail?.succeededAppointment?.status ===
-                  "Success"
-                ) && (
-                    <FloatButton.Group
-                      trigger="hover"
-                      type="primary"
-                      style={{ right: 60, bottom: 500 }}
-                      icon={<AiOutlineFileDone />}
-                    >
-                      <FloatButton
-                        icon={<MdCancel color="red" />}
-                        tooltip="Fail"
-                        onClick={() => rejectRequestExpand()}
-                      />
-                      <FloatButton
-                        onClick={() => completeRequestExpand()}
-                        icon={<AiOutlineFileDone color="green" />}
-                        tooltip="Complete"
-                      />
-                    </FloatButton.Group>
+                  areInArray(
+                    session?.user.roles!,
+                    ROLE_SALES,
+                    ROLE_TECH
+                    // ROLE_CUSTOMER
+                  )
+                ) && permission && (
+                    <>
+                      <div>
+                        <Button
+                          type="primary"
+                          className="mb-2"
+                          icon={<EditOutlined />}
+                          onClick={async () => {
+                            setRequestExpandUpdate(requestExpandDetail);
+                            if (
+                              !requestExpandDetail?.requestedLocation &&
+                              requestExpandDetail?.size! > 0
+                            ) {
+                              await requestExpandService
+                                .getSuggestLocation(
+                                  session?.user.access_token!,
+                                  requestExpandDetail?.id!
+                                )
+                                .then((res) => {
+                                  setSuggestLocation(res);
+                                })
+                                .catch((e) => { });
+                            }
+                          }}
+                        >
+                          Update
+                        </Button>
+                      </div>
+                    </>
                   )}
-                <ModalUpdate
-                  onSaveLocation={(data) => saveLocation(data)}
-                  suggestLocation={suggestLocation}
-                  requestExpand={requestExpandUpdate!}
-                  onClose={() => {
-                    setRequestExpandUpdate(undefined);
-                    setSuggestLocation(undefined);
-                  }}
-                  onSubmit={(value) => {
-                    updateData(value);
-                  }}
-                />
-              </>
+              </div>
             )}
-        </>
-      }
-    />
-  );
+            {areInArray(
+              session?.user.roles!,
+              ROLE_SALES,
+              ROLE_TECH,
+              ROLE_CUSTOMER
+            ) && permission && (
+                <>
+                  <div className="md:flex">
+                    <ServerDetail
+                      serverAllocationDetail={serverAllocationDetail!}
+                    ></ServerDetail>
+                    <RequestExpandDetailInfor
+                      requestExpandDetail={requestExpandDetail!}
+                    />
+                  </div>
+
+                  <AppointmentTable
+                    typeGet="ByRequestExpandId"
+                    urlOncell=""
+                    onEdit={(record) => { }}
+                    onDelete={async (record) => { }}
+                  />
+                  {appointmentData?.totalPage > 0 && (
+                    <Pagination
+                      className="text-end m-4"
+                      current={rUAppointmentParamGet?.PageIndex}
+                      pageSize={appointmentData?.pageSize ?? 10}
+                      total={appointmentData?.totalSize}
+                      onChange={(page, pageSize) => {
+                        setRUAppointmentParamGet({
+                          ...rUAppointmentParamGet,
+                          PageIndex: page,
+                          PageSize: pageSize,
+                        });
+                      }}
+                    />
+                  )}
+
+                  {Boolean(
+                    requestExpandDetail?.status === "Waiting" &&
+                    areInArray(session?.user.roles!, ROLE_SALES)
+                  ) && (
+                      <FloatButton.Group
+                        trigger="hover"
+                        type="primary"
+                        style={{ right: 60, bottom: 500 }}
+                        icon={<AiOutlineFileDone />}
+                      >
+                        <FloatButton
+                          icon={<MdCancel color="red" />}
+                          tooltip="Deny"
+                          onClick={() => denyRequestExpand()}
+                        />
+                        <FloatButton
+                          onClick={() => acceptRequestExpand()}
+                          icon={<AiOutlineFileDone color="green" />}
+                          tooltip="Accept"
+                        />
+                      </FloatButton.Group>
+                    )}
+                  {Boolean(
+                    requestExpandDetail?.status === "Accepted" &&
+                    requestExpandDetail?.succeededAppointment?.status ===
+                    "Success"
+                  ) && (
+                      <FloatButton.Group
+                        trigger="hover"
+                        type="primary"
+                        style={{ right: 60, bottom: 500 }}
+                        icon={<AiOutlineFileDone />}
+                      >
+                        <FloatButton
+                          icon={<MdCancel color="red" />}
+                          tooltip="Fail"
+                          onClick={() => rejectRequestExpand()}
+                        />
+                        <FloatButton
+                          onClick={() => completeRequestExpand()}
+                          icon={<AiOutlineFileDone color="green" />}
+                          tooltip="Complete"
+                        />
+                      </FloatButton.Group>
+                    )}
+                  <ModalUpdate
+                    onSaveLocation={(data) => saveLocation(data)}
+                    suggestLocation={suggestLocation}
+                    requestExpand={requestExpandUpdate!}
+                    onClose={() => {
+                      setRequestExpandUpdate(undefined);
+                      setSuggestLocation(undefined);
+                    }}
+                    onSubmit={(value) => {
+                      updateData(value);
+                    }}
+                  />
+                </>
+              )}
+          </>
+        }
+      />
+    );
 };
 
 export default RequestExpandDetail;
