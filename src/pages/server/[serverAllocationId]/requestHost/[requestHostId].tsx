@@ -87,22 +87,26 @@ const RequestHostDetail: React.FC = () => {
   const getData = async () => {
     await requestHost
       .getDetail(session?.user.access_token!, router.query.requestHostId + "")
-      .then(async (res) => {
+      .then((res) => {
         setRequestHostDetail(res);
+        if (requestHostDetail?.serverAllocation.id+"" !== router.query.serverAllocationId) {
+          setServerAllocationDetail(undefined);
+        }
       })
       .catch((errors) => {
         setRequestHostDetail(undefined);
       });
-    if (requestHostDetail?.serverAllocation.id === router.query.serverAllocationId) {
-      await serverAllocationService
-        .getServerAllocationById(
-          session?.user.access_token!,
-          router.query.serverAllocationId + ""
-        )
-        .then((res) => {
-          setServerAllocationDetail(res);
-        });
-    }
+    await serverAllocationService
+    .getServerAllocationById(
+      session?.user.access_token!,
+      router.query.serverAllocationId + "",
+    )
+    .then((res) => {
+      setServerAllocationDetail(res);
+    })
+    .catch((err) => {
+      setServerAllocationDetail(undefined);
+    });
   };
 
   const updateData = async (data: RequestHostUpdateModel) => {
