@@ -22,15 +22,16 @@ export interface RequestHost extends BaseWithIdNumber {
   evaluator: Evaluator;
   documentConfirm: boolean;
   capacities: number[];
-  ipAddresses: ipAddresses[];
+  ipAddresses: IPAddresses[];
 }
 
-export interface ipAddresses {
-  ipAddress: ipAddress;
+export interface IPAddresses {
+  ipAddress: IPAddress;
   capacity: number;
 }
 
-export interface ipAddress {
+export interface IPAddress {
+  id: number;
   address: string;
 }
 

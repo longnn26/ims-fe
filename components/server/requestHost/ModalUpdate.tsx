@@ -47,7 +47,7 @@ const ModalUpdate: React.FC<Props> = (props) => {
         quantity: requestHost.quantity,
         type: requestHost.type,
         // capacities: requestHost?.capacities || [],
-        capacities: requestHost?.capacities?.map(value => ({ value })) || [],
+        capacities: requestHost?.capacities?.map((value) => ({ value })) || [],
       };
       form.setFieldsValue(initialValues);
     }
@@ -136,7 +136,7 @@ const ModalUpdate: React.FC<Props> = (props) => {
             )}
             {form.getFieldValue("type") === "Port" && (
               <Form.Item
-                label="Capacity (GB)"
+                label="Capacity"
                 name="capacities"
                 initialValue={selectedCapacities}
               >
@@ -171,8 +171,8 @@ const ModalUpdate: React.FC<Props> = (props) => {
                               }}
                               style={{ width: "250px" }}
                             >
-                              <Option value={0.1}>0.1</Option>
-                              <Option value={1}>1</Option>
+                              <Option value={0.1}>100 MB</Option>
+                              <Option value={1}>1 GB</Option>
                             </Select>
                           </Form.Item>
                           <CloseOutlined onClick={() => remove(name)} />

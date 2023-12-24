@@ -2,7 +2,7 @@
 
 import useSelector from "@hooks/use-selector";
 import { Customer } from "@models/customer";
-import { RequestHost, ipAddress, ipAddresses } from "@models/requestHost";
+import { RequestHost } from "@models/requestHost";
 import { RequestUpgrade } from "@models/requestUpgrade";
 import { ServerAllocation } from "@models/serverAllocation";
 import { dateAdvFormat, requestHostStatus } from "@utils/constants";

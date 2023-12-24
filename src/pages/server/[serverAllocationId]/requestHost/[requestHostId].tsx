@@ -1,7 +1,6 @@
 "use client";
 import { EditOutlined } from "@ant-design/icons";
 import BreadcrumbComponent from "@components/BreadcrumbComponent";
-import IpAddressTable from "@components/server/ipAddress/IpAddressTable";
 import ModalAcceptRequestHost from "@components/server/requestHost/ModalAcceptRequestHost";
 import ModalCompletetHost from "@components/server/requestHost/ModalCompleteHost";
 import ModalDenyHost from "@components/server/requestHost/ModalDenyHost";
@@ -38,6 +37,7 @@ import { CaretLeftOutlined, UploadOutlined } from "@ant-design/icons";
 import { areInArray } from "@utils/helpers";
 import { ROLE_CUSTOMER, ROLE_SALES, ROLE_TECH } from "@utils/constants";
 import ModalEmpty from "@components/ModalEmpty";
+import RequestHostIPAddressTable from "@components/server/requestHost/RequestHostIPAddressTable";
 
 const { confirm } = Modal;
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
@@ -339,7 +339,9 @@ const RequestHostDetail: React.FC = () => {
                     </div>
                   )}
 
-                  <IpAddressTable typeGet="RequestHost" urlOncell="" />
+                  <RequestHostIPAddressTable
+                    requestHostDetail={requestHostDetail}
+                  />
                   {ipAdressData?.totalPage > 0 && (
                     <Pagination
                       className="text-end m-4"

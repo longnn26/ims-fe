@@ -147,7 +147,7 @@ const ModalCreate: React.FC<Props> = (props) => {
               </Form.Item>
             )}
             {requestType === "Port" && (
-              <Form.Item label="Capacity (GB)">
+              <Form.Item label="Capacity">
                 <Form.List name="capacities">
                   {(subFields, subOpt) => (
                     <div
@@ -184,8 +184,8 @@ const ModalCreate: React.FC<Props> = (props) => {
                               value={selectedCapacities[index]}
                               style={{ width: "250px" }}
                             >
-                              <Option value="0.1">0.1</Option>
-                              <Option value="1">1</Option>
+                              <Option value={0.1}>100 MB</Option>
+                              <Option value={1}>1 GB</Option>
                             </Select>
                           </Form.Item>
                           <CloseOutlined
