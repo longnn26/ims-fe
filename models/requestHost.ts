@@ -53,8 +53,10 @@ export interface RequestHostUpdateModel {
   saleNote: string;
   techNote: string;
   quantity: number;
+  capacities?: number[];
   type: string;
 }
+
 export interface Evaluator {
   id: number;
   phoneNumber: string;

@@ -83,7 +83,7 @@ const RequestHostDetail: React.FC = () => {
   const [loadingUploadDocument, setLoadingUploadDocument] =
     useState<boolean>(false);
   const [disabledInspectionReport, setDisabledInspectionReport] =
-    useState<boolean>(false);  
+    useState<boolean>(false);
   const [permission, setPermission] = useState<boolean>(true);
 
   const getData = async () => {
@@ -96,20 +96,23 @@ const RequestHostDetail: React.FC = () => {
         setRequestHostDetail(undefined);
       });
     await serverAllocationService
-    .getServerAllocationById(
-      session?.user.access_token!,
-      router.query.serverAllocationId + "",
-    )
-    .then((res) => {
-      setServerAllocationDetail(res);
-    })
-    .catch((err) => {
-      setServerAllocationDetail(undefined);
-    });
+      .getServerAllocationById(
+        session?.user.access_token!,
+        router.query.serverAllocationId + ""
+      )
+      .then((res) => {
+        setServerAllocationDetail(res);
+      })
+      .catch((err) => {
+        setServerAllocationDetail(undefined);
+      });
   };
 
   const checkPermission = () => {
-    if (requestHostDetail?.serverAllocation.id + "" !== router.query.serverAllocationId) {
+    if (
+      requestHostDetail?.serverAllocation.id + "" !==
+      router.query.serverAllocationId
+    ) {
       setPermission(false);
     } else {
       setPermission(true);
@@ -222,12 +225,15 @@ const RequestHostDetail: React.FC = () => {
   }, [requestHostDetail]);
 
   if (requestHostDetail === undefined) {
-    return (<AntdLayoutNoSSR
-      content={
-        <>
-          <ModalEmpty />
-        </>
-      } />)
+    return (
+      <AntdLayoutNoSSR
+        content={
+          <>
+            <ModalEmpty />
+          </>
+        }
+      />
+    );
   } else
     return (
       <AntdLayoutNoSSR
@@ -236,39 +242,42 @@ const RequestHostDetail: React.FC = () => {
             {!permission ? (
               <ModalEmpty />
             ) : (
-            <div className="flex flex-wrap items-center justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
-              <BreadcrumbComponent itemBreadcrumbs={itemBreadcrumbs} />
-              <div>
-                {Boolean(
-                  requestHostDetail?.isRemoval != true &&
-                  Boolean(
+              <div className="flex flex-wrap items-center justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
+                <BreadcrumbComponent itemBreadcrumbs={itemBreadcrumbs} />
+                <div>
+                  {Boolean(
+                    requestHostDetail?.isRemoval != true &&
+                      Boolean(
+                        requestHostDetail?.status !== "Success" &&
+                          requestHostDetail?.status !== "Failed" &&
+                          requestHostDetail?.status !== "Waiting" &&
+                          areInArray(session?.user.roles!, ROLE_TECH)
+                      )
+                  ) &&
+                    permission && (
+                      <Button
+                        type="primary"
+                        className="mb-2 mr-3"
+                        // icon={<EditOutlined />}
+                        onClick={async () => {
+                          getProvideIps();
+                        }}
+                      >
+                        Provide Ips
+                      </Button>
+                    )}
+                  {Boolean(
                     requestHostDetail?.status !== "Success" &&
-                    requestHostDetail?.status !== "Failed" &&
-                    requestHostDetail?.status !== "Waiting" &&
-                    areInArray(session?.user.roles!, ROLE_TECH)
-                  )
-                ) && permission && (
-                    <Button
-                      type="primary"
-                      className="mb-2 mr-3"
-                      // icon={<EditOutlined />}
-                      onClick={async () => {
-                        getProvideIps();
-                      }}
-                    >
-                      Provide Ips
-                    </Button>
-                  )}
-                {Boolean(
-                  requestHostDetail?.status !== "Success" &&
-                  requestHostDetail?.status !== "Failed" &&
-                  areInArray(
-                    session?.user.roles!,
-                    ROLE_SALES,
-                    ROLE_TECH,
-                    ROLE_CUSTOMER
-                  )
-                ) && permission && (
+                      requestHostDetail?.status !== "Failed" &&
+                      areInArray(
+                        session?.user.roles!,
+                        ROLE_SALES,
+                        ROLE_TECH,
+                        ROLE_CUSTOMER
+                      ) &&
+                      permission &&
+                      !(requestHostDetail?.status === "Accepted")
+                  ) && (
                     <Button
                       type="primary"
                       className="mb-2"
@@ -280,28 +289,29 @@ const RequestHostDetail: React.FC = () => {
                       Update
                     </Button>
                   )}
-              </div>
-            </div>
-          )}
-          {areInArray(
-            session?.user.roles!,
-            ROLE_SALES,
-            ROLE_TECH,
-            ROLE_CUSTOMER
-          ) && permission && (
-              <>
-                <div className="md:flex">
-                  <ServerDetail
-                    serverAllocationDetail={serverAllocationDetail!}
-                  ></ServerDetail>
-                  <RequestHostDetailInfor
-                    requestHostDetail={requestHostDetail!}
-                  />
                 </div>
-                {Boolean(
-                  requestHostDetail?.status === "Success" &&
-                  !requestHostDetail.documentConfirm
-                ) && (
+              </div>
+            )}
+            {areInArray(
+              session?.user.roles!,
+              ROLE_SALES,
+              ROLE_TECH,
+              ROLE_CUSTOMER
+            ) &&
+              permission && (
+                <>
+                  <div className="md:flex">
+                    <ServerDetail
+                      serverAllocationDetail={serverAllocationDetail!}
+                    ></ServerDetail>
+                    <RequestHostDetailInfor
+                      requestHostDetail={requestHostDetail!}
+                    />
+                  </div>
+                  {Boolean(
+                    requestHostDetail?.status === "Success" &&
+                      !requestHostDetail.documentConfirm
+                  ) && (
                     <div className="p-5">
                       <UploadComponent
                         fileList={fileInspectionReport}
@@ -329,114 +339,123 @@ const RequestHostDetail: React.FC = () => {
                     </div>
                   )}
 
-                <IpAddressTable typeGet="RequestHost" urlOncell="" />
-                {ipAdressData?.totalPage > 0 && (
-                  <Pagination
-                    className="text-end m-4"
-                    current={rUIpAddressParamGet?.PageIndex}
-                    pageSize={ipAdressData?.pageSize ?? 10}
-                    total={ipAdressData?.totalSize}
-                    onChange={(page, pageSize) => {
-                      setRUIpAddressParamGet({
-                        ...rUIpAddressParamGet,
-                        PageIndex: page,
-                        PageSize: pageSize,
-                      });
+                  <IpAddressTable typeGet="RequestHost" urlOncell="" />
+                  {ipAdressData?.totalPage > 0 && (
+                    <Pagination
+                      className="text-end m-4"
+                      current={rUIpAddressParamGet?.PageIndex}
+                      pageSize={ipAdressData?.pageSize ?? 10}
+                      total={ipAdressData?.totalSize}
+                      onChange={(page, pageSize) => {
+                        setRUIpAddressParamGet({
+                          ...rUIpAddressParamGet,
+                          PageIndex: page,
+                          PageSize: pageSize,
+                        });
+                      }}
+                    />
+                  )}
+
+                  {Boolean(
+                    requestHostDetail?.status === "Waiting" &&
+                      areInArray(session?.user.roles!, ROLE_SALES)
+                  ) && (
+                    <FloatButton.Group
+                      trigger="hover"
+                      type="primary"
+                      style={{ right: 60, bottom: 505 }}
+                      icon={<AiOutlineFileDone />}
+                    >
+                      <FloatButton
+                        icon={<MdCancel color="red" />}
+                        tooltip="Deny"
+                        onClick={() => setOpenModalDenyHost(true)}
+                      />
+                      <FloatButton
+                        onClick={() => setOpenModalAcceptHost(true)}
+                        icon={<AiOutlineFileDone color="green" />}
+                        tooltip="Accept"
+                      />
+                    </FloatButton.Group>
+                  )}
+
+                  {Boolean(
+                    requestHostDetail?.status === "Accepted" &&
+                      areInArray(session?.user.roles!, ROLE_SALES, ROLE_TECH)
+                  ) && (
+                    <FloatButton.Group
+                      trigger="hover"
+                      type="primary"
+                      style={{ right: 60, bottom: 500 }}
+                      icon={<AiOutlineFileDone />}
+                    >
+                      <FloatButton
+                        icon={<MdCancel color="red" />}
+                        tooltip="Fail"
+                        onClick={() => setOpenModalRejectHost(true)}
+                      />
+                      {Boolean(
+                        ipAdressData?.data?.length > 0 &&
+                          areInArray(session?.user.roles!, ROLE_TECH)
+                      ) && (
+                        <FloatButton
+                          onClick={() => setOpenModalCompleteHost(true)}
+                          icon={<AiOutlineFileDone color="green" />}
+                          tooltip="Complete"
+                        />
+                      )}
+                    </FloatButton.Group>
+                  )}
+                  <ModalUpdate
+                    requestHost={requestHostUpdate!}
+                    onClose={() => {
+                      setRequestHostUpdate(undefined);
+                    }}
+                    onSubmit={(value) => {
+                      updateData(value);
                     }}
                   />
-                )}
+                  <ModalDenyHost
+                    open={openModalDenyHost}
+                    onClose={() => setOpenModalDenyHost(false)}
+                    requestHostId={requestHostDetail?.id!}
+                    getData={() => getData()}
+                  />
 
-                {requestHostDetail?.status === "Waiting" && (
-                  <FloatButton.Group
-                    trigger="hover"
-                    type="primary"
-                    style={{ right: 60, bottom: 505 }}
-                    icon={<AiOutlineFileDone />}
-                  >
-                    <FloatButton
-                      icon={<MdCancel color="red" />}
-                      tooltip="Deny"
-                      onClick={() => setOpenModalDenyHost(true)}
-                    />
-                    <FloatButton
-                      onClick={() => setOpenModalAcceptHost(true)}
-                      icon={<AiOutlineFileDone color="green" />}
-                      tooltip="Accept"
-                    />
-                  </FloatButton.Group>
-                )}
+                  <ModalCompletetHost
+                    requestHostId={requestHostDetail?.id!}
+                    onRefresh={() => getData()}
+                    open={openModalCompleteHost}
+                    onClose={() => setOpenModalCompleteHost(false)}
+                  />
 
-                {Boolean(requestHostDetail?.status === "Accepted") && (
-                  <FloatButton.Group
-                    trigger="hover"
-                    type="primary"
-                    style={{ right: 60, bottom: 500 }}
-                    icon={<AiOutlineFileDone />}
-                  >
-                    <FloatButton
-                      icon={<MdCancel color="red" />}
-                      tooltip="Fail"
-                      onClick={() => setOpenModalRejectHost(true)}
-                    />
-                    {Boolean(ipAdressData?.data?.length > 0) && (
-                      <FloatButton
-                        onClick={() => setOpenModalCompleteHost(true)}
-                        icon={<AiOutlineFileDone color="green" />}
-                        tooltip="Complete"
-                      />
-                    )}
-                  </FloatButton.Group>
-                )}
-                <ModalUpdate
-                  requestHost={requestHostUpdate!}
-                  onClose={() => {
-                    setRequestHostUpdate(undefined);
-                  }}
-                  onSubmit={(value) => {
-                    updateData(value);
-                  }}
-                />
-                <ModalDenyHost
-                  open={openModalDenyHost}
-                  onClose={() => setOpenModalDenyHost(false)}
-                  requestHostId={requestHostDetail?.id!}
-                  getData={() => getData()}
-                />
+                  <ModalRejectHost
+                    requestHostId={requestHostDetail?.id!}
+                    onRefresh={() => getData()}
+                    open={openModalRejectHost}
+                    onClose={() => setOpenModalRejectHost(false)}
+                  />
 
-                <ModalCompletetHost
-                  requestHostId={requestHostDetail?.id!}
-                  onRefresh={() => getData()}
-                  open={openModalCompleteHost}
-                  onClose={() => setOpenModalCompleteHost(false)}
-                />
+                  <ModalAcceptRequestHost
+                    open={openModalAcceptHost}
+                    onClose={() => setOpenModalAcceptHost(false)}
+                    requestHostId={requestHostDetail?.id!}
+                    getData={() => getData()}
+                  />
 
-                <ModalRejectHost
-                  requestHostId={requestHostDetail?.id!}
-                  onRefresh={() => getData()}
-                  open={openModalRejectHost}
-                  onClose={() => setOpenModalRejectHost(false)}
-                />
-
-                <ModalAcceptRequestHost
-                  open={openModalAcceptHost}
-                  onClose={() => setOpenModalAcceptHost(false)}
-                  requestHostId={requestHostDetail?.id!}
-                  getData={() => getData()}
-                />
-
-                <ModalProvideIps
-                  provideIpsData={provideIpsData!}
-                  quantity={requestHostDetail?.quantity!}
-                  requestHostId={requestHostDetail?.id!}
-                  onClose={() => setProvideIpsData(undefined)}
-                  onRefresh={() => getData()}
-                />
-              </>
-            )}
-        </>
-      }
-    />
-  );
+                  <ModalProvideIps
+                    provideIpsData={provideIpsData!}
+                    quantity={requestHostDetail?.quantity!}
+                    requestHostId={requestHostDetail?.id!}
+                    onClose={() => setProvideIpsData(undefined)}
+                    onRefresh={() => getData()}
+                  />
+                </>
+              )}
+          </>
+        }
+      />
+    );
 };
 
 export default RequestHostDetail;

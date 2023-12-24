@@ -1,20 +1,31 @@
-import { RequestHost, RequestHostUpdateModel } from "@models/requestHost";
-import { Button, Form, Input, Modal } from "antd";
 import React, { useEffect, useRef, useState } from "react";
+import { Button, Form, Input, Modal, Select, Space } from "antd";
+import { CloseOutlined } from "@ant-design/icons";
+import { areInArray } from "@utils/helpers";
+import { RequestHostUpdateModel } from "@models/requestHost";
+import { useSession } from "next-auth/react";
+import { ROLE_CUSTOMER, ROLE_SALES, ROLE_TECH } from "@utils/constants";
+
+const { Option } = Select;
 const { confirm } = Modal;
 
 interface Props {
-  requestHost: RequestHost;
+  requestHost: RequestHostUpdateModel;
   onClose: () => void;
-  onSubmit: (RequestHostUpdateModel: RequestHostUpdateModel) => void;
+  onSubmit: (requestHostUpdateModel: RequestHostUpdateModel) => void;
 }
 
 const ModalUpdate: React.FC<Props> = (props) => {
   const formRef = useRef(null);
   const [form] = Form.useForm();
   const { onSubmit, requestHost, onClose } = props;
-
+  const { data: session } = useSession();
   const [confirmLoading, setConfirmLoading] = useState(false);
+  const [selectedCapacities, setSelectedCapacities] = useState<number[]>(
+    (requestHost && requestHost.capacities) || []
+  );
+  const [hiddenQuantity, setHiddenQuantity] = useState(false);
+  const [requestType, setRequestType] = useState<string | undefined>(undefined);
 
   const disabled = async () => {
     var result = false;
@@ -27,57 +38,70 @@ const ModalUpdate: React.FC<Props> = (props) => {
   };
 
   const setFieldsValueInitial = () => {
-    if (formRef.current)
-      form.setFieldsValue({
+    if (formRef.current && requestHost) {
+      const initialValues = {
         id: requestHost.id,
         note: requestHost.note,
         saleNote: requestHost.saleNote,
         techNote: requestHost.techNote,
         quantity: requestHost.quantity,
         type: requestHost.type,
-      });
+        capacities: requestHost?.capacities || [],
+      };
+      form.setFieldsValue(initialValues);
+    }
   };
 
   useEffect(() => {
-    // refresh after submit for fileList
+    setFieldsValueInitial();
+    setHiddenQuantity(form.getFieldValue("type") === "Port");
     if (requestHost) {
-      setFieldsValueInitial();
+      setSelectedCapacities(requestHost?.capacities || []);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [requestHost]);
+    console.log(requestHost);
+  }, [requestHost, requestType]);
 
   return (
     <>
       <Modal
-        title={<span className="inline-block m-auto">Update request host</span>}
-        open={Boolean(requestHost)}
+        title={<span className="inline-block m-auto">Update IP Request</span>}
+        visible={Boolean(requestHost)}
         confirmLoading={confirmLoading}
         onCancel={() => {
           onClose();
         }}
         footer={[
           <Button
-            // loading={loadingSubmit}
             className="btn-submit"
             key="submit"
             onClick={async () => {
-              if (!(await disabled()))
+              if (!(await disabled())) {
                 confirm({
                   title: "Do you want to save?",
                   async onOk() {
+                    const submittedCapacities =
+                      form.getFieldValue("type") === "Additional"
+                        ? null
+                        : selectedCapacities;
+
                     onSubmit({
                       id: form.getFieldValue("id"),
                       saleNote: form.getFieldValue("saleNote"),
                       techNote: form.getFieldValue("techNote"),
-                      quantity: form.getFieldValue("quantity"),
+                      quantity: submittedCapacities
+                        ? submittedCapacities.length
+                        : 0, // Cập nhật quantity
                       note: form.getFieldValue("note"),
                       type: form.getFieldValue("type"),
+                      capacities: submittedCapacities,
                     } as RequestHostUpdateModel);
+
                     form.resetFields();
                     onClose();
                   },
                   onCancel() {},
                 });
+              }
             }}
           >
             Edit
@@ -92,46 +116,118 @@ const ModalUpdate: React.FC<Props> = (props) => {
             wrapperCol={{ span: 16 }}
             style={{ width: "100%" }}
           >
-            {/* <Form.Item name="note" label="Note" rules={[{ required: true }]}>
-              <Input placeholder="Note" allowClear />
-            </Form.Item> */}
+            {!hiddenQuantity && (
+              <Form.Item
+                name="quantity"
+                label="Quantity IP"
+                rules={[
+                  {
+                    required: true,
+                  },
+                  {
+                    pattern: new RegExp(/^[0-9]+$/),
+                    message: "Quantity IP must be a number",
+                  },
+                ]}
+              >
+                <Input placeholder="Quantity IP" allowClear />
+              </Form.Item>
+            )}
+            {form.getFieldValue("type") === "Port" && (
+              <Form.Item
+                label="Capacity (GB)"
+                name="capacities"
+                initialValue={selectedCapacities}
+              >
+                <Form.List name="capacities">
+                  {(fields, { add, remove }) => (
+                    <div>
+                      {fields.map(({ key, name, fieldKey, ...restField }) => (
+                        <Space
+                          key={key}
+                          style={{ display: "flex", marginBottom: 8 }}
+                          align="baseline"
+                        >
+                          <Form.Item
+                            {...restField}
+                            name={[name, "value"]}
+                            rules={[
+                              { required: true, message: "Missing capacity" },
+                            ]}
+                          >
+                            <Select
+                              placeholder="Choose Capacity"
+                              onChange={(value: number) => {
+                                setSelectedCapacities((prevCapacities) => {
+                                  const updatedCapacities = [...prevCapacities];
+                                  updatedCapacities[
+                                    fields.findIndex(
+                                      (field) => field.key === key
+                                    )
+                                  ] = value;
+                                  return updatedCapacities;
+                                });
+                              }}
+                              style={{ width: "250px" }}
+                            >
+                              <Option value="0.1">0.1</Option>
+                              <Option value="1">1</Option>
+                            </Select>
+                          </Form.Item>
+                          <CloseOutlined onClick={() => remove(name)} />
+                        </Space>
+                      ))}
+                      <Button type="dashed" onClick={() => add()} block>
+                        + Add Capacity
+                      </Button>
+                    </div>
+                  )}
+                </Form.List>
+              </Form.Item>
+            )}
 
-            <Form.Item
-              name="saleNote"
-              label="Sale Note"
-              rules={[
-                {
-                  pattern: new RegExp(/^\b(\w+\W*){1,2000}\b/),
-                  message: "Sale note no more than 2000 words",
-                },
-              ]}
-            >
-              <Input placeholder="Sale Note" allowClear />
-            </Form.Item>
-
-            {/* <Form.Item name="techNote" label="Tech Note">
-              <Input placeholder="Tech Note" allowClear />
-            </Form.Item>
-
-            <Form.Item name="type" label="Type">
-              <Input placeholder="Type" allowClear />
-            </Form.Item> */}
-
-            <Form.Item
-              name="quantity"
-              label="Quantity"
-              rules={[
-                {
-                  required: true,
-                },
-                {
-                  pattern: new RegExp(/^[1-9]\d*$/),
-                  message: "Quantity must be a number",
-                },
-              ]}
-            >
-              <Input placeholder="Quantity" allowClear />
-            </Form.Item>
+            {areInArray(session?.user.roles!, ROLE_SALES) && (
+              <Form.Item
+                name="saleNote"
+                label="Sale Note"
+                rules={[
+                  {
+                    pattern: new RegExp(/^\b(\w+\W*){1,2000}\b/),
+                    message: "Sale note no more than 2000 words",
+                  },
+                ]}
+              >
+                <Input placeholder="Sale Note" allowClear />
+              </Form.Item>
+            )}
+            {areInArray(session?.user.roles!, ROLE_TECH) && (
+              <Form.Item
+                name="techNote"
+                label="Tech Note"
+                rules={[
+                  {
+                    pattern: new RegExp(/^\b(\w+\W*){1,2000}\b/),
+                    message: "Sale note no more than 2000 words",
+                  },
+                ]}
+              >
+                <Input placeholder="Tech Note" allowClear />
+              </Form.Item>
+            )}
+            {areInArray(session?.user.roles!, ROLE_CUSTOMER) && (
+              <Form.Item
+                name="note"
+                label="Note"
+                rules={[
+                  {
+                    pattern: new RegExp(/^\b(\w+\W*){1,2000}\b/),
+                    message: "Sale note no more than 2000 words",
+                  },
+                ]}
+              >
+                <Input placeholder="Note" allowClear />
+              </Form.Item>
+            )}
           </Form>
         </div>
       </Modal>
