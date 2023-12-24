@@ -46,7 +46,8 @@ const ModalUpdate: React.FC<Props> = (props) => {
         techNote: requestHost.techNote,
         quantity: requestHost.quantity,
         type: requestHost.type,
-        capacities: requestHost?.capacities || [],
+        // capacities: requestHost?.capacities || [],
+        capacities: requestHost?.capacities?.map(value => ({ value })) || [],
       };
       form.setFieldsValue(initialValues);
     }
