@@ -28,7 +28,21 @@ const RequestHostIPAddressTable: React.FC<Props> = (props) => {
       ),
     },
     { title: "Address", dataIndex: "address", key: "address" },
-    { title: "Capacity", dataIndex: "capacity", key: "capacity" },
+    {
+      title: "Capacity",
+      dataIndex: "capacity",
+      key: "capacity",
+      render: (text, record) => {
+        // Chuyển đổi dữ liệu từ "0.1" sang "100 MB" và từ "1" sang "1 GB"
+        const capacityValue = parseFloat(text);
+        const formattedCapacity =
+          capacityValue < 1
+            ? `${capacityValue * 1000} MB`
+            : `${capacityValue} GB`;
+
+        return <span>{formattedCapacity}</span>;
+      },
+    },
   ];
 
   const data: DataType[] = [];

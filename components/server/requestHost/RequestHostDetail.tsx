@@ -67,8 +67,8 @@ const RequestHostDetailInfor: React.FC<Props> = (props) => {
             (requestHostDetail?.ipAddresses === null ||
               requestHostDetail?.ipAddresses.length === 0)
         ) && (
-          <Descriptions.Item label="Capacity">
-            {requestHostDetail?.capacities.join(", ")}
+          <Descriptions.Item label="Capacity (GB)">
+            {requestHostDetail?.capacities.join(" | ")}
           </Descriptions.Item>
         )}
         <Descriptions.Item label="Sales Staff">
