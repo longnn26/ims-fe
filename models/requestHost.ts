@@ -1,5 +1,6 @@
 import { BaseWithIdNumber, PagingModel, ParamGet } from "./base";
 import { Customer } from "./customer";
+import { IpAddress } from "./ipAddress";
 import { ServerAllocation } from "./serverAllocation";
 
 export interface RequestHost extends BaseWithIdNumber {
@@ -46,6 +47,10 @@ export interface RequestHostCreateModel {
   type: string;
   isRemoval: boolean;
   serverAllocationId: number;
+}
+
+export interface RequestHostIp {
+  ipAddresses: IpAddress[];
 }
 
 export interface RequestHostUpdateModel {

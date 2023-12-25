@@ -121,7 +121,7 @@ const ModalCreate: React.FC<Props> = (props) => {
   return (
     <>
       <Modal
-        title={<span className="inline-block m-auto">Create customer</span>}
+        title={<span className="inline-block m-auto">Create Appointment</span>}
         open={open}
         confirmLoading={confirmLoading}
         onCancel={() => {
@@ -200,7 +200,7 @@ const ModalCreate: React.FC<Props> = (props) => {
                 allowClear
                 onChange={(res) => {
                   setSelectedReason(res.value);
-                  form.setFieldsValue({serverAllocationId: undefined})
+                  form.setFieldsValue({serverAllocationId: undefined});
                 }}
               >
                 <Option value="Install">Server Installation</Option>
