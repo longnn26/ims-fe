@@ -72,9 +72,9 @@ const Customer: React.FC = () => {
     dispatch(
       await getCustomerServerAllocationData({
         token: session?.user.access_token!,
-        params: {...paramGet, Id: parseJwt(session?.user.access_token!).UserId},
-      })
-    ).then(({ payload }) => {
+        id: parseJwt(session?.user.access_token!).UserId,
+      }))
+      .then(({ payload }) => {
       var res = payload as ServerAllocationData;
       if (res?.totalPage < paramGet.PageIndex && res.totalPage != 0) {
         setParamGet({ ...paramGet, PageIndex: res.totalPage });
@@ -86,10 +86,8 @@ const Customer: React.FC = () => {
     setLoadingSubmit(true);
 
     try {
-      // Truy cập quyền của người dùng hiện tại
       const userRoles = session?.user.roles;
 
-      // Kiểm tra xem người dùng có quyền ROLE_CUSTOMER không
       if (areInArray(userRoles ?? [], ROLE_CUSTOMER)) {
         const userId = parseJwt(session?.user.access_token).UserId;
 
@@ -98,10 +96,9 @@ const Customer: React.FC = () => {
           .createServerAllocation(session?.user.access_token!, data)
           .then(() => {
             message.success("Create successfully!");
-            getCustomerServerData(); // Cập nhật dữ liệu chỉ cho người dùng có quyền ROLE_CUSTOMER
+            getCustomerServerData(); 
           });
       } else {
-        // Người dùng không có quyền ROLE_CUSTOMER, gọi hàm getData như trước đó
         await serverAllocationService
           .createServerAllocation(session?.user.access_token!, data)
           .then(() => {
@@ -185,6 +182,7 @@ const Customer: React.FC = () => {
       );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session, customerSelectParamGet]);
+
   return (
     <AntdLayoutNoSSR
       content={
