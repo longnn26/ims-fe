@@ -82,7 +82,7 @@ const ModalCreate: React.FC<Props> = (props) => {
               <Input placeholder="Description" allowClear />
             </Form.Item>
             <Form.Item
-              label="Is Server Requires"
+              label="Is Server Required"
               name="isRequired"
               rules={[{ required: true }]}
             >

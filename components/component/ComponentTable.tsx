@@ -46,7 +46,7 @@ const ComponentTable: React.FC<Props> = (props) => {
       key: "description",
     },
     {
-      title: "Is Server Requires",
+      title: "Is Server Required",
       dataIndex: "isRequired",
       render: (record: boolean) => {
         return Boolean(record) ? "Yes" : "No";

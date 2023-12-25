@@ -171,7 +171,7 @@ const RequestHostTable: React.FC<Props> = (props) => {
   return (
     <div className="shadow m-5">
       <Divider orientation="left" plain>
-        <h3>Request Host</h3>
+        <h3>IP Request</h3>
       </Divider>
       <Table
         columns={columns}

@@ -37,7 +37,7 @@ const ModalCompletetHost: React.FC<Props> = (props) => {
     await requestHost
       .completeRequestHost(session?.user.access_token!, requestHostId, data)
       .then((res) => {
-        message.success("Complete request host successful!");
+        message.success("Complete IP Request successful!");
         onRefresh();
         onClose();
         form.resetFields();

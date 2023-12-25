@@ -15,7 +15,7 @@ const RequestHostDetailInfor: React.FC<Props> = (props) => {
   return (
     <div className="shadow-[rgba(13,_38,_76,_0.19)_0px_9px_20px] m-5 rounded-md">
       <Divider orientation="left" plain>
-        <h3>Request host information </h3>
+        <h3>IP Request information </h3>
       </Divider>{" "}
       <Descriptions className="p-5">
         <Descriptions.Item label="Request's Status">

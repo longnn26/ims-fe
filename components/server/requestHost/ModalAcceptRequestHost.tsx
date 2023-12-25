@@ -58,7 +58,7 @@ const ModalAcceptRequestHost: React.FC<Props> = (props) => {
   return (
     <>
       <Modal
-        title={<span className="inline-block m-auto">Accept request host</span>}
+        title={<span className="inline-block m-auto">Accept IP Request</span>}
         open={open}
         confirmLoading={confirmLoading}
         onCancel={() => {

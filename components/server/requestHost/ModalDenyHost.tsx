@@ -32,7 +32,7 @@ const ModalDenyHost: React.FC<Props> = (props) => {
   return (
     <>
       <Modal
-        title={<span className="inline-block m-auto">Deny request host</span>}
+        title={<span className="inline-block m-auto">Deny IP Request</span>}
         open={open}
         confirmLoading={confirmLoading}
         onCancel={() => {
@@ -55,7 +55,7 @@ const ModalDenyHost: React.FC<Props> = (props) => {
                         form.getFieldValue("saleNote")
                       )
                       .then((res) => {
-                        message.success("Deny request host successful!");
+                        message.success("Deny IP Request successful!");
                         getData();
                         onClose();
                       })
