@@ -133,7 +133,7 @@ const RequestDetail: React.FC = () => {
             requestUpgradeDetail?.id + ""
           )
           .then((res) => {
-            message.success("Reject request upgrade successful!");
+            message.success("Reject request upgrade successfully!");
             getData();
           })
           .catch((errors) => {
