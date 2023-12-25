@@ -69,11 +69,10 @@ const Customer: React.FC = () => {
   };
 
   const getCustomerServerData = async () => {
-    const id = parseJwt(session?.user.access_token).UserId;
     dispatch(
-      getCustomerServerAllocationData({
+      await getCustomerServerAllocationData({
         token: session?.user.access_token!,
-        id: id,
+        params: {...paramGet, Id: parseJwt(session?.user.access_token!).UserId},
       })
     ).then(({ payload }) => {
       var res = payload as ServerAllocationData;
@@ -144,11 +143,9 @@ const Customer: React.FC = () => {
   };
 
   useEffect(() => {
-    if (areInArray(session?.user.roles!, ROLE_CUSTOMER)) {
-      session && getCustomerServerData();
-    } else {
-      session && getData();
-    }
+    session &&
+    (areInArray(session?.user.roles!, ROLE_CUSTOMER)) ?
+      getCustomerServerData() : getData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session, paramGet]);
 

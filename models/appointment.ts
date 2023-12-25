@@ -65,3 +65,12 @@ export interface AppointmentCreateModel {
   requestUpgradeIds: number[];
   requestExpandId: number;
 }
+
+export interface AppointmentUpdateModel {
+  id: number;
+  appointedCustomer: string;
+  dateAppointed: string;
+  note: string;
+  techNote: string;
+  saleNote: string;
+}

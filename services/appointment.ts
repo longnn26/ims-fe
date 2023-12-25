@@ -3,6 +3,7 @@ import {
   AppointmentComplete,
   AppointmentCreateModel,
   AppointmentData,
+  AppointmentUpdateModel,
   ParamGetExtend,
 } from "@models/appointment";
 import { RequestExpandData } from "@models/requestExpand";
@@ -17,7 +18,6 @@ const getListAppointments = async (
   token: string,
   params: RUAppointmentParamGet
 ): Promise<AppointmentData> => {
-  console.log(params);
   const response = await httpClient.get({
     url: apiLinks.appointment.get,
     token: token,
@@ -137,6 +137,29 @@ const create = async (
   return response.data;
 };
 
+const update = async (
+  token: string,
+  data: AppointmentUpdateModel,
+): Promise<any> => {
+  const response = await httpClient.put({
+    token: token,
+    url: apiLinks.appointment.update,
+    data: data,
+  });
+  return response.data;
+};
+
+const deleteAppointment = async (
+  token: string,
+  id: number,
+): Promise<any> => {
+  const response = await httpClient.delete({
+    token: token,
+    url: apiLinks.appointment.delete + `/${id}`,
+  });
+  return response.data;
+};
+
 const appointment = {
   getListAppointments,
   getDetail,
@@ -148,6 +171,8 @@ const appointment = {
   completeAppointment,
   failAppointment,
   create,
+  update,
+  deleteAppointment,
 };
 
 export default appointment;

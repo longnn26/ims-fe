@@ -94,6 +94,9 @@ const apiLinks = {
     deny: `${url}/api/Appointment`,
     complete: `${url}/api/Appointment`,
     fail: `${url}/api/Appointment`,
+    create: `${url}/api/Appointment`,
+    update: `${url}/api/Appointment`,
+    delete: `${url}/api/Appointment`,
   },
 
   requestExpand: {

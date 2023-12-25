@@ -4,12 +4,17 @@ import { CloseOutlined } from "@ant-design/icons";
 import { Form } from "antd";
 import useSelector from "@hooks/use-selector";
 import customerService from "@services/customer";
+import serverService from "@services/serverAllocation";
+import requestUpgradeService from "@services/requestUpgrade";
+import requestExpandService from "@services/requestExpand";
 import { AppointmentCreateModel } from "@models/appointment";
 import { dateAdvFormat } from "@utils/constants";
 import { ServerAllocation } from "@models/serverAllocation";
 import { useSession } from "next-auth/react";
 import { ParamGet, ParamGetWithId } from "@models/base";
-import { parseJwt } from "@utils/helpers";
+import { areInArray, parseJwt } from "@utils/helpers";
+import { RUParamGet, RequestUpgrade } from "@models/requestUpgrade";
+import { RequestExpand } from "@models/requestExpand";
 const { Option } = Select;
 const { confirm } = Modal;
 
@@ -28,9 +33,15 @@ const ModalCreate: React.FC<Props> = (props) => {
 
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [server, setServer] = useState<ServerAllocation[]>([]);
+  const [requestUpgrade, setRequestUpgrade] = useState<RequestUpgrade[]>([]);
+  const [requestExpand, setRequestExpand] = useState<RequestExpand[]>([]);
   const [pageSizeCus, setPageSizeCus] = useState<number>(6);
   const [totalPageCus, setTotalPageCus] = useState<number>(2);
   const [pageIndexCus, setPageIndexCus] = useState<number>(0);
+  const [totalPageUp, setTotalPageUp] = useState<number>(2);
+  const [pageIndexUp, setPageIndexUp] = useState<number>(0);
+  const [selectedServer, setSelectedServer] = useState<ServerAllocation>();
+  const [selectedReason, setSelectedReason] = useState<string>("");
 
   const disabled = async () => {
     var result = false;
@@ -54,10 +65,60 @@ const ModalCreate: React.FC<Props> = (props) => {
         setPageIndexCus(data.pageIndex);
         setServer([...server, ...data.data]);
       });
-  };  
+  };
+
+  const getMoreRequestUpgrade = async (serverId: number) => {
+    await requestUpgradeService
+      .getData(session?.user.access_token!, {
+        PageIndex: pageIndexUp + 1,
+        PageSize: pageSizeCus,
+        ServerAllocationId: serverId,
+      } as RUParamGet)
+      .then(async (data) => {
+        setTotalPageUp(data.totalPage);
+        setPageIndexUp(data.pageIndex);
+        setRequestUpgrade([...requestUpgrade, ...data.data]);
+      });
+  };
+
+  const getMoreRequestExpand = async (serverId: number) => {
+    await requestExpandService
+      .getData(
+      session?.user.access_token!, {
+        PageIndex: pageIndexUp + 1,
+        PageSize: pageSizeCus,
+      } as ParamGet,
+      serverId)
+      .then(async (data) => {
+        console.log(data)
+        setTotalPageUp(data.totalPage);
+        setPageIndexUp(data.pageIndex);
+        setRequestExpand([...requestExpand, ...data.data]);
+      });
+  };
+
+  const handleServerChange = async (res) => {
+    await setRequestUpgrade([]);
+    await setRequestExpand([]);
+    await serverService.getServerAllocationById(session?.user.access_token!, res.value)
+      .then((res) => {       
+        setSelectedServer(res);
+        setPageIndexUp(0);
+        getMoreRequestUpgrade(res.id!);
+        getMoreRequestExpand(res.id!);
+      })
+    form.setFieldsValue({
+      requestUpgradeIds: undefined,
+      requestExpand: undefined,
+    });
+  };
+
 
   useEffect(() => {
-    session && getMoreServer();
+      if (session) {
+        getMoreServer();
+      }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session]);
 
@@ -70,6 +131,7 @@ const ModalCreate: React.FC<Props> = (props) => {
         onCancel={() => {
           onClose();
           form.resetFields();
+          setSelectedServer(undefined);
         }}
         footer={[
           <Button
@@ -81,17 +143,18 @@ const ModalCreate: React.FC<Props> = (props) => {
                 confirm({
                   title: "Do you want to save?",
                   async onOk() {
+                    const requestUpgradeIds = form.getFieldValue("requestUpgradeIds").map(value => ({value})) || [];
                     onSubmit({
                       appointedCustomer: form.getFieldValue("appointedCustomer"),
                       dateAppointed: form.getFieldValue("dateAppointed"),
                       reason: form.getFieldValue("reason"),
                       note: form.getFieldValue("note"),
-                      // requestUpgradeIds:[0],
-                      // requestExpandId:0,
+                      requestUpgradeIds: requestUpgradeIds,
+                      requestExpandId: form.getFieldValue("requestExpandId"),
                     } as AppointmentCreateModel);
                     form.resetFields();
                   },
-                  onCancel() {},
+                  onCancel() { },
                 });
             }}
           >
@@ -139,6 +202,10 @@ const ModalCreate: React.FC<Props> = (props) => {
               <Select
                 labelInValue
                 allowClear
+                onChange={(res) => {
+                  setSelectedReason(res.value);
+                  form.setFieldsValue({serverAllocationId: undefined})
+                }}
               >
                 <Option value="Install">Server Installation</Option>
                 <Option value="Uninstall">Server Gỡ</Option>
@@ -155,8 +222,10 @@ const ModalCreate: React.FC<Props> = (props) => {
             >
               <Select
                 labelInValue
+                placeholder="Please select a server"
                 allowClear
                 listHeight={160}
+                onChange={handleServerChange}
                 onPopupScroll={async (e: any) => {
                   const { target } = e;
                   if (
@@ -169,13 +238,101 @@ const ModalCreate: React.FC<Props> = (props) => {
                   }
                 }}
               >
-                {server.map((l, index) => (
-                  <Option value={l.id} label={`${l?.name} - ${l?.masterIp}`} key={index}>
-                    {`${l?.name} - ${l?.masterIp}`}
+                {selectedReason === "Upgrade" ? 
+                server
+                .filter((l) => (l.status === "Working"))
+                .map((l, index) => (
+                  <Option 
+                    value={l.id}
+                    title={`${l?.name} - ${l.masterIp.address}`} 
+                    key={index}
+                  >
+                    {`${l?.name} - ${l?.status}`}
+                  </Option>
+                )) : 
+                server.map((l, index) => (
+                  <Option 
+                    value={l.id}
+                    title={`${l?.name} - ${l?.masterIp === null ? "master IP has not assigned yet" : `${l.masterIp.address}`}`} 
+                    key={index}
+                  >
+                    {`${l?.name} - ${l?.status}`}
                   </Option>
                 ))}
               </Select>
             </Form.Item>
+            {selectedServer?.status === "Working" && selectedReason === "Upgrade" && (
+              <>
+                <Form.Item
+                  name="requestUpgradeIds"
+                  label="Request Upgrade"
+                  labelAlign="right"
+                  rules={[{ required: true, message: "Request must not empty!" }]}
+                >
+                  <Select
+                    mode="multiple"
+                    placeholder="Please select a request"
+                    allowClear
+                    onPopupScroll={async (e: any) => {
+                      const { target } = e;
+                      if (
+                        (target as any).scrollTop + (target as any).offsetHeight ===
+                        (target as any).scrollHeight
+                      ) {
+                        if (pageIndexUp < totalPageUp) {
+                          getMoreRequestUpgrade(selectedServer?.id!);
+                        }
+                      }
+                    }}
+                  >
+                    {requestUpgrade.map((l, index) => (
+                      <Option value={l.id} key={index}>
+                        {`${l?.id} - ${l?.component.name} - ${l?.status}`}
+                      </Option>
+                    ))}
+                  </Select>
+                </Form.Item>
+              </>
+            )}
+            {(selectedReason === "Install" || selectedReason === "Uninstall") && (
+              <>
+                <Form.Item
+                  name="requestExpandId"
+                  label="Request Expand"
+                  labelAlign="right"
+                  rules={[{ required: true, message: "Request must not empty!" }]}
+                >
+                  <Select
+                    placeholder="Please select a request"
+                    allowClear
+                    onPopupScroll={async (e: any) => {
+                      const { target } = e;
+                      if (
+                        (target as any).scrollTop + (target as any).offsetHeight ===
+                        (target as any).scrollHeight
+                      ) {
+                        if (pageIndexUp < totalPageUp) {
+                          getMoreRequestExpand(selectedServer?.id!);
+                        }
+                      }
+                    }}
+                  >
+                    {selectedReason === "Install" ? requestExpand
+                      .filter((l) => (l.requestType === "Expand"))
+                      .map((l, index) => (
+                        <Option value={l.id} key={index}>
+                          {`${l?.id} - Installation`}
+                        </Option>
+                      )) : requestExpand
+                        .filter((l) => (l.requestType === "RemoveLocation")
+                        ).map((l, index) => (
+                          <Option value={l.id} key={index}>
+                            {`${l?.id} - Remove Server`}
+                          </Option>))}
+                  </Select>
+                </Form.Item>
+              </>
+            )}
             <Form.Item
               name="note"
               label="Note"
