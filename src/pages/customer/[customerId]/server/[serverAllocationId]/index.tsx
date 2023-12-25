@@ -124,7 +124,7 @@ const Customer: React.FC = () => {
     await serverHardwareConfigService
       .createServerHardwareConfig(session?.user.access_token!, data)
       .then((res) => {
-        message.success("Create successful!");
+        message.success("Create successfully!");
         getData();
       })
       .catch((errors) => {
@@ -139,7 +139,7 @@ const Customer: React.FC = () => {
     await serverHardwareConfigService
       .updateServerHardwareConfig(session?.user.access_token!, data)
       .then((res) => {
-        message.success("Update successful!");
+        message.success("Update successfully!");
         getData();
       })
       .catch((errors) => {
@@ -169,7 +169,7 @@ const Customer: React.FC = () => {
           )
           .then(() => {
             getData();
-            message.success(`Delete hardware config successful`);
+            message.success(`Delete hardware config successfully`);
           })
           .catch((errors) => {
             message.error(

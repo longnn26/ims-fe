@@ -36,7 +36,7 @@ const ModalCreate: React.FC<Props> = (props) => {
     await ipSubnetService
       .createData(session?.user.access_token!, data)
       .then((res) => {
-        message.success("Create successful!");
+        message.success("Create successfully!");
         onRefresh();
         onClose();
         form.resetFields();

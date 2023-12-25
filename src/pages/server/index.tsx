@@ -98,7 +98,7 @@ const Customer: React.FC = () => {
         await serverAllocationService
           .createServerAllocation(session?.user.access_token!, data)
           .then(() => {
-            message.success("Create successful!");
+            message.success("Create successfully!");
             getCustomerServerData(); // Cập nhật dữ liệu chỉ cho người dùng có quyền ROLE_CUSTOMER
           });
       } else {
@@ -106,7 +106,7 @@ const Customer: React.FC = () => {
         await serverAllocationService
           .createServerAllocation(session?.user.access_token!, data)
           .then(() => {
-            message.success("Create successful!");
+            message.success("Create successfully!");
             getData();
           });
       }
@@ -128,7 +128,7 @@ const Customer: React.FC = () => {
     await serverAllocationService
       .updateServerAllocation(session?.user.access_token!, data)
       .then((res) => {
-        message.success("Update successful!");
+        message.success("Update successfully!");
         getData();
       })
       .catch((errors) => {
@@ -158,7 +158,7 @@ const Customer: React.FC = () => {
           )
           .then(() => {
             getData();
-            message.success(`Delete server allocation successful!`);
+            message.success(`Delete server allocation successfully!`);
           })
           .catch((errors) => {
             message.error(errors.response.data ?? "Delete allocation failed");

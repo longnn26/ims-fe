@@ -88,7 +88,7 @@ const RequestExpandDetail: React.FC = () => {
             requestExpandDetail?.id + ""
           )
           .then((res) => {
-            message.success("Reject request expand successful!");
+            message.success("Reject request expand successfully!");
             getData();
           })
           .catch((errors) => {
@@ -116,7 +116,7 @@ const RequestExpandDetail: React.FC = () => {
             requestExpandDetail?.id + ""
           )
           .then((res) => {
-            message.success("Complete request expand successful!");
+            message.success("Complete request expand successfully!");
             getData();
           })
           .catch((errors) => {
@@ -144,7 +144,7 @@ const RequestExpandDetail: React.FC = () => {
             requestExpandDetail?.id + ""
           )
           .then((res) => {
-            message.success("Accept request expand successful!");
+            message.success("Accept request expand successfully!");
             getData();
           })
           .catch((errors) => {
@@ -172,7 +172,7 @@ const RequestExpandDetail: React.FC = () => {
             requestExpandDetail?.id + ""
           )
           .then((res) => {
-            message.success("Deny request expand successful!");
+            message.success("Deny request expand successfully!");
             getData();
           })
           .catch((errors) => {
@@ -188,7 +188,7 @@ const RequestExpandDetail: React.FC = () => {
     await requestExpandService
       .updateData(session?.user.access_token!, data)
       .then(async (res) => {
-        message.success("Update successful!");
+        message.success("Update successfully!");
         await requestExpandService
           .getDetail(
             session?.user.access_token!,
@@ -228,7 +228,7 @@ const RequestExpandDetail: React.FC = () => {
     await requestExpandService
       .saveLocation(session?.user.access_token!, requestExpandUpdate?.id!, data)
       .then(async (res) => {
-        message.success("Save location successful!");
+        message.success("Save location successfully!");
         getData();
       })
       .catch((errors) => {

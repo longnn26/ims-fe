@@ -60,7 +60,7 @@ const AreaDetail: React.FC = () => {
     await rackService
       .createData(session?.user.access_token!, data)
       .then((res) => {
-        message.success("Create successful!");
+        message.success("Create successfully!");
         getData();
       })
       .catch((errors) => {
@@ -75,7 +75,7 @@ const AreaDetail: React.FC = () => {
     await rackService
       .updateData(session?.user.access_token!, data)
       .then((res) => {
-        message.success("Update successful!");
+        message.success("Update successfully!");
         getData();
       })
       .catch((errors) => {
@@ -102,7 +102,7 @@ const AreaDetail: React.FC = () => {
           .deleteData(session?.user.access_token!, area.id)
           .then(() => {
             getData();
-            message.success(`Delete rack successful!`);
+            message.success(`Delete rack successfully!`);
           })
           .catch((errors) => {
             message.error(errors.response.data ?? "Delete rack failed");

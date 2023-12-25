@@ -43,21 +43,21 @@ const RequestUpgradeDetail: React.FC = () => {
       PageIndex: 1,
       PageSize: 10,
       RequestUpgradeId: router.query.requestUpgradeId ?? -1,
-    } as unknown as RUAppointmentParamGet);  
+    } as unknown as RUAppointmentParamGet);
   const [permission, setPermission] = useState<boolean>(true);
 
   const getData = async () => {
     await serverAllocationService
-        .getServerAllocationById(
-          session?.user.access_token!,
-          router.query.serverAllocationId + ""
-        )
-        .then((res) => {
-          setServerAllocationDetail(res);
-        })
-        .catch((err) => {
-          setServerAllocationDetail(undefined);
-        });
+      .getServerAllocationById(
+        session?.user.access_token!,
+        router.query.serverAllocationId + ""
+      )
+      .then((res) => {
+        setServerAllocationDetail(res);
+      })
+      .catch((err) => {
+        setServerAllocationDetail(undefined);
+      });
     await requestUpgradeService
       .getDetail(
         session?.user.access_token!,
@@ -68,11 +68,14 @@ const RequestUpgradeDetail: React.FC = () => {
       })
       .catch((res) => {
         setRequestUpgradeDetail(undefined);
-      });    
+      });
   };
 
   const checkPermission = () => {
-    if (requestUpgradeDetail?.serverAllocationId + "" !== router.query.serverAllocationId) {
+    if (
+      requestUpgradeDetail?.serverAllocationId + "" !==
+      router.query.serverAllocationId
+    ) {
       setPermission(false);
     } else {
       setPermission(true);
@@ -95,15 +98,15 @@ const RequestUpgradeDetail: React.FC = () => {
             requestUpgradeDetail?.id + ""
           )
           .then((res) => {
-            message.success("Reject request upgrade successful!");
+            message.success("Reject request upgrade successfully!");
             getData();
           })
           .catch((errors) => {
             message.error(errors.response.data);
           })
-          .finally(() => { });
+          .finally(() => {});
       },
-      onCancel() { },
+      onCancel() {},
     });
   };
 
@@ -123,15 +126,15 @@ const RequestUpgradeDetail: React.FC = () => {
             requestUpgradeDetail?.id + ""
           )
           .then((res) => {
-            message.success("Complete request upgrade successful!");
+            message.success("Complete request upgrade successfully!");
             getData();
           })
           .catch((errors) => {
             message.error(errors.response.data);
           })
-          .finally(() => { });
+          .finally(() => {});
       },
-      onCancel() { },
+      onCancel() {},
     });
   };
 
@@ -151,15 +154,15 @@ const RequestUpgradeDetail: React.FC = () => {
             requestUpgradeDetail?.id + ""
           )
           .then((res) => {
-            message.success("Accept request upgrade successful!");
+            message.success("Accept request upgrade successfully!");
             getData();
           })
           .catch((errors) => {
             message.error(errors.response.data);
           })
-          .finally(() => { });
+          .finally(() => {});
       },
-      onCancel() { },
+      onCancel() {},
     });
   };
 
@@ -179,15 +182,15 @@ const RequestUpgradeDetail: React.FC = () => {
             requestUpgradeDetail?.id + ""
           )
           .then((res) => {
-            message.success("Deny request upgrade successful!");
+            message.success("Deny request upgrade successfully!");
             getData();
           })
           .catch((errors) => {
             message.error(errors.response.data);
           })
-          .finally(() => { });
+          .finally(() => {});
       },
-      onCancel() { },
+      onCancel() {},
     });
   };
 
@@ -237,83 +240,85 @@ const RequestUpgradeDetail: React.FC = () => {
   }, [requestUpgradeDetail]);
 
   if (requestUpgradeDetail === undefined) {
-    return (<AntdLayoutNoSSR
-      content={
-        <>
-          <ModalEmpty />
-        </>
-      } />)
+    return (
+      <AntdLayoutNoSSR
+        content={
+          <>
+            <ModalEmpty />
+          </>
+        }
+      />
+    );
   } else
     return (
       <AntdLayoutNoSSR
         content={
           <>
-            {!permission && (
-              <ModalEmpty />
-            )}
-          {areInArray(
-            session?.user.roles!,
-            ROLE_SALES,
-            ROLE_TECH,
-            ROLE_CUSTOMER
-          ) && (permission) && (
-              <>
-                <div className="flex flex-wrap items-center justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
-                  <BreadcrumbComponent itemBreadcrumbs={itemBreadcrumbs} />
-                </div>
-                <div className="md:flex">
-                  <ServerDetail
-                    serverAllocationDetail={serverAllocationDetail!}
-                  ></ServerDetail>
-                  <RequestUpgradeDetailInfor
-                    requestUpgradeDetail={requestUpgradeDetail!}
-                  />
-                </div>
-                <AppointmentTable
-                  typeGet="ByRequestUpgradeId"
-                  urlOncell=""
-                  onEdit={(record) => { }}
-                  onDelete={async (record) => { }}
-                />
-                {appointmentData?.totalPage > 0 && (
-                  <Pagination
-                    className="text-end m-4"
-                    current={rUAppointmentParamGet?.PageIndex}
-                    pageSize={appointmentData?.pageSize ?? 10}
-                    total={appointmentData?.totalSize}
-                    onChange={(page, pageSize) => {
-                      setRUAppointmentParamGet({
-                        ...rUAppointmentParamGet,
-                        PageIndex: page,
-                        PageSize: pageSize,
-                      });
-                    }}
-                  />
-                )}
-                {requestUpgradeDetail?.status === "Waiting" && (
-                  <FloatButton.Group
-                    trigger="hover"
-                    type="primary"
-                    style={{ right: 60, bottom: 500 }}
-                    icon={<AiOutlineFileDone />}
-                  >
-                    <FloatButton
-                      icon={<MdCancel color="red" />}
-                      tooltip="Deny"
-                      onClick={() => denyRequestUpgrade()}
+            {!permission && <ModalEmpty />}
+            {areInArray(
+              session?.user.roles!,
+              ROLE_SALES,
+              ROLE_TECH,
+              ROLE_CUSTOMER
+            ) &&
+              permission && (
+                <>
+                  <div className="flex flex-wrap items-center justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
+                    <BreadcrumbComponent itemBreadcrumbs={itemBreadcrumbs} />
+                  </div>
+                  <div className="md:flex">
+                    <ServerDetail
+                      serverAllocationDetail={serverAllocationDetail!}
+                    ></ServerDetail>
+                    <RequestUpgradeDetailInfor
+                      requestUpgradeDetail={requestUpgradeDetail!}
                     />
-                    <FloatButton
-                      onClick={() => acceptRequestUpgrade()}
-                      icon={<AiOutlineFileDone color="green" />}
-                      tooltip="Accept"
+                  </div>
+                  <AppointmentTable
+                    typeGet="ByRequestUpgradeId"
+                    urlOncell=""
+                    onEdit={(record) => {}}
+                    onDelete={async (record) => {}}
+                  />
+                  {appointmentData?.totalPage > 0 && (
+                    <Pagination
+                      className="text-end m-4"
+                      current={rUAppointmentParamGet?.PageIndex}
+                      pageSize={appointmentData?.pageSize ?? 10}
+                      total={appointmentData?.totalSize}
+                      onChange={(page, pageSize) => {
+                        setRUAppointmentParamGet({
+                          ...rUAppointmentParamGet,
+                          PageIndex: page,
+                          PageSize: pageSize,
+                        });
+                      }}
                     />
-                  </FloatButton.Group>
-                )}
-                {Boolean(
-                  requestUpgradeDetail?.status === "Accepted" &&
-                  requestUpgradeDetail?.succeededAppointment?.status ===
-                  "Success"
-                ) && (
+                  )}
+                  {requestUpgradeDetail?.status === "Waiting" && (
+                    <FloatButton.Group
+                      trigger="hover"
+                      type="primary"
+                      style={{ right: 60, bottom: 500 }}
+                      icon={<AiOutlineFileDone />}
+                    >
+                      <FloatButton
+                        icon={<MdCancel color="red" />}
+                        tooltip="Deny"
+                        onClick={() => denyRequestUpgrade()}
+                      />
+                      <FloatButton
+                        onClick={() => acceptRequestUpgrade()}
+                        icon={<AiOutlineFileDone color="green" />}
+                        tooltip="Accept"
+                      />
+                    </FloatButton.Group>
+                  )}
+                  {Boolean(
+                    requestUpgradeDetail?.status === "Accepted" &&
+                      requestUpgradeDetail?.succeededAppointment?.status ===
+                        "Success"
+                  ) && (
                     <FloatButton.Group
                       trigger="hover"
                       type="primary"
@@ -332,12 +337,12 @@ const RequestUpgradeDetail: React.FC = () => {
                       />
                     </FloatButton.Group>
                   )}
-              </>
-            )}
-        </>
-      }
-    />
-  );
+                </>
+              )}
+          </>
+        }
+      />
+    );
 };
 
 export default RequestUpgradeDetail;

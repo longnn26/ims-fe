@@ -55,7 +55,7 @@ const ModalDeny: React.FC<Props> = (props) => {
                         form.getFieldValue("saleNote")
                       )
                       .then((res) => {
-                        message.success("Deny Appointment successful!");
+                        message.success("Deny Appointment successfully!");
                         getData();
                         onClose();
                       })

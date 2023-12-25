@@ -52,7 +52,7 @@ const Customer: React.FC = () => {
     await requestUpgradeService
       .updateData(session?.user.access_token!, data)
       .then((res) => {
-        message.success("Update successful!");
+        message.success("Update successfully!");
         getData();
       })
       .catch((errors) => {
@@ -78,7 +78,7 @@ const Customer: React.FC = () => {
           .deleteData(session?.user.access_token!, requestUpgrade.id.toString())
           .then(() => {
             getData();
-            message.success(`Delete request upgrade successful`);
+            message.success(`Delete request upgrade successfully`);
           })
           .catch((errors) => {
             message.error(

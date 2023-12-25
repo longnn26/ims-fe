@@ -59,7 +59,7 @@ const Customer: React.FC = () => {
     await componentService
       .createComponent(session?.user.access_token!, data)
       .then((res) => {
-        message.success("Create successful!");
+        message.success("Create successfully!");
         getData();
       })
       .catch((errors) => {
@@ -74,7 +74,7 @@ const Customer: React.FC = () => {
     await componentService
       .updateComponent(session?.user.access_token!, data)
       .then((res) => {
-        message.success("Update successful!");
+        message.success("Update successfully!");
         getData();
       })
       .catch((errors) => {
@@ -101,7 +101,7 @@ const Customer: React.FC = () => {
           .deleteComponent(session?.user.access_token!, serverAllocation.id)
           .then(() => {
             getData();
-            message.success(`Delete component successful!`);
+            message.success(`Delete component successfully!`);
           })
           .catch((errors) => {
             message.error(errors.response.data ?? "Delete component failed");

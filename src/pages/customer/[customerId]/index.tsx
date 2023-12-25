@@ -79,7 +79,7 @@ const Customer: React.FC = () => {
     await serverService
       .updateServerAllocation(session?.user.access_token!, data)
       .then((res) => {
-        message.success("Update successful!");
+        message.success("Update successfully!");
         getData();
       })
       .catch((errors) => {
@@ -122,60 +122,63 @@ const Customer: React.FC = () => {
     <AntdLayoutNoSSR
       content={
         <>
-        { customerDetail === undefined ? (
-          <ModalEmpty/>
-        ) : (
-          <>
-          <div className="flex flex-wrap items-center justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
-            <BreadcrumbComponent itemBreadcrumbs={itemBreadcrumbs} />
-            {/* <SearchComponent
+          {customerDetail === undefined ? (
+            <ModalEmpty />
+          ) : (
+            <>
+              <div className="flex flex-wrap items-center justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
+                <BreadcrumbComponent itemBreadcrumbs={itemBreadcrumbs} />
+                {/* <SearchComponent
               placeholder="Search Name, Description..."
               setSearchValue={(value) =>
                 setParamGet({ ...paramGet, SearchValue: value })
               }
             /> */}
-          </div>
-          <ModalUpdate
-            serverAllocation={serverUpdate!}
-            onClose={() => setUpdate(undefined)}
-            onSubmit={(data: SAUpdateModel) => {
-              updateData(data);
-            }}
-          />
-          </>
-        )}
+              </div>
+              <ModalUpdate
+                serverAllocation={serverUpdate!}
+                onClose={() => setUpdate(undefined)}
+                onSubmit={(data: SAUpdateModel) => {
+                  updateData(data);
+                }}
+              />
+            </>
+          )}
           {areInArray(
             session?.user.roles!,
             ROLE_SALES,
             ROLE_TECH,
             ROLE_CUSTOMER
-          ) && (customerDetail !== undefined) && (
-            <>
-              <CustomerDetail customerDetail={customerDetail!}></CustomerDetail>
-              <ServerAllocationTable
-                urlOncell={`/customer/${customerDetail?.id}`}
-                data={serverList}
-                onEdit={(record) => {
-                  setUpdate(record);
-                }}
-              />
-              {totalServerListSize > 0 && (
-                <Pagination
-                  className="text-end m-4"
-                  current={paramGet.PageIndex}
-                  pageSize={totalServerListSize ?? 10}
-                  total={totalServerListSize}
-                  onChange={(page, pageSize) => {
-                    setParamGet({
-                      ...paramGet,
-                      PageIndex: page,
-                      PageSize: pageSize,
-                    });
+          ) &&
+            customerDetail !== undefined && (
+              <>
+                <CustomerDetail
+                  customerDetail={customerDetail!}
+                ></CustomerDetail>
+                <ServerAllocationTable
+                  urlOncell={`/customer/${customerDetail?.id}`}
+                  data={serverList}
+                  onEdit={(record) => {
+                    setUpdate(record);
                   }}
                 />
-              )}
-            </>
-          )}
+                {totalServerListSize > 0 && (
+                  <Pagination
+                    className="text-end m-4"
+                    current={paramGet.PageIndex}
+                    pageSize={totalServerListSize ?? 10}
+                    total={totalServerListSize}
+                    onChange={(page, pageSize) => {
+                      setParamGet({
+                        ...paramGet,
+                        PageIndex: page,
+                        PageSize: pageSize,
+                      });
+                    }}
+                  />
+                )}
+              </>
+            )}
         </>
       }
     />

@@ -82,7 +82,7 @@ const ModalAccept: React.FC<Props> = (props) => {
                         form.getFieldValue("userTechId").value
                       )
                       .then((res) => {
-                        message.success("Accept Appointment successful!");
+                        message.success("Accept Appointment successfully!");
                         getData();
                         onClose();
                       })

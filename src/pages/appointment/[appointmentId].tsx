@@ -118,7 +118,7 @@ const Appoinment: React.FC = () => {
         data
       )
       .then((res) => {
-        message.success("Upload document successful!");
+        message.success("Upload document successfully!");
         getData();
       })
       .catch((errors) => {
@@ -139,7 +139,7 @@ const Appoinment: React.FC = () => {
         data
       )
       .then((res) => {
-        message.success("Complete appointment successful!");
+        message.success("Complete appointment successfully!");
         getData();
       })
       .catch((errors) => {
@@ -158,7 +158,7 @@ const Appoinment: React.FC = () => {
         data
       )
       .then((res) => {
-        message.success("Fail appointment successful!");
+        message.success("Fail appointment successfully!");
         getData();
       })
       .catch((errors) => {
@@ -185,7 +185,7 @@ const Appoinment: React.FC = () => {
     await requestUpgradeService
       .updateData(session?.user.access_token!, data)
       .then((res) => {
-        message.success("Update successful!");
+        message.success("Update successfully!");
         getData();
       })
       .catch((errors) => {

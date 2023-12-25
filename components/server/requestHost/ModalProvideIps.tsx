@@ -53,7 +53,7 @@ const ModalProvideIps: React.FC<Props> = (props) => {
                       ipAddressId
                     )
                     .then((res) => {
-                      message.success("Save successful!");
+                      message.success("Save successfully!");
                       onRefresh();
                       onClose();
                     })

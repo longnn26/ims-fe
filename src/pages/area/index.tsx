@@ -58,7 +58,7 @@ const Area: React.FC = () => {
     await areaService
       .createData(session?.user.access_token!, data)
       .then((res) => {
-        message.success("Create successful!");
+        message.success("Create successfully!");
         getData();
       })
       .catch((errors) => {
@@ -73,7 +73,7 @@ const Area: React.FC = () => {
     await areaService
       .updateData(session?.user.access_token!, data)
       .then((res) => {
-        message.success("Update successful!");
+        message.success("Update successfully!");
         getData();
       })
       .catch((errors) => {
@@ -100,7 +100,7 @@ const Area: React.FC = () => {
           .deleteData(session?.user.access_token!, area.id)
           .then(() => {
             getData();
-            message.success(`Delete area successful!`);
+            message.success(`Delete area successfully`);
           })
           .catch((errors) => {
             message.error(errors.response.data ?? "Delete area failed");

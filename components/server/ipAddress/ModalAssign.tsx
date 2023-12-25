@@ -41,7 +41,7 @@ const ModalAssign: React.FC<Props> = (props) => {
         ipAddressId: ipAddressId,
       } as MasterIpCreateModel)
       .then((res) => {
-        message.success("Assign master ip successful!");
+        message.success("Assign master ip successfully!");
         onRefresh();
         onClose();
       })

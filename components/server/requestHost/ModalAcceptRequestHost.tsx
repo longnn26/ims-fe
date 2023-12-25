@@ -82,7 +82,7 @@ const ModalAcceptRequestHost: React.FC<Props> = (props) => {
                         form.getFieldValue("userTechId").value
                       )
                       .then((res) => {
-                        message.success("Accept request host successful!");
+                        message.success("Accept request host successfully!");
                         getData();
                         onClose();
                       })

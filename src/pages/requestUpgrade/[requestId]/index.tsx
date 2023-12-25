@@ -77,7 +77,7 @@ const RequestDetail: React.FC = () => {
             requestUpgradeDetail?.id + ""
           )
           .then((res) => {
-            message.success("Accept request upgrade successful!");
+            message.success("Accept request upgrade successfully!");
             getData();
           })
           .catch((errors) => {
@@ -105,7 +105,7 @@ const RequestDetail: React.FC = () => {
             requestUpgradeDetail?.id + ""
           )
           .then((res) => {
-            message.success("Deny request upgrade successful!");
+            message.success("Deny request upgrade successfully!");
             getData();
           })
           .catch((errors) => {
@@ -161,7 +161,7 @@ const RequestDetail: React.FC = () => {
             requestUpgradeDetail?.id + ""
           )
           .then((res) => {
-            message.success("Complete request upgrade successful!");
+            message.success("Complete request upgrade successfully!");
             getData();
           })
           .catch((errors) => {

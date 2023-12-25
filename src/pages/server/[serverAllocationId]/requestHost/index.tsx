@@ -82,7 +82,7 @@ const RequestHost: React.FC = () => {
     await requestHostService
       .createData(session?.user.access_token!, data)
       .then((res) => {
-        message.success("Create successful!");
+        message.success("Create successfully!");
         getData();
       })
       .catch((errors) => {
@@ -97,7 +97,7 @@ const RequestHost: React.FC = () => {
     await requestUpgradeService
       .updateData(session?.user.access_token!, data)
       .then((res) => {
-        message.success("Update successful!");
+        message.success("Update successfully!");
         getData();
       })
       .catch((errors) => {
@@ -124,7 +124,7 @@ const RequestHost: React.FC = () => {
           .deleteData(session?.user.access_token!, requestUpgrade.id.toString())
           .then(() => {
             getData();
-            message.success(`Delete request upgrade successful`);
+            message.success(`Delete request upgrade successfully`);
           })
           .catch((errors) => {
             message.error(

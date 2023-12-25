@@ -13,7 +13,15 @@ import { ServerAllocation } from "@models/serverAllocation";
 import requestExpandService from "@services/requestExpand";
 import serverAllocationService from "@services/serverAllocation";
 import { getAppointmentData } from "@slices/requestExpand";
-import { Alert, Button, Empty, FloatButton, Modal, Pagination, message } from "antd";
+import {
+  Alert,
+  Button,
+  Empty,
+  FloatButton,
+  Modal,
+  Pagination,
+  message,
+} from "antd";
 import { ItemType } from "antd/es/breadcrumb/Breadcrumb";
 import { useSession } from "next-auth/react";
 import dynamic from "next/dynamic";
@@ -39,8 +47,10 @@ const RequestExpandDetail: React.FC = () => {
   const router = useRouter();
   const dispatch = useDispatch();
   const { data: session } = useSession();
-  const [serverAllocationDetail, setServerAllocationDetail] = useState<ServerAllocation>();
-  const [requestExpandDetail, setRequestExpandDetail] = useState<RequestExpand>();
+  const [serverAllocationDetail, setServerAllocationDetail] =
+    useState<ServerAllocation>();
+  const [requestExpandDetail, setRequestExpandDetail] =
+    useState<RequestExpand>();
 
   const [rUAppointmentParamGet, setRUAppointmentParamGet] =
     useState<RUAppointmentParamGet>({
@@ -73,14 +83,17 @@ const RequestExpandDetail: React.FC = () => {
       .then((res) => {
         setServerAllocationDetail(res);
         // checkPermission();
-      }).
-      catch((errors) => {
+      })
+      .catch((errors) => {
         setServerAllocationDetail(undefined);
       });
   };
 
   const checkPermission = () => {
-    if (requestExpandDetail?.serverAllocation.id + "" !== router.query.serverAllocationId) {
+    if (
+      requestExpandDetail?.serverAllocation.id + "" !==
+      router.query.serverAllocationId
+    ) {
       setPermission(false);
     } else {
       setPermission(true);
@@ -103,15 +116,15 @@ const RequestExpandDetail: React.FC = () => {
             requestExpandDetail?.id + ""
           )
           .then((res) => {
-            message.success("Reject request expand successful!");
+            message.success("Reject request expand successfully!");
             getData();
           })
           .catch((errors) => {
             message.error(errors.response.data);
           })
-          .finally(() => { });
+          .finally(() => {});
       },
-      onCancel() { },
+      onCancel() {},
     });
   };
 
@@ -131,15 +144,15 @@ const RequestExpandDetail: React.FC = () => {
             requestExpandDetail?.id + ""
           )
           .then((res) => {
-            message.success("Complete request expand successful!");
+            message.success("Complete request expand successfully!");
             getData();
           })
           .catch((errors) => {
             message.error(errors.response.data);
           })
-          .finally(() => { });
+          .finally(() => {});
       },
-      onCancel() { },
+      onCancel() {},
     });
   };
 
@@ -159,15 +172,15 @@ const RequestExpandDetail: React.FC = () => {
             requestExpandDetail?.id + ""
           )
           .then((res) => {
-            message.success("Accept request expand successful!");
+            message.success("Accept request expand successfully!");
             getData();
           })
           .catch((errors) => {
             message.error(errors.response.data);
           })
-          .finally(() => { });
+          .finally(() => {});
       },
-      onCancel() { },
+      onCancel() {},
     });
   };
 
@@ -187,15 +200,15 @@ const RequestExpandDetail: React.FC = () => {
             requestExpandDetail?.id + ""
           )
           .then((res) => {
-            message.success("Deny request expand successful!");
+            message.success("Deny request expand successfully!");
             getData();
           })
           .catch((errors) => {
             message.error(errors.response.data);
           })
-          .finally(() => { });
+          .finally(() => {});
       },
-      onCancel() { },
+      onCancel() {},
     });
   };
 
@@ -203,7 +216,7 @@ const RequestExpandDetail: React.FC = () => {
     await requestExpandService
       .updateData(session?.user.access_token!, data)
       .then(async (res) => {
-        message.success("Update successful!");
+        message.success("Update successfully!");
         await requestExpandService
           .getDetail(
             session?.user.access_token!,
@@ -230,7 +243,7 @@ const RequestExpandDetail: React.FC = () => {
                 .then((res) => {
                   setSuggestLocation(res);
                 })
-                .catch((e) => { });
+                .catch((e) => {});
             }
           });
         // getData();
@@ -258,7 +271,7 @@ const RequestExpandDetail: React.FC = () => {
     await requestExpandService
       .saveLocation(session?.user.access_token!, requestExpandUpdate?.id!, data)
       .then(async (res) => {
-        message.success("Save location successful!");
+        message.success("Save location successfully!");
         getData();
       })
       .catch((errors) => {
@@ -296,12 +309,15 @@ const RequestExpandDetail: React.FC = () => {
   }, [requestExpandDetail]);
 
   if (requestExpandDetail === undefined) {
-    return (<AntdLayoutNoSSR
-      content={
-        <>
-          <ModalEmpty />
-        </>
-      } />)
+    return (
+      <AntdLayoutNoSSR
+        content={
+          <>
+            <ModalEmpty />
+          </>
+        }
+      />
+    );
   } else
     return (
       <AntdLayoutNoSSR
@@ -315,13 +331,14 @@ const RequestExpandDetail: React.FC = () => {
 
                 {Boolean(
                   requestExpandDetail?.status === "Accepted" &&
-                  areInArray(
-                    session?.user.roles!,
-                    ROLE_SALES,
-                    ROLE_TECH
-                    // ROLE_CUSTOMER
-                  )
-                ) && permission && (
+                    areInArray(
+                      session?.user.roles!,
+                      ROLE_SALES,
+                      ROLE_TECH
+                      // ROLE_CUSTOMER
+                    )
+                ) &&
+                  permission && (
                     <>
                       <div>
                         <Button
@@ -342,7 +359,7 @@ const RequestExpandDetail: React.FC = () => {
                                 .then((res) => {
                                   setSuggestLocation(res);
                                 })
-                                .catch((e) => { });
+                                .catch((e) => {});
                             }
                           }}
                         >
@@ -358,7 +375,8 @@ const RequestExpandDetail: React.FC = () => {
               ROLE_SALES,
               ROLE_TECH,
               ROLE_CUSTOMER
-            ) && permission && (
+            ) &&
+              permission && (
                 <>
                   <div className="md:flex">
                     <ServerDetail
@@ -372,8 +390,8 @@ const RequestExpandDetail: React.FC = () => {
                   <AppointmentTable
                     typeGet="ByRequestExpandId"
                     urlOncell=""
-                    onEdit={(record) => { }}
-                    onDelete={async (record) => { }}
+                    onEdit={(record) => {}}
+                    onDelete={async (record) => {}}
                   />
                   {appointmentData?.totalPage > 0 && (
                     <Pagination
@@ -393,49 +411,49 @@ const RequestExpandDetail: React.FC = () => {
 
                   {Boolean(
                     requestExpandDetail?.status === "Waiting" &&
-                    areInArray(session?.user.roles!, ROLE_SALES)
+                      areInArray(session?.user.roles!, ROLE_SALES)
                   ) && (
-                      <FloatButton.Group
-                        trigger="hover"
-                        type="primary"
-                        style={{ right: 60, bottom: 500 }}
-                        icon={<AiOutlineFileDone />}
-                      >
-                        <FloatButton
-                          icon={<MdCancel color="red" />}
-                          tooltip="Deny"
-                          onClick={() => denyRequestExpand()}
-                        />
-                        <FloatButton
-                          onClick={() => acceptRequestExpand()}
-                          icon={<AiOutlineFileDone color="green" />}
-                          tooltip="Accept"
-                        />
-                      </FloatButton.Group>
-                    )}
+                    <FloatButton.Group
+                      trigger="hover"
+                      type="primary"
+                      style={{ right: 60, bottom: 500 }}
+                      icon={<AiOutlineFileDone />}
+                    >
+                      <FloatButton
+                        icon={<MdCancel color="red" />}
+                        tooltip="Deny"
+                        onClick={() => denyRequestExpand()}
+                      />
+                      <FloatButton
+                        onClick={() => acceptRequestExpand()}
+                        icon={<AiOutlineFileDone color="green" />}
+                        tooltip="Accept"
+                      />
+                    </FloatButton.Group>
+                  )}
                   {Boolean(
                     requestExpandDetail?.status === "Accepted" &&
-                    requestExpandDetail?.succeededAppointment?.status ===
-                    "Success"
+                      requestExpandDetail?.succeededAppointment?.status ===
+                        "Success"
                   ) && (
-                      <FloatButton.Group
-                        trigger="hover"
-                        type="primary"
-                        style={{ right: 60, bottom: 500 }}
-                        icon={<AiOutlineFileDone />}
-                      >
-                        <FloatButton
-                          icon={<MdCancel color="red" />}
-                          tooltip="Fail"
-                          onClick={() => rejectRequestExpand()}
-                        />
-                        <FloatButton
-                          onClick={() => completeRequestExpand()}
-                          icon={<AiOutlineFileDone color="green" />}
-                          tooltip="Complete"
-                        />
-                      </FloatButton.Group>
-                    )}
+                    <FloatButton.Group
+                      trigger="hover"
+                      type="primary"
+                      style={{ right: 60, bottom: 500 }}
+                      icon={<AiOutlineFileDone />}
+                    >
+                      <FloatButton
+                        icon={<MdCancel color="red" />}
+                        tooltip="Fail"
+                        onClick={() => rejectRequestExpand()}
+                      />
+                      <FloatButton
+                        onClick={() => completeRequestExpand()}
+                        icon={<AiOutlineFileDone color="green" />}
+                        tooltip="Complete"
+                      />
+                    </FloatButton.Group>
+                  )}
                   <ModalUpdate
                     onSaveLocation={(data) => saveLocation(data)}
                     suggestLocation={suggestLocation}

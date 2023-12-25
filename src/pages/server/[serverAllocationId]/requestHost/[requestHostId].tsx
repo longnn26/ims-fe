@@ -123,7 +123,7 @@ const RequestHostDetail: React.FC = () => {
     await requestHost
       .updateData(session?.user.access_token!, data)
       .then(async (res) => {
-        message.success("Update successful!");
+        message.success("Update successfully!");
         await requestHost
           .getDetail(
             session?.user.access_token!,
@@ -187,7 +187,7 @@ const RequestHostDetail: React.FC = () => {
         data
       )
       .then((res) => {
-        message.success("Upload document successful!");
+        message.success("Upload document successfully!");
         getData();
       })
       .catch((errors) => {

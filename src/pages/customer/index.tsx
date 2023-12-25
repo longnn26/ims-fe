@@ -59,7 +59,7 @@ const Customer: React.FC = () => {
     await customerService
       .createData(session?.user.access_token!, data)
       .then((res) => {
-        message.success("Create successful!");
+        message.success("Create successfully!");
         getData();
       })
       .catch((errors) => {
@@ -101,7 +101,7 @@ const Customer: React.FC = () => {
           .deleteData(session?.user.access_token!, customer.id)
           .then(() => {
             getData();
-            message.success(`Delete customer successful!`);
+            message.success(`Delete customer successfully!`);
           })
           .catch((errors) => {
             message.error(errors.response.data ?? "Delete customer failed");
