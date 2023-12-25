@@ -50,6 +50,7 @@ const Customer: React.FC = () => {
   const [totalServerListSize, setTotalServerListSize] = useState<number>(0);
 
   const [itemBreadcrumbs, setItemBreadcrumbs] = useState<ItemType[]>([]);
+  const [content, setContent] = useState<string>("");
 
   const getData = async () => {
     await customerService
@@ -60,8 +61,9 @@ const Customer: React.FC = () => {
       .then(async (res) => {
         setCustomerDetail(res);
       })
-      .catch((res) => {
+      .catch((errors) => {
         setCustomerDetail(undefined);
+        setContent("Customer NOT EXISTED");
       });
     await customerService
       .getServerById(session?.user.access_token!, router.query.customerId + "")
@@ -72,6 +74,8 @@ const Customer: React.FC = () => {
         if (res.totalPage < paramGet.PageIndex && res.totalPage != 0) {
           setParamGet({ ...paramGet, PageIndex: res.totalPage });
         }
+      })
+      .catch((errors) => {
       });
   };
 
@@ -118,71 +122,73 @@ const Customer: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session, paramGet]);
 
-  return (
-    <AntdLayoutNoSSR
+  if (customerDetail === undefined) {
+    return (<AntdLayoutNoSSR
       content={
         <>
-          {customerDetail === undefined ? (
-            <ModalEmpty />
-          ) : (
-            <>
-              <div className="flex flex-wrap items-center justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
-                <BreadcrumbComponent itemBreadcrumbs={itemBreadcrumbs} />
-                {/* <SearchComponent
+          <ModalEmpty
+            isPermission={false}
+            content={content}
+          />
+        </>
+      } />)
+  } else
+    return (
+      <AntdLayoutNoSSR
+        content={
+          <>
+            <div className="flex flex-wrap items-center justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
+              <BreadcrumbComponent itemBreadcrumbs={itemBreadcrumbs} />
+              {/* <SearchComponent
               placeholder="Search Name, Description..."
               setSearchValue={(value) =>
                 setParamGet({ ...paramGet, SearchValue: value })
               }
             /> */}
-              </div>
-              <ModalUpdate
-                serverAllocation={serverUpdate!}
-                onClose={() => setUpdate(undefined)}
-                onSubmit={(data: SAUpdateModel) => {
-                  updateData(data);
-                }}
-              />
-            </>
-          )}
-          {areInArray(
-            session?.user.roles!,
-            ROLE_SALES,
-            ROLE_TECH,
-            ROLE_CUSTOMER
-          ) &&
-            customerDetail !== undefined && (
-              <>
-                <CustomerDetail
-                  customerDetail={customerDetail!}
-                ></CustomerDetail>
-                <ServerAllocationTable
-                  urlOncell={`/customer/${customerDetail?.id}`}
-                  data={serverList}
-                  onEdit={(record) => {
-                    setUpdate(record);
-                  }}
-                />
-                {totalServerListSize > 0 && (
-                  <Pagination
-                    className="text-end m-4"
-                    current={paramGet.PageIndex}
-                    pageSize={totalServerListSize ?? 10}
-                    total={totalServerListSize}
-                    onChange={(page, pageSize) => {
-                      setParamGet({
-                        ...paramGet,
-                        PageIndex: page,
-                        PageSize: pageSize,
-                      });
+            </div>
+            <ModalUpdate
+              serverAllocation={serverUpdate!}
+              onClose={() => setUpdate(undefined)}
+              onSubmit={(data: SAUpdateModel) => {
+                updateData(data);
+              }}
+            />
+            {areInArray(
+              session?.user.roles!,
+              ROLE_SALES,
+              ROLE_TECH,
+              ROLE_CUSTOMER
+            ) && (customerDetail !== undefined) && (
+                <>
+                  <CustomerDetail customerDetail={customerDetail!}></CustomerDetail>
+                  <ServerAllocationTable
+                    urlOncell={`/customer/${customerDetail?.id}`}
+                    data={serverList}
+                    onEdit={(record) => {
+                      setUpdate(record);
                     }}
                   />
-                )}
-              </>
-            )}
-        </>
-      }
-    />
-  );
+                  {totalServerListSize > 0 && (
+                    <Pagination
+                      className="text-end m-4"
+                      current={paramGet.PageIndex}
+                      pageSize={totalServerListSize ?? 10}
+                      total={totalServerListSize}
+                      onChange={(page, pageSize) => {
+                        setParamGet({
+                          ...paramGet,
+                          PageIndex: page,
+                          PageSize: pageSize,
+                        });
+                      }}
+                    />
+                  )}
+                </>
+              )}
+          </>
+        }
+      />
+    );
 };
 
 export default Customer;

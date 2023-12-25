@@ -85,6 +85,7 @@ const RequestHostDetail: React.FC = () => {
   const [disabledInspectionReport, setDisabledInspectionReport] =
     useState<boolean>(false);
   const [permission, setPermission] = useState<boolean>(true);
+  const [content, setContent] = useState<string>("");
 
   const getData = async () => {
     await requestHost
@@ -94,18 +95,20 @@ const RequestHostDetail: React.FC = () => {
       })
       .catch((errors) => {
         setRequestHostDetail(undefined);
+        setContent(errors.response.data);
       });
     await serverAllocationService
-      .getServerAllocationById(
-        session?.user.access_token!,
-        router.query.serverAllocationId + ""
-      )
-      .then((res) => {
-        setServerAllocationDetail(res);
-      })
-      .catch((err) => {
-        setServerAllocationDetail(undefined);
-      });
+    .getServerAllocationById(
+      session?.user.access_token!,
+      router.query.serverAllocationId + "",
+    )
+    .then((res) => {
+      setServerAllocationDetail(res);
+    })
+    .catch((errors) => {
+      setServerAllocationDetail(undefined);
+      setContent(errors.response.data);
+    });
   };
 
   const checkPermission = () => {
@@ -225,22 +228,25 @@ const RequestHostDetail: React.FC = () => {
   }, [requestHostDetail]);
 
   if (requestHostDetail === undefined) {
-    return (
-      <AntdLayoutNoSSR
-        content={
-          <>
-            <ModalEmpty />
-          </>
-        }
-      />
-    );
+    return (<AntdLayoutNoSSR
+      content={
+        <>
+          <ModalEmpty
+            isPermission = {false}
+            content={content}
+          />
+        </>
+      } />)
   } else
     return (
       <AntdLayoutNoSSR
         content={
           <>
             {!permission ? (
-              <ModalEmpty />
+              <ModalEmpty
+                isPermission={true}
+                content={content}
+              />
             ) : (
               <div className="flex flex-wrap items-center justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
                 <BreadcrumbComponent itemBreadcrumbs={itemBreadcrumbs} />

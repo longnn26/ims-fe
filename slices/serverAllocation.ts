@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import serverAllocationService from "@services/serverAllocation";
 import customerService from "@services/customer";
-import { ParamGet } from "@models/base";
+import { ParamGet, ParamGetWithId } from "@models/base";
 import { ServerAllocationData } from "@models/serverAllocation";
 import { CustomerData } from "@models/customer";
 import { RUIpAdressParamGet } from "@models/requestHost";
@@ -36,10 +36,10 @@ const getServerAllocationData = createAsyncThunk(
 
 const getCustomerServerAllocationData = createAsyncThunk(
   `${TYPE_PREFIX}/getData`,
-  async (arg: { token: string; id: string }) => {
+  async (arg: { token: string; params: ParamGetWithId }) => {
     const result = await customerService.getServerById(
       arg.token,
-      arg.id
+      arg.params
     );
     return result;
   }

@@ -212,7 +212,7 @@ const Appoinment: React.FC = () => {
       paramGetExtend.Id = parseInt(router.query.appointmentId!.toString());
       paramGetExpandExtend.Id = parseInt(
         router.query.appointmentId!.toString()
-      );
+      );      
       dispatch(
         getRequestUpgradeData({
           token: session?.user.access_token!,

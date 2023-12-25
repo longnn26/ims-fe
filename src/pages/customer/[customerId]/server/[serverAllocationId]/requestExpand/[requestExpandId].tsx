@@ -13,15 +13,7 @@ import { ServerAllocation } from "@models/serverAllocation";
 import requestExpandService from "@services/requestExpand";
 import serverAllocationService from "@services/serverAllocation";
 import { getAppointmentData } from "@slices/requestExpand";
-import {
-  Alert,
-  Button,
-  Empty,
-  FloatButton,
-  Modal,
-  Pagination,
-  message,
-} from "antd";
+import { Alert, Button, Empty, FloatButton, Modal, Pagination, message } from "antd";
 import { ItemType } from "antd/es/breadcrumb/Breadcrumb";
 import { useSession } from "next-auth/react";
 import dynamic from "next/dynamic";
@@ -37,6 +29,8 @@ import ModalUpdate from "@components/server/requestExpand/ModalUpdate";
 import { areInArray } from "@utils/helpers";
 import { ROLE_CUSTOMER, ROLE_SALES, ROLE_TECH } from "@utils/constants";
 import ModalEmpty from "@components/ModalEmpty";
+import customerService from "@services/customer";
+import { Customer } from "@models/customer";
 
 const { confirm } = Modal;
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
@@ -49,6 +43,7 @@ const RequestExpandDetail: React.FC = () => {
   const { data: session } = useSession();
   const [serverAllocationDetail, setServerAllocationDetail] =
     useState<ServerAllocation>();
+
   const [requestExpandDetail, setRequestExpandDetail] =
     useState<RequestExpand>();
 
@@ -56,7 +51,7 @@ const RequestExpandDetail: React.FC = () => {
     useState<RUAppointmentParamGet>({
       PageIndex: 1,
       PageSize: 10,
-      RequestExpandId: router.query.requestExpandId ?? -1,
+      RequestUpgradeId: router.query.requestExpandId ?? -1,
     } as unknown as RUAppointmentParamGet);
 
   const [itemBreadcrumbs, setItemBreadcrumbs] = useState<ItemType[]>([]);
@@ -64,39 +59,47 @@ const RequestExpandDetail: React.FC = () => {
   const [requestExpandUpdate, setRequestExpandUpdate] =
     useState<RequestExpand>();
   const { appointmentData } = useSelector((state) => state.requestExpand);
-  const [permission, setPermission] = useState<boolean>(true);
+  const [customerDetail, setCustomerDetail] = useState<Customer>();
   const [content, setContent] = useState<string>("");
+  const [permission, setPermission] = useState<boolean>(true);
 
   const getData = async () => {
     await requestExpandService
       .getDetail(session?.user.access_token!, router.query.requestExpandId + "")
-      .then((res) => {
+      .then(async (res) => {
         setRequestExpandDetail(res);
       })
       .catch((errors) => {
         setRequestExpandDetail(undefined);
-        setContent(errors.response.data);
       });
-    await serverAllocationService
-      .getServerAllocationById(
+    if (requestExpandDetail?.serverAllocation.id === router.query.serverAllocationId) {
+      await serverAllocationService
+        .getServerAllocationById(
+          session?.user.access_token!,
+          router.query.serverAllocationId + ""
+        )
+        .then((res) => {
+          setServerAllocationDetail(res);
+        });
+    }
+    
+    await customerService
+      .getCustomerById(
         session?.user.access_token!,
-        router.query.serverAllocationId + ""
+        router.query.customerId + ""
       )
-      .then((res) => {
-        setServerAllocationDetail(res);
-        // checkPermission();
+      .then(async (res) => {
+        setCustomerDetail(res);
       })
       .catch((errors) => {
-        setServerAllocationDetail(undefined);
-        setContent(errors.response.data);
+        setCustomerDetail(undefined);
+        setContent("Customer NOT EXISTED");
       });
   };
 
+  
   const checkPermission = () => {
-    if (
-      requestExpandDetail?.serverAllocation.id + "" !==
-      router.query.serverAllocationId
-    ) {
+    if (requestExpandDetail?.serverAllocation.id + "" !== router.query.serverAllocationId) {
       setPermission(false);
     } else {
       setPermission(true);
@@ -119,15 +122,15 @@ const RequestExpandDetail: React.FC = () => {
             requestExpandDetail?.id + ""
           )
           .then((res) => {
-            message.success("Reject request expand successfully!");
+            message.success("Reject request expand successful!");
             getData();
           })
           .catch((errors) => {
             message.error(errors.response.data);
           })
-          .finally(() => {});
+          .finally(() => { });
       },
-      onCancel() {},
+      onCancel() { },
     });
   };
 
@@ -147,15 +150,15 @@ const RequestExpandDetail: React.FC = () => {
             requestExpandDetail?.id + ""
           )
           .then((res) => {
-            message.success("Complete request expand successfully!");
+            message.success("Complete request expand successful!");
             getData();
           })
           .catch((errors) => {
             message.error(errors.response.data);
           })
-          .finally(() => {});
+          .finally(() => { });
       },
-      onCancel() {},
+      onCancel() { },
     });
   };
 
@@ -175,15 +178,15 @@ const RequestExpandDetail: React.FC = () => {
             requestExpandDetail?.id + ""
           )
           .then((res) => {
-            message.success("Accept request expand successfully!");
+            message.success("Accept request expand successful!");
             getData();
           })
           .catch((errors) => {
             message.error(errors.response.data);
           })
-          .finally(() => {});
+          .finally(() => { });
       },
-      onCancel() {},
+      onCancel() { },
     });
   };
 
@@ -203,15 +206,15 @@ const RequestExpandDetail: React.FC = () => {
             requestExpandDetail?.id + ""
           )
           .then((res) => {
-            message.success("Deny request expand successfully!");
+            message.success("Deny request expand successful!");
             getData();
           })
           .catch((errors) => {
             message.error(errors.response.data);
           })
-          .finally(() => {});
+          .finally(() => { });
       },
-      onCancel() {},
+      onCancel() { },
     });
   };
 
@@ -219,7 +222,7 @@ const RequestExpandDetail: React.FC = () => {
     await requestExpandService
       .updateData(session?.user.access_token!, data)
       .then(async (res) => {
-        message.success("Update successfully!");
+        message.success("Update successful!");
         await requestExpandService
           .getDetail(
             session?.user.access_token!,
@@ -246,7 +249,7 @@ const RequestExpandDetail: React.FC = () => {
                 .then((res) => {
                   setSuggestLocation(res);
                 })
-                .catch((e) => {});
+                .catch((e) => { });
             }
           });
         // getData();
@@ -274,7 +277,7 @@ const RequestExpandDetail: React.FC = () => {
     await requestExpandService
       .saveLocation(session?.user.access_token!, requestExpandUpdate?.id!, data)
       .then(async (res) => {
-        message.success("Save location successfully!");
+        message.success("Save location successful!");
         getData();
       })
       .catch((errors) => {
@@ -289,6 +292,7 @@ const RequestExpandDetail: React.FC = () => {
     if (router.query.serverAllocationId && session) {
       getData();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session]);
 
   useEffect(() => {
@@ -311,7 +315,7 @@ const RequestExpandDetail: React.FC = () => {
     checkPermission();
   }, [requestExpandDetail]);
 
-  if (requestExpandDetail === undefined) {
+  if (requestExpandDetail === undefined || serverAllocationDetail === undefined || customerDetail === undefined) {
     return (<AntdLayoutNoSSR
       content={
         <>
@@ -332,93 +336,91 @@ const RequestExpandDetail: React.FC = () => {
                 content={content}
               />
             ) : (
-              <div className="flex flex-wrap items-center justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
-                <BreadcrumbComponent itemBreadcrumbs={itemBreadcrumbs} />
+            <div className="flex flex-wrap items-center justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
+              <BreadcrumbComponent itemBreadcrumbs={itemBreadcrumbs} />
+
+              {Boolean(
+                requestExpandDetail?.status === "Accepted" &&
+                areInArray(
+                  session?.user.roles!,
+                  ROLE_SALES,
+                  ROLE_TECH
+                  // ROLE_CUSTOMER
+                )
+              ) && (
+                  <>
+                    <div>
+                      <Button
+                        type="primary"
+                        className="mb-2"
+                        icon={<EditOutlined />}
+                        onClick={async () => {
+                          setRequestExpandUpdate(requestExpandDetail);
+                          if (
+                            !requestExpandDetail?.requestedLocation &&
+                            requestExpandDetail?.size! > 0
+                          ) {
+                            await requestExpandService
+                              .getSuggestLocation(
+                                session?.user.access_token!,
+                                requestExpandDetail?.id!
+                              )
+                              .then((res) => {
+                                setSuggestLocation(res);
+                              })
+                              .catch((e) => { });
+                          }
+                        }}
+                      >
+                        Update
+                      </Button>
+                    </div>
+                  </>
+                )}
+            </div>
+          )}
+          {areInArray(
+            session?.user.roles!,
+            ROLE_SALES,
+            ROLE_TECH,
+            ROLE_CUSTOMER
+          ) && (serverAllocationDetail && requestExpandDetail !== undefined) && (
+              <>
+                <div className="md:flex">
+                  <ServerDetail
+                    serverAllocationDetail={serverAllocationDetail!}
+                  ></ServerDetail>
+                  <RequestExpandDetailInfor
+                    requestExpandDetail={requestExpandDetail!}
+                  />
+                </div>
+
+                <AppointmentTable
+                  typeGet="ByRequestExpandId"
+                  urlOncell=""
+                  onEdit={(record) => { }}
+                  onDelete={async (record) => { }}
+                />
+                {appointmentData?.totalPage > 0 && (
+                  <Pagination
+                    className="text-end m-4"
+                    current={rUAppointmentParamGet?.PageIndex}
+                    pageSize={appointmentData?.pageSize ?? 10}
+                    total={appointmentData?.totalSize}
+                    onChange={(page, pageSize) => {
+                      setRUAppointmentParamGet({
+                        ...rUAppointmentParamGet,
+                        PageIndex: page,
+                        PageSize: pageSize,
+                      });
+                    }}
+                  />
+                )}
 
                 {Boolean(
-                  requestExpandDetail?.status === "Accepted" &&
-                    areInArray(
-                      session?.user.roles!,
-                      ROLE_SALES,
-                      ROLE_TECH
-                      // ROLE_CUSTOMER
-                    )
-                ) &&
-                  permission && (
-                    <>
-                      <div>
-                        <Button
-                          type="primary"
-                          className="mb-2"
-                          icon={<EditOutlined />}
-                          onClick={async () => {
-                            setRequestExpandUpdate(requestExpandDetail);
-                            if (
-                              !requestExpandDetail?.requestedLocation &&
-                              requestExpandDetail?.size! > 0
-                            ) {
-                              await requestExpandService
-                                .getSuggestLocation(
-                                  session?.user.access_token!,
-                                  requestExpandDetail?.id!
-                                )
-                                .then((res) => {
-                                  setSuggestLocation(res);
-                                })
-                                .catch((e) => {});
-                            }
-                          }}
-                        >
-                          Update
-                        </Button>
-                      </div>
-                    </>
-                  )}
-              </div>
-            )}
-            {areInArray(
-              session?.user.roles!,
-              ROLE_SALES,
-              ROLE_TECH,
-              ROLE_CUSTOMER
-            ) &&
-              permission && (
-                <>
-                  <div className="md:flex">
-                    <ServerDetail
-                      serverAllocationDetail={serverAllocationDetail!}
-                    ></ServerDetail>
-                    <RequestExpandDetailInfor
-                      requestExpandDetail={requestExpandDetail!}
-                    />
-                  </div>
-
-                  <AppointmentTable
-                    typeGet="ByRequestExpandId"
-                    urlOncell=""
-                    onEdit={(record) => {}}
-                    onDelete={async (record) => {}}
-                  />
-                  {appointmentData?.totalPage > 0 && (
-                    <Pagination
-                      className="text-end m-4"
-                      current={rUAppointmentParamGet?.PageIndex}
-                      pageSize={appointmentData?.pageSize ?? 10}
-                      total={appointmentData?.totalSize}
-                      onChange={(page, pageSize) => {
-                        setRUAppointmentParamGet({
-                          ...rUAppointmentParamGet,
-                          PageIndex: page,
-                          PageSize: pageSize,
-                        });
-                      }}
-                    />
-                  )}
-
-                  {Boolean(
-                    requestExpandDetail?.status === "Waiting" &&
-                      areInArray(session?.user.roles!, ROLE_SALES)
-                  ) && (
+                  requestExpandDetail?.status === "Waiting" &&
+                  areInArray(session?.user.roles!, ROLE_SALES)
+                ) && (
                     <FloatButton.Group
                       trigger="hover"
                       type="primary"
@@ -437,11 +439,11 @@ const RequestExpandDetail: React.FC = () => {
                       />
                     </FloatButton.Group>
                   )}
-                  {Boolean(
-                    requestExpandDetail?.status === "Accepted" &&
-                      requestExpandDetail?.succeededAppointment?.status ===
-                        "Success"
-                  ) && (
+                {Boolean(
+                  requestExpandDetail?.status === "Accepted" &&
+                  requestExpandDetail?.succeededAppointment?.status ===
+                  "Success"
+                ) && (
                     <FloatButton.Group
                       trigger="hover"
                       type="primary"
@@ -460,24 +462,24 @@ const RequestExpandDetail: React.FC = () => {
                       />
                     </FloatButton.Group>
                   )}
-                  <ModalUpdate
-                    onSaveLocation={(data) => saveLocation(data)}
-                    suggestLocation={suggestLocation}
-                    requestExpand={requestExpandUpdate!}
-                    onClose={() => {
-                      setRequestExpandUpdate(undefined);
-                      setSuggestLocation(undefined);
-                    }}
-                    onSubmit={(value) => {
-                      updateData(value);
-                    }}
-                  />
-                </>
-              )}
-          </>
-        }
-      />
-    );
+                <ModalUpdate
+                  onSaveLocation={(data) => saveLocation(data)}
+                  suggestLocation={suggestLocation}
+                  requestExpand={requestExpandUpdate!}
+                  onClose={() => {
+                    setRequestExpandUpdate(undefined);
+                    setSuggestLocation(undefined);
+                  }}
+                  onSubmit={(value) => {
+                    updateData(value);
+                  }}
+                />
+              </>
+            )}
+        </>
+      }
+    />
+  );
 };
 
 export default RequestExpandDetail;

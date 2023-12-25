@@ -14,7 +14,7 @@ import {
 } from "antd";
 import moment from "moment";
 import { useRouter } from "next/router";
-import { BiSolidCommentDetail } from "react-icons/bi";
+import { BiSolidCommentDetail, BiEdit } from "react-icons/bi";
 
 interface Props {
   typeGet?: string;
@@ -125,14 +125,15 @@ const AppointmentTable: React.FC<Props> = (props) => {
             >
               <BiSolidCommentDetail />
             </Button>
-          </Tooltip>
+          </Tooltip>          
+          {record.status === "Waiting" || record.status === "Accepted" && (
+          <Tooltip title="Edit" color={"black"}>
+            <Button onClick={() => onEdit(record)}>
+              <BiEdit />
+            </Button>
+          </Tooltip>     
+          )}     
         </Space>
-        // <Space wrap>
-        //   <Tooltip title="Edit" color={"black"}>
-        //     <Button onClick={() => onEdit(record)}>
-        //       <BiEdit />
-        //     </Button>
-        //   </Tooltip>
         //   <Tooltip title="Delete" color={"black"}>
         //     <Button onClick={() => onDelete(record)}>
         //       <AiFillDelete />
