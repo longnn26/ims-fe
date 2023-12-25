@@ -1,5 +1,6 @@
 import { BaseWithIdNumber, PagingModel, ParamGet } from "./base";
 import { Customer } from "./customer";
+import { Evaluator, Executor } from "./requestHost";
 import { ServerAllocation } from "./serverAllocation";
 
 export interface Appointment extends BaseWithIdNumber {
@@ -20,6 +21,8 @@ export interface Appointment extends BaseWithIdNumber {
   customer: Customer;
   serverAllocation: ServerAllocation;
   purpose: string;
+  evaluator: Evaluator;
+  executor: Executor;
 }
 
 export interface AppointmentData extends PagingModel {
