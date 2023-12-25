@@ -2,10 +2,11 @@
 import BreadcrumbComponent from "@components/BreadcrumbComponent";
 import ServerDetail from "@components/server/ServerDetail";
 import RequestExpandTable from "@components/server/requestExpand/RequestExpandTable";
-import ModalCreate from "@components/server/requestUpgrade/ModalCreate";
+import ModalCreate from "@components/server/requestExpand/ModalCreate";
 import ModalUpdate from "@components/server/requestUpgrade/ModalUpdate";
 import useDispatch from "@hooks/use-dispatch";
 import useSelector from "@hooks/use-selector";
+import { RequestExpandCreateModel } from "@models/requestExpand";
 import {
   RUParamGet,
   RequestUpgrade,
@@ -15,11 +16,12 @@ import {
 } from "@models/requestUpgrade";
 import { ServerAllocation } from "@models/serverAllocation";
 import requestUpgradeService from "@services/requestUpgrade";
+import requestExpandService from "@services/requestExpand";
 import serverAllocationService from "@services/serverAllocation";
 import { getRequestExpandData } from "@slices/requestExpand";
 import { ROLE_CUSTOMER, ROLE_SALES, ROLE_TECH } from "@utils/constants";
 import { areInArray } from "@utils/helpers";
-import { Alert, FloatButton, Modal, Pagination, message } from "antd";
+import { Alert, Button, FloatButton, Modal, Pagination, message } from "antd";
 import { ItemType } from "antd/es/breadcrumb/Breadcrumb";
 import { useSession } from "next-auth/react";
 import dynamic from "next/dynamic";
@@ -27,6 +29,7 @@ import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { AiOutlineFileDone } from "react-icons/ai";
 import { MdCancel } from "react-icons/md";
+import { IoIosSend } from "react-icons/io";
 
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
@@ -76,8 +79,8 @@ const RequestExpand: React.FC = () => {
     });
   };
 
-  const createData = async (data: RequestUpgradeCreateModel) => {
-    await requestUpgradeService
+  const createData = async (data: RequestExpandCreateModel) => {
+    await requestExpandService
       .createData(session?.user.access_token!, data)
       .then((res) => {
         message.success("Create successfully!");
@@ -173,12 +176,24 @@ const RequestExpand: React.FC = () => {
             <>
               <div className="flex flex-wrap items-center justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
                 <BreadcrumbComponent itemBreadcrumbs={itemBreadcrumbs} />
+                {areInArray(session?.user.roles!, ROLE_CUSTOMER) && (
+                  <Button
+                    type="primary"
+                    htmlType="submit"
+                    icon={<IoIosSend />}
+                    onClick={() => {
+                      setOpenModalCreate(true);
+                    }}
+                  >
+                    Submit Server Removal Request
+                  </Button>
+                )}
               </div>
 
               <ModalCreate
                 open={openModalCreate}
                 onClose={() => setOpenModalCreate(false)}
-                onSubmit={(data: RequestUpgradeCreateModel) => {
+                onSubmit={(data: RequestExpandCreateModel) => {
                   data.serverAllocationId = parseInt(
                     router.query!.serverAllocationId!.toString()
                   );

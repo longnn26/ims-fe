@@ -30,6 +30,14 @@ export interface RequestExpandData extends PagingModel {
   data: RequestExpand[];
 }
 
+export interface RequestExpandCreateModel {
+  forRemoval: boolean;
+  note: string;
+  saleNote: string;
+  techNote: string;
+  serverAllocationId: number;
+}
+
 export interface RequestExpandUpdateModel {
   id: number;
   size: number;

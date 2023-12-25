@@ -187,7 +187,7 @@ const RequestUpgrade: React.FC = () => {
               ROLE_TECH,
               ROLE_CUSTOMER
             ) && <BreadcrumbComponent itemBreadcrumbs={itemBreadcrumbs} />}
-            {areInArray(session?.user.roles!, ROLE_TECH, ROLE_CUSTOMER) && (
+            {areInArray(session?.user.roles!, ROLE_CUSTOMER) && (
               <Button
                 type="primary"
                 htmlType="submit"

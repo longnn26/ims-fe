@@ -3,6 +3,7 @@ import { ParamGet } from "@models/base";
 import {
   RequestedLocation,
   RequestExpand,
+  RequestExpandCreateModel,
   RequestExpandData,
   RequestExpandUpdateModel,
   SuggestLocation,
@@ -24,10 +25,19 @@ const getData = async (
   return response.data;
 };
 
-const getDetail = async (
-  token: string, 
-  id: string
-): Promise<RequestExpand> => {
+const createData = async (
+  token: string,
+  data: RequestExpandCreateModel
+): Promise<any> => {
+  const response = await httpClient.post({
+    token: token,
+    url: apiLinks.requestExpand.create,
+    data: data,
+  });
+  return response.data;
+};
+
+const getDetail = async (token: string, id: string): Promise<RequestExpand> => {
   const response = await httpClient.get({
     url: apiLinks.requestExpand.getById + `/${id}`,
     token: token,
@@ -120,6 +130,7 @@ const saveLocation = async (
 
 const requestExpand = {
   getData,
+  createData,
   getDetail,
   acceptRequestExpand,
   completeRequestExpand,
