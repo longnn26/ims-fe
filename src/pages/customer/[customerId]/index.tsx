@@ -25,6 +25,7 @@ import { getServerAllocationData } from "@slices/customer";
 import { areInArray } from "@utils/helpers";
 import { ROLE_CUSTOMER, ROLE_SALES, ROLE_TECH } from "@utils/constants";
 import ModalEmpty from "@components/ModalEmpty";
+import { ParamGetWithId } from "@models/base";
 
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
@@ -66,7 +67,7 @@ const Customer: React.FC = () => {
         setContent("Customer NOT EXISTED");
       });
     await customerService
-      .getServerById(session?.user.access_token!, router.query.customerId + "")
+      .getServerById(session?.user.access_token!, router.query.customerId+"")
       .then((result) => {
         setServerList(result);
         setTotalServerListSize(result?.totalSize ?? 0);

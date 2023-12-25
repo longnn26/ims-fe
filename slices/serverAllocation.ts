@@ -36,10 +36,10 @@ const getServerAllocationData = createAsyncThunk(
 
 const getCustomerServerAllocationData = createAsyncThunk(
   `${TYPE_PREFIX}/getData`,
-  async (arg: { token: string; params: ParamGetWithId }) => {
+  async (arg: { token: string; id: string }) => {
     const result = await customerService.getServerById(
       arg.token,
-      arg.params
+      arg.id
     );
     return result;
   }

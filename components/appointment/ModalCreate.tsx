@@ -55,11 +55,7 @@ const ModalCreate: React.FC<Props> = (props) => {
 
   const getMoreServer = async () => {
     await customerService
-      .getServerById(session?.user.access_token!, {
-        PageIndex: pageIndexCus + 1,
-        PageSize: pageSizeCus,
-        Id: parseJwt(session?.user.access_token).UserId,
-      } as ParamGetWithId)
+      .getServerById(session?.user.access_token!, parseJwt(session?.user.access_token).UserId)
       .then(async (data) => {
         setTotalPageCus(data.totalPage);
         setPageIndexCus(data.pageIndex);
