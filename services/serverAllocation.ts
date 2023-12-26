@@ -88,8 +88,7 @@ const serverIpAddressData = async (
   params: RUIpAdressParamGet
 ): Promise<IpAddressData> => {
   const response = await httpClient.get({
-    url:
-      apiLinks.serverAllocation.getServerIpAddress + `/${params.Id}/IpAddress`,
+    url: apiLinks.serverAllocation.getServerIpAddress + `/${params.Id}/IpAddress`,
     token: token,
     params: params,
   });

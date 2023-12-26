@@ -5,7 +5,7 @@ import RequestHostTable from "@components/server/requestHost/RequestHostTable";
 import ModalCreate from "@components/server/requestHost/ModalCreate";
 import useDispatch from "@hooks/use-dispatch";
 import useSelector from "@hooks/use-selector";
-import { RequestHostCreateModel } from "@models/requestHost";
+import { RequestHostCreateModel, RequestHostIp } from "@models/requestHost";
 import {
   RUParamGet,
   RequestUpgrade,
@@ -28,7 +28,8 @@ import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { AiOutlineFileDone } from "react-icons/ai";
 import { IoIosSend } from "react-icons/io";
-import { MdCancel } from "react-icons/md";
+import { MdOutlineCancelScheduleSend } from "react-icons/md";
+import ModalCreateRemoval from "@components/server/requestHost/ModalCreateRemoval";
 
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
@@ -83,6 +84,28 @@ const RequestHost: React.FC = () => {
       .createData(session?.user.access_token!, data)
       .then((res) => {
         message.success("Create successfully!");
+        getData();
+      })
+      .catch((errors) => {
+        message.error(errors.response.data);
+      })
+      .finally(() => {
+        setOpenModalCreate(false);
+      });
+  };
+
+  const createRemoval = async (data: RequestHostCreateModel, ip: RequestHostIp) => {
+    await requestHostService
+      .createData(session?.user.access_token!, data)
+      .then(async (res) => {
+        await requestHostService
+          .saveProvideIps(session?.user.access_token!, res.id, ip.ipAddresses.map((ip) => ip.id))
+          .then((res) => {
+            message.success("Create successfully!");
+          })
+          .catch((errors) => {
+            message.error(errors.response.data);
+          })
         getData();
       })
       .catch((errors) => {
@@ -185,18 +208,42 @@ const RequestHost: React.FC = () => {
             <>
               <div className="flex flex-wrap items-center justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
                 <BreadcrumbComponent itemBreadcrumbs={itemBreadcrumbs} />
-                {areInArray(session?.user.roles!, ROLE_CUSTOMER) && (
-                  <Button
-                    type="primary"
-                    htmlType="submit"
-                    icon={<IoIosSend />}
-                    onClick={() => {
-                      setOpenModalCreate(true);
-                    }}
-                  >
-                    Create IP&apos;s Request
-                  </Button>
-                )}
+                <div>
+                  {areInArray(session?.user.roles!, ROLE_CUSTOMER) && (
+                    <>
+                      <Button
+                        type="primary"
+                        htmlType="submit"
+                        className="mr-2"
+                        icon={<MdOutlineCancelScheduleSend/>}
+                        onClick={() => {
+                          setOpenModalCreate(true);
+                        }}
+                      >
+                        Create IP&apos;s Removal Request
+                      </Button>
+                      <ModalCreateRemoval
+                        serverId={serverAllocationDetail?.id}
+                        open={openModalCreate}
+                        onClose={() => setOpenModalCreate(false)}
+                        onSubmit={(data: RequestHostCreateModel, ip: RequestHostIp) => {
+                          data.serverAllocationId = serverAllocationDetail?.id!;
+                          createRemoval(data, ip);
+                        }}
+                      />
+                      <Button
+                        type="primary"
+                        htmlType="submit"
+                        icon={<IoIosSend />}
+                        onClick={() => {
+                          setOpenModalCreate(true);
+                        }}
+                      >
+                        Create IP&apos;s Request
+                      </Button>
+                    </>
+                  )}
+                </div>
               </div>
 
               <ServerDetail

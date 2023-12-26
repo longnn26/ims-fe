@@ -56,28 +56,6 @@ const RequestHostList: React.FC = () => {
     });
   };
 
-  const createData = async (data: RequestHostCreateModel, ip: RequestHostIp) => {
-    await requestHostService
-      .createData(session?.user.access_token!, data)
-      .then(async (res) => {
-        await requestHostService
-          .saveProvideIps(session?.user.access_token!, res.id, ip.ipAddresses.map((ip) => ip.id))
-          .then((res) => {
-            message.success("Create successfully!");
-          })
-          .catch((errors) => {
-            message.error(errors.response.data);
-          })
-        getData();
-      })
-      .catch((errors) => {
-        message.error(errors.response.data);
-      })
-      .finally(() => {
-        setOpenModalCreate(false);
-      });
-  };
-
   const handleBreadCumb = () => {
     var itemBrs = [] as ItemType[];
     var items = router.asPath.split("/").filter((_) => _ != "");
@@ -93,7 +71,8 @@ const RequestHostList: React.FC = () => {
   };
 
   useEffect(() => {
-    session && getData();
+    if (session)
+      {getData(); handleBreadCumb();}
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session, paramGet]);
 
@@ -103,27 +82,7 @@ const RequestHostList: React.FC = () => {
         <>
           {areInArray(session?.user.roles!, ROLE_CUSTOMER, ROLE_TECH, ROLE_SALES) && (
             <>
-              <Button
-                type="primary"
-                htmlType="submit"
-                onClick={() => {
-                  setOpenModalCreate(true);
-                }}
-              >
-                Create IP&apos;s Removal Request
-              </Button>
-              <ModalCreateRemoval
-                serverId={0}
-                open={openModalCreate}
-                onClose={() => setOpenModalCreate(false)}
-                onSubmit={(data: RequestHostCreateModel, ip: RequestHostIp) => {
-                  createData(data, ip);
-                }}
-              />
-            </>
-          )}
-          {areInArray(session?.user.roles!, ROLE_CUSTOMER, ROLE_TECH, ROLE_SALES) && (
-            <><div className="flex flex-wrap items-center justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
+           <div className="flex flex-wrap items-center justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
               <BreadcrumbComponent itemBreadcrumbs={itemBreadcrumbs} />
             </div>
               <RequestHostTable

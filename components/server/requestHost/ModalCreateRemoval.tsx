@@ -3,17 +3,19 @@ import { Button, Input, Modal, Select, Space, Card } from "antd";
 import { Form } from "antd";
 import { CloseOutlined } from "@ant-design/icons";
 import useSelector from "@hooks/use-selector";
-import { RequestHostCreateModel, RequestHostIp } from "@models/requestHost";
+import { IPAddress, RUIpAdressParamGet, RequestHostCreateModel, RequestHostIp } from "@models/requestHost";
 import customerService from "@services/customer";
 import session from "redux-persist/lib/storage/session";
 import { useSession } from "next-auth/react";
 import { parseJwt } from "@utils/helpers";
 import { ServerAllocation } from "@models/serverAllocation";
+import serverAllocationService from "@services/serverAllocation";
+import { IpAddress, IpAddressData } from "@models/ipAddress";
 const { Option } = Select;
 const { confirm } = Modal;
 
 interface Props {
-  serverId: number;
+  serverId: number | undefined;
   open: boolean;
   onClose: () => void;
   onSubmit: (saCreateModel: RequestHostCreateModel, ip: RequestHostIp) => void;
@@ -29,11 +31,12 @@ const ModalCreate: React.FC<Props> = (props) => {
   const [confirmLoading, setConfirmLoading] = useState(false);
   const { componentOptions } = useSelector((state) => state.component);
   const [selectedCapacities, setSelectedCapacities] = useState<number[]>([]);
-  const [hiddenQuantity, setHiddenQuantity] = useState(false);
-  const [pageSizeCus, setPageSizeCus] = useState<number>(6);
-  const [totalPageCus, setTotalPageCus] = useState<number>(2);
-  const [pageIndexCus, setPageIndexCus] = useState<number>(0);
+  const [pageSize, setPageSize] = useState<number>(6);
+  const [totalPage, setTotalPage] = useState<number>(2);
+  const [pageIndex, setPageIndex] = useState<number>(0);
+  const [maxQuantity, setMaxQuantity] = useState<number>(1);
   const [server, setServer] = useState<ServerAllocation[]>([]);
+  const [ipAddresses, setIpAddresses] = useState<IpAddress[]>([]);
   const [requestType, setRequestType] = useState<string | undefined>(undefined);
 
   const disabled = async () => {
@@ -46,21 +49,38 @@ const ModalCreate: React.FC<Props> = (props) => {
     return result;
   };
 
-  const getMoreServer = async () => {
-    await customerService
-      .getServerById(session?.user.access_token!, parseJwt(session?.user.access_token).UserId)
+  const getMoreIp = async (pageIndexInp?: number, ip?: IpAddress[]) => {
+    await serverAllocationService
+      .serverIpAddressData(
+        session?.user.access_token!, {
+          PageIndex: pageIndexInp === 0 ? pageIndexInp : pageIndex + 1,
+          PageSize: pageSize,
+          Id: serverId,
+        } as RUIpAdressParamGet)
       .then(async (data) => {
-        setTotalPageCus(data.totalPage);
-        setPageIndexCus(data.pageIndex);
-        setServer([...server, ...data.data]);
+        setTotalPage(data.totalPage);
+        setPageIndex(data.pageIndex);
+        ip ? 
+        setIpAddresses([...ip, ...data.data]):
+        setIpAddresses([...ipAddresses, ...data.data]);
+        setMaxQuantity(ipAddresses.length);
       });
   };
 
   useEffect(() => {
     // Khi requestType thay đổi, reset selectedCapacities và hiển thị/ẩn quantity
     setSelectedCapacities([]);
-    setHiddenQuantity(requestType === "Port");
+    const filterIp = requestType === "Additional" ?
+      ipAddresses.filter((l) => (l.assignmentType === "Additional")) :
+      ipAddresses.filter((l) => (l.assignmentType === "Port"));
+    setMaxQuantity(filterIp.length);
   }, [requestType]);
+
+  useEffect(() => {
+    session && getMoreIp(0, []);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [session]);
 
   return (
     <>
@@ -87,33 +107,16 @@ const ModalCreate: React.FC<Props> = (props) => {
                     setLoadingSubmit(true); // Đặt trạng thái loading khi bắt đầu gửi dữ liệu
                     let formData: RequestHostCreateModel;
                     let ipData: RequestHostIp;
-
-                    if (form.getFieldValue("type") === "Additional") {
-                      formData = {
-                        type: form.getFieldValue("type"),
-                        quantity: hiddenQuantity
-                          ? selectedCapacities.length
-                          : form.getFieldValue("quantity"),
-                        capacities: null,
-                        note: form.getFieldValue("note"),
-                        isRemoval: true,
-                        serverAllocationId: serverId,
-                      } as RequestHostCreateModel;
-                    } else {
-                      formData = {
-                        type: form.getFieldValue("type"),
-                        quantity: hiddenQuantity
-                          ? selectedCapacities.length
-                          : form.getFieldValue("quantity"),
-                        capacities: selectedCapacities,
-                        note: form.getFieldValue("note"),
-                        isRemoval: true,
-                        serverAllocationId: serverId,
-                      } as RequestHostCreateModel;
-                    }
+                    
+                    formData = {
+                      isRemoval: true,
+                      type: form.getFieldValue("type"),
+                      quantity: form.getFieldValue("quantity"),
+                      note: form.getFieldValue("note"),
+                    } as RequestHostCreateModel;
 
                     ipData = {
-                      ipAddresses: form.getFieldValue(""),
+                      ipAddresses: form.getFieldValue("ipAddressIds"),
                     } as RequestHostIp
 
                     // Call the provided onSubmit function with the formData
@@ -140,7 +143,7 @@ const ModalCreate: React.FC<Props> = (props) => {
           >
             <Form.Item
               name="type"
-              label="Request Type"
+              label="Remove Type"
               rules={[
                 { required: true, message: "Please select a component." },
               ]}
@@ -150,91 +153,82 @@ const ModalCreate: React.FC<Props> = (props) => {
                 allowClear
                 onChange={(value) => setRequestType(value)}
               >
-                <Option value="Additional">Additional</Option>
+                <Option value="Additional">IP</Option>
                 <Option value="Port">Port</Option>
               </Select>
             </Form.Item>
-            {!hiddenQuantity && (
               <Form.Item
                 name="quantity"
-                label="Quantity IP"
+                label="Quantity"
                 rules={[
                   {
+                    min: 1,
                     required: true,
                   },
                   {
+                    validator: async (_, value) => {
+                      if (value > maxQuantity) {
+                        throw new Error("Max quantity can enter is the number of IPs that the server has!");
+                      }
+                    },
+                  },
+                  {
                     pattern: new RegExp(/^[0-9]+$/),
-                    message: "Quantity IP must be a number",
+                    message: "Quantity IP must be a number bigger than 0",
                   },
                 ]}
               >
-                <Input placeholder="Quantity IP" allowClear />
+              <Input placeholder="Quantity IP" allowClear/>
               </Form.Item>
-            )}
-            {requestType === "Port" && (
-              <Form.Item label="Capacity">
-                <Form.List name="capacities">
-                  {(subFields, subOpt) => (
-                    <div
-                      style={{
-                        display: "flex",
-                        flexDirection: "column",
-                        rowGap: 16,
-                      }}
-                    >
-                      {subFields.map((subField, index) => (
-                        <Space key={subField.key}>
-                          <Form.Item
-                            {...subField}
-                            name={[subField.name, "value"]}
-                            rules={[
-                              {
-                                required: true,
-                              },
-                              {
-                                pattern: new RegExp(/^(0(\.[1-9])?|1)$/),
-                                message: "Capacity must be 0, 0.1, or 1",
-                              },
-                            ]}
-                          >
-                            <Select
-                              placeholder="Choose Capacity"
-                              onChange={(value: number) => {
-                                setSelectedCapacities((prevCapacities) => {
-                                  const updatedCapacities = [...prevCapacities];
-                                  updatedCapacities[index] = value;
-                                  return updatedCapacities;
-                                });
-                              }}
-                              value={selectedCapacities[index]}
-                              style={{ width: "250px" }}
-                            >
-                              <Option value={0.1}>100 MB</Option>
-                              <Option value={1}>1 GB</Option>
-                            </Select>
-                          </Form.Item>
-                          <CloseOutlined
-                            style={{ paddingBottom: "25px" }}
-                            onClick={() => {
-                              subOpt.remove(subField.name);
-                              setSelectedCapacities((prevCapacities) => {
-                                const updatedCapacities = [...prevCapacities];
-                                updatedCapacities.splice(index, 1);
-                                return updatedCapacities;
-                              });
-                            }}
-                          />
-                        </Space>
-                      ))}
-                      <Button type="dashed" onClick={() => subOpt.add()} block>
-                        + Add Capacity
-                      </Button>
-                    </div>
-                  )}
-                </Form.List>
-              </Form.Item>
-            )}
-            <Form.Item name="note" label="Note">
+              <>
+                <Form.Item
+                  name="ipAddressIds"
+                  label="IP Addresses"
+                  labelAlign="right"
+                  rules={[{ required: true, message: "IP Addresses must not empty!" }]}
+                >
+                  <Select
+                    mode="multiple"
+                    labelInValue
+                    placeholder="Please select IPs to remove"
+                    allowClear
+                    listHeight={160}
+                    onChange={(res) => { }}
+                    onPopupScroll={async (e: any) => {
+                      const { target } = e;
+                      if (
+                        (target as any).scrollTop + (target as any).offsetHeight ===
+                        (target as any).scrollHeight
+                      ) {
+                        if (pageIndex < totalPage) {
+                          getMoreIp(serverId!);
+                        }
+                      }
+                    }}
+                  >
+                  {requestType === "Additional" ? ipAddresses
+                    .filter((l) => (l.assignmentType === "Additional"))
+                    .map((l, index) => (
+                      <Option
+                        value={l.id}
+                        key={index}
+                      >
+                        {`${l.address}`}
+                      </Option>
+                    )): ipAddresses
+                    .filter((l) => (l.assignmentType === "Port"))
+                    .map((l, index) => (
+                      <Option
+                        value={l.id}
+                        key={index}
+                      >
+                        {`${l.address} - ${l.capacity! === 0.1 ? "100 Mbps" : "1 GB (mai Vỹ sửa API khúc lày)"}`}
+                      </Option>
+                    ))}
+                  </Select>
+                </Form.Item>
+              </>
+            <Form.Item name="note" label="Note" rules={[{max: 2000}]}>
               <Input placeholder="Note" allowClear />
             </Form.Item>
           </Form>

@@ -3,6 +3,7 @@ import { IpSubnet } from "./ipSubnet";
 
 export interface IpAddress extends BaseWithIdNumber {
   address: string;
+  capacity?: number;
   blocked: boolean;
   isReserved: boolean;
   purpose: string;

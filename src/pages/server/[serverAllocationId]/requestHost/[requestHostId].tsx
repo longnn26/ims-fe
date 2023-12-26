@@ -38,6 +38,7 @@ import { areInArray } from "@utils/helpers";
 import { ROLE_CUSTOMER, ROLE_SALES, ROLE_TECH } from "@utils/constants";
 import ModalEmpty from "@components/ModalEmpty";
 import RequestHostIPAddressTable from "@components/server/requestHost/RequestHostIPAddressTable";
+import ModalCreateRemoval from "@components/server/requestHost/ModalCreateRemoval";
 
 const { confirm } = Modal;
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {

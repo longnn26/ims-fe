@@ -107,7 +107,7 @@ const Appoinment: React.FC = () => {
             setLoadingSubmit(false);
           });
       },
-      onCancel() {},
+      onCancel() { },
     });
   };
 
@@ -123,26 +123,28 @@ const Appoinment: React.FC = () => {
     <AntdLayoutNoSSR
       content={
         <>
-          {areInArray(session?.user.roles!, ROLE_CUSTOMER) && (
-            <>
-              <Button
-                type="primary"
-                htmlType="submit"
-                onClick={() => {
-                  setOpenModalCreate(true);
-                }}
-              >
-                Create
-              </Button>
-              <ModalCreate
-                open={openModalCreate}
-                onClose={() => setOpenModalCreate(false)}
-                onSubmit={(data: AppointmentCreateModel) => {
-                  createData(data);
-                }}
-              />
-            </>
-          )}
+          <div className="flex justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
+            {areInArray(session?.user.roles!, ROLE_CUSTOMER) && (
+              <>
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  onClick={() => {
+                    setOpenModalCreate(true);
+                  }}
+                >
+                  Create
+                </Button>
+                <ModalCreate
+                  open={openModalCreate}
+                  onClose={() => setOpenModalCreate(false)}
+                  onSubmit={(data: AppointmentCreateModel) => {
+                    createData(data);
+                  }}
+                />
+              </>
+            )}
+          </div>
           {areInArray(session?.user.roles!, ROLE_TECH, ROLE_SALES, ROLE_CUSTOMER) && (
             <>
               <ModalUpdate
