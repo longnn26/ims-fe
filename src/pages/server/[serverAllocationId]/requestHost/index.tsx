@@ -95,12 +95,12 @@ const RequestHost: React.FC = () => {
       });
   };
 
-  const createRemoval = async (data: RequestHostCreateModel, ip: RequestHostIp) => {
+  const createRemoval = async (data: RequestHostCreateModel, ip: number[]) => {
     await requestHostService
       .createData(session?.user.access_token!, data)
       .then(async (res) => {
         await requestHostService
-          .saveProvideIps(session?.user.access_token!, res.id, ip.ipAddresses.map((ip) => ip.id))
+          .saveProvideIps(session?.user.access_token!, res.id, ip)
           .then((res) => {
             message.success("Create successfully!");
           })
@@ -204,7 +204,7 @@ const RequestHost: React.FC = () => {
             serverId={parseInt(router.query!.serverAllocationId!+"")}
             open={openModalRemoval}
             onClose={() => setOpenModalRemoval(false)}
-            onSubmit={(data: RequestHostCreateModel, ip: RequestHostIp) => {
+            onSubmit={(data: RequestHostCreateModel, ip: number[]) => {
               data.serverAllocationId = serverAllocationDetail?.id!;
               createRemoval(data, ip);
             }}

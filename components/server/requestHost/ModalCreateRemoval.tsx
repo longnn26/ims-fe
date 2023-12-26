@@ -18,7 +18,7 @@ interface Props {
   serverId: number | undefined;
   open: boolean;
   onClose: () => void;
-  onSubmit: (saCreateModel: RequestHostCreateModel, ip: RequestHostIp) => void;
+  onSubmit: (saCreateModel: RequestHostCreateModel, ip: number[]) => void;
 }
 
 const ModalCreate: React.FC<Props> = (props) => {
@@ -106,19 +106,16 @@ const ModalCreate: React.FC<Props> = (props) => {
                   async onOk() {
                     setLoadingSubmit(true); // Đặt trạng thái loading khi bắt đầu gửi dữ liệu
                     let formData: RequestHostCreateModel;
-                    let ipData: RequestHostIp;
+                    let ipData: number[];
                     
                     formData = {
                       isRemoval: true,
                       type: form.getFieldValue("type"),
-                      quantity: form.getFieldValue("quantity"),
+                      quantity: form.getFieldValue("ipAddressIds")?.length || 0,
                       note: form.getFieldValue("note"),
                     } as RequestHostCreateModel;
 
-                    ipData = {
-                      ipAddresses: form.getFieldValue("ipAddressIds"),
-                    } as RequestHostIp
-
+                    ipData = form.getFieldValue("ipAddressIds")?.map((l) => l.value);
                     // Call the provided onSubmit function with the formData
                     onSubmit(formData, ipData);
                     setLoadingSubmit(false); // Đặt trạng thái loading về false sau khi hoàn thành
@@ -157,30 +154,9 @@ const ModalCreate: React.FC<Props> = (props) => {
                 <Option value="Port">Port</Option>
               </Select>
             </Form.Item>
-              <Form.Item
-                name="quantity"
-                label="Quantity"
-                rules={[
-                  {
-                    min: 1,
-                    required: true,
-                  },
-                  {
-                    validator: async (_, value) => {
-                      if (value > maxQuantity) {
-                        throw new Error("Max quantity can enter is the number of IPs that the server has!");
-                      }
-                    },
-                  },
-                  {
-                    pattern: new RegExp(/^[0-9]+$/),
-                    message: "Quantity IP must be a number bigger than 0",
-                  },
-                ]}
-              >
-              <Input placeholder="Quantity IP" allowClear/>
-              </Form.Item>
               <>
+              {requestType && (
+                <>
                 <Form.Item
                   name="ipAddressIds"
                   label="IP Addresses"
@@ -227,6 +203,8 @@ const ModalCreate: React.FC<Props> = (props) => {
                     ))}
                   </Select>
                 </Form.Item>
+                </>
+              )}
               </>
             <Form.Item name="note" label="Note" rules={[{max: 2000}]}>
               <Input placeholder="Note" allowClear />
