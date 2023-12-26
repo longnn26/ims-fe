@@ -82,6 +82,7 @@ export interface Executor {
 
 export interface RUIpAdressParamGet extends ParamGet {
   Id: number;
+  IsAssigned?: boolean;
 }
 
 export interface RequestHostCompleteModel {
