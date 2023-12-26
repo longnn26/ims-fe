@@ -5,6 +5,7 @@ import { Appointment, AppointmentUpdateModel } from "@models/appointment";
 import { ROLE_CUSTOMER, ROLE_SALES, ROLE_TECH, dateAdvFormat } from "@utils/constants";
 import { useSession } from "next-auth/react";
 import { areInArray, convertDatePicker } from "@utils/helpers";
+import moment from "moment";
 const { Option } = Select;
 
 const { confirm } = Modal;
@@ -73,6 +74,7 @@ const ModalCreate: React.FC<Props> = (props) => {
             className="btn-submit"
             key="submit"
             onClick={async () => {
+              console.log(form.getFieldValue("dateAppointed"))
               if (!(await disabled()))
                 confirm({
                   title: "Do you want to save?",
@@ -80,7 +82,7 @@ const ModalCreate: React.FC<Props> = (props) => {
                     onSubmit({
                       id: appointment.id,
                       appointedCustomer: form.getFieldValue("appointedCustomer") ? form.getFieldValue("appointedCustomer") : appointment.appointedCustomer,
-                      dateAppointed: form.getFieldValue("dateAppointed") ? form.getFieldValue("dateAppointed") : appointment.dateAppointed,
+                      dateAppointed: form.getFieldValue("dateAppointed"),
                       note: form.getFieldValue("note") ? form.getFieldValue("note") : appointment.note,
                       techNote: form.getFieldValue("techNote") ? form.getFieldValue("techNote") : appointment.techNote,
                       saleNote: form.getFieldValue("saleNote") ? form.getFieldValue("saleNote") : appointment.saleNote,
@@ -114,19 +116,31 @@ const ModalCreate: React.FC<Props> = (props) => {
                 <Form.Item
                   name="dateAppointed"
                   label="Visit date"
-                  rules={[{ required: true }]}
+                  rules={[
+                    {
+                      required: true,
+                      validator: (_, value) => {
+                        const todate = convertDatePicker(moment().toString());
+                        if (value.isAfter(todate)) {
+                          return Promise.resolve();
+                        } else {
+                          return Promise.reject('Visit date must be later!');
+                        }
+                      },
+                    },
+                  ]}
                 >
                   <DatePicker
                     style={{ width: "100%" }}
                     placeholder="Visit date"
                     showTime
                     format={dateAdvFormat}
-                  />{" "}
+                  />
                 </Form.Item>
                 <Form.Item
                   name="note"
                   label="Note"
-                  rules={[{ required: true, max: 2000 }]}
+                  rules={[{ required: true, max: 2000, message: "Update appointment must enter your note!" }]}
                 >
                   <Input.TextArea
                     placeholder="Note"
@@ -141,7 +155,7 @@ const ModalCreate: React.FC<Props> = (props) => {
               <Form.Item
                   name="saleNote"
                   label="Note"
-                  rules={[{ required: true, max: 2000 }]}
+                  rules={[{ required: true, max: 2000, message: "Update appointment must enter your note!" }]}
                 >
                   <Input.TextArea
                     placeholder="Note"
@@ -155,7 +169,7 @@ const ModalCreate: React.FC<Props> = (props) => {
               <Form.Item
                   name="techNote"
                   label="Note"
-                  rules={[{ required: true, max: 2000 }]}
+                  rules={[{ required: true, max: 2000, message: "Update appointment must enter your note!" }]}
                 >
                   <Input.TextArea
                     placeholder="Note"

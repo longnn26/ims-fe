@@ -136,14 +136,13 @@ const AppointmentTable: React.FC<Props> = (props) => {
               <BiSolidCommentDetail />
             </Button>
           </Tooltip>
-          {record.status === "Waiting" ||
-            (record.status === "Accepted" && (
+          {(record.status === "Waiting" || record.status === "Accepted") && (
               <Tooltip title="Edit" color={"black"}>
                 <Button onClick={() => onEdit(record)}>
                   <BiEdit />
                 </Button>
               </Tooltip>
-            ))}
+            )}
         </Space>
         //   <Tooltip title="Delete" color={"black"}>
         //     <Button onClick={() => onDelete(record)}>

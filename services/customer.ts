@@ -43,11 +43,13 @@ const getCompanyByTax = async (
 
 const getServerById = async (
   token: string,
-  id: string
+  id: string,
+  params?: ParamGet,
 ): Promise<any> => {
   const response = await httpClient.get({
     token: token,
     url: apiLinks.customer.getServerAllocationById + `/${id}/ServerAllocation`,
+    params: params,
   });
   return response.data;
 }

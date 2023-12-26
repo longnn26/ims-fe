@@ -12,9 +12,10 @@ import { dateAdvFormat } from "@utils/constants";
 import { ServerAllocation } from "@models/serverAllocation";
 import { useSession } from "next-auth/react";
 import { ParamGet, ParamGetWithId } from "@models/base";
-import { areInArray, parseJwt } from "@utils/helpers";
+import { areInArray, convertDatePicker, parseJwt } from "@utils/helpers";
 import { RUParamGet, RequestUpgrade } from "@models/requestUpgrade";
 import { RequestExpand } from "@models/requestExpand";
+import moment from "moment";
 const { Option } = Select;
 const { confirm } = Modal;
 
@@ -55,7 +56,13 @@ const ModalCreate: React.FC<Props> = (props) => {
 
   const getMoreServer = async () => {
     await customerService
-      .getServerById(session?.user.access_token!, parseJwt(session?.user.access_token).UserId)
+      .getServerById(
+        session?.user.access_token!,
+        parseJwt(session?.user.access_token).UserId,
+        {
+          PageIndex: pageIndexCus + 1,
+          PageSize: pageSizeCus,
+        } as ParamGet)
       .then(async (data) => {
         setTotalPageCus(data.totalPage);
         setPageIndexCus(data.pageIndex);
@@ -63,57 +70,86 @@ const ModalCreate: React.FC<Props> = (props) => {
       });
   };
 
-  const getMoreRequestUpgrade = async (serverId: number) => {
+  const getMoreRequestUpgrade = async (serverId: number, pageIndex?: number, req?: RequestUpgrade[]) => {
     await requestUpgradeService
       .getData(session?.user.access_token!, {
-        PageIndex: pageIndexUp + 1,
+        PageIndex: pageIndex === 0 ? pageIndex : pageIndexUp + 1,
         PageSize: pageSizeCus,
         ServerAllocationId: serverId,
       } as RUParamGet)
       .then(async (data) => {
         setTotalPageUp(data.totalPage);
         setPageIndexUp(data.pageIndex);
+        req ?
+        setRequestUpgrade([...req, ...data.data]):
         setRequestUpgrade([...requestUpgrade, ...data.data]);
       });
   };
 
-  const getMoreRequestExpand = async (serverId: number) => {
+  const getMoreRequestExpand = async (serverId: number, pageIndex?: number, req?: RequestExpand[]) => {
     await requestExpandService
       .getData(
-      session?.user.access_token!, {
-        PageIndex: pageIndexUp + 1,
-        PageSize: pageSizeCus,
-      } as ParamGet,
-      serverId)
+        session?.user.access_token!, {
+          PageIndex: pageIndex === 0 ? pageIndex : pageIndexUp + 1,
+          PageSize: pageSizeCus,
+        } as ParamGet,
+        serverId)
       .then(async (data) => {
-        console.log(data)
         setTotalPageUp(data.totalPage);
         setPageIndexUp(data.pageIndex);
+        req ? 
+        setRequestExpand([...req, ...data.data]):
         setRequestExpand([...requestExpand, ...data.data]);
       });
   };
 
-  const handleServerChange = async (res) => {
-    await setRequestUpgrade([]);
-    await setRequestExpand([]);
-    await serverService.getServerAllocationById(session?.user.access_token!, res.value)
-      .then((res) => {       
-        setSelectedServer(res);
-        setPageIndexUp(0);
-        getMoreRequestUpgrade(res.id!);
-        getMoreRequestExpand(res.id!);
-      })
-    form.setFieldsValue({
-      requestUpgradeIds: undefined,
-      requestExpand: undefined,
-    });
+  const resetAllLists = (count: number) => {
+    if (count === 3) {
+      setSelectedReason("");
+      setSelectedServer(undefined);
+      setServer([]);
+      setRequestExpand([]);
+      setRequestUpgrade([]);
+      setPageIndexUp(0);
+      setPageIndexCus(0);
+    } else if (count === 1) {
+      setServer([]);
+      setSelectedServer(undefined);
+      setPageIndexCus(0);
+    }
   };
 
+  const handleServerChange = (res) => {
+    form.setFieldsValue({
+      requestUpgradeIds: undefined,
+      requestExpandId: undefined,
+    });
+    if (res) {
+      serverService.getServerAllocationById(session?.user.access_token!, res.value)
+        .then((server) => {
+          setSelectedServer(server);
+          getMoreRequestUpgrade(server.id!, 0, []);
+          getMoreRequestExpand(server.id!, 0, []);
+        });
+    }
+  };
+
+  const handleReasonChange = (res) => {
+    resetAllLists(1);
+    setSelectedReason(res.value);
+    form.setFieldsValue({
+      serverAllocationId: undefined,
+      requestUpgradeIds: undefined,
+      requestExpandId: undefined,
+    });
+    getMoreServer();
+    handleServerChange(undefined);
+  };
 
   useEffect(() => {
-      if (session) {
-        getMoreServer();
-      }
+    if (session) {
+      getMoreServer();
+    }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session]);
@@ -127,7 +163,7 @@ const ModalCreate: React.FC<Props> = (props) => {
         onCancel={() => {
           onClose();
           form.resetFields();
-          setSelectedServer(undefined);
+          resetAllLists(3);
         }}
         footer={[
           <Button
@@ -139,13 +175,13 @@ const ModalCreate: React.FC<Props> = (props) => {
                 confirm({
                   title: "Do you want to save?",
                   async onOk() {
-                    const requestUpgradeIds = form.getFieldValue("requestUpgradeIds").map(value => ({value})) || [];
                     onSubmit({
                       appointedCustomer: form.getFieldValue("appointedCustomer"),
                       dateAppointed: form.getFieldValue("dateAppointed"),
-                      reason: form.getFieldValue("reason"),
+                      reason: selectedReason,
                       note: form.getFieldValue("note"),
-                      requestUpgradeIds: requestUpgradeIds,
+                      requestUpgradeIds: form.getFieldValue("requestUpgradeIds"),
+                      serverAllocationId: selectedServer?.id,
                       requestExpandId: form.getFieldValue("requestExpandId"),
                     } as AppointmentCreateModel);
                     form.resetFields();
@@ -169,38 +205,47 @@ const ModalCreate: React.FC<Props> = (props) => {
             <Form.Item
               name="appointedCustomer"
               label="Visitor"
-              rules={[{ required: true }]}
+              rules={[{ required: true, }]}
             >
               <Input placeholder="Visitor" allowClear />
             </Form.Item>
+
             <Form.Item
               name="dateAppointed"
               label="Visit date"
-              rules={[{ required: true }]}
+              rules={[
+                {
+                  required: true,
+                  validator: (_, value) => {
+                    const todate = convertDatePicker(moment().toString());
+                    if (value.isAfter(todate)) {
+                      return Promise.resolve();
+                    } else {
+                      return Promise.reject('Visit date must be later!');
+                    }
+                  },
+                },
+              ]}
             >
               <DatePicker
                 style={{ width: "100%" }}
                 placeholder="Visit date"
                 showTime
                 format={dateAdvFormat}
-                onChange={(value) =>
-                  form.setFieldsValue({
-                    dateCheckedIn: value,
-                  })
-                }
-              />{" "}
+              />
             </Form.Item>
+
             <Form.Item
               name="reason"
               label="Reason"
               rules={[{ required: true, message: "Reason must not empty!" }]}
             >
               <Select
+                placeholder="Select a reason"
                 labelInValue
                 allowClear
                 onChange={(res) => {
-                  setSelectedReason(res.value);
-                  form.setFieldsValue({serverAllocationId: undefined});
+                  handleReasonChange(res);
                 }}
               >
                 <Option value="Install">Server Installation</Option>
@@ -221,7 +266,7 @@ const ModalCreate: React.FC<Props> = (props) => {
                 placeholder="Please select a server"
                 allowClear
                 listHeight={160}
-                onChange={handleServerChange}
+                onChange={(res) => { handleServerChange(res); }}
                 onPopupScroll={async (e: any) => {
                   const { target } = e;
                   if (
@@ -234,30 +279,41 @@ const ModalCreate: React.FC<Props> = (props) => {
                   }
                 }}
               >
-                {selectedReason === "Upgrade" ? 
-                server
-                .filter((l) => (l.status === "Working"))
-                .map((l, index) => (
-                  <Option 
-                    value={l.id}
-                    title={`${l?.name} - ${l.masterIp.address}`} 
-                    key={index}
-                  >
-                    {`${l?.name} - ${l?.status}`}
-                  </Option>
-                )) : 
-                server.map((l, index) => (
-                  <Option 
-                    value={l.id}
-                    title={`${l?.name} - ${l?.masterIp === null ? "master IP has not assigned yet" : `${l.masterIp.address}`}`} 
-                    key={index}
-                  >
-                    {`${l?.name} - ${l?.status}`}
-                  </Option>
-                ))}
+                {(selectedReason === "Upgrade" || selectedReason === "Uninstall") ?
+                  server
+                    .filter((l) => (l.status === "Working"))
+                    .map((l, index) => (
+                      <Option
+                        value={l.id}
+                        title={`${l?.name} - ${l.masterIp.address}`}
+                        key={index}
+                      >
+                        {`${l?.name} - ${l?.status}`}
+                      </Option>
+                    )) : (selectedReason === "Install") ?
+                    server
+                      .filter((l) => (l.status === "Waiting"))
+                      .map((l, index) => (
+                        <Option
+                          value={l.id}
+                          title={`${l?.name} - ${l?.masterIp === null ? "master IP has not assigned yet" : `${l.masterIp.address}`}`}
+                          key={index}
+                        >
+                          {`${l?.name} - ${l?.status}`}
+                        </Option>
+                      )) :
+                    server.map((l, index) => (
+                      <Option
+                        value={l.id}
+                        title={`${l?.name} - ${l?.masterIp === null ? "master IP has not assigned yet" : `${l.masterIp.address}`}`}
+                        key={index}
+                      >
+                        {`${l?.name} - ${l?.status}`}
+                      </Option>
+                    ))}
               </Select>
             </Form.Item>
-            {selectedServer?.status === "Working" && selectedReason === "Upgrade" && (
+            {selectedReason === "Upgrade" && (
               <>
                 <Form.Item
                   name="requestUpgradeIds"
@@ -281,7 +337,9 @@ const ModalCreate: React.FC<Props> = (props) => {
                       }
                     }}
                   >
-                    {requestUpgrade.map((l, index) => (
+                    {requestUpgrade
+                      .filter((l) => (l.status === "Waiting" || l.status === "Accepted"))
+                      .map((l, index) => (
                       <Option value={l.id} key={index}>
                         {`${l?.id} - ${l?.component.name} - ${l?.status}`}
                       </Option>
@@ -314,13 +372,13 @@ const ModalCreate: React.FC<Props> = (props) => {
                     }}
                   >
                     {selectedReason === "Install" ? requestExpand
-                      .filter((l) => (l.requestType === "Expand"))
+                      .filter((l) => (l.requestType === "Expand" && l.status!== "Failed" && l.status!== "Success"))
                       .map((l, index) => (
                         <Option value={l.id} key={index}>
                           {`${l?.id} - Installation`}
                         </Option>
                       )) : requestExpand
-                        .filter((l) => (l.requestType === "RemoveLocation")
+                        .filter((l) => (l.requestType === "RemoveLocation" && l.status!== "Success" && l.removalStatus!= "Failed" && l.removalStatus!== "Success")
                         ).map((l, index) => (
                           <Option value={l.id} key={index}>
                             {`${l?.id} - Remove Server`}
@@ -332,7 +390,7 @@ const ModalCreate: React.FC<Props> = (props) => {
             <Form.Item
               name="note"
               label="Note"
-              rules={[{ required: true, max: 2000 }]}
+              rules={[{ max: 2000 }]}
             >
               <Input.TextArea
                 placeholder="Note"
