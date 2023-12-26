@@ -51,6 +51,7 @@ const RequestHost: React.FC = () => {
     RequestUpgrade | undefined
   >(undefined);
   const [openModalCreate, setOpenModalCreate] = useState<boolean>(false);
+  const [openModalRemoval, setOpenModalRemoval] = useState<boolean>(false);
   const [serverAllocationDetail, setServerAllocationDetail] =
     useState<ServerAllocation>();
 
@@ -112,7 +113,7 @@ const RequestHost: React.FC = () => {
         message.error(errors.response.data);
       })
       .finally(() => {
-        setOpenModalCreate(false);
+        setOpenModalRemoval(false);
       });
   };
 
@@ -199,6 +200,15 @@ const RequestHost: React.FC = () => {
               createData(data);
             }}
           />
+          <ModalCreateRemoval
+            serverId={serverAllocationDetail?.id}
+            open={openModalRemoval}
+            onClose={() => setOpenModalRemoval(false)}
+            onSubmit={(data: RequestHostCreateModel, ip: RequestHostIp) => {
+              data.serverAllocationId = serverAllocationDetail?.id!;
+              createRemoval(data, ip);
+            }}
+          />
           {areInArray(
             session?.user.roles!,
             ROLE_SALES,
@@ -217,20 +227,11 @@ const RequestHost: React.FC = () => {
                         className="mr-2"
                         icon={<MdOutlineCancelScheduleSend/>}
                         onClick={() => {
-                          setOpenModalCreate(true);
+                          setOpenModalRemoval(true);
                         }}
                       >
                         Create IP&apos;s Removal Request
                       </Button>
-                      <ModalCreateRemoval
-                        serverId={serverAllocationDetail?.id}
-                        open={openModalCreate}
-                        onClose={() => setOpenModalCreate(false)}
-                        onSubmit={(data: RequestHostCreateModel, ip: RequestHostIp) => {
-                          data.serverAllocationId = serverAllocationDetail?.id!;
-                          createRemoval(data, ip);
-                        }}
-                      />
                       <Button
                         type="primary"
                         htmlType="submit"
