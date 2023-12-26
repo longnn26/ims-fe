@@ -372,7 +372,7 @@ const ModalCreate: React.FC<Props> = (props) => {
                     }}
                   >
                     {selectedReason === "Install" ? requestExpand
-                      .filter((l) => (l.requestType === "Expand" && l.status!== "Failed" && l.status!== "Success"))
+                      .filter((l) => (l.requestType === "Expand" && (l.status === "Working" || l.status === "Accepted")))
                       .map((l, index) => (
                         <Option value={l.id} key={index}>
                           {`${l?.id} - Installation`}
