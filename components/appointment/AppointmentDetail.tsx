@@ -37,11 +37,18 @@ const ServerDetail: React.FC<Props> = (props) => {
         <Descriptions.Item label="Purpose" span={2}>
           {appointmentDetail?.purpose}
         </Descriptions.Item>
+
         <Descriptions.Item label="Date Created">
           {moment(appointmentDetail?.dateCreated).format(dateAdvFormat)}
         </Descriptions.Item>
         <Descriptions.Item label="Date Updated" span={2}>
           {moment(appointmentDetail?.dateUpdated).format(dateAdvFormat)}
+        </Descriptions.Item>
+        <Descriptions.Item label="Date Appointed">
+          {moment(appointmentDetail?.dateAppointed).format(dateAdvFormat)}
+        </Descriptions.Item>
+        <Descriptions.Item label="Customer" span={2}>
+          {appointmentDetail?.customer.companyName}
         </Descriptions.Item>
         <Descriptions.Item label="Server IP's">
           {appointmentDetail?.serverAllocation.masterIpAddress}
@@ -55,22 +62,25 @@ const ServerDetail: React.FC<Props> = (props) => {
         <Descriptions.Item label="Visiter">
           {appointmentDetail?.appointedCustomer}
         </Descriptions.Item>
-        <Descriptions.Item label="Customer" span={2}>
-          {appointmentDetail?.customer.companyName}
-        </Descriptions.Item>
 
         {/* <Descriptions.Item label="Appointed" span={4}>
           {moment(appointmentDetail?.dateAppointed).format(dateAdvFormat)}
         </Descriptions.Item> */}
 
-        <Descriptions.Item label="Note">
+        <Descriptions.Item label="Customer Note">
           {appointmentDetail?.note}
+        </Descriptions.Item>
+        <Descriptions.Item label="Reason">
+          {appointmentDetail?.reason}
+        </Descriptions.Item>
+        <Descriptions.Item label="Sale Staff">
+          {appointmentDetail?.evaluator?.fullname}
         </Descriptions.Item>
         <Descriptions.Item label="Sale Staff's Note" span={2}>
           {appointmentDetail?.saleNote}
         </Descriptions.Item>
-        <Descriptions.Item label="Reason">
-          {appointmentDetail?.reason}
+        <Descriptions.Item label="Technical Staff">
+          {appointmentDetail?.executor?.fullname}
         </Descriptions.Item>
         <Descriptions.Item label=" Techical Staff's Note" span={2}>
           {appointmentDetail?.techNote}

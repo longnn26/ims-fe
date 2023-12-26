@@ -38,6 +38,8 @@ interface DataType {
   dateCreated: string;
   dateUpdated: string;
   purpose: string;
+  name: string;
+  companyName: string;
 }
 
 const AppointmentTable: React.FC<Props> = (props) => {
@@ -59,19 +61,29 @@ const AppointmentTable: React.FC<Props> = (props) => {
       : listAppointmentData;
 
   const columns: TableColumnsType<DataType> = [
-    {
-      title: "Id",
-      dataIndex: "id",
-      key: "id",
-      fixed: "left",
-      render: (text) => (
-        <a className="text-[#b75c3c] hover:text-[#ee4623]">{text}</a>
-      ),
-    },
+    // {
+    //   title: "Id",
+    //   dataIndex: "id",
+    //   key: "id",
+    //   fixed: "left",
+    //   render: (text) => (
+    //     <a className="text-[#b75c3c] hover:text-[#ee4623]">{text}</a>
+    //   ),
+    // },
     {
       title: "Date Appointed",
       dataIndex: "dateAppointed",
       key: "dateAppointed",
+    },
+    {
+      title: "Customer",
+      dataIndex: "companyName",
+      key: "companyName",
+    },
+    {
+      title: "Server Name",
+      dataIndex: "name",
+      key: "name",
     },
     {
       title: "Purpose",
@@ -110,8 +122,6 @@ const AppointmentTable: React.FC<Props> = (props) => {
       dataIndex: "dateCheckedOut",
       key: "dateCheckedOut",
     },
-    { title: "Date Created", dataIndex: "dateCreated", key: "dateCreated" },
-    { title: "Date Updated", dataIndex: "dateUpdated", key: "dateUpdated" },
     {
       title: "Action",
       key: "operation",
@@ -125,14 +135,15 @@ const AppointmentTable: React.FC<Props> = (props) => {
             >
               <BiSolidCommentDetail />
             </Button>
-          </Tooltip>          
-          {record.status === "Waiting" || record.status === "Accepted" && (
-          <Tooltip title="Edit" color={"black"}>
-            <Button onClick={() => onEdit(record)}>
-              <BiEdit />
-            </Button>
-          </Tooltip>     
-          )}     
+          </Tooltip>
+          {record.status === "Waiting" ||
+            (record.status === "Accepted" && (
+              <Tooltip title="Edit" color={"black"}>
+                <Button onClick={() => onEdit(record)}>
+                  <BiEdit />
+                </Button>
+              </Tooltip>
+            ))}
         </Space>
         //   <Tooltip title="Delete" color={"black"}>
         //     <Button onClick={() => onDelete(record)}>
@@ -167,6 +178,8 @@ const AppointmentTable: React.FC<Props> = (props) => {
       dateCreated: moment(listData?.data[i].dateCreated).format(dateAdvFormat),
       dateUpdated: moment(listData?.data[i].dateUpdated).format(dateAdvFormat),
       purpose: listData?.data[i].purpose,
+      name: listData?.data[i].serverAllocation.name,
+      companyName: listData?.data[i].customer.companyName,
     });
   }
 

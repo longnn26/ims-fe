@@ -48,19 +48,19 @@ const RequestExpandDetailInfor: React.FC<Props> = (props) => {
         <Descriptions.Item label="Customer Note" span={4}>
           {requestExpandDetail?.note}
         </Descriptions.Item>
-        <Descriptions.Item label="Sale Staff" span={4}>
+        <Descriptions.Item label="Sale Staff" span={0}>
           {requestExpandDetail?.evaluator?.fullname}
         </Descriptions.Item>
         <Descriptions.Item label="Sale Staff's Note" span={4}>
           {requestExpandDetail?.saleNote}
         </Descriptions.Item>
-        <Descriptions.Item label="Tech Staff" span={4}>
+        <Descriptions.Item label="Technical Staff" span={0}>
           {requestExpandDetail?.executor?.fullname}
         </Descriptions.Item>
-        <Descriptions.Item label="Tech Staff'sNote" span={4}>
+        <Descriptions.Item label="Technical Staff's Note" span={4}>
           {requestExpandDetail?.techNote}
         </Descriptions.Item>
-        <Descriptions.Item label="Date Request" span={2}>
+        <Descriptions.Item label="Date Request" span={0}>
           {moment(requestExpandDetail?.dateCreated).format(dateAdvFormat)}
         </Descriptions.Item>
         <Descriptions.Item label="Nearest Updated " span={2}>
