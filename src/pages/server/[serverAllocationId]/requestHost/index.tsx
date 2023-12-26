@@ -201,7 +201,7 @@ const RequestHost: React.FC = () => {
             }}
           />
           <ModalCreateRemoval
-            serverId={serverAllocationDetail?.id}
+            serverId={parseInt(router.query!.serverAllocationId!+"")}
             open={openModalRemoval}
             onClose={() => setOpenModalRemoval(false)}
             onSubmit={(data: RequestHostCreateModel, ip: RequestHostIp) => {
