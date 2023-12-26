@@ -302,7 +302,8 @@ const RequestUpgradeDetail: React.FC = () => {
                     }}
                   />
                 )}
-                {requestUpgradeDetail?.status === "Waiting" && (
+                {(requestUpgradeDetail?.status === "Waiting" &&
+                areInArray(session?.user.roles!, ROLE_SALES)) && (
                   <FloatButton.Group
                     trigger="hover"
                     type="primary"
