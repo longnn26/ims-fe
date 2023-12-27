@@ -123,7 +123,7 @@ const Customer: React.FC = () => {
 
   useEffect(() => {
     if (router.query.customerId && session) {
-      paramGet.CustomerId = parseInt(router.query.customerId!.toString());
+      paramGet.CustomerId = router.query.customerId!.toString();
       getData();
       handleBreadCumb();
     }
