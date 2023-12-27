@@ -60,14 +60,12 @@ const Customer: React.FC = () => {
       .createData(session?.user.access_token!, data)
       .then((res) => {
         message.success("Create successfully!");
+        setOpenModalCreate(false);
         getData();
       })
       .catch((errors) => {
         message.error(errors.response.data);
       })
-      .finally(() => {
-        setOpenModalCreate(false);
-      });
   };
 
   const updateData = async (data: CustomerUpdateModel) => {
