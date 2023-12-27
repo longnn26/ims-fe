@@ -220,12 +220,7 @@ const Customer: React.FC = () => {
       );
       getData();
       handleBreadCumb();
-    }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [session, paramGet, rUIpAddressParamGet]);
-
-  useEffect(() => {
+    
     const fetchData = async () => {
       // Fetch data for ServerHardwareConfigTable
       await dispatch(
@@ -263,8 +258,9 @@ const Customer: React.FC = () => {
         }
       });
     };
-
+    
     fetchData();
+  }
   }, [router, session, paramGet, rUIpAddressParamGet]);
   console.log("session: ", session?.user);
 
