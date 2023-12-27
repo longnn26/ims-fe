@@ -41,12 +41,6 @@ const ServerHardwareConfigTable: React.FC<Props> = (props) => {
 
   const columns: TableColumnsType<DataType> = [
     {
-      title: "No",
-      dataIndex: "id",
-      key: "id",
-      fixed: "left",
-    },
-    {
       title: "Component",
       key: "component",
       render: (record: ServerHardwareConfig) => <p>{record.component?.name}</p>,
