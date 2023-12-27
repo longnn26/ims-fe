@@ -375,13 +375,13 @@ const ModalCreate: React.FC<Props> = (props) => {
                       .filter((l) => (l.requestType === "Expand" && (l.status === "Waiting" || l.status === "Accepted")))
                       .map((l, index) => (
                         <Option value={l.id} key={index}>
-                          {`${l?.id} - Installation`}
+                          {`Server Installation Request`}
                         </Option>
                       )) : requestExpand
                         .filter((l) => (l.requestType === "RemoveLocation" && l.status!== "Success" && l.removalStatus!= "Failed" && l.removalStatus!== "Success")
                         ).map((l, index) => (
                           <Option value={l.id} key={index}>
-                            {`${l?.id} - Remove Server`}
+                            {`Server Removal Request`}
                           </Option>))}
                   </Select>
                 </Form.Item>
