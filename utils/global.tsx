@@ -41,7 +41,7 @@ export const sliderMenu = [
   {
     key: "requestHost",
     icon: <GrHost />,
-    label: "IP's Request",
+    label: "IP Request",
     roles: [ROLE_CUSTOMER, ROLE_SALES, ROLE_TECH],
   },
   {

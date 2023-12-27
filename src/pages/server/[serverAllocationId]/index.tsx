@@ -218,47 +218,47 @@ const Customer: React.FC = () => {
       );
       getData();
       handleBreadCumb();
-    
-    const fetchData = async () => {
-      // Fetch data for ServerHardwareConfigTable
-      await dispatch(
-        getServerHardwareConfigData({
-          token: session?.user.access_token!,
-          paramGet: { ...paramGet },
-        })
-      ).then(({ payload }) => {
-        var res = payload as ServerHardwareConfigData;
-        if (res.totalPage < paramGet.PageIndex && res.totalPage !== 0) {
-          setParamGet({ ...paramGet, PageIndex: res.totalPage });
-        }
-      });
 
-      // Fetch data for IpAddressTable
-      await dispatch(
-        getServerIpAdressData({
-          token: session?.user.access_token!,
-          paramGet: {
-            ...paramGet,
-            Id: parseInt(router.query.serverAllocationId!.toString()),
-          },
-        })
-      ).then(({ payload }) => {
-        if (payload) {
-          var res = payload as IpAddressData;
-          if (
-            res &&
-            res.totalPage !== undefined &&
-            res.totalPage < paramGet.PageIndex &&
-            res.totalPage !== 0
-          ) {
+      const fetchData = async () => {
+        // Fetch data for ServerHardwareConfigTable
+        await dispatch(
+          getServerHardwareConfigData({
+            token: session?.user.access_token!,
+            paramGet: { ...paramGet },
+          })
+        ).then(({ payload }) => {
+          var res = payload as ServerHardwareConfigData;
+          if (res.totalPage < paramGet.PageIndex && res.totalPage !== 0) {
             setParamGet({ ...paramGet, PageIndex: res.totalPage });
           }
-        }
-      });
-    };
-    
-    fetchData();
-  }
+        });
+
+        // Fetch data for IpAddressTable
+        await dispatch(
+          getServerIpAdressData({
+            token: session?.user.access_token!,
+            paramGet: {
+              ...paramGet,
+              Id: parseInt(router.query.serverAllocationId!.toString()),
+            },
+          })
+        ).then(({ payload }) => {
+          if (payload) {
+            var res = payload as IpAddressData;
+            if (
+              res &&
+              res.totalPage !== undefined &&
+              res.totalPage < paramGet.PageIndex &&
+              res.totalPage !== 0
+            ) {
+              setParamGet({ ...paramGet, PageIndex: res.totalPage });
+            }
+          }
+        });
+      };
+
+      fetchData();
+    }
   }, [router, session, paramGet, rUIpAddressParamGet]);
 
   if (serverAllocationDetail === undefined) {
@@ -422,7 +422,7 @@ const Customer: React.FC = () => {
                     tooltip="Request expand"
                   />
                   <FloatButton
-                    tooltip="IP's Request"
+                    tooltip="IP Request"
                     icon={<GrHost />}
                     onClick={() =>
                       router.push(

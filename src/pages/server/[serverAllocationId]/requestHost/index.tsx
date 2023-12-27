@@ -110,7 +110,7 @@ const RequestHost: React.FC = () => {
           })
           .catch((errors) => {
             message.error(errors.response.data);
-          })
+          });
         getData();
       })
       .catch((errors) => {
@@ -164,7 +164,6 @@ const RequestHost: React.FC = () => {
       onCancel() {},
     });
   };
-  
 
   const handleBreadCumb = () => {
     var itemBrs = [] as ItemType[];
@@ -206,7 +205,7 @@ const RequestHost: React.FC = () => {
             }}
           />
           <ModalCreateRemoval
-            serverId={parseInt(router.query!.serverAllocationId!+"")}
+            serverId={parseInt(router.query!.serverAllocationId! + "")}
             open={openModalRemoval}
             onClose={() => setOpenModalRemoval(false)}
             onSubmit={(data: RequestHostCreateModel, ip: number[]) => {
@@ -235,7 +234,7 @@ const RequestHost: React.FC = () => {
                           setOpenModalRemoval(true);
                         }}
                       >
-                        Create IP&apos;s Removal Request
+                        Create IP Removal Request
                       </Button>
                       <Button
                         type="primary"
@@ -245,7 +244,7 @@ const RequestHost: React.FC = () => {
                           setOpenModalCreate(true);
                         }}
                       >
-                        Create IP&apos;s Request
+                        Create IP Request
                       </Button>
                     </div>
                   </>

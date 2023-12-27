@@ -45,9 +45,7 @@ const ModalCreate: React.FC<Props> = (props) => {
   return (
     <>
       <Modal
-        title={
-          <span className="inline-block m-auto">Create IP&apos;s Request</span>
-        }
+        title={<span className="inline-block m-auto">Create IP Request</span>}
         open={open}
         confirmLoading={confirmLoading}
         onCancel={() => {
