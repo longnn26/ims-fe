@@ -57,8 +57,10 @@ const RequestExpand: React.FC = () => {
   const [itemBreadcrumbs, setItemBreadcrumbs] = useState<ItemType[]>([]);
 
   const getData = async () => {
-    var userId = "";
-    if (session?.user.roles.includes("Tech")) {
+    var customerId = "", userId = "";
+    if (session?.user.roles.includes("Customer")) {
+      customerId = parseJwt(session?.user.access_token!).UserId;
+    } else if (session?.user.roles.includes("Tech")) {
       userId = parseJwt(session?.user.access_token!).UserId;
     }
     await serverAllocationService
@@ -73,7 +75,7 @@ const RequestExpand: React.FC = () => {
       getRequestExpandData({
         token: session?.user.access_token!,
         id: parseInt(router.query.serverAllocationId?.toString()!) ?? -1,
-        paramGet: { ...paramGet, UserId: userId },
+        paramGet: { ...paramGet, CustomerId: customerId, UserId: userId },
       })
     ).then(({ payload }) => {
       var res = payload as RequestUpgradeData;

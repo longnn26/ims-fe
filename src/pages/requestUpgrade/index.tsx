@@ -16,7 +16,7 @@ import ModalUpdate from "@components/server/requestUpgrade/ModalUpdate";
 import dynamic from "next/dynamic";
 import React, { useEffect, useState } from "react";
 import { ROLE_SALES, ROLE_TECH } from "@utils/constants";
-import { areInArray } from "@utils/helpers";
+import { areInArray, parseJwt } from "@utils/helpers";
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
 });
@@ -35,10 +35,16 @@ const Customer: React.FC = () => {
   } as unknown as RUParamGet);
 
   const getData = async () => {
+    var customerId = "", userId = "";
+    if (session?.user.roles.includes("Customer")) {
+      customerId = parseJwt(session?.user.access_token!).UserId;
+    } else if (session?.user.roles.includes("Tech")) {
+      userId = parseJwt(session?.user.access_token!).UserId;
+    }
     dispatch(
       getRequestUpgradeData({
         token: session?.user.access_token!,
-        paramGet: { ...paramGet },
+        paramGet: { ...paramGet, CustomerId: customerId, UserId: userId },
       })
     ).then(({ payload }) => {
       var res = payload as RequestUpgradeData;
