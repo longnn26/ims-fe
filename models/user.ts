@@ -39,7 +39,7 @@ export interface UserCreateModel {
   fullname?: string;
   address?: string;
   phoneNumber?: string;
-  roles: string[];
+  role: string;
 }
 
 export interface UserUpdateModel {

@@ -59,7 +59,7 @@ const ModalCreate: React.FC<Props> = (props) => {
                         fullname: form.getFieldValue("fullname"),
                         address: form.getFieldValue("address"),
                         phoneNumber: form.getFieldValue("phoneNumber"),
-                        roles: form.getFieldValue('role'),
+                        role: form.getFieldValue('role'),
                     };
 
                     // Call the provided onSubmit function with the formData
@@ -88,16 +88,7 @@ const ModalCreate: React.FC<Props> = (props) => {
                 name="userName"
                 rules={[
                     { required: true, message: 'Please enter staff username'}, 
-                    { min: 6, max: 255, message: 'Username must be between 6 and 255 characters ' },
-                    ({ getFieldValue }) => ({
-                      validator(_, userName) {
-                        const hasDescriptions = getFieldValue('roles')?.length > 0;
-                        if (!hasDescriptions) {
-                          return Promise.reject('At least one roles is required for the account.');
-                        }    
-                        return Promise.resolve();
-                      },
-                    }),
+                    { min: 6, max: 255, message: 'Username must be between 6 and 255 characters ' }
                 ]}
             >
                 <Input.TextArea
