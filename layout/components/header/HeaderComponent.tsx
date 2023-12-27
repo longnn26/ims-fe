@@ -124,7 +124,7 @@ const HeaderComponent: React.FC<Props> = (props) => {
   };
   const items: MenuProps["items"] = [
     {
-      label: <span>{session?.user.userName ? session?.user.name : parseJwt(session?.user.access_token).Email}</span>,
+      label: <span>{!session?.user.roles.includes("Customer") ? session?.user.name : parseJwt(session?.user.access_token).Email}</span>,
       key: "0",
     },
 
