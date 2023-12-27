@@ -48,7 +48,7 @@ const RequestHostList: React.FC = () => {
     dispatch(
       getRequestHostDataAll({
         token: session?.user.access_token!,
-        paramGet: { ...paramGet, Customer: customerId, UserId: userId },
+        paramGet: { ...paramGet, CustomerId: customerId, UserId: userId },
       })
     ).then(({ payload }) => {
       var res = payload as RequestHostData;

@@ -26,7 +26,7 @@ export interface ParamGet {
   SearchValue: string;
   DateStart: string;
   DateEnd: string;
-  Customer?: string;
+  CustomerId?: string;
   UserId?: string;
 }
 
