@@ -26,7 +26,7 @@ export interface ServerAllocationData extends PagingModel {
 }
 
 export interface SAParamGet extends ParamGet {
-  CustomerId: number;
+  CustomerId: string;
 }
 
 export interface SACreateModel {
