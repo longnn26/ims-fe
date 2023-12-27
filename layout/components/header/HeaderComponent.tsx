@@ -124,7 +124,7 @@ const HeaderComponent: React.FC<Props> = (props) => {
   };
   const items: MenuProps["items"] = [
     {
-      label: <span>{session?.user.name}</span>,
+      label: <span>{session?.user.roles.includes("Customer")? parseJwt(session.user.access_token).Email : session?.user.name}</span>,
       key: "0",
     },
 
@@ -378,7 +378,7 @@ const HeaderComponent: React.FC<Props> = (props) => {
         >
           <Space>
             <Avatar style={{ backgroundColor: "#fde3cf", color: "#f56a00" }}>
-              {session?.user.userName?.charAt(0)}
+              {session?.user.roles.includes("Customer")? parseJwt(session.user.access_token).Email.charAt(0) : session?.user.userName?.charAt(0)}
             </Avatar>
           </Space>
         </Dropdown>
