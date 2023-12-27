@@ -3,6 +3,8 @@ import {
   RequestHostRejectModel,
 } from "@models/requestHost";
 import requestHost from "@services/requestHost";
+import { ROLE_SALES, ROLE_TECH } from "@utils/constants";
+import { areInArray } from "@utils/helpers";
 import { Button, Form, Input, Modal, Select, Switch, message } from "antd";
 import { useSession } from "next-auth/react";
 import React, { useRef, useState } from "react";
@@ -94,24 +96,24 @@ const ModalRejectHost: React.FC<Props> = (props) => {
             wrapperCol={{ span: 14 }}
             style={{ width: "100%" }}
           >
-            <Form.Item name="note" label="Note" rules={[{ min: 6, max: 255 }]}>
-              <Input placeholder="Note" allowClear />
-            </Form.Item>
-            <Form.Item
-              name="saleNote"
-              label="Sale note"
-              rules={[{ min: 6, max: 255 }]}
-            >
-              <Input placeholder="Sale note" allowClear />
-            </Form.Item>
-
-            <Form.Item
-              name="techNote"
-              label="Tech note"
-              rules={[{ min: 6, max: 255 }]}
-            >
-              <Input placeholder="Tech note" allowClear />
-            </Form.Item>
+            {areInArray(session?.user.roles!, ROLE_TECH) && (
+              <Form.Item
+                name="techNote"
+                label="Tech note"
+                rules={[{ required: true, min: 6, max: 255 }]}
+              >
+                <Input placeholder="Tech note" allowClear />
+              </Form.Item>
+            )}
+            {areInArray(session?.user.roles!, ROLE_SALES) && (
+              <Form.Item
+                name="saleNote"
+                label="Sale note"
+                rules={[{ required: true, min: 6, max: 255 }]}
+              >
+                <Input placeholder="Sale note" allowClear />
+              </Form.Item>
+            )}
           </Form>
         </div>
       </Modal>
