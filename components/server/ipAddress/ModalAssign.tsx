@@ -56,7 +56,7 @@ const ModalAssign: React.FC<Props> = (props) => {
   const getMoreIpAddressList = async () => {
     ipAddressParamGet.PageIndex += 1;
     await ipAddressService
-      .getData(session?.user.access_token!, {...ipAddressParamGet, IsAssigned: true})
+      .getData(session?.user.access_token!, {...ipAddressParamGet, IsAssigned: false})
       .then(async (data) => {
         setTotalPageIp(data.totalPage);
         ipAddressParamGet.PageIndex = data.pageIndex;
