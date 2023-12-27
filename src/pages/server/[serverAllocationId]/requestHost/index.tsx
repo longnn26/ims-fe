@@ -162,6 +162,21 @@ const RequestHost: React.FC = () => {
       onCancel() {},
     });
   };
+  
+
+  const handleBreadCumb = () => {
+    var itemBrs = [] as ItemType[];
+    var items = router.asPath.split("/").filter((_) => _ != "");
+    var path = "";
+    items.forEach((element) => {
+      path += `/${element}`;
+      itemBrs.push({
+        href: path,
+        title: element,
+      });
+    });
+    setItemBreadcrumbs(itemBrs);
+  };
 
   useEffect(() => {
     if (router.query.serverAllocationId && session) {
@@ -169,6 +184,7 @@ const RequestHost: React.FC = () => {
         router.query.serverAllocationId!.toString()
       );
       getData();
+      handleBreadCumb();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session, paramGet]);
@@ -203,14 +219,16 @@ const RequestHost: React.FC = () => {
             ROLE_CUSTOMER
           ) && (
             <>
-              <div className="flex flex-wrap items-center justify-end mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
-                  {areInArray(session?.user.roles!, ROLE_CUSTOMER) && (
-                    <>
+              <div className="flex flex-wrap items-center justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
+                {areInArray(session?.user.roles!, ROLE_CUSTOMER) && (
+                  <>
+                    <BreadcrumbComponent itemBreadcrumbs={itemBreadcrumbs} />
+                    <div>
                       <Button
                         type="primary"
                         htmlType="submit"
                         className="mr-2"
-                        icon={<MdOutlineCancelScheduleSend/>}
+                        icon={<MdOutlineCancelScheduleSend />}
                         onClick={() => {
                           setOpenModalRemoval(true);
                         }}
@@ -227,9 +245,10 @@ const RequestHost: React.FC = () => {
                       >
                         Create IP&apos;s Request
                       </Button>
+                    </div>
                     </>
                   )}
-              </div>
+                </div>
 
               <ServerDetail
                 serverAllocationDetail={serverAllocationDetail!}

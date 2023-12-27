@@ -37,8 +37,8 @@ const RequestHostIPAddressTable: React.FC<Props> = (props) => {
         const capacityValue = parseFloat(text);
         const formattedCapacity =
           (capacityValue < 1)
-            ? `${capacityValue * 1000} MB`
-            : `${capacityValue > 0 ? `${capacityValue}` : ""}`;
+            ? `${capacityValue * 1000} Mbps`
+            : `${capacityValue > 0 ? `${capacityValue} Gbps` : ""}`;
 
         return <span>{formattedCapacity}</span>;
       },
