@@ -74,7 +74,8 @@ const RequestUpgrade: React.FC = () => {
   const [itemBreadcrumbs, setItemBreadcrumbs] = useState<ItemType[]>([]);
 
   const getData = async () => {
-    var customerId = "", userId = "";
+    var customerId = "",
+      userId = "";
     if (session?.user.roles.includes("Customer")) {
       customerId = parseJwt(session?.user.access_token!).UserId;
     } else if (session?.user.roles.includes("Tech")) {
@@ -258,6 +259,7 @@ const RequestUpgrade: React.FC = () => {
             }}
           />
           <ModalRemove
+            server={serverAllocationDetail!}
             open={openModalRemove}
             onClose={() => setOpenModalRemove(false)}
             onSubmit={(data: RequestUpgradeRemoveModel) => {

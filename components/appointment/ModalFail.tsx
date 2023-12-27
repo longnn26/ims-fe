@@ -72,7 +72,7 @@ const ModalFail: React.FC<Props> = (props) => {
           >
             <Form.Item
               name="techNote"
-              label="Note"
+              label="Technical Note"
               rules={[{ required: true }]}
             >
               <Input placeholder="Note" allowClear />
