@@ -128,7 +128,7 @@ const ModalComplete: React.FC<Props> = (props) => {
             wrapperCol={{ span: 10 }}
             style={{ width: "130%" }}
           >
-            <Form.Item
+            {/* <Form.Item
               name="number"
               label="Contract number"
               rules={[{ required: true, min: 6, max: 255 }]}
@@ -148,7 +148,7 @@ const ModalComplete: React.FC<Props> = (props) => {
               rules={[{ required: true, min: 6, max: 255 }]}
             >
               <Input placeholder="Customer Position" allowClear />
-            </Form.Item>
+            </Form.Item> */}
             <Form.Item
               name="qtName"
               label="QTSC Representor"
@@ -165,7 +165,7 @@ const ModalComplete: React.FC<Props> = (props) => {
             </Form.Item>
             <Form.Item
               name="location"
-              label="Installation/ Delivery location"
+              label="Installation/Delivery location"
               rules={[{ required: true, min: 6, max: 2000 }]}
             >
               <Input placeholder="Installation/ Delivery location" allowClear />
