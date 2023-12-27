@@ -3,7 +3,12 @@ import { Button, Input, Modal, Select, Space, Card } from "antd";
 import { Form } from "antd";
 import { CloseOutlined } from "@ant-design/icons";
 import useSelector from "@hooks/use-selector";
-import { IPAddress, RUIpAdressParamGet, RequestHostCreateModel, RequestHostIp } from "@models/requestHost";
+import {
+  IPAddress,
+  RUIpAdressParamGet,
+  RequestHostCreateModel,
+  RequestHostIp,
+} from "@models/requestHost";
 import customerService from "@services/customer";
 import session from "redux-persist/lib/storage/session";
 import { useSession } from "next-auth/react";
@@ -23,7 +28,7 @@ interface Props {
 
 const ModalCreate: React.FC<Props> = (props) => {
   const formRef = useRef(null);
-  const {data:session} = useSession();
+  const { data: session } = useSession();
   const [form] = Form.useForm();
   const { onSubmit, open, onClose, serverId } = props;
 
@@ -51,19 +56,18 @@ const ModalCreate: React.FC<Props> = (props) => {
 
   const getMoreIp = async (pageIndexInp?: number, ip?: IpAddress[]) => {
     await serverAllocationService
-      .serverIpAddressData(
-        session?.user.access_token!, {
-          PageIndex: pageIndexInp === 0 ? pageIndexInp : pageIndex + 1,
-          PageSize: pageSize,
-          Id: serverId,
-          IsAssigned: true,
-        } as RUIpAdressParamGet)
+      .serverIpAddressData(session?.user.access_token!, {
+        PageIndex: pageIndexInp === 0 ? pageIndexInp : pageIndex + 1,
+        PageSize: pageSize,
+        Id: serverId,
+        IsAssigned: true,
+      } as RUIpAdressParamGet)
       .then(async (data) => {
         setTotalPage(data.totalPage);
         setPageIndex(data.pageIndex);
-        ip ? 
-        setIpAddresses([...ip, ...data.data]):
-        setIpAddresses([...ipAddresses, ...data.data]);
+        ip
+          ? setIpAddresses([...ip, ...data.data])
+          : setIpAddresses([...ipAddresses, ...data.data]);
         setMaxQuantity(ipAddresses.length);
       });
   };
@@ -71,9 +75,10 @@ const ModalCreate: React.FC<Props> = (props) => {
   useEffect(() => {
     // Khi requestType thay đổi, reset selectedCapacities và hiển thị/ẩn quantity
     setSelectedCapacities([]);
-    const filterIp = requestType === "Additional" ?
-      ipAddresses.filter((l) => (l.assignmentType === "Additional")) :
-      ipAddresses.filter((l) => (l.assignmentType === "Port"));
+    const filterIp =
+      requestType === "Additional"
+        ? ipAddresses.filter((l) => l.assignmentType === "Additional")
+        : ipAddresses.filter((l) => l.assignmentType === "Port");
     setMaxQuantity(filterIp.length);
   }, [requestType]);
 
@@ -87,7 +92,7 @@ const ModalCreate: React.FC<Props> = (props) => {
     <>
       <Modal
         title={
-          <span className="inline-block m-auto">Create IP&apos;s Removal Request</span>
+          <span className="inline-block m-auto">Create IP Removal Request</span>
         }
         open={open}
         confirmLoading={confirmLoading}
@@ -108,7 +113,7 @@ const ModalCreate: React.FC<Props> = (props) => {
                     setLoadingSubmit(true); // Đặt trạng thái loading khi bắt đầu gửi dữ liệu
                     let formData: RequestHostCreateModel;
                     let ipData: number[];
-                    
+
                     formData = {
                       isRemoval: true,
                       type: form.getFieldValue("type"),
@@ -116,7 +121,9 @@ const ModalCreate: React.FC<Props> = (props) => {
                       note: form.getFieldValue("note"),
                     } as RequestHostCreateModel;
 
-                    ipData = form.getFieldValue("ipAddressIds")?.map((l) => l.value);
+                    ipData = form
+                      .getFieldValue("ipAddressIds")
+                      ?.map((l) => l.value);
                     // Call the provided onSubmit function with the formData
                     onSubmit(formData, ipData);
                     setLoadingSubmit(false); // Đặt trạng thái loading về false sau khi hoàn thành
@@ -155,59 +162,65 @@ const ModalCreate: React.FC<Props> = (props) => {
                 <Option value="Port">Port</Option>
               </Select>
             </Form.Item>
-              <>
+            <>
               {requestType && (
                 <>
-                <Form.Item
-                  name="ipAddressIds"
-                  label="IP Addresses"
-                  labelAlign="right"
-                  rules={[{ required: true, message: "IP Addresses must not empty!" }]}
-                >
-                  <Select
-                    mode="multiple"
-                    labelInValue
-                    placeholder="Please select IPs to remove"
-                    allowClear
-                    listHeight={160}
-                    onChange={(res) => { }}
-                    onPopupScroll={async (e: any) => {
-                      const { target } = e;
-                      if (
-                        (target as any).scrollTop + (target as any).offsetHeight ===
-                        (target as any).scrollHeight
-                      ) {
-                        if (pageIndex < totalPage) {
-                          getMoreIp(serverId!);
-                        }
-                      }
-                    }}
+                  <Form.Item
+                    name="ipAddressIds"
+                    label="IP Addresses"
+                    labelAlign="right"
+                    rules={[
+                      {
+                        required: true,
+                        message: "IP Addresses must not empty!",
+                      },
+                    ]}
                   >
-                  {requestType === "Additional" ? ipAddresses
-                    .filter((l) => (l.assignmentType === "Additional"))
-                    .map((l, index) => (
-                      <Option
-                        value={l.id}
-                        key={index}
-                      >
-                        {`${l.address}`}
-                      </Option>
-                    )): ipAddresses
-                    .filter((l) => (l.assignmentType === "Port"))
-                    .map((l, index) => (
-                      <Option
-                        value={l.id}
-                        key={index}
-                      >
-                        {`${l.address} - ${l.capacity! === 0.1 ? "100 Mbps" : "1 GB (mai Vỹ sửa API khúc lày)"}`}
-                      </Option>
-                    ))}
-                  </Select>
-                </Form.Item>
+                    <Select
+                      mode="multiple"
+                      labelInValue
+                      placeholder="Please select IPs to remove"
+                      allowClear
+                      listHeight={160}
+                      onChange={(res) => {}}
+                      onPopupScroll={async (e: any) => {
+                        const { target } = e;
+                        if (
+                          (target as any).scrollTop +
+                            (target as any).offsetHeight ===
+                          (target as any).scrollHeight
+                        ) {
+                          if (pageIndex < totalPage) {
+                            getMoreIp(serverId!);
+                          }
+                        }
+                      }}
+                    >
+                      {requestType === "Additional"
+                        ? ipAddresses
+                            .filter((l) => l.assignmentType === "Additional")
+                            .map((l, index) => (
+                              <Option value={l.id} key={index}>
+                                {`${l.address}`}
+                              </Option>
+                            ))
+                        : ipAddresses
+                            .filter((l) => l.assignmentType === "Port")
+                            .map((l, index) => (
+                              <Option value={l.id} key={index}>
+                                {`${l.address} - ${
+                                  l.capacity! === 0.1
+                                    ? "100 Mbps"
+                                    : "1 GB (mai Vỹ sửa API khúc lày)"
+                                }`}
+                              </Option>
+                            ))}
+                    </Select>
+                  </Form.Item>
                 </>
               )}
-              </>
-            <Form.Item name="note" label="Note" rules={[{max: 2000}]}>
+            </>
+            <Form.Item name="note" label="Note" rules={[{ max: 2000 }]}>
               <Input placeholder="Note" allowClear />
             </Form.Item>
           </Form>
