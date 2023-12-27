@@ -121,7 +121,7 @@ const Customer: React.FC = () => {
       handleBreadCumb();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [session, paramGet]);
+  }, [session, paramGet, customerDetail]);
 
   if (customerDetail === undefined) {
     return (<AntdLayoutNoSSR

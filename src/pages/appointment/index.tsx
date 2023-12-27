@@ -57,13 +57,11 @@ const Appoinment: React.FC = () => {
       .then((res) => {
         message.success("Create successfully!");
         getData();
+        setOpenModalCreate(false);
       })
       .catch((errors) => {
         message.error(errors.response.data);
       })
-      .finally(() => {
-        setOpenModalCreate(false);
-      });
   };
 
   const updateData = async (data: AppointmentUpdateModel) => {

@@ -60,8 +60,8 @@ const Customer: React.FC = () => {
       .createData(session?.user.access_token!, data)
       .then((res) => {
         message.success("Create successfully!");
-        setOpenModalCreate(false);
         getData();
+        setOpenModalCreate(false);
       })
       .catch((errors) => {
         message.error(errors.response.data);
