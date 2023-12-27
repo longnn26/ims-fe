@@ -77,6 +77,8 @@ const ModalCreate: React.FC<Props> = (props) => {
                       representatorPosition: form.getFieldValue("representatorPosition"),
                       contractNumber: form.getFieldValue("contractNumber"),
                       contacts: form
+                      .getFieldValue("contacts")?
+                      form
                       .getFieldValue("contacts")
                       .map((item, index) => ({
                         name: form.getFieldValue([
@@ -99,7 +101,7 @@ const ModalCreate: React.FC<Props> = (props) => {
                           index,
                           "phoneNumber",
                         ]),
-                      })),                    
+                      })): [],                    
                     } as CustomerCreateModel);
                     form.resetFields();
                   },
