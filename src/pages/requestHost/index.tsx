@@ -58,23 +58,9 @@ const RequestHostList: React.FC = () => {
     });
   };
 
-  const handleBreadCumb = () => {
-    var itemBrs = [] as ItemType[];
-    var items = router.asPath.split("/").filter((_) => _ != "");
-    var path = "";
-    items.forEach((element) => {
-      path += `/${element}`;
-      itemBrs.push({
-        href: path,
-        title: element,
-      });
-    });
-    setItemBreadcrumbs(itemBrs);
-  };
-
   useEffect(() => {
     if (session)
-      {getData(); handleBreadCumb();}
+      {getData(); }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session, paramGet]);
 
@@ -84,9 +70,6 @@ const RequestHostList: React.FC = () => {
         <>
           {areInArray(session?.user.roles!, ROLE_CUSTOMER, ROLE_TECH, ROLE_SALES) && (
             <>
-           <div className="flex flex-wrap items-center justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
-              <BreadcrumbComponent itemBreadcrumbs={itemBreadcrumbs} />
-            </div>
               <RequestHostTable
                 urlOncell=""
                 onEdit={(record) => { }}
