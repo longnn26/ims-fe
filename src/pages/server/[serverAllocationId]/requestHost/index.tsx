@@ -56,11 +56,13 @@ const RequestHost: React.FC = () => {
     useState<ServerAllocation>();
 
   const [itemBreadcrumbs, setItemBreadcrumbs] = useState<ItemType[]>([]);
-
   const getData = async () => {
     var userId = "";
     if (session?.user.roles.includes("Tech")) {
-      userId = parseJwt(session?.user.access_token!).UserID;
+      console.log("Hiii")
+      userId = parseJwt(session?.user.access_token!).UserId;
+      
+      console.log("userId", parseJwt(session?.user.access_token!).UserId)
     }
     await serverAllocationService
       .getServerAllocationById(

@@ -76,7 +76,7 @@ const RequestUpgrade: React.FC = () => {
   const getData = async () => {
     var userId = "";
     if (session?.user.roles.includes("Tech")) {
-      userId = parseJwt(session?.user.access_token!).UserID;
+      userId = parseJwt(session?.user.access_token!).UserId;
     }
     await serverAllocationService
       .getServerAllocationById(

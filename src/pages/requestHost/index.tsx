@@ -41,9 +41,9 @@ const RequestHostList: React.FC = () => {
   const getData = async () => {
     var customerId = "", userId = "";
     if (session?.user.roles.includes("Customer")) {
-      customerId = parseJwt(session?.user.access_token!).UserID;
+      customerId = parseJwt(session?.user.access_token!).UserId;
     } else if (session?.user.roles.includes("Tech")) {
-      userId = parseJwt(session?.user.access_token!).UserID;
+      userId = parseJwt(session?.user.access_token!).UserId;
     }
     dispatch(
       getRequestHostDataAll({
