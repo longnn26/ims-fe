@@ -128,12 +128,10 @@ const Customer: React.FC = () => {
       .then((res) => {
         message.success("Create successfully!");
         getData();
+        setOpenModalCreate(false);
       })
       .catch((errors) => {
         message.error(errors.response.data);
-      })
-      .finally(() => {
-        setOpenModalCreate(false);
       });
   };
 

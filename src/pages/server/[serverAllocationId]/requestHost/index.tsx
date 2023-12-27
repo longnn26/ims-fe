@@ -19,7 +19,7 @@ import serverAllocationService from "@services/serverAllocation";
 import { getRequestExpandData } from "@slices/requestExpand";
 import { getRequestHostData } from "@slices/requestHost";
 import { ROLE_CUSTOMER, ROLE_SALES, ROLE_TECH } from "@utils/constants";
-import { areInArray } from "@utils/helpers";
+import { areInArray, parseJwt } from "@utils/helpers";
 import { Alert, Button, FloatButton, Modal, Pagination, message } from "antd";
 import { ItemType } from "antd/es/breadcrumb/Breadcrumb";
 import { useSession } from "next-auth/react";
@@ -58,6 +58,10 @@ const RequestHost: React.FC = () => {
   const [itemBreadcrumbs, setItemBreadcrumbs] = useState<ItemType[]>([]);
 
   const getData = async () => {
+    var userId = "";
+    if (session?.user.roles.includes("Tech")) {
+      userId = parseJwt(session?.user.access_token!).UserID;
+    }
     await serverAllocationService
       .getServerAllocationById(
         session?.user.access_token!,
@@ -70,7 +74,7 @@ const RequestHost: React.FC = () => {
       getRequestHostData({
         token: session?.user.access_token!,
         id: parseInt(router.query.serverAllocationId?.toString()!) ?? -1,
-        paramGet: { ...paramGet },
+        paramGet: { ...paramGet, UserId: userId },
       })
     ).then(({ payload }) => {
       var res = payload as RequestUpgradeData;
@@ -86,12 +90,10 @@ const RequestHost: React.FC = () => {
       .then((res) => {
         message.success("Create successfully!");
         getData();
+        setOpenModalCreate(false);
       })
       .catch((errors) => {
         message.error(errors.response.data);
-      })
-      .finally(() => {
-        setOpenModalCreate(false);
       });
   };
 
@@ -161,27 +163,12 @@ const RequestHost: React.FC = () => {
     });
   };
 
-  const handleBreadCumb = () => {
-    var itemBrs = [] as ItemType[];
-    var items = router.asPath.split("/").filter((_) => _ != "");
-    var path = "";
-    items.forEach((element) => {
-      path += `/${element}`;
-      itemBrs.push({
-        href: path,
-        title: element,
-      });
-    });
-    setItemBreadcrumbs(itemBrs);
-  };
-
   useEffect(() => {
     if (router.query.serverAllocationId && session) {
       paramGet.ServerAllocationId = parseInt(
         router.query.serverAllocationId!.toString()
       );
       getData();
-      handleBreadCumb();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session, paramGet]);
@@ -217,7 +204,6 @@ const RequestHost: React.FC = () => {
           ) && (
             <>
               <div className="flex flex-wrap items-center justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
-                <BreadcrumbComponent itemBreadcrumbs={itemBreadcrumbs} />
                 <div>
                   {areInArray(session?.user.roles!, ROLE_CUSTOMER) && (
                     <>

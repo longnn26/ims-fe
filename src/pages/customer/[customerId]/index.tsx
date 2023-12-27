@@ -116,6 +116,13 @@ const Customer: React.FC = () => {
 
   useEffect(() => {
     if (router.query.customerId && session) {
+      handleBreadCumb();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [customerDetail]);
+
+  useEffect(() => {
+    if (router.query.customerId && session) {
       paramGet.CustomerId = parseInt(router.query.customerId!.toString());
       getData();
       handleBreadCumb();
