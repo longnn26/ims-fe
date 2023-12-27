@@ -59,7 +59,7 @@ const ModalCreate: React.FC<Props> = (props) => {
                         fullname: form.getFieldValue("fullname"),
                         address: form.getFieldValue("address"),
                         phoneNumber: form.getFieldValue("phoneNumber"),
-                        roles: form.getFieldValue('roles').map((role => role.roleName)),
+                        roles: form.getFieldValue('role'),
                     };
 
                     // Call the provided onSubmit function with the formData
@@ -172,59 +172,23 @@ const ModalCreate: React.FC<Props> = (props) => {
                     allowClear
                     placeholder="Phone Number"
                     />
-            </Form.Item>            
-            <Form.List name="roles">
-              {(fields, { add, remove }) => (
-                <div style={{ display: 'flex', rowGap: 16, flexDirection: 'column' }}>
-                  {fields.map((field) => (
-                    <Card
-                      size="small"
-                      title={`Role ${field.name + 1}`}
-                      key={field.key}
-                      extra={
-                        <CloseOutlined
-                          onClick={() => {
-                            remove(field.name);
-                          }}
-                        />
-                      }
-                    >
-                        <Form.Item
-                            label="Role"
-                            name={[field.name, 'roleName']}
-                            rules={[
-                                { required: true },
-                                ({ getFieldValue }) => ({
-                                  validator(_, value) {
-                                    // Check if the role in the current field is different from the previous one
-                                        const roles = getFieldValue('roles').map((roleField) => roleField.role);
-                                        const isRoleUnique = roles.indexOf(value) === roles.lastIndexOf(value);
-
-                                        if (!isRoleUnique) {
-                                            return Promise.reject(new Error('All roles must be unique'));
-                                        }
-                                        return Promise.resolve();
-                                    },
-                                }),
-                              ]}
-                        >
-                            <Select
-                                placeholder="Select a role"
-                                allowClear
-                            >
-                                <Select.Option value="Sale">Sales Staff</Select.Option>
-                                <Select.Option value="Tech">Technical Staff</Select.Option>
-                                <Select.Option value="Admin">Admin</Select.Option>
-                            </Select>
-                        </Form.Item>
-                    </Card>
-                  ))}
-                  <Button type="dashed" onClick={() => add()} block>
-                    + Add Role
-                  </Button>
-                </div>
-              )}
-            </Form.List>
+            </Form.Item>
+            <Form.Item
+              label="Role"
+              name="role"
+              rules={[
+                { required: true }
+              ]}
+            >
+              <Select
+                placeholder="Select a role"
+                allowClear
+              >
+                <Select.Option value="Sale">Sales Staff</Select.Option>
+                <Select.Option value="Tech">Technical Staff</Select.Option>
+                <Select.Option value="Admin">Admin</Select.Option>
+              </Select>
+            </Form.Item>
           </Form>
         </div>
       </Modal>
