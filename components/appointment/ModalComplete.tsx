@@ -83,9 +83,6 @@ const ModalComplete: React.FC<Props> = (props) => {
                   title: "Do you want to complete appointment?",
                   async onOk() {
                     var documentModel = {
-                      number: form.getFieldValue("number"),
-                      customerName: form.getFieldValue("customerName"),
-                      customerPosition: form.getFieldValue("customerPosition"),
                       qtName: form.getFieldValue("qtName"),
                       position: form.getFieldValue("position"),
                       location: form.getFieldValue("location"),

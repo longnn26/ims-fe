@@ -86,9 +86,6 @@ export interface RUIpAdressParamGet extends ParamGet {
 }
 
 export interface RequestHostCompleteModel {
-  number: string;
-  customerName: string;
-  customerPosition: string;
   qtName: string;
   position: number;
   location: string;

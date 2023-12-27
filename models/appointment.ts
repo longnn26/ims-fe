@@ -34,9 +34,6 @@ export interface ParamGetExtend extends ParamGet {
 }
 
 export interface DocumentModelAppointment {
-  number: string;
-  customerName: string;
-  customerPosition: string;
   qtName: string;
   position: string;
   location: string;

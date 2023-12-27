@@ -220,9 +220,9 @@ const RequestHost: React.FC = () => {
           ) && (
             <>
               <div className="flex flex-wrap items-center justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
+                <BreadcrumbComponent itemBreadcrumbs={itemBreadcrumbs} />
                 {areInArray(session?.user.roles!, ROLE_CUSTOMER) && (
                   <>
-                    <BreadcrumbComponent itemBreadcrumbs={itemBreadcrumbs} />
                     <div>
                       <Button
                         type="primary"
@@ -246,9 +246,9 @@ const RequestHost: React.FC = () => {
                         Create IP&apos;s Request
                       </Button>
                     </div>
-                    </>
-                  )}
-                </div>
+                  </>
+                )}
+              </div>
 
               <ServerDetail
                 serverAllocationDetail={serverAllocationDetail!}

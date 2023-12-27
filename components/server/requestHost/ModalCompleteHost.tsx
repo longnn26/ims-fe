@@ -73,9 +73,6 @@ const ModalCompletetHost: React.FC<Props> = (props) => {
                   title: "Do you want to save?",
                   async onOk() {
                     completeRequestHost({
-                      number: form.getFieldValue("number"),
-                      customerName: form.getFieldValue("customerName"),
-                      customerPosition: form.getFieldValue("customerPosition"),
                       qtName: form.getFieldValue("qtName"),
                       position: form.getFieldValue("position"),
                       location: form.getFieldValue("location"),
@@ -99,7 +96,7 @@ const ModalCompletetHost: React.FC<Props> = (props) => {
             wrapperCol={{ span: 14 }}
             style={{ width: "100%" }}
           >
-            <Form.Item
+            {/* <Form.Item
               name="number"
               label="Contract number"
               rules={[{ required: true, min: 6, max: 255 }]}
@@ -120,7 +117,7 @@ const ModalCompletetHost: React.FC<Props> = (props) => {
               rules={[{ required: true, min: 6, max: 255 }]}
             >
               <Input placeholder="Customer position" allowClear />
-            </Form.Item>
+            </Form.Item> */}
             <Form.Item
               name="qtName"
               label="QTSC Representor"
