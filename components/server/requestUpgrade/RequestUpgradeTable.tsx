@@ -38,6 +38,7 @@ interface DataType {
   key: React.Key;
   id: number;
   component: ComponentObj;
+  requestType: string;
   serialNumber: Descriptions[];
   model: Descriptions[];
   capacity: Descriptions[];
@@ -82,6 +83,11 @@ const RequestUpgradeTable: React.FC<Props> = (props) => {
       title: "Component",
       key: "component",
       render: (record: RequestUpgrade) => <p>{`${record.component?.name}`}</p>,
+    },
+    {
+      title: "Type",
+      key: "requestType",
+      dataIndex: "requestType",
     },
     {
       title: "Status",
@@ -185,6 +191,7 @@ const RequestUpgradeTable: React.FC<Props> = (props) => {
       key: listData?.data[i].id,
       id: listData?.data[i].id,
       component: listData?.data[i].component,
+      requestType: listData?.data[i].requestType,
       serverAllocationId: listData?.data[i].serverAllocationId,
       componentId: listData?.data[i].componentId,
       status: listData?.data[i].status,

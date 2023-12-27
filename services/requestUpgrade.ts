@@ -6,6 +6,7 @@ import {
   RequestUpgradeData,
   RequestUpgrade,
   RUAppointmentParamGet,
+  RequestUpgradeRemoveModel,
 } from "@models/requestUpgrade";
 import apiLinks from "@utils/api-links";
 import httpClient from "@utils/http-client";
@@ -48,6 +49,18 @@ const getAppointmentsById = async (
 const createData = async (
   token: string,
   data: RequestUpgradeCreateModel
+): Promise<any> => {
+  const response = await httpClient.post({
+    token: token,
+    url: apiLinks.requestUpgrade.create,
+    data: data,
+  });
+  return response.data;
+};
+
+const removeData = async (
+  token: string,
+  data: RequestUpgradeRemoveModel
 ): Promise<any> => {
   const response = await httpClient.post({
     token: token,
@@ -120,6 +133,7 @@ const rejectRequestUpgrade = async (
 
 const requestUpgrade = {
   getData,
+  removeData,
   getAppointmentsById,
   createData,
   updateData,
