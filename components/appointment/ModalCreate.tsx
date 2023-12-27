@@ -62,7 +62,8 @@ const ModalCreate: React.FC<Props> = (props) => {
         {
           PageIndex: pageIndexCus + 1,
           PageSize: pageSizeCus,
-        } as ParamGet)
+        } as ParamGet
+      )
       .then(async (data) => {
         setTotalPageCus(data.totalPage);
         setPageIndexCus(data.pageIndex);
@@ -70,7 +71,11 @@ const ModalCreate: React.FC<Props> = (props) => {
       });
   };
 
-  const getMoreRequestUpgrade = async (serverId: number, pageIndex?: number, req?: RequestUpgrade[]) => {
+  const getMoreRequestUpgrade = async (
+    serverId: number,
+    pageIndex?: number,
+    req?: RequestUpgrade[]
+  ) => {
     await requestUpgradeService
       .getData(session?.user.access_token!, {
         PageIndex: pageIndex === 0 ? pageIndex : pageIndexUp + 1,
@@ -80,26 +85,32 @@ const ModalCreate: React.FC<Props> = (props) => {
       .then(async (data) => {
         setTotalPageUp(data.totalPage);
         setPageIndexUp(data.pageIndex);
-        req ?
-        setRequestUpgrade([...req, ...data.data]):
-        setRequestUpgrade([...requestUpgrade, ...data.data]);
+        req
+          ? setRequestUpgrade([...req, ...data.data])
+          : setRequestUpgrade([...requestUpgrade, ...data.data]);
       });
   };
 
-  const getMoreRequestExpand = async (serverId: number, pageIndex?: number, req?: RequestExpand[]) => {
+  const getMoreRequestExpand = async (
+    serverId: number,
+    pageIndex?: number,
+    req?: RequestExpand[]
+  ) => {
     await requestExpandService
       .getData(
-        session?.user.access_token!, {
+        session?.user.access_token!,
+        {
           PageIndex: pageIndex === 0 ? pageIndex : pageIndexUp + 1,
           PageSize: pageSizeCus,
         } as ParamGet,
-        serverId)
+        serverId
+      )
       .then(async (data) => {
         setTotalPageUp(data.totalPage);
         setPageIndexUp(data.pageIndex);
-        req ? 
-        setRequestExpand([...req, ...data.data]):
-        setRequestExpand([...requestExpand, ...data.data]);
+        req
+          ? setRequestExpand([...req, ...data.data])
+          : setRequestExpand([...requestExpand, ...data.data]);
       });
   };
 
@@ -125,7 +136,8 @@ const ModalCreate: React.FC<Props> = (props) => {
       requestExpandId: undefined,
     });
     if (res) {
-      serverService.getServerAllocationById(session?.user.access_token!, res.value)
+      serverService
+        .getServerAllocationById(session?.user.access_token!, res.value)
         .then((server) => {
           setSelectedServer(server);
           getMoreRequestUpgrade(server.id!, 0, []);
@@ -176,17 +188,19 @@ const ModalCreate: React.FC<Props> = (props) => {
                   title: "Do you want to save?",
                   async onOk() {
                     onSubmit({
-                      appointedCustomer: form.getFieldValue("appointedCustomer"),
+                      appointedCustomer:
+                        form.getFieldValue("appointedCustomer"),
                       dateAppointed: form.getFieldValue("dateAppointed"),
                       reason: selectedReason,
                       note: form.getFieldValue("note"),
-                      requestUpgradeIds: form.getFieldValue("requestUpgradeIds"),
+                      requestUpgradeIds:
+                        form.getFieldValue("requestUpgradeIds"),
                       serverAllocationId: selectedServer?.id,
                       requestExpandId: form.getFieldValue("requestExpandId"),
                     } as AppointmentCreateModel);
                     form.resetFields();
                   },
-                  onCancel() { },
+                  onCancel() {},
                 });
             }}
           >
@@ -205,7 +219,7 @@ const ModalCreate: React.FC<Props> = (props) => {
             <Form.Item
               name="appointedCustomer"
               label="Visitor"
-              rules={[{ required: true, }]}
+              rules={[{ required: true }]}
             >
               <Input placeholder="Visitor" allowClear />
             </Form.Item>
@@ -221,7 +235,7 @@ const ModalCreate: React.FC<Props> = (props) => {
                     if (value.isAfter(todate)) {
                       return Promise.resolve();
                     } else {
-                      return Promise.reject('Visit date must be later!');
+                      return Promise.reject("Visit date must be later!");
                     }
                   },
                 },
@@ -250,7 +264,7 @@ const ModalCreate: React.FC<Props> = (props) => {
               >
                 <Option value="Install">Server Installation</Option>
                 <Option value="Uninstall">Server Removal</Option>
-                <Option value="Upgrade">Server's Hardware Change</Option>
+                <Option value="Upgrade">Server Hardware Change</Option>
                 <Option value="Support">Server Support</Option>
                 <Option value="Incident">Server Incident</Option>
               </Select>
@@ -266,7 +280,9 @@ const ModalCreate: React.FC<Props> = (props) => {
                 placeholder="Please select a server"
                 allowClear
                 listHeight={160}
-                onChange={(res) => { handleServerChange(res); }}
+                onChange={(res) => {
+                  handleServerChange(res);
+                }}
                 onPopupScroll={async (e: any) => {
                   const { target } = e;
                   if (
@@ -279,33 +295,42 @@ const ModalCreate: React.FC<Props> = (props) => {
                   }
                 }}
               >
-                {(selectedReason === "Upgrade" || selectedReason === "Uninstall") ?
-                  server
-                    .filter((l) => (l.status === "Working"))
-                    .map((l, index) => (
-                      <Option
-                        value={l.id}
-                        title={`${l?.name} - ${l.masterIp.address}`}
-                        key={index}
-                      >
-                        {`${l?.name} - ${l?.status}`}
-                      </Option>
-                    )) : (selectedReason === "Install") ?
-                    server
-                      .filter((l) => (l.status === "Waiting"))
+                {selectedReason === "Upgrade" || selectedReason === "Uninstall"
+                  ? server
+                      .filter((l) => l.status === "Working")
                       .map((l, index) => (
                         <Option
                           value={l.id}
-                          title={`${l?.name} - ${l?.masterIp === null ? "master IP has not assigned yet" : `${l.masterIp.address}`}`}
+                          title={`${l?.name} - ${l.masterIp.address}`}
                           key={index}
                         >
                           {`${l?.name} - ${l?.status}`}
                         </Option>
-                      )) :
-                    server.map((l, index) => (
+                      ))
+                  : selectedReason === "Install"
+                  ? server
+                      .filter((l) => l.status === "Waiting")
+                      .map((l, index) => (
+                        <Option
+                          value={l.id}
+                          title={`${l?.name} - ${
+                            l?.masterIp === null
+                              ? "master IP has not assigned yet"
+                              : `${l.masterIp.address}`
+                          }`}
+                          key={index}
+                        >
+                          {`${l?.name} - ${l?.status}`}
+                        </Option>
+                      ))
+                  : server.map((l, index) => (
                       <Option
                         value={l.id}
-                        title={`${l?.name} - ${l?.masterIp === null ? "master IP has not assigned yet" : `${l.masterIp.address}`}`}
+                        title={`${l?.name} - ${
+                          l?.masterIp === null
+                            ? "master IP has not assigned yet"
+                            : `${l.masterIp.address}`
+                        }`}
                         key={index}
                       >
                         {`${l?.name} - ${l?.status}`}
@@ -319,7 +344,9 @@ const ModalCreate: React.FC<Props> = (props) => {
                   name="requestUpgradeIds"
                   label="Request Upgrade"
                   labelAlign="right"
-                  rules={[{ required: true, message: "Request must not empty!" }]}
+                  rules={[
+                    { required: true, message: "Request must not empty!" },
+                  ]}
                 >
                   <Select
                     mode="multiple"
@@ -328,7 +355,8 @@ const ModalCreate: React.FC<Props> = (props) => {
                     onPopupScroll={async (e: any) => {
                       const { target } = e;
                       if (
-                        (target as any).scrollTop + (target as any).offsetHeight ===
+                        (target as any).scrollTop +
+                          (target as any).offsetHeight ===
                         (target as any).scrollHeight
                       ) {
                         if (pageIndexUp < totalPageUp) {
@@ -338,23 +366,28 @@ const ModalCreate: React.FC<Props> = (props) => {
                     }}
                   >
                     {requestUpgrade
-                      .filter((l) => (l.status === "Waiting" || l.status === "Accepted"))
+                      .filter(
+                        (l) => l.status === "Waiting" || l.status === "Accepted"
+                      )
                       .map((l, index) => (
-                      <Option value={l.id} key={index}>
-                        {`${l?.component.name} - ${l?.requestType} - ${l?.status}`}
-                      </Option>
-                    ))}
+                        <Option value={l.id} key={index}>
+                          {`${l?.component.name} - ${l?.requestType} - ${l?.status}`}
+                        </Option>
+                      ))}
                   </Select>
                 </Form.Item>
               </>
             )}
-            {(selectedReason === "Install" || selectedReason === "Uninstall") && (
+            {(selectedReason === "Install" ||
+              selectedReason === "Uninstall") && (
               <>
                 <Form.Item
                   name="requestExpandId"
                   label="Request Expand"
                   labelAlign="right"
-                  rules={[{ required: true, message: "Request must not empty!" }]}
+                  rules={[
+                    { required: true, message: "Request must not empty!" },
+                  ]}
                 >
                   <Select
                     placeholder="Please select a request"
@@ -362,7 +395,8 @@ const ModalCreate: React.FC<Props> = (props) => {
                     onPopupScroll={async (e: any) => {
                       const { target } = e;
                       if (
-                        (target as any).scrollTop + (target as any).offsetHeight ===
+                        (target as any).scrollTop +
+                          (target as any).offsetHeight ===
                         (target as any).scrollHeight
                       ) {
                         if (pageIndexUp < totalPageUp) {
@@ -371,27 +405,37 @@ const ModalCreate: React.FC<Props> = (props) => {
                       }
                     }}
                   >
-                    {selectedReason === "Install" ? requestExpand
-                      .filter((l) => (l.requestType === "Expand" && (l.status === "Waiting" || l.status === "Accepted")))
-                      .map((l, index) => (
-                        <Option value={l.id} key={index}>
-                          {`Server Installation Request`}
-                        </Option>
-                      )) : requestExpand
-                        .filter((l) => (l.requestType === "RemoveLocation" && l.status!== "Success" && l.removalStatus!= "Failed" && l.removalStatus!== "Success")
-                        ).map((l, index) => (
-                          <Option value={l.id} key={index}>
-                            {`Server Removal Request`}
-                          </Option>))}
+                    {selectedReason === "Install"
+                      ? requestExpand
+                          .filter(
+                            (l) =>
+                              l.requestType === "Expand" &&
+                              (l.status === "Waiting" ||
+                                l.status === "Accepted")
+                          )
+                          .map((l, index) => (
+                            <Option value={l.id} key={index}>
+                              {`Server Installation Request`}
+                            </Option>
+                          ))
+                      : requestExpand
+                          .filter(
+                            (l) =>
+                              l.requestType === "RemoveLocation" &&
+                              l.status !== "Success" &&
+                              l.removalStatus != "Failed" &&
+                              l.removalStatus !== "Success"
+                          )
+                          .map((l, index) => (
+                            <Option value={l.id} key={index}>
+                              {`Server Removal Request`}
+                            </Option>
+                          ))}
                   </Select>
                 </Form.Item>
               </>
             )}
-            <Form.Item
-              name="note"
-              label="Note"
-              rules={[{ max: 2000 }]}
-            >
+            <Form.Item name="note" label="Note" rules={[{ max: 2000 }]}>
               <Input.TextArea
                 placeholder="Note"
                 allowClear
