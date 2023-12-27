@@ -39,14 +39,16 @@ const RequestHostList: React.FC = () => {
   const [itemBreadcrumbs, setItemBreadcrumbs] = useState<ItemType[]>([]);
 
   const getData = async () => {
-    var customerId = "";
+    var customerId = "", userId = "";
     if (session?.user.roles.includes("Customer")) {
       customerId = parseJwt(session?.user.access_token!).UserID;
+    } else if (session?.user.roles.includes("Tech")) {
+      userId = parseJwt(session?.user.access_token!).UserID;
     }
     dispatch(
       getRequestHostDataAll({
         token: session?.user.access_token!,
-        paramGet: { ...paramGet, Customer: customerId },
+        paramGet: { ...paramGet, Customer: customerId, UserId: userId },
       })
     ).then(({ payload }) => {
       var res = payload as RequestHostData;

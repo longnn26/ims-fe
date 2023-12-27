@@ -27,6 +27,7 @@ export interface ParamGet {
   DateStart: string;
   DateEnd: string;
   Customer?: string;
+  UserId?: string;
 }
 
 export interface ParamGetWithId extends ParamGet {
