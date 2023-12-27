@@ -11,6 +11,7 @@ import {
   RequestUpgrade,
   RequestUpgradeCreateModel,
   RequestUpgradeData,
+  RequestUpgradeRemoveModel,
   RequestUpgradeUpdateModel,
   RUParamGet,
 } from "@models/requestUpgrade";
@@ -44,6 +45,7 @@ import { ItemType } from "antd/es/breadcrumb/Breadcrumb";
 import BreadcrumbComponent from "@components/BreadcrumbComponent";
 import ServerDetail from "@components/server/ServerDetail";
 import { areInArray, parseJwt } from "@utils/helpers";
+import ModalRemove from "@components/server/requestUpgrade/ModalRemove";
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
 });
@@ -64,6 +66,7 @@ const RequestUpgrade: React.FC = () => {
     RequestUpgrade | undefined
   >(undefined);
   const [openModalCreate, setOpenModalCreate] = useState<boolean>(false);
+  const [openModalRemove, setOpenModalRemove] = useState<boolean>(false);
   const [openModalUpdate, setOpenModalUpdate] = useState<boolean>(false);
   const [serverAllocationDetail, setServerAllocationDetail] =
     useState<ServerAllocation>();
@@ -106,6 +109,20 @@ const RequestUpgrade: React.FC = () => {
       })
       .catch((errors) => {
         message.error(errors.response.data);
+      });
+  };
+  const removeData = async (data: RequestUpgradeRemoveModel) => {
+    await requestUpgradeService
+      .removeData(session?.user.access_token!, data)
+      .then((res) => {
+        message.success("Remove Hardware successfully!");
+        getData();
+      })
+      .catch((errors) => {
+        message.error(errors.response.data);
+      })
+      .finally(() => {
+        setOpenModalCreate(false);
       });
   };
 
@@ -189,18 +206,33 @@ const RequestUpgrade: React.FC = () => {
               ROLE_TECH,
               ROLE_CUSTOMER
             ) && <BreadcrumbComponent itemBreadcrumbs={itemBreadcrumbs} />}
-            {areInArray(session?.user.roles!, ROLE_CUSTOMER) && (
-              <Button
-                type="primary"
-                htmlType="submit"
-                icon={<IoIosSend />}
-                onClick={() => {
-                  setOpenModalCreate(true);
-                }}
-              >
-                (+) Request upgrade
-              </Button>
-            )}
+            <div>
+              {areInArray(session?.user.roles!, ROLE_CUSTOMER) && (
+                <>
+                  <Button
+                    type="primary"
+                    htmlType="submit"
+                    className="mr-2"
+                    icon={<IoIosSend />}
+                    onClick={() => {
+                      setOpenModalRemove(true);
+                    }}
+                  >
+                    Hardware Remove Request
+                  </Button>
+                  <Button
+                    type="primary"
+                    htmlType="submit"
+                    icon={<IoIosSend />}
+                    onClick={() => {
+                      setOpenModalCreate(true);
+                    }}
+                  >
+                    Request upgrade
+                  </Button>
+                </>
+              )}
+            </div>
 
             {/* <SearchComponent
               placeholder="Search Name, Description..."
@@ -221,6 +253,16 @@ const RequestUpgrade: React.FC = () => {
                 router.query!.serverAllocationId!.toString()
               );
               updateData(data);
+            }}
+          />
+          <ModalRemove
+            open={openModalRemove}
+            onClose={() => setOpenModalRemove(false)}
+            onSubmit={(data: RequestUpgradeRemoveModel) => {
+              data.serverAllocationId = parseInt(
+                router.query!.serverAllocationId!.toString()
+              );
+              removeData(data);
             }}
           />
           <ModalCreate

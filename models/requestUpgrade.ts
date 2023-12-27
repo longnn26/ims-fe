@@ -41,6 +41,13 @@ export interface RequestUpgradeUpdateModel {
   serverAllocationId: number;
 }
 
+export interface RequestUpgradeRemoveModel {
+  id: number;
+  componentId: number;
+  descriptions: null;
+  serverAllocationId: number;
+}
+
 export interface RUAppointmentParamGet extends ParamGet {
   Id: number;
   CustomerId?: string;
