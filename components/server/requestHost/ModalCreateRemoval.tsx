@@ -56,7 +56,7 @@ const ModalCreate: React.FC<Props> = (props) => {
           PageIndex: pageIndexInp === 0 ? pageIndexInp : pageIndex + 1,
           PageSize: pageSize,
           Id: serverId,
-          IsAssigned: true,
+          IsAssigned: false,
         } as RUIpAdressParamGet)
       .then(async (data) => {
         setTotalPage(data.totalPage);

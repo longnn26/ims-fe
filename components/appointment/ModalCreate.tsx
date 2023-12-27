@@ -415,7 +415,7 @@ const ModalCreate: React.FC<Props> = (props) => {
                           )
                           .map((l, index) => (
                             <Option value={l.id} key={index}>
-                              {`Server Installation Request`}
+                              {`${selectedServer?.serialNumber} Installation`}
                             </Option>
                           ))
                       : requestExpand
@@ -428,7 +428,7 @@ const ModalCreate: React.FC<Props> = (props) => {
                           )
                           .map((l, index) => (
                             <Option value={l.id} key={index}>
-                              {`Server Removal Request`}
+                              {`${selectedServer?.serialNumber} Removal Request`}
                             </Option>
                           ))}
                   </Select>
