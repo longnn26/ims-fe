@@ -203,8 +203,7 @@ const RequestHost: React.FC = () => {
             ROLE_CUSTOMER
           ) && (
             <>
-              <div className="flex flex-wrap items-center justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
-                <div>
+              <div className="flex flex-wrap items-center justify-end mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
                   {areInArray(session?.user.roles!, ROLE_CUSTOMER) && (
                     <>
                       <Button
@@ -230,7 +229,6 @@ const RequestHost: React.FC = () => {
                       </Button>
                     </>
                   )}
-                </div>
               </div>
 
               <ServerDetail

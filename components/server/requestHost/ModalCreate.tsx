@@ -184,8 +184,8 @@ const ModalCreate: React.FC<Props> = (props) => {
                               value={selectedCapacities[index]}
                               style={{ width: "250px" }}
                             >
-                              <Option value={0.1}>100 MB</Option>
-                              <Option value={1}>1 GB</Option>
+                              <Option value={0.1}>100 Mbps</Option>
+                              <Option value={1}>1 Gbps</Option>
                             </Select>
                           </Form.Item>
                           <CloseOutlined
