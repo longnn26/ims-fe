@@ -262,7 +262,6 @@ const Customer: React.FC = () => {
     fetchData();
   }
   }, [router, session, paramGet, rUIpAddressParamGet]);
-  console.log("session: ", session?.user);
 
   if (serverAllocationDetail === undefined) {
     return (
