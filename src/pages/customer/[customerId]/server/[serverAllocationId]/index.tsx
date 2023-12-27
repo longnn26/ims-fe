@@ -105,20 +105,25 @@ const Customer: React.FC = () => {
             token: session?.user.access_token!,
             paramGet: { ...rUIpAddressParamGet },
           })
-        ).then(({ payload }) => {
-          var res = payload as IpAddressData;
-          if (res.totalPage < rUIpAddressParamGet.PageIndex && res.totalPage != 0) {
-            setRUIpAddressParamGet({
-              ...rUIpAddressParamGet,
-              PageIndex: res.totalPage,
-            });
-          }
-        }).catch(() => { });
+        )
+          .then(({ payload }) => {
+            var res = payload as IpAddressData;
+            if (
+              res.totalPage < rUIpAddressParamGet.PageIndex &&
+              res.totalPage != 0
+            ) {
+              setRUIpAddressParamGet({
+                ...rUIpAddressParamGet,
+                PageIndex: res.totalPage,
+              });
+            }
+          })
+          .catch(() => {});
       })
       .catch((errors) => {
         setServerAllocationDetail(undefined);
         setContent(errors.response.data);
-      });          
+      });
     await customerService
       .getCustomerById(
         session?.user.access_token!,
@@ -199,7 +204,7 @@ const Customer: React.FC = () => {
             setLoadingSubmit(false);
           });
       },
-      onCancel() { },
+      onCancel() {},
     });
   };
 
@@ -226,7 +231,7 @@ const Customer: React.FC = () => {
       .catch((errors) => {
         // message.error(errors.response.data);
       })
-      .finally(() => { });
+      .finally(() => {});
   };
 
   useEffect(() => {}, [session]);
@@ -250,25 +255,22 @@ const Customer: React.FC = () => {
   }, [serverAllocationDetail]);
 
   if (serverAllocationDetail === undefined || customerDetail === undefined) {
-    return (<AntdLayoutNoSSR
-      content={
-        <>
-          <ModalEmpty
-            isPermission={false}
-            content={content}
-          />
-        </>
-      } />)
+    return (
+      <AntdLayoutNoSSR
+        content={
+          <>
+            <ModalEmpty isPermission={false} content={content} />
+          </>
+        }
+      />
+    );
   } else
     return (
       <AntdLayoutNoSSR
         content={
           <>
             {!permission ? (
-              <ModalEmpty
-                isPermission={true}
-                content={content}
-              />
+              <ModalEmpty isPermission={true} content={content} />
             ) : (
               <>
                 <div className="flex flex-wrap items-center justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
@@ -276,36 +278,36 @@ const Customer: React.FC = () => {
                   <div>
                     {Boolean(
                       !serverAllocationDetail?.masterIp?.address &&
-                      serverAllocationDetail?.status !== "Removed" &&
-                      areInArray(session?.user.roles!, ROLE_TECH)
+                        serverAllocationDetail?.status !== "Removed" &&
+                        areInArray(session?.user.roles!, ROLE_TECH)
                     ) && (
-                        <Button
-                          type="primary"
-                          htmlType="submit"
-                          className="mr-2"
-                          icon={<BsFillHddNetworkFill />}
-                          onClick={() => {
-                            getIpSuggestMaster();
-                          }}
-                        >
-                          Assign IP
-                        </Button>
-                      )}
+                      <Button
+                        type="primary"
+                        htmlType="submit"
+                        className="mr-2"
+                        icon={<BsFillHddNetworkFill />}
+                        onClick={() => {
+                          getIpSuggestMaster();
+                        }}
+                      >
+                        Assign IP
+                      </Button>
+                    )}
                     {Boolean(
                       serverAllocationDetail?.status !== "Removed" &&
-                      areInArray(session?.user.roles!, ROLE_TECH)
+                        areInArray(session?.user.roles!, ROLE_TECH)
                     ) && (
-                        <Button
-                          type="primary"
-                          htmlType="submit"
-                          icon={<AppstoreAddOutlined />}
-                          onClick={() => {
-                            setOpenModalCreate(true);
-                          }}
-                        >
-                          Hardware Config
-                        </Button>
-                      )}
+                      <Button
+                        type="primary"
+                        htmlType="submit"
+                        icon={<AppstoreAddOutlined />}
+                        onClick={() => {
+                          setOpenModalCreate(true);
+                        }}
+                      >
+                        Hardware Config
+                      </Button>
+                    )}
                   </div>
                 </div>
                 <ModalCreate
@@ -338,103 +340,103 @@ const Customer: React.FC = () => {
                   ROLE_SALES,
                   ROLE_CUSTOMER
                 ) && (
-                    <>
-                      <ServerDetail
-                        serverAllocationDetail={serverAllocationDetail!}
-                      />
-                      <ServerHardwareConfigTable
-                        onEdit={(record) => {
-                          setServerHardwareConfigUpdate(record);
-                          setOpenModalUpdate(true);
+                  <>
+                    <ServerDetail
+                      serverAllocationDetail={serverAllocationDetail!}
+                    />
+                    <ServerHardwareConfigTable
+                      onEdit={(record) => {
+                        setServerHardwareConfigUpdate(record);
+                        setOpenModalUpdate(true);
+                      }}
+                      onDelete={async (record) => {
+                        deleteData(record);
+                      }}
+                      serverStatus={serverAllocationDetail?.status}
+                    />
+                    {serverHardwareConfigData.totalPage > 0 && (
+                      <Pagination
+                        className="text-end m-4"
+                        current={paramGet.PageIndex}
+                        pageSize={serverHardwareConfigData.pageSize ?? 10}
+                        total={serverHardwareConfigData.totalSize}
+                        onChange={(page, pageSize) => {
+                          setParamGet({
+                            ...paramGet,
+                            PageIndex: page,
+                            PageSize: pageSize,
+                          });
                         }}
-                        onDelete={async (record) => {
-                          deleteData(record);
-                        }}
-                        serverStatus={serverAllocationDetail?.status}
                       />
-                      {serverHardwareConfigData.totalPage > 0 && (
-                        <Pagination
-                          className="text-end m-4"
-                          current={paramGet.PageIndex}
-                          pageSize={serverHardwareConfigData.pageSize ?? 10}
-                          total={serverHardwareConfigData.totalSize}
-                          onChange={(page, pageSize) => {
-                            setParamGet({
-                              ...paramGet,
-                              PageIndex: page,
-                              PageSize: pageSize,
-                            });
-                          }}
-                        />
-                      )}
+                    )}
 
-                      <IpAddressTable typeGet="ServerAllocation" />
-                      {serverIpAdressData?.totalPage > 0 && (
-                        <Pagination
-                          className="text-end m-4"
-                          current={rUIpAddressParamGet?.PageIndex}
-                          pageSize={serverIpAdressData?.pageSize ?? 10}
-                          total={serverIpAdressData?.totalSize}
-                          onChange={(page, pageSize) => {
-                            setRUIpAddressParamGet({
-                              ...rUIpAddressParamGet,
-                              PageIndex: page,
-                              PageSize: pageSize,
-                            });
-                          }}
-                        />
-                      )}
-                      <ModalAssign
-                        id={serverAllocationDetail?.id!}
-                        ipSuggestMaster={ipSuggestMaster}
-                        onClose={() => setIpSuggestMaster(undefined)}
-                        onRefresh={() => {
-                          getData();
+                    <IpAddressTable typeGet="ServerAllocation" />
+                    {serverIpAdressData?.totalPage > 0 && (
+                      <Pagination
+                        className="text-end m-4"
+                        current={rUIpAddressParamGet?.PageIndex}
+                        pageSize={serverIpAdressData?.pageSize ?? 10}
+                        total={serverIpAdressData?.totalSize}
+                        onChange={(page, pageSize) => {
+                          setRUIpAddressParamGet({
+                            ...rUIpAddressParamGet,
+                            PageIndex: page,
+                            PageSize: pageSize,
+                          });
                         }}
                       />
-                      <FloatButton.Group
-                        trigger="hover"
-                        type="primary"
-                        style={{ right: 60, bottom: 400 }}
-                        icon={<SendOutlined />}
-                      >
-                        <FloatButton
-                          tooltip="Request upgrade"
-                          icon={<MdUpgrade />}
-                          onClick={() =>
-                            router.push(
-                              `/customer/${serverAllocationDetail.customer.id}/server/${serverAllocationDetail?.id}/requestUpgrade`
-                            )
-                          }
-                        />
-                        <FloatButton
-                          onClick={() =>
-                            router.push(
-                              `/customer/${serverAllocationDetail.customer.id}/server/${serverAllocationDetail?.id}/requestExpand`
-                            )
-                          }
-                          icon={<FaExpand />}
-                          tooltip="Request expand"
-                        />
-                        <FloatButton
-                          tooltip="IP's Request"
-                          icon={<GrHost />}
-                          onClick={() =>
-                            router.push(
-                              `/customer/${serverAllocationDetail.customer.id}/server/${serverAllocationDetail?.id}/requestHost`
-                            )
-                          }
-                        />
-                      </FloatButton.Group>
-                    </>
-                  )}
+                    )}
+                    <ModalAssign
+                      id={serverAllocationDetail?.id!}
+                      ipSuggestMaster={ipSuggestMaster}
+                      onClose={() => setIpSuggestMaster(undefined)}
+                      onRefresh={() => {
+                        getData();
+                      }}
+                    />
+                    <FloatButton.Group
+                      trigger="hover"
+                      type="primary"
+                      style={{ right: 60, bottom: 400 }}
+                      icon={<SendOutlined />}
+                    >
+                      <FloatButton
+                        tooltip="Request upgrade"
+                        icon={<MdUpgrade />}
+                        onClick={() =>
+                          router.push(
+                            `/customer/${serverAllocationDetail.customer.id}/server/${serverAllocationDetail?.id}/requestUpgrade`
+                          )
+                        }
+                      />
+                      <FloatButton
+                        onClick={() =>
+                          router.push(
+                            `/customer/${serverAllocationDetail.customer.id}/server/${serverAllocationDetail?.id}/requestExpand`
+                          )
+                        }
+                        icon={<FaExpand />}
+                        tooltip="Request expand"
+                      />
+                      <FloatButton
+                        tooltip="IP Request"
+                        icon={<GrHost />}
+                        onClick={() =>
+                          router.push(
+                            `/customer/${serverAllocationDetail.customer.id}/server/${serverAllocationDetail?.id}/requestHost`
+                          )
+                        }
+                      />
+                    </FloatButton.Group>
+                  </>
+                )}
               </>
-            )};
+            )}
+            ;
           </>
         }
       />
     );
 };
-
 
 export default Customer;

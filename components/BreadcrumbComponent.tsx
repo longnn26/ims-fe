@@ -32,7 +32,7 @@ const BreadcrumbComponent: React.FC<Props> = (props) => {
         element.title = "IP Subnet";
         break;
       case "requestHost":
-        element.title = "IP's Request";
+        element.title = "IP Request";
         break;
     }
   });
