@@ -56,7 +56,7 @@ const Customer: React.FC = () => {
   const [paramGet, setParamGet] = useState<SHCParamGet>({
     PageIndex: 1,
     PageSize: 10,
-    ServerAllocationId: router.query.serverAllocationId,
+    ServerAllocationId: router.query.serverAllocationId ?? -1,
   } as unknown as SHCParamGet);
   const [loadingSubmit, setLoadingSubmit] = useState<boolean>(false);
   const [serverHardwareConfigUpdate, setServerHardwareConfigUpdate] = useState<
@@ -74,7 +74,7 @@ const Customer: React.FC = () => {
     useState<RUIpAdressParamGet>({
       PageIndex: 1,
       PageSize: 10,
-      ServerAllocationId: router.query.serverAllocationId,
+      ServerAllocationId: router.query.serverAllocationId ?? -1,
     } as unknown as RUIpAdressParamGet);
 
   const getData = async () => {
