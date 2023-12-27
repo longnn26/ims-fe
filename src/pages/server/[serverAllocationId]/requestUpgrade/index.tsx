@@ -43,7 +43,7 @@ import RequestUpgradeTable from "@components/server/requestUpgrade/RequestUpgrad
 import { ItemType } from "antd/es/breadcrumb/Breadcrumb";
 import BreadcrumbComponent from "@components/BreadcrumbComponent";
 import ServerDetail from "@components/server/ServerDetail";
-import { areInArray } from "@utils/helpers";
+import { areInArray, parseJwt } from "@utils/helpers";
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
 });
@@ -71,6 +71,10 @@ const RequestUpgrade: React.FC = () => {
   const [itemBreadcrumbs, setItemBreadcrumbs] = useState<ItemType[]>([]);
 
   const getData = async () => {
+    var userId = "";
+    if (session?.user.roles.includes("Tech")) {
+      userId = parseJwt(session?.user.access_token!).UserID;
+    }
     await serverAllocationService
       .getServerAllocationById(
         session?.user.access_token!,
@@ -82,7 +86,7 @@ const RequestUpgrade: React.FC = () => {
     dispatch(
       getRequestUpgradeData({
         token: session?.user.access_token!,
-        paramGet: { ...paramGet },
+        paramGet: { ...paramGet, UserId: userId },
       })
     ).then(({ payload }) => {
       var res = payload as RequestUpgradeData;

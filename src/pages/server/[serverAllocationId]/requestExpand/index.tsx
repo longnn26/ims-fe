@@ -20,7 +20,7 @@ import requestExpandService from "@services/requestExpand";
 import serverAllocationService from "@services/serverAllocation";
 import { getRequestExpandData } from "@slices/requestExpand";
 import { ROLE_CUSTOMER, ROLE_SALES, ROLE_TECH } from "@utils/constants";
-import { areInArray } from "@utils/helpers";
+import { areInArray, parseJwt } from "@utils/helpers";
 import { Alert, Button, FloatButton, Modal, Pagination, message } from "antd";
 import { ItemType } from "antd/es/breadcrumb/Breadcrumb";
 import { useSession } from "next-auth/react";
@@ -57,6 +57,10 @@ const RequestExpand: React.FC = () => {
   const [itemBreadcrumbs, setItemBreadcrumbs] = useState<ItemType[]>([]);
 
   const getData = async () => {
+    var userId = "";
+    if (session?.user.roles.includes("Tech")) {
+      userId = parseJwt(session?.user.access_token!).UserID;
+    }
     await serverAllocationService
       .getServerAllocationById(
         session?.user.access_token!,
@@ -69,7 +73,7 @@ const RequestExpand: React.FC = () => {
       getRequestExpandData({
         token: session?.user.access_token!,
         id: parseInt(router.query.serverAllocationId?.toString()!) ?? -1,
-        paramGet: { ...paramGet },
+        paramGet: { ...paramGet, UserId: userId },
       })
     ).then(({ payload }) => {
       var res = payload as RequestUpgradeData;
