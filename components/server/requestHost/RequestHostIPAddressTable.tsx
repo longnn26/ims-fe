@@ -36,9 +36,9 @@ const RequestHostIPAddressTable: React.FC<Props> = (props) => {
         // Chuyển đổi dữ liệu từ "0.1" sang "100 MB" và từ "1" sang "1 GB"
         const capacityValue = parseFloat(text);
         const formattedCapacity =
-          capacityValue < 1
+          (capacityValue < 1)
             ? `${capacityValue * 1000} MB`
-            : `${capacityValue} GB`;
+            : `${capacityValue > 0 ? `${capacityValue}` : ""}`;
 
         return <span>{formattedCapacity}</span>;
       },
