@@ -59,7 +59,6 @@ const ModalUpdate: React.FC<Props> = (props) => {
     if (requestHost) {
       setSelectedCapacities(requestHost?.capacities || []);
     }
-    console.log(requestHost);
   }, [requestHost, requestType]);
 
   return (

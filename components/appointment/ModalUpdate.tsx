@@ -2,7 +2,12 @@ import React, { useEffect, useRef, useState } from "react";
 import { Button, Col, Input, Modal, Row, Select, Card, DatePicker } from "antd";
 import { Form } from "antd";
 import { Appointment, AppointmentUpdateModel } from "@models/appointment";
-import { ROLE_CUSTOMER, ROLE_SALES, ROLE_TECH, dateAdvFormat } from "@utils/constants";
+import {
+  ROLE_CUSTOMER,
+  ROLE_SALES,
+  ROLE_TECH,
+  dateAdvFormat,
+} from "@utils/constants";
 import { useSession } from "next-auth/react";
 import { areInArray, convertDatePicker } from "@utils/helpers";
 import moment from "moment";
@@ -74,21 +79,28 @@ const ModalCreate: React.FC<Props> = (props) => {
             className="btn-submit"
             key="submit"
             onClick={async () => {
-              console.log(form.getFieldValue("dateAppointed"))
               if (!(await disabled()))
                 confirm({
                   title: "Do you want to save?",
                   async onOk() {
                     onSubmit({
                       id: appointment.id,
-                      appointedCustomer: form.getFieldValue("appointedCustomer") ? form.getFieldValue("appointedCustomer") : appointment.appointedCustomer,
+                      appointedCustomer: form.getFieldValue("appointedCustomer")
+                        ? form.getFieldValue("appointedCustomer")
+                        : appointment.appointedCustomer,
                       dateAppointed: form.getFieldValue("dateAppointed"),
-                      note: form.getFieldValue("note") ? form.getFieldValue("note") : appointment.note,
-                      techNote: form.getFieldValue("techNote") ? form.getFieldValue("techNote") : appointment.techNote,
-                      saleNote: form.getFieldValue("saleNote") ? form.getFieldValue("saleNote") : appointment.saleNote,
+                      note: form.getFieldValue("note")
+                        ? form.getFieldValue("note")
+                        : appointment.note,
+                      techNote: form.getFieldValue("techNote")
+                        ? form.getFieldValue("techNote")
+                        : appointment.techNote,
+                      saleNote: form.getFieldValue("saleNote")
+                        ? form.getFieldValue("saleNote")
+                        : appointment.saleNote,
                     } as AppointmentUpdateModel);
                   },
-                  onCancel() { },
+                  onCancel() {},
                 });
             }}
           >
@@ -124,7 +136,7 @@ const ModalCreate: React.FC<Props> = (props) => {
                         if (value.isAfter(todate)) {
                           return Promise.resolve();
                         } else {
-                          return Promise.reject('Visit date must be later!');
+                          return Promise.reject("Visit date must be later!");
                         }
                       },
                     },
@@ -140,7 +152,13 @@ const ModalCreate: React.FC<Props> = (props) => {
                 <Form.Item
                   name="note"
                   label="Note"
-                  rules={[{ required: true, max: 2000, message: "Update appointment must enter your note!" }]}
+                  rules={[
+                    {
+                      required: true,
+                      max: 2000,
+                      message: "Update appointment must enter your note!",
+                    },
+                  ]}
                 >
                   <Input.TextArea
                     placeholder="Note"
@@ -148,14 +166,21 @@ const ModalCreate: React.FC<Props> = (props) => {
                     autoSize={{ minRows: 1, maxRows: 6 }}
                   />
                 </Form.Item>
-              </>)}
+              </>
+            )}
 
-              {areInArray(session?.user.roles!, ROLE_SALES) && (
+            {areInArray(session?.user.roles!, ROLE_SALES) && (
               <>
-              <Form.Item
+                <Form.Item
                   name="saleNote"
                   label="Note"
-                  rules={[{ required: true, max: 2000, message: "Update appointment must enter your note!" }]}
+                  rules={[
+                    {
+                      required: true,
+                      max: 2000,
+                      message: "Update appointment must enter your note!",
+                    },
+                  ]}
                 >
                   <Input.TextArea
                     placeholder="Note"
@@ -163,13 +188,20 @@ const ModalCreate: React.FC<Props> = (props) => {
                     autoSize={{ minRows: 1, maxRows: 6 }}
                   />
                 </Form.Item>
-              </>)}
-              {areInArray(session?.user.roles!, ROLE_TECH) && (
+              </>
+            )}
+            {areInArray(session?.user.roles!, ROLE_TECH) && (
               <>
-              <Form.Item
+                <Form.Item
                   name="techNote"
                   label="Note"
-                  rules={[{ required: true, max: 2000, message: "Update appointment must enter your note!" }]}
+                  rules={[
+                    {
+                      required: true,
+                      max: 2000,
+                      message: "Update appointment must enter your note!",
+                    },
+                  ]}
                 >
                   <Input.TextArea
                     placeholder="Note"
@@ -177,7 +209,8 @@ const ModalCreate: React.FC<Props> = (props) => {
                     autoSize={{ minRows: 1, maxRows: 6 }}
                   />
                 </Form.Item>
-              </>)}
+              </>
+            )}
           </Form>
         </div>
       </Modal>
