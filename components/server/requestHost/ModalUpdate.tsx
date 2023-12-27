@@ -90,7 +90,7 @@ const ModalUpdate: React.FC<Props> = (props) => {
                       techNote: form.getFieldValue("techNote"),
                       quantity: submittedCapacities
                         ? submittedCapacities.length
-                        : 0, // Cập nhật quantity
+                        : form.getFieldValue("quantity"), // Cập nhật quantity
                       note: form.getFieldValue("note"),
                       type: form.getFieldValue("type"),
                       capacities: submittedCapacities,
