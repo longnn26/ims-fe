@@ -249,10 +249,10 @@ const ModalCreate: React.FC<Props> = (props) => {
                 }}
               >
                 <Option value="Install">Server Installation</Option>
-                <Option value="Uninstall">Server Gỡ</Option>
-                <Option value="Upgrade">Server Nâng phần cứng</Option>
-                <Option value="Support">Server Hỗ trợ</Option>
-                <Option value="Incident">Server Sự cố</Option>
+                <Option value="Uninstall">Server Removal</Option>
+                <Option value="Upgrade">Server's Hardware Change</Option>
+                <Option value="Support">Server Support</Option>
+                <Option value="Incident">Server Incident</Option>
               </Select>
             </Form.Item>
             <Form.Item
@@ -341,7 +341,7 @@ const ModalCreate: React.FC<Props> = (props) => {
                       .filter((l) => (l.status === "Waiting" || l.status === "Accepted"))
                       .map((l, index) => (
                       <Option value={l.id} key={index}>
-                        {`${l?.id} - ${l?.component.name} - ${l?.status}`}
+                        {`${l?.component.name} - ${l?.requestType} - ${l?.status}`}
                       </Option>
                     ))}
                   </Select>
