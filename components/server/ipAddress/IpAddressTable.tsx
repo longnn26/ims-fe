@@ -15,6 +15,7 @@ interface DataType {
   id: number;
   address: string;
   assignmentType: string;
+  capacity: number;
 }
 
 const IpAddressTable: React.FC<Props> = (props) => {
@@ -51,6 +52,21 @@ const IpAddressTable: React.FC<Props> = (props) => {
         </p>
       ),
     },
+    {
+      title: "Capacity",
+      dataIndex: "capacity",
+      key: "capacity",
+      render: (text, record) => {
+        // Chuyển đổi dữ liệu từ "0.1" sang "100 MB" và từ "1" sang "1 GB"
+        const capacityValue = parseFloat(text);
+        const formattedCapacity =
+          capacityValue < 1
+            ? `${capacityValue * 1000} Mbps`
+            : `${capacityValue > 0 ? `${capacityValue} Gbps` : ""}`;
+
+        return <span>{formattedCapacity}</span>;
+      },
+    },
   ];
 
   const data: DataType[] = [];
@@ -60,6 +76,7 @@ const IpAddressTable: React.FC<Props> = (props) => {
       id: listData?.data[i].id,
       address: listData?.data[i].address,
       assignmentType: listData?.data[i].assignmentType,
+      capacity: listData?.data[i].capacity!,
     });
   }
 
