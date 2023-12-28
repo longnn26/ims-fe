@@ -32,7 +32,7 @@ const ServerDetail: React.FC<Props> = (props) => {
           {moment(serverAllocationDetail?.dateUpdated).format(dateAdvFormat)}
         </Descriptions.Item>
         <Descriptions.Item label="Customer" span={4}>
-          {serverAllocationDetail?.customer.companyName}
+          {serverAllocationDetail?.customer?.companyName}
         </Descriptions.Item>
         <Descriptions.Item label="Server's IP" span={0}>
           {serverAllocationDetail?.masterIp?.address}

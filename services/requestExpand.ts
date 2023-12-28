@@ -76,10 +76,11 @@ const acceptRequestExpand = async (token: string, id: string): Promise<any> => {
   return response.data;
 };
 
-const denyRequestExpand = async (token: string, id: string): Promise<any> => {
+const denyRequestExpand = async (token: string, id: string, data: string): Promise<any> => {
   const response = await httpClient.put({
     url: apiLinks.requestExpand.accept + `/${id}/Deny`,
     token: token,
+    data: {saleNote: data}
   });
   return response.data;
 };

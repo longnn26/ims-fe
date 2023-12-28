@@ -101,10 +101,11 @@ const acceptRequestUpgrade = async (
   return response.data;
 };
 
-const denyRequestUpgrade = async (token: string, id: string): Promise<any> => {
+const denyRequestUpgrade = async (token: string, id: string, data: string): Promise<any> => {
   const response = await httpClient.put({
     url: apiLinks.requestUpgrade.accept + `/${id}/Deny`,
     token: token,
+    data: {saleNote: data},
   });
   return response.data;
 };
