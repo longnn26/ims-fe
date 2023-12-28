@@ -23,7 +23,7 @@ const ModalAssign: React.FC<Props> = (props) => {
   const [confirmLoading, setConfirmLoading] = useState(false);
 
   const [ipAddressParamGet, setIpAddressParamGet] = useState<IpAddressParamGet>(
-    { PageIndex: 0, PageSize: 6 } as IpAddressParamGet
+    { PageIndex: 0, PageSize: 6, IsAssigned: false, IsAvailable: true, } as IpAddressParamGet
   );
   const [ipAddressList, setIpAddressList] = useState<IpAddress[]>([]);
   const [ipAddressSelected, setIpAddressSelected] = useState<
@@ -56,7 +56,7 @@ const ModalAssign: React.FC<Props> = (props) => {
   const getMoreIpAddressList = async () => {
     ipAddressParamGet.PageIndex += 1;
     await ipAddressService
-      .getData(session?.user.access_token!, {...ipAddressParamGet, IsAssigned: false})
+      .getData(session?.user.access_token!, {...ipAddressParamGet, IsAssigned: false, IsAvailable: true,})
       .then(async (data) => {
         setTotalPageIp(data.totalPage);
         ipAddressParamGet.PageIndex = data.pageIndex;

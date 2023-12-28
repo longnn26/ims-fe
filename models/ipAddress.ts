@@ -20,4 +20,5 @@ export interface IpAddressData extends PagingModel {
 export interface IpAddressParamGet extends ParamGet {
   Address: string;
   IsAssigned?: boolean;
+  IsAvailable?: boolean;
 }
