@@ -243,7 +243,8 @@ const RequestDetail: React.FC = () => {
                   }}
                 />
               )}
-              {requestUpgradeDetail?.status === "Waiting" && (
+              {(requestUpgradeDetail?.status === "Waiting" &&
+              areInArray(session?.user.roles!, ROLE_SALES)) && (
                 <FloatButton.Group
                   trigger="hover"
                   type="primary"
@@ -264,6 +265,7 @@ const RequestDetail: React.FC = () => {
               )}
 
               {Boolean(
+                areInArray(session?.user.roles!, ROLE_TECH) &&
                 requestUpgradeDetail?.status === "Accepted" &&
                   requestUpgradeDetail?.succeededAppointment?.status ===
                     "Success"

@@ -303,6 +303,7 @@ const RequestUpgradeDetail: React.FC = () => {
                   </FloatButton.Group>
                 )}
                 {Boolean(
+                  areInArray(session?.user.roles!, ROLE_TECH) &&
                   requestUpgradeDetail?.status === "Accepted" &&
                   requestUpgradeDetail?.succeededAppointment?.status ===
                   "Success"
