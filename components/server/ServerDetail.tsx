@@ -31,9 +31,9 @@ const ServerDetail: React.FC<Props> = (props) => {
         <Descriptions.Item label="Nearest Updated">
           {moment(serverAllocationDetail?.dateUpdated).format(dateAdvFormat)}
         </Descriptions.Item>
-        <Descriptions.Item label="Customer" span={4}>
+        {/* <Descriptions.Item label="Customer" span={4}>
           {serverAllocationDetail?.customer?.companyName}
-        </Descriptions.Item>
+        </Descriptions.Item> */}
         <Descriptions.Item label="Server's IP" span={0}>
           {serverAllocationDetail?.masterIp?.address}
         </Descriptions.Item>
