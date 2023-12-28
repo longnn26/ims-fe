@@ -13,7 +13,7 @@ import {
   Customer,
   CustomerData,
 } from "@models/customer";
-import { Button, Pagination, message, Modal, Alert } from "antd";
+import { Button, Pagination, message, Modal, Alert, Spin } from "antd";
 import ModalCreate from "@components/customer/ModalCreate";
 import customerService from "@services/customer";
 import ModalUpdate from "@components/customer/ModalUpdate";
@@ -56,16 +56,26 @@ const Customer: React.FC = () => {
   };
 
   const createData = async (data: CustomerCreateModel) => {
-    await customerService
-      .createData(session?.user.access_token!, data)
-      .then((res) => {
-        message.success("Create successfully!");
-        getData();
-        setOpenModalCreate(false);
-      })
-      .catch((errors) => {
-        message.error(errors.response.data);
-      })
+    confirm({
+      title: "Do you want to save?",
+      async onOk() {
+        setLoadingSubmit(true);
+        await customerService
+          .createData(session?.user.access_token!, data)
+          .then((res) => {
+            message.success("Create successfully!");
+            getData();
+            setOpenModalCreate(false);
+          })
+          .catch((errors) => {
+            message.error(errors.response.data);
+          })
+          .finally(() => {
+            setLoadingSubmit(false);
+          })
+      },
+      onCancel() { },
+    })
   };
 
   const updateData = async (data: CustomerUpdateModel) => {
@@ -164,7 +174,6 @@ const Customer: React.FC = () => {
               )}
             </>
           )}
-
           <ModalCreate
             open={openModalCreate}
             onClose={() => setOpenModalCreate(false)}

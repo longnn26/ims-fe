@@ -64,9 +64,9 @@ const ModalCreate: React.FC<Props> = (props) => {
             key="submit"
             onClick={async () => {
               if (!(await disabled()))
-                confirm({
-                  title: "Do you want to save?",
-                  async onOk() {
+                // confirm({
+                //   title: "Do you want to save?",
+                //   async onOk() {
                     onSubmit({
                       companyName: form.getFieldValue("companyName"),
                       taxNumber: form.getFieldValue("taxNumber"),
@@ -104,9 +104,9 @@ const ModalCreate: React.FC<Props> = (props) => {
                       })): [],                    
                     } as CustomerCreateModel);
                     form.resetFields();
-                  },
-                  onCancel() {},
-                });
+                //   },
+                //   onCancel() {},
+                // });
             }}
           >
             Submit
