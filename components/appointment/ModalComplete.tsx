@@ -167,18 +167,46 @@ const ModalComplete: React.FC<Props> = (props) => {
             >
               <Input placeholder="Installation/ Delivery location" allowClear />
             </Form.Item>
-            <Form.Item name="username" label="Username" rules={[{ max: 255 }]}>
-              <Input placeholder="Username" allowClear />
-            </Form.Item>
-            <Form.Item name="isSendMS" label="SMS Password message send">
-              <Switch
-                onChange={(value) =>
-                  form.setFieldsValue({
-                    isSendMS: value,
-                  })
-                }
-              />{" "}
-            </Form.Item>
+            {appointment.purpose === "Expand" && (
+              <>
+                <Form.Item name="username" label="Username" rules={[{ max: 255 }]}>
+                  <Input placeholder="Username" allowClear />
+                </Form.Item>
+                <Form.Item name="isSendMS" label="SMS Password message send">
+                  <Switch
+                    onChange={(value) =>
+                      form.setFieldsValue({
+                        isSendMS: value,
+                      })
+                    }
+                  />{" "}
+                </Form.Item>
+                <Form.Item
+                  name="guid"
+                  label={
+                    <span style={{ width: "200px", display: "inline-block" }}>
+                      Instructed customers to change password after the 1st login
+                    </span>
+                  }
+                >
+                  <Switch
+                    onChange={(value) =>
+                      form.setFieldsValue({
+                        guid: value,
+                      })
+                    }
+                  />{" "}
+                </Form.Item>
+                <Form.Item
+                  name="deviceCondition"
+                  label="Device condition"
+                  rules={[{ max: 2000 }]}
+                >
+                  <Input placeholder="Device condition" allowClear />
+                </Form.Item>
+              </>
+            )}
+            
             <Form.Item name="good" label="Good">
               <Switch
                 onChange={(value) =>
@@ -188,29 +216,7 @@ const ModalComplete: React.FC<Props> = (props) => {
                 }
               />{" "}
             </Form.Item>
-            <Form.Item
-              name="guid"
-              label={
-                <span style={{ width: "200px", display: "inline-block" }}>
-                  Instructed customers to change password after the 1st login
-                </span>
-              }
-            >
-              <Switch
-                onChange={(value) =>
-                  form.setFieldsValue({
-                    guid: value,
-                  })
-                }
-              />{" "}
-            </Form.Item>
-            <Form.Item
-              name="deviceCondition"
-              label="Device condition"
-              rules={[{ max: 2000 }]}
-            >
-              <Input placeholder="Device condition" allowClear />
-            </Form.Item>
+            
             <Form.Item name="note" label="Note" rules={[{ max: 2000 }]}>
               <Input placeholder="Note" allowClear />
             </Form.Item>
