@@ -259,7 +259,7 @@ const RequestUpgrade: React.FC = () => {
             }}
           />
           <ModalRemove
-            server={serverAllocationDetail!}
+            server={serverAllocationDetail}
             open={openModalRemove}
             onClose={() => setOpenModalRemove(false)}
             onSubmit={(data: RequestUpgradeRemoveModel) => {

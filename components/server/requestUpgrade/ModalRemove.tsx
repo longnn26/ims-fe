@@ -18,7 +18,7 @@ const { confirm } = Modal;
 
 interface Props {
   open: boolean;
-  server: ServerAllocation;
+  server: ServerAllocation | undefined;
   onClose: () => void;
   // loadingSubmit: boolean;
   onSubmit: (saCreateModel: RequestUpgradeRemoveModel) => void;
@@ -69,10 +69,9 @@ const ModalRemove: React.FC<Props> = (props) => {
     }
     return result;
   };
-
   useEffect(() => {
     if (session) {
-      getMoreServerHardwareConfig(server.id, 0, []);
+      getMoreServerHardwareConfig(parseInt(router.query.serverAllocationId+""), 0, []);
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -146,7 +145,7 @@ const ModalRemove: React.FC<Props> = (props) => {
                     (target as any).scrollHeight
                   ) {
                     if (pageIndexUp < totalPageUp) {
-                      getMoreServerHardwareConfig(server.id);
+                      getMoreServerHardwareConfig(server!.id);
                     }
                   }
                 }}
