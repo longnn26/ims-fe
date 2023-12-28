@@ -46,7 +46,7 @@ const RequestUpgradeDetail: React.FC = () => {
       RequestUpgradeId: router.query.requestUpgradeId ?? -1,
     } as unknown as RUAppointmentParamGet);
   const [permission, setPermission] = useState<boolean>(true);
-  const [openModalDeny, setOpenModalDeny] = useState<boolean>(true);
+  const [openModalDeny, setOpenModalDeny] = useState<boolean>(false);
   const [content, setContent] = useState<string>("");
 
   const getData = async () => {
@@ -241,7 +241,7 @@ const RequestUpgradeDetail: React.FC = () => {
               open={openModalDeny}
               onClose={() => setOpenModalDeny(false)}
               getData={() => getData()}
-              requestUpgradeId={parseInt(router.query.requestUpgradeId+"")}
+              requestUpgradeId={parseInt(router.query.requestId+"")}
             />
           {areInArray(
             session?.user.roles!,

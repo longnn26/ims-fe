@@ -65,7 +65,7 @@ const RequestExpandDetail: React.FC = () => {
   const [requestExpandUpdate, setRequestExpandUpdate] =
     useState<RequestExpand>();
   const { appointmentData } = useSelector((state) => state.requestExpand);
-  const [openModalDeny, setOpenModalDeny] = useState<boolean>(true);
+  const [openModalDeny, setOpenModalDeny] = useState<boolean>(false);
   const [permission, setPermission] = useState<boolean>(true);
   const [content, setContent] = useState<string>("");
 

@@ -21,6 +21,7 @@ import { MdCancel } from "react-icons/md";
 import { CaretLeftOutlined } from "@ant-design/icons";
 import { areInArray } from "@utils/helpers";
 import { ROLE_CUSTOMER, ROLE_SALES, ROLE_TECH } from "@utils/constants";
+import ModalDeny from "@components/server/requestUpgrade/ModalDeny";
 const { confirm } = Modal;
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
@@ -37,7 +38,9 @@ const RequestDetail: React.FC = () => {
   const [requestUpgradeDetail, setRequestUpgradeDetail] =
     useState<RequestUpgrade>();
 
-  const [itemBreadcrumbs, setItemBreadcrumbs] = useState<ItemType[]>([]);
+  const [itemBreadcrumbs, setItemBreadcrumbs] = useState<ItemType[]>([]); 
+  const [openModalDeny, setOpenModalDeny] = useState<boolean>(false);
+
   const [rUAppointmentParamGet, setRUAppointmentParamGet] =
     useState<RUAppointmentParamGet>({
       PageIndex: 1,
@@ -78,34 +81,6 @@ const RequestDetail: React.FC = () => {
           )
           .then((res) => {
             message.success("Accept request upgrade successfully!");
-            getData();
-          })
-          .catch((errors) => {
-            message.error(errors.response.data);
-          })
-          .finally(() => {});
-      },
-      onCancel() {},
-    });
-  };
-
-  const denyRequestUpgrade = async () => {
-    confirm({
-      title: "Deny",
-      content: (
-        <Alert
-          message={`Do you want to deny with Id ${requestUpgradeDetail?.id}?`}
-          type="warning"
-        />
-      ),
-      async onOk() {
-        await requestUpgradeService
-          .denyRequestUpgrade(
-            session?.user.access_token!,
-            requestUpgradeDetail?.id + ""
-          )
-          .then((res) => {
-            message.success("Deny request upgrade successfully!");
             getData();
           })
           .catch((errors) => {
@@ -215,6 +190,12 @@ const RequestDetail: React.FC = () => {
     <AntdLayoutNoSSR
       content={
         <>
+        <ModalDeny
+              open={openModalDeny}
+              onClose={() => setOpenModalDeny(false)}
+              getData={() => getData()}
+              requestUpgradeId={parseInt(router.query.requestId+"")}
+            />
           {areInArray(
             session?.user.roles!,
             ROLE_TECH,
@@ -272,7 +253,7 @@ const RequestDetail: React.FC = () => {
                   <FloatButton
                     icon={<MdCancel color="red" />}
                     tooltip="Deny"
-                    onClick={() => denyRequestUpgrade()}
+                    onClick={() => setOpenModalDeny(true)}
                   />
                   <FloatButton
                     onClick={() => acceptRequestUpgrade()}
