@@ -71,7 +71,11 @@ const ModalRemove: React.FC<Props> = (props) => {
   };
   useEffect(() => {
     if (session) {
-      getMoreServerHardwareConfig(parseInt(router.query.serverAllocationId+""), 0, []);
+      getMoreServerHardwareConfig(
+        parseInt(router.query.serverAllocationId + ""),
+        0,
+        []
+      );
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -103,7 +107,7 @@ const ModalRemove: React.FC<Props> = (props) => {
                   async onOk() {
                     const formData = {
                       descriptions: null,
-                      componentId: form.getFieldValue("component").value,
+                      componentId: form.getFieldValue("component"),
                     } as RequestUpgradeRemoveModel;
 
                     // Call the provided onSubmit function with the formData
@@ -153,7 +157,7 @@ const ModalRemove: React.FC<Props> = (props) => {
                 {serverHardwareConfig
                   .filter((l) => l.component.isRequired === false)
                   .map((l, index) => (
-                    <Option value={l.id} key={index}>
+                    <Option value={l.component.id} key={index}>
                       {l?.component.name}
                     </Option>
                   ))}
