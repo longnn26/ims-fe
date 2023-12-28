@@ -3,6 +3,7 @@ import BreadcrumbComponent from "@components/BreadcrumbComponent";
 import ModalEmpty from "@components/ModalEmpty";
 import ServerDetail from "@components/server/ServerDetail";
 import AppointmentTable from "@components/server/requestUpgrade/AppointmentTable";
+import ModalDeny from "@components/server/requestUpgrade/ModalDeny";
 import RequestUpgradeDetailInfor from "@components/server/requestUpgrade/RequestUpgradeDetail";
 import useDispatch from "@hooks/use-dispatch";
 import useSelector from "@hooks/use-selector";
@@ -45,6 +46,7 @@ const RequestUpgradeDetail: React.FC = () => {
       RequestUpgradeId: router.query.requestUpgradeId ?? -1,
     } as unknown as RUAppointmentParamGet);
   const [permission, setPermission] = useState<boolean>(true);
+  const [openModalDeny, setOpenModalDeny] = useState<boolean>(true);
   const [content, setContent] = useState<string>("");
 
   const getData = async () => {
@@ -169,34 +171,6 @@ const RequestUpgradeDetail: React.FC = () => {
     });
   };
 
-  const denyRequestUpgrade = async () => {
-    confirm({
-      title: "Deny",
-      content: (
-        <Alert
-          message={`Do you want to deny with Id ${requestUpgradeDetail?.id}?`}
-          type="warning"
-        />
-      ),
-      async onOk() {
-        await requestUpgradeService
-          .denyRequestUpgrade(
-            session?.user.access_token!,
-            requestUpgradeDetail?.id + ""
-          )
-          .then((res) => {
-            message.success("Deny request upgrade successfully!");
-            getData();
-          })
-          .catch((errors) => {
-            message.error(errors.response.data);
-          })
-          .finally(() => {});
-      },
-      onCancel() {},
-    });
-  };
-
   const handleBreadCumb = () => {
     var itemBrs = [] as ItemType[];
     var items = router.asPath.split("/").filter((_) => _ != "");
@@ -263,6 +237,12 @@ const RequestUpgradeDetail: React.FC = () => {
                 content={content}
               />
             )}
+            <ModalDeny
+              open={openModalDeny}
+              onClose={() => setOpenModalDeny(false)}
+              getData={() => getData()}
+              requestUpgradeId={parseInt(router.query.requestUpgradeId+"")}
+            />
           {areInArray(
             session?.user.roles!,
             ROLE_SALES,
@@ -313,7 +293,7 @@ const RequestUpgradeDetail: React.FC = () => {
                     <FloatButton
                       icon={<MdCancel color="red" />}
                       tooltip="Deny"
-                      onClick={() => denyRequestUpgrade()}
+                      onClick={() => setOpenModalDeny(true)}
                     />
                     <FloatButton
                       onClick={() => acceptRequestUpgrade()}

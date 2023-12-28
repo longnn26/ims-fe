@@ -1,4 +1,6 @@
-import appointment from "@services/appointment";
+import requestExpand from "@services/requestExpand";
+import requestHost from "@services/requestHost";
+import requestUpgrade from "@services/requestUpgrade";
 import { Button, Form, Input, Modal, message } from "antd";
 import { useSession } from "next-auth/react";
 import React, { useRef, useState } from "react";
@@ -8,13 +10,13 @@ interface Props {
   open: boolean;
   onClose: () => void;
   getData: () => void;
-  appointmentId: number;
+  requestUpgradeId: number;
 }
 
-const ModalDeny: React.FC<Props> = (props) => {
+const ModalDenyHost: React.FC<Props> = (props) => {
   const formRef = useRef(null);
   const [form] = Form.useForm();
-  const { open, onClose, appointmentId, getData } = props;
+  const { open, onClose, requestUpgradeId, getData } = props;
   const { data: session } = useSession();
 
   const [confirmLoading, setConfirmLoading] = useState(false);
@@ -32,7 +34,7 @@ const ModalDeny: React.FC<Props> = (props) => {
   return (
     <>
       <Modal
-        title={<span className="inline-block m-auto">Deny Appointment</span>}
+        title={<span className="inline-block m-auto">Deny Request Upgrade</span>}
         open={open}
         confirmLoading={confirmLoading}
         onCancel={() => {
@@ -48,14 +50,14 @@ const ModalDeny: React.FC<Props> = (props) => {
                 confirm({
                   title: "Do you want to deny?",
                   async onOk() {
-                    await appointment
-                      .denyAppointment(
+                    await requestUpgrade
+                      .denyRequestUpgrade(
                         session?.user.access_token!,
-                        appointmentId + "",
+                        requestUpgradeId + "",
                         form.getFieldValue("saleNote")
                       )
                       .then((res) => {
-                        message.success("Deny Appointment successfully!");
+                        message.success("Deny IP Request successfully!");
                         getData();
                         onClose();
                       })
@@ -77,7 +79,7 @@ const ModalDeny: React.FC<Props> = (props) => {
           <Form
             ref={formRef}
             form={form}
-            labelCol={{ span: 4 }}
+            labelCol={{ span: 8 }}
             wrapperCol={{ span: 20 }}
             style={{ width: "100%" }}
           >
@@ -95,4 +97,4 @@ const ModalDeny: React.FC<Props> = (props) => {
   );
 };
 
-export default ModalDeny;
+export default ModalDenyHost;

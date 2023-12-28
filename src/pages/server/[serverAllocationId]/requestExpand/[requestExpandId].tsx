@@ -37,6 +37,7 @@ import ModalUpdate from "@components/server/requestExpand/ModalUpdate";
 import { areInArray } from "@utils/helpers";
 import { ROLE_CUSTOMER, ROLE_SALES, ROLE_TECH } from "@utils/constants";
 import ModalEmpty from "@components/ModalEmpty";
+import ModalDeny from "@components/server/requestExpand/ModalDeny";
 
 const { confirm } = Modal;
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
@@ -64,6 +65,7 @@ const RequestExpandDetail: React.FC = () => {
   const [requestExpandUpdate, setRequestExpandUpdate] =
     useState<RequestExpand>();
   const { appointmentData } = useSelector((state) => state.requestExpand);
+  const [openModalDeny, setOpenModalDeny] = useState<boolean>(true);
   const [permission, setPermission] = useState<boolean>(true);
   const [content, setContent] = useState<string>("");
 
@@ -176,34 +178,6 @@ const RequestExpandDetail: React.FC = () => {
           )
           .then((res) => {
             message.success("Accept request expand successfully!");
-            getData();
-          })
-          .catch((errors) => {
-            message.error(errors.response.data);
-          })
-          .finally(() => {});
-      },
-      onCancel() {},
-    });
-  };
-
-  const denyRequestExpand = async () => {
-    confirm({
-      title: "Deny",
-      content: (
-        <Alert
-          message={`Do you want to deny with Id ${requestExpandDetail?.id}?`}
-          type="warning"
-        />
-      ),
-      async onOk() {
-        await requestExpandService
-          .denyRequestExpand(
-            session?.user.access_token!,
-            requestExpandDetail?.id + ""
-          )
-          .then((res) => {
-            message.success("Deny request expand successfully!");
             getData();
           })
           .catch((errors) => {
@@ -372,7 +346,13 @@ const RequestExpandDetail: React.FC = () => {
                     </>
                   )}
               </div>
-            )}
+            )}            
+            <ModalDeny
+              open={openModalDeny}
+              onClose={() => setOpenModalDeny(false)}
+              getData={() => getData()}
+              requestExpandId={parseInt(router.query.requestExpandId+"")}
+            />
             {areInArray(
               session?.user.roles!,
               ROLE_SALES,
@@ -425,7 +405,7 @@ const RequestExpandDetail: React.FC = () => {
                       <FloatButton
                         icon={<MdCancel color="red" />}
                         tooltip="Deny"
-                        onClick={() => denyRequestExpand()}
+                        onClick={() => setOpenModalDeny(true)}
                       />
                       <FloatButton
                         onClick={() => acceptRequestExpand()}
