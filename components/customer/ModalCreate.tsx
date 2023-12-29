@@ -150,10 +150,11 @@ const ModalCreate: React.FC<Props> = (props) => {
                   rules={[
                     {
                       required: true,
-                      min: 10,
-                      max: 13,
-                      type: "number"
                     },
+                    {
+                      pattern: /^\d{10,13}$/,
+                      message: "Tax number is invalid!"
+                    }
                   ]}
                   style={{ paddingLeft: "55px" }}
                 >
