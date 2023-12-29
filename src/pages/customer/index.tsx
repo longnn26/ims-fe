@@ -178,10 +178,9 @@ const Customer: React.FC = () => {
           <ModalCreate
             open={openModalCreate}
             onClose={() => setOpenModalCreate(false)}
-            onSubmit={(isClose) => {
+            onSubmit={() => {
               //Loading: thêm chỗ này
               getData();
-              setOpenModalCreate(isClose);
             }}
           />
           <ModalUpdate

@@ -57,10 +57,11 @@ const ModalCreate: React.FC<Props> = (props) => {
     <>
       <Modal
         title={<span className="inline-block m-auto">Create customer</span>}
-        open={openModalCreate === undefined ? open: openModalCreate}
+        open={openModalCreate === undefined  ? open: openModalCreate}
         confirmLoading={confirmLoading}
         onCancel={() => {
           onClose();
+          setOpenModalCreate(undefined);
           form.resetFields();
         }}
         footer={[
@@ -116,11 +117,9 @@ const ModalCreate: React.FC<Props> = (props) => {
                         .then((res) => {
                           message.success("Create successfully!");
                           form.resetFields();
-                          onSubmit(false);
-                          setOpenModalCreate(undefined);
+                          setOpenModalCreate(false);
                         })
                         .catch((errors) => {
-                          onSubmit(true);
                           setOpenModalCreate(true);
                           message.error(errors.response.data);
                         })
