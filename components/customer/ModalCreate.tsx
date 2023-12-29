@@ -1,10 +1,11 @@
 import React, { useRef, useState } from "react";
-import { Button, Col, Input, Modal, Row, Select, Card } from "antd";
+import { Button, Col, Input, Modal, Row, Select, Card, message } from "antd";
 import { CloseOutlined } from "@ant-design/icons";
 import { Form } from "antd";
 import { CustomerCreateModel } from "@models/customer";
 import useSelector from "@hooks/use-selector";
 import customerService from "@services/customer";
+import { useSession } from "next-auth/react";
 const { Option } = Select;
 const { confirm } = Modal;
 
@@ -12,15 +13,17 @@ interface Props {
   open: boolean;
   onClose: () => void;
   // loadingSubmit: boolean;
-  onSubmit: (data: CustomerCreateModel) => void;
+  onSubmit: () => void;
 }
 
 const ModalCreate: React.FC<Props> = (props) => {
   const formRef = useRef(null);
+  const { data: session } = useSession();
   const [form] = Form.useForm();
   const { onSubmit, open, onClose } = props;
 
   const [confirmLoading, setConfirmLoading] = useState(false);
+  const [loadingSubmit, setLoadingSubmit] = useState<boolean>(false);
 
   const disabled = async () => {
     var result = false;
@@ -64,49 +67,62 @@ const ModalCreate: React.FC<Props> = (props) => {
             key="submit"
             onClick={async () => {
               if (!(await disabled()))
-                // confirm({
-                //   title: "Do you want to save?",
-                //   async onOk() {
-                    onSubmit({
-                      companyName: form.getFieldValue("companyName"),
-                      taxNumber: form.getFieldValue("taxNumber"),
-                      address: form.getFieldValue("address"),
-                      email: form.getFieldValue("email"),
-                      phoneNumber: form.getFieldValue("phoneNumber"),
-                      representator: form.getFieldValue("representator"),
-                      representatorPosition: form.getFieldValue("representatorPosition"),
-                      contractNumber: form.getFieldValue("contractNumber"),
-                      contacts: form
-                      .getFieldValue("contacts")?
-                      form
-                      .getFieldValue("contacts")
-                      .map((item, index) => ({
-                        name: form.getFieldValue([
-                          "contacts",
-                          index,
-                          "name",
-                        ]),
-                        position: form.getFieldValue([
-                          "contacts",
-                          index,
-                          "position",
-                        ]),
-                        email: form.getFieldValue([
-                          "contacts",
-                          index,
-                          "email",
-                        ]),
-                        phoneNumber: form.getFieldValue([
-                          "contacts",
-                          index,
-                          "phoneNumber",
-                        ]),
-                      })): [],                    
-                    } as CustomerCreateModel);
-                    form.resetFields();
-                //   },
-                //   onCancel() {},
-                // });
+                confirm({
+                  title: "Do you want to save?",
+                  async onOk() {
+                      const data = {
+                        companyName: form.getFieldValue("companyName"),
+                        taxNumber: form.getFieldValue("taxNumber"),
+                        address: form.getFieldValue("address"),
+                        email: form.getFieldValue("email"),
+                        phoneNumber: form.getFieldValue("phoneNumber"),
+                        representator: form.getFieldValue("representator"),
+                        representatorPosition: form.getFieldValue("representatorPosition"),
+                        contractNumber: form.getFieldValue("contractNumber"),
+                        contacts: form
+                          .getFieldValue("contacts") ?
+                          form
+                            .getFieldValue("contacts")
+                            .map((item, index) => ({
+                              name: form.getFieldValue([
+                                "contacts",
+                                index,
+                                "name",
+                              ]),
+                              position: form.getFieldValue([
+                                "contacts",
+                                index,
+                                "position",
+                              ]),
+                              email: form.getFieldValue([
+                                "contacts",
+                                index,
+                                "email",
+                              ]),
+                              phoneNumber: form.getFieldValue([
+                                "contacts",
+                                index,
+                                "phoneNumber",
+                              ]),
+                            })) : [],
+                      } as CustomerCreateModel;
+                        setLoadingSubmit(true);
+                      await customerService
+                        .createData(session?.user.access_token!, data)
+                        .then((res) => {
+                          message.success("Create successfully!");
+                          form.resetFields();
+                        })
+                        .catch((errors) => {
+                          message.error(errors.response.data);
+                        })
+                        .finally(() => {
+                          setLoadingSubmit(false);
+                        });
+                        onSubmit()                    
+                  },
+                  onCancel() {},
+                });
             }}
           >
             Submit

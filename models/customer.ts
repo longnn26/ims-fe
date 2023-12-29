@@ -1,6 +1,7 @@
-import { BaseWithIdNumber, PagingModel } from "./base";
+import { Base, PagingModel } from "./base";
 
-export interface Customer extends BaseWithIdNumber {
+export interface Customer extends Base {
+  id: string;
   companyName: string;
   address: string;
   taxNumber: string;
@@ -47,4 +48,5 @@ export interface Contacts {
   position: string;
   phoneNumber: string;
   email: string;
+  forAppointment: boolean;
 }

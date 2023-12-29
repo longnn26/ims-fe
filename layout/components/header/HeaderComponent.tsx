@@ -124,7 +124,13 @@ const HeaderComponent: React.FC<Props> = (props) => {
   };
   const items: MenuProps["items"] = [
     {
-      label: <span>{session?.user.roles.includes("Customer")? parseJwt(session.user.access_token).Email : session?.user.name}</span>,
+      label: 
+        <span
+          onClick={() => {
+            router.push(`/myAccount/${parseJwt(session?.user.access_token).UserId}`)
+          }}>
+          {session?.user.roles.includes("Customer") ? parseJwt(session.user.access_token).Email : session?.user.name}
+        </span>,
       key: "0",
     },
 

@@ -20,7 +20,7 @@ interface Props {
 
 interface DataType {
   key: React.Key;
-  id: number;
+  id: string;
   companyName: string;
   address: string;
   taxNumber: string;
@@ -52,6 +52,11 @@ const CustomerTable: React.FC<Props> = (props) => {
     } else {
       const nestedColumns = [
         { title: "Contacts" },
+        { title: "Thông tin liên lạc",
+          key: "forAppointment",
+          render: (record: Contacts) =>
+        `${record.forAppointment === true ? "Yes" : "No"}`,  
+        },
         { title: "Name", dataIndex: "name", key: "name" },
         { title: "Position", dataIndex: "position", key: "position" },
         { title: "Email", dataIndex: "email", key: "email" },
@@ -64,6 +69,7 @@ const CustomerTable: React.FC<Props> = (props) => {
         position: data.contacts[index].position,
         email: data.contacts[index].email,
         phoneNumber: data.contacts[index].phoneNumber,
+        forAppointment: data.contacts[index].forAppointment,
       }));
 
       return (

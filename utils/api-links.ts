@@ -48,6 +48,7 @@ const apiLinks = {
     delete: `${url}/api/Customer`,
     getServerAllocationById: `${url}/api/Customer`,
     login: `${urlServerSide}/api/Customer/Login`,
+    changePassword: `${url}/api/Customer/Password`,
   },
 
   requestUpgrade: {

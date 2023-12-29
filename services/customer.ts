@@ -78,10 +78,22 @@ const updateData = async (
   return response.data;
 };
 
-const deleteData = async (token: string, id: number): Promise<any> => {
+const deleteData = async (token: string, id: string): Promise<any> => {
   const response = await httpClient.delete({
     url: apiLinks.customer.delete + `/${id}`,
     token: token,
+  });
+  return response.data;
+};
+
+const changePassword = async (token: string, currentPass: string, password: string): Promise<any> => {
+  const response = await httpClient.delete({
+    url: apiLinks.customer.changePassword,
+    token: token,
+    data: {
+      currentPassword: currentPass,
+      password: password
+    }
   });
   return response.data;
 };
@@ -108,7 +120,8 @@ const customer = {
   getCompanyByTax,
   getCustomerById,
   getServerById,
-  login
+  login,
+  changePassword
 };
 
 export default customer;
