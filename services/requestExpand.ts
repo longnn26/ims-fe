@@ -14,12 +14,11 @@ import httpClient from "@utils/http-client";
 
 const getData = async (
   token: string,
-  params: ParamGet,
-  id: number
+  params: ParamGet
 ): Promise<RequestExpandData> => {
   const response = await httpClient.get({
     token: token,
-    url: `${apiLinks.requestExpand.get}/${id}/RequestExpand`,
+    url: `${apiLinks.requestExpand.get}`,
     params: params,
   });
   return response.data;
@@ -76,11 +75,15 @@ const acceptRequestExpand = async (token: string, id: string): Promise<any> => {
   return response.data;
 };
 
-const denyRequestExpand = async (token: string, id: string, data: string): Promise<any> => {
+const denyRequestExpand = async (
+  token: string,
+  id: string,
+  data: string
+): Promise<any> => {
   const response = await httpClient.put({
     url: apiLinks.requestExpand.accept + `/${id}/Deny`,
     token: token,
-    data: {saleNote: data}
+    data: { saleNote: data },
   });
   return response.data;
 };

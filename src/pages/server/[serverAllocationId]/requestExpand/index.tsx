@@ -44,7 +44,7 @@ const RequestExpand: React.FC = () => {
   const [paramGet, setParamGet] = useState<RUParamGet>({
     PageIndex: 1,
     PageSize: 10,
-    // ServerAllocationId: router.query.serverAllocationId ?? -1,
+    ServerAllocationId: router.query.serverAllocationId ?? -1,
   } as unknown as RUParamGet);
   const [loadingSubmit, setLoadingSubmit] = useState<boolean>(false);
   const [requestUpgradeUpdate, setRequestUpgradeUpdate] = useState<
@@ -57,12 +57,14 @@ const RequestExpand: React.FC = () => {
   const [itemBreadcrumbs, setItemBreadcrumbs] = useState<ItemType[]>([]);
 
   const getData = async () => {
-    var customerId = "", userId = "";
+    var customerId = "",
+      userId = "";
     if (session?.user.roles.includes("Customer")) {
       customerId = parseJwt(session?.user.access_token!).UserId;
     } else if (session?.user.roles.includes("Tech")) {
       userId = parseJwt(session?.user.access_token!).UserId;
     }
+
     await serverAllocationService
       .getServerAllocationById(
         session?.user.access_token!,
@@ -74,8 +76,11 @@ const RequestExpand: React.FC = () => {
     dispatch(
       getRequestExpandData({
         token: session?.user.access_token!,
-        id: parseInt(router.query.serverAllocationId?.toString()!) ?? -1,
-        paramGet: { ...paramGet, CustomerId: customerId, UserId: userId },
+        paramGet: {
+          ...paramGet,
+          CustomerId: customerId,
+          UserId: userId,
+        },
       })
     ).then(({ payload }) => {
       var res = payload as RequestUpgradeData;
