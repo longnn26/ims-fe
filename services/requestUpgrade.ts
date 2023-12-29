@@ -7,13 +7,14 @@ import {
   RequestUpgrade,
   RUAppointmentParamGet,
   RequestUpgradeRemoveModel,
+  RUParamGet,
 } from "@models/requestUpgrade";
 import apiLinks from "@utils/api-links";
 import httpClient from "@utils/http-client";
 
 const getData = async (
   token: string,
-  params: ParamGet
+  params: RUParamGet
 ): Promise<RequestUpgradeData> => {
   const response = await httpClient.get({
     token: token,
