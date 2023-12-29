@@ -73,8 +73,8 @@ const Customer: React.FC = () => {
       await getCustomerServerAllocationData({
         token: session?.user.access_token!,
         id: parseJwt(session?.user.access_token!).UserId,
-      }))
-      .then(({ payload }) => {
+      })
+    ).then(({ payload }) => {
       var res = payload as ServerAllocationData;
       if (res?.totalPage < paramGet.PageIndex && res.totalPage != 0) {
         setParamGet({ ...paramGet, PageIndex: res.totalPage });
@@ -96,7 +96,7 @@ const Customer: React.FC = () => {
           .createServerAllocation(session?.user.access_token!, data)
           .then(() => {
             message.success("Create successfully!");
-            getCustomerServerData(); 
+            getCustomerServerData();
           });
       } else {
         await serverAllocationService
@@ -109,7 +109,8 @@ const Customer: React.FC = () => {
     } catch (errors) {
       if (errors instanceof Error) {
         // If errors is an instance of the Error class, handle it accordingly
-        message.error(errors.message); // or handle it based on the error properties
+        const errorMessage = (errors as any).response?.data || errors.message;
+        message.error(errorMessage);
       } else {
         // If errors is of unknown type, provide a default error message
         message.error("An unknown error occurred");
@@ -166,9 +167,9 @@ const Customer: React.FC = () => {
   };
 
   useEffect(() => {
-    session &&
-    (areInArray(session?.user.roles!, ROLE_CUSTOMER)) ?
-      getCustomerServerData() : getData();
+    session && areInArray(session?.user.roles!, ROLE_CUSTOMER)
+      ? getCustomerServerData()
+      : getData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session, paramGet]);
 
