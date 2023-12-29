@@ -14,7 +14,7 @@ interface Props {
   onClose: () => void;
   // loadingSubmit: boolean;
   //Loading: sửa chỗ này
-  onSubmit: (isError: boolean) => void;
+  onSubmit: (isClose: boolean) => void;
 }
 
 const ModalCreate: React.FC<Props> = (props) => {
@@ -116,10 +116,10 @@ const ModalCreate: React.FC<Props> = (props) => {
                         .then((res) => {
                           message.success("Create successfully!");
                           form.resetFields();
-                          onSubmit(false);
+                          onSubmit(true);
                         })
                         .catch((errors) => {
-                          onSubmit(true);
+                          onSubmit(false);
                           message.error(errors.response.data);
                         })
                         .finally(() => {
