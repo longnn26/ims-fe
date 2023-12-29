@@ -22,6 +22,7 @@ const ModalCreate: React.FC<Props> = (props) => {
   const { data: session } = useSession();
   const [form] = Form.useForm();
   const { onSubmit, open, onClose } = props;
+  const [openModalCreate, setOpenModalCreate] = useState<boolean | undefined>(undefined);
 
   const [confirmLoading, setConfirmLoading] = useState(false);
   //Loading: thêm biến này
@@ -56,7 +57,7 @@ const ModalCreate: React.FC<Props> = (props) => {
     <>
       <Modal
         title={<span className="inline-block m-auto">Create customer</span>}
-        open={open}
+        open={openModalCreate === undefined ? open: openModalCreate}
         confirmLoading={confirmLoading}
         onCancel={() => {
           onClose();
@@ -73,7 +74,6 @@ const ModalCreate: React.FC<Props> = (props) => {
                 confirm({
                   title: "Do you want to save?",
                   async onOk() {
-                      
                       const data = {
                         companyName: form.getFieldValue("companyName"),
                         taxNumber: form.getFieldValue("taxNumber"),
@@ -116,10 +116,12 @@ const ModalCreate: React.FC<Props> = (props) => {
                         .then((res) => {
                           message.success("Create successfully!");
                           form.resetFields();
-                          onSubmit(true);
+                          onSubmit(false);
+                          setOpenModalCreate(undefined);
                         })
                         .catch((errors) => {
-                          onSubmit(false);
+                          onSubmit(true);
+                          setOpenModalCreate(true);
                           message.error(errors.response.data);
                         })
                         .finally(() => {
