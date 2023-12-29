@@ -132,11 +132,11 @@ const MyAccountPage: React.FC = () => {
                             staffAccountDetail={staffAccountDetail}
                             customerAccountDetail={customerDetail}
                         />
-                        {isCustomer === true && (
+                        {/* {isCustomer === true && (
                             <ContactsTable
                                 customerContact={customerDetail?.contacts!}
                             />
-                        )}                     
+                        )} mai gỡ ròi sửa */}
                     </div>
                 </>
             }
