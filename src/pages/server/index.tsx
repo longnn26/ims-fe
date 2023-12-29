@@ -55,29 +55,19 @@ const Customer: React.FC = () => {
   const [openModalCreate, setOpenModalCreate] = useState<boolean>(false);
 
   const getData = async () => {
+    var customerId= "";
+    if (session?.user.roles.includes("Customer")) {
+      customerId= parseJwt(session.user.access_token).UserId;
+    }
     dispatch(
       getServerAllocationData({
         token: session?.user.access_token!,
-        paramGet: { ...paramGet },
+        paramGet: { ...paramGet, CustomerId: customerId },
       })
     ).then(({ payload }) => {
       var res = payload as ServerAllocationData;
       if (res?.totalPage < paramGet.PageIndex && res.totalPage != 0) {
-        setParamGet({ ...paramGet, PageIndex: res.totalPage });
-      }
-    });
-  };
-
-  const getCustomerServerData = async () => {
-    dispatch(
-      await getCustomerServerAllocationData({
-        token: session?.user.access_token!,
-        id: parseJwt(session?.user.access_token!).UserId,
-      })
-    ).then(({ payload }) => {
-      var res = payload as ServerAllocationData;
-      if (res?.totalPage < paramGet.PageIndex && res.totalPage != 0) {
-        setParamGet({ ...paramGet, PageIndex: res.totalPage });
+        setParamGet({ ...paramGet, PageIndex: res.totalPage, CustomerId: customerId });
       }
     });
   };
@@ -96,7 +86,7 @@ const Customer: React.FC = () => {
           .createServerAllocation(session?.user.access_token!, data)
           .then(() => {
             message.success("Create successfully!");
-            getCustomerServerData();
+            getData();
           });
       } else {
         await serverAllocationService
@@ -167,9 +157,7 @@ const Customer: React.FC = () => {
   };
 
   useEffect(() => {
-    session && areInArray(session?.user.roles!, ROLE_CUSTOMER)
-      ? getCustomerServerData()
-      : getData();
+    session && getData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session, paramGet]);
 
