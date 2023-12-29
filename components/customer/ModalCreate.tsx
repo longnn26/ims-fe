@@ -13,7 +13,8 @@ interface Props {
   open: boolean;
   onClose: () => void;
   // loadingSubmit: boolean;
-  onSubmit: () => void;
+  //Loading: sửa chỗ này
+  onSubmit: (isError: boolean) => void;
 }
 
 const ModalCreate: React.FC<Props> = (props) => {
@@ -23,6 +24,7 @@ const ModalCreate: React.FC<Props> = (props) => {
   const { onSubmit, open, onClose } = props;
 
   const [confirmLoading, setConfirmLoading] = useState(false);
+  //Loading: thêm biến này
   const [loadingSubmit, setLoadingSubmit] = useState<boolean>(false);
 
   const disabled = async () => {
@@ -65,11 +67,13 @@ const ModalCreate: React.FC<Props> = (props) => {
             // loading={loadingSubmit}
             className="btn-submit"
             key="submit"
+            //Loading: từ dòng này, xuống 125.
             onClick={async () => {
               if (!(await disabled()))
                 confirm({
                   title: "Do you want to save?",
                   async onOk() {
+                      
                       const data = {
                         companyName: form.getFieldValue("companyName"),
                         taxNumber: form.getFieldValue("taxNumber"),
@@ -112,14 +116,15 @@ const ModalCreate: React.FC<Props> = (props) => {
                         .then((res) => {
                           message.success("Create successfully!");
                           form.resetFields();
+                          onSubmit(false);
                         })
                         .catch((errors) => {
+                          onSubmit(true);
                           message.error(errors.response.data);
                         })
                         .finally(() => {
                           setLoadingSubmit(false);
-                        });
-                        onSubmit()                    
+                        });                  
                   },
                   onCancel() {},
                 });
@@ -145,6 +150,9 @@ const ModalCreate: React.FC<Props> = (props) => {
                   rules={[
                     {
                       required: true,
+                      min: 10,
+                      max: 13,
+                      type: "number"
                     },
                   ]}
                   style={{ paddingLeft: "55px" }}
@@ -161,35 +169,41 @@ const ModalCreate: React.FC<Props> = (props) => {
             <Form.Item
               name="companyName"
               label="Company name"
-              rules={[{ required: true }]}
+              rules={[{ required: true, min: 6, max: 2000 }]}
             >
-              <Input placeholder="Company name" allowClear />
+              <Input.TextArea
+                placeholder="Company name"
+                autoSize={{minRows: 1, maxRows: 6}}
+                allowClear />
             </Form.Item>
             <Form.Item
               name="address"
               label="Address"
-              rules={[{ required: true }]}
+              rules={[{ required: true, min: 6, max: 2000 }]}
             >
-              <Input placeholder="Address" allowClear />
+              <Input.TextArea
+                placeholder="Address"
+                autoSize={{minRows: 1, maxRows: 6}}
+                allowClear />
             </Form.Item>
             <Form.Item
               name="contractNumber"
               label="Contract number"
-              rules={[{ required: true }]}
+              rules={[{ required: true, type: "number", min: 6, max: 20 }]}
             >
               <Input placeholder="Contract number" allowClear />
             </Form.Item>
             <Form.Item
               name="representator"
               label="Representator"
-              rules={[{ required: true }]}
+              rules={[{ required: true, min: 6, max: 255 }]}
             >
               <Input placeholder="Representator name" allowClear />
             </Form.Item>
             <Form.Item
               name="representatorPosition"
               label="Representator Position"
-              rules={[{ required: true }]}
+              rules={[{ required: true, min: 6, max: 255 }]}
             >
               <Input placeholder="Representator position" allowClear />
             </Form.Item>
