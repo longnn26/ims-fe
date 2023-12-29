@@ -3,6 +3,7 @@ import requestUpgradeService from "@services/requestUpgrade";
 import { ParamGet } from "@models/base";
 import {
   RUAppointmentParamGet,
+  RUParamGet,
   RequestUpgradeData,
 } from "@models/requestUpgrade";
 import { AppointmentData } from "@models/appointment";
@@ -23,7 +24,7 @@ const TYPE_PREFIX = "requestUpgrade";
 
 const getRequestUpgradeData = createAsyncThunk(
   `${TYPE_PREFIX}/getData`,
-  async (arg: { token: string; paramGet: ParamGet }) => {
+  async (arg: { token: string; paramGet: RUParamGet }) => {
     const result = await requestUpgradeService.getData(arg.token, arg.paramGet);
     return result;
   }

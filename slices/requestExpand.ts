@@ -1,7 +1,7 @@
 import { AppointmentData } from "@models/appointment";
 import { ParamGet } from "@models/base";
 import { RequestExpandData } from "@models/requestExpand";
-import { RUAppointmentParamGet } from "@models/requestUpgrade";
+import { RUAppointmentParamGet, RUParamGet } from "@models/requestUpgrade";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import requestExpand from "@services/requestExpand";
 
@@ -21,7 +21,7 @@ const TYPE_PREFIX = "requestExpand";
 
 const getRequestExpandData = createAsyncThunk(
   `${TYPE_PREFIX}/getRequestExpandData`,
-  async (arg: { token: string; paramGet: ParamGet }) => {
+  async (arg: { token: string; paramGet: RUParamGet }) => {
     const result = await requestExpand.getData(arg.token, arg.paramGet);
     return result;
   }
