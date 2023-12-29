@@ -102,8 +102,8 @@ const ModalCreate: React.FC<Props> = (props) => {
         {
           PageIndex: pageIndex === 0 ? pageIndex : pageIndexUp + 1,
           PageSize: pageSizeCus,
+          serverId
         } as ParamGet,
-        serverId
       )
       .then(async (data) => {
         setTotalPageUp(data.totalPage);
