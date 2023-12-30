@@ -98,52 +98,25 @@ const ModalCreate: React.FC<Props> = (props) => {
                       note: form.getFieldValue("note"),
                     } as SACreateModel;
                     setLoadingSubmit(true);
-
-                    try {
-                      const userRoles = session?.user.roles;
-
-                      if (areInArray(userRoles ?? [], ROLE_CUSTOMER)) {
-                        const userId = parseJwt(
-                          session?.user.access_token
-                        ).UserId;
-
-                        // Gọi hàm getCustomerServerData với id của người dùng
-                        await serverAllocationService
-                          .createServerAllocation(
-                            session?.user.access_token!,
-                            data
-                          )
-                          .then(() => {
-                            message.success("Create successfully!");
-                            form.resetFields();
-                            setOpenModalCreate(undefined);
-                            onClose;
-                          });
-                      } else {
-                        await serverAllocationService
-                          .createServerAllocation(
-                            session?.user.access_token!,
-                            data
-                          )
-                          .then(() => {
-                            message.success("Create successfully!");
-                            setOpenModalCreate(false);
-                          });
-                      }
-                    } catch (errors) {
-                      if (errors instanceof Error) {
-                        // If errors is an instance of the Error class, handle it accordingly
-                        const errorMessage =
-                          (errors as any).response?.data || errors.message;
-                        message.error(errorMessage);
-                      } else {
-                        // If errors is of unknown type, provide a default error message
-                        message.error("An unknown error occurred");
-                      }
-                    } finally {
-                      setLoadingSubmit(false);
-                      // setOpenModalCreate(false);
-                    }
+                    // Gọi hàm getCustomerServerData với id của người dùng
+                    await serverAllocationService
+                      .createServerAllocation(
+                        session?.user.access_token!,
+                        data
+                      )
+                      .then(() => {
+                        message.success("Create successfully!");
+                        form.resetFields();
+                        setOpenModalCreate(undefined);
+                        onClose();
+                      })
+                      .catch((errors) => {
+                        message.error(errors.response.data)
+                        setOpenModalCreate(true);
+                      })
+                      .finally(() => {
+                        setLoadingSubmit(false);
+                      })
                   },
                   onCancel() {},
                 });
