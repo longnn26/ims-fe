@@ -252,6 +252,7 @@ const RequestHost: React.FC = () => {
 
               <ServerDetail
                 serverAllocationDetail={serverAllocationDetail!}
+                hardware={undefined}
               ></ServerDetail>
               <RequestHostTable
                 urlOncell={`/server/${serverAllocationDetail?.id}`}

@@ -288,6 +288,7 @@ const RequestUpgrade: React.FC = () => {
             <>
               <ServerDetail
                 serverAllocationDetail={serverAllocationDetail!}
+                hardware={undefined}
               ></ServerDetail>
               <RequestUpgradeTable
                 urlOncell={`/server/${serverAllocationDetail?.id}`}

@@ -303,6 +303,7 @@ const RequestExpandDetail: React.FC = () => {
               <div className="md:flex">
                 <ServerDetail
                   serverAllocationDetail={serverAllocationDetail!}
+                  hardware={undefined}
                 ></ServerDetail>
                 <RequestExpandDetailInfor
                   requestExpandDetail={requestExpandDetail!}

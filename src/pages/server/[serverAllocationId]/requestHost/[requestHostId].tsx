@@ -310,6 +310,7 @@ const RequestHostDetail: React.FC = () => {
                   <div className="md:flex">
                     <ServerDetail
                       serverAllocationDetail={serverAllocationDetail!}
+                      hardware={undefined}
                     ></ServerDetail>
                     <RequestHostDetailInfor
                       requestHostDetail={requestHostDetail!}

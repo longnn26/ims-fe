@@ -256,6 +256,7 @@ const RequestUpgradeDetail: React.FC = () => {
                 <div className="md:flex">
                   <ServerDetail
                     serverAllocationDetail={serverAllocationDetail!}
+                    hardware={undefined}
                   ></ServerDetail>
                   <RequestUpgradeDetailInfor
                     requestUpgradeDetail={requestUpgradeDetail!}
