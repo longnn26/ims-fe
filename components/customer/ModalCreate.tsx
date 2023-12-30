@@ -192,7 +192,13 @@ const ModalCreate: React.FC<Props> = (props) => {
             <Form.Item
               name="contractNumber"
               label="Contract number"
-              rules={[{ required: true, min: 6, max: 20 }]}
+              rules={[
+                { required: true, min: 6, max: 20 },
+                {
+                  pattern: /^\d{6,255}$/,
+                  message: "Contract number is invalid!"
+                }
+              ]}
             >
               <Input placeholder="Contract number" allowClear />
             </Form.Item>
