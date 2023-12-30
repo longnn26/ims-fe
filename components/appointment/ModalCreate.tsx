@@ -55,13 +55,14 @@ const ModalCreate: React.FC<Props> = (props) => {
   };
 
   const getMoreServer = async () => {
-    await customerService
-      .getServerById(
+    await serverService
+      .getServerAllocationData(
         session?.user.access_token!,
-        parseJwt(session?.user.access_token).UserId,
         {
           PageIndex: pageIndexCus + 1,
           PageSize: pageSizeCus,
+          //truyền param như vầy nè
+          CustomerId: parseJwt(session?.user.access_token).UserId,
         } as ParamGet
       )
       .then(async (data) => {

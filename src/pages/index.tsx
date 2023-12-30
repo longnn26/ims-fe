@@ -121,7 +121,7 @@ const Customer: React.FC = () => {
   useEffect(() => {
     session && getData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [session, paramGet]);
+  }, [session, paramGet, openModalCreate]);
 
   return (
     <AntdLayoutNoSSR
@@ -157,6 +157,7 @@ const Customer: React.FC = () => {
             open={openModalCreate}
             onClose={() => setOpenModalCreate(false)}
             onSubmit={() => {
+              setOpenModalCreate(false);
               getData();
             }}
           />

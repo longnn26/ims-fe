@@ -6,7 +6,6 @@ import useDispatch from "@hooks/use-dispatch";
 import useSelector from "@hooks/use-selector";
 import { Customer } from "@models/customer";
 import {
-  SAParamGet,
   ServerAllocationData,
   SAUpdateModel,
   ServerAllocation,
@@ -25,7 +24,7 @@ import { getServerAllocationData } from "@slices/customer";
 import { areInArray } from "@utils/helpers";
 import { ROLE_CUSTOMER, ROLE_SALES, ROLE_TECH } from "@utils/constants";
 import ModalEmpty from "@components/ModalEmpty";
-import { ParamGetWithId } from "@models/base";
+import { ParamGet, ParamGetWithId } from "@models/base";
 
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
@@ -37,11 +36,11 @@ const Customer: React.FC = () => {
     (state) => state.serverAllocation
   );
 
-  const [paramGet, setParamGet] = useState<SAParamGet>({
+  const [paramGet, setParamGet] = useState<ParamGet>({
     PageIndex: 1,
     PageSize: 10,
     CustomerId: router.query.customerId ?? -1,
-  } as unknown as SAParamGet);
+  } as unknown as ParamGet);
   const [loadingSubmit, setLoadingSubmit] = useState<boolean>(false);
   const [serverUpdate, setUpdate] = useState<ServerAllocation | undefined>(
     undefined
@@ -66,8 +65,11 @@ const Customer: React.FC = () => {
         setCustomerDetail(undefined);
         setContent("Customer NOT EXISTED");
       });
-    await customerService
-      .getServerById(session?.user.access_token!, router.query.customerId+"")
+    await serverService
+      .getServerAllocationData(
+        session?.user.access_token!,
+        paramGet
+      )
       .then((result) => {
         setServerList(result);
         setTotalServerListSize(result?.totalSize ?? 0);
