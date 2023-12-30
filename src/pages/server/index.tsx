@@ -55,9 +55,9 @@ const Customer: React.FC = () => {
   const [openModalCreate, setOpenModalCreate] = useState<boolean>(false);
 
   const getData = async () => {
-    var customerId= "";
+    var customerId = "";
     if (session?.user.roles.includes("Customer")) {
-      customerId= parseJwt(session.user.access_token).UserId;
+      customerId = parseJwt(session.user.access_token).UserId;
     }
     dispatch(
       getServerAllocationData({
@@ -67,49 +67,53 @@ const Customer: React.FC = () => {
     ).then(({ payload }) => {
       var res = payload as ServerAllocationData;
       if (res?.totalPage < paramGet.PageIndex && res.totalPage != 0) {
-        setParamGet({ ...paramGet, PageIndex: res.totalPage, CustomerId: customerId });
+        setParamGet({
+          ...paramGet,
+          PageIndex: res.totalPage,
+          CustomerId: customerId,
+        });
       }
     });
   };
 
-  const createData = async (data: SACreateModel) => {
-    setLoadingSubmit(true);
+  // const createData = async (data: SACreateModel) => {
+  //   setLoadingSubmit(true);
 
-    try {
-      const userRoles = session?.user.roles;
+  //   try {
+  //     const userRoles = session?.user.roles;
 
-      if (areInArray(userRoles ?? [], ROLE_CUSTOMER)) {
-        const userId = parseJwt(session?.user.access_token).UserId;
+  //     if (areInArray(userRoles ?? [], ROLE_CUSTOMER)) {
+  //       const userId = parseJwt(session?.user.access_token).UserId;
 
-        // Gọi hàm getCustomerServerData với id của người dùng
-        await serverAllocationService
-          .createServerAllocation(session?.user.access_token!, data)
-          .then(() => {
-            message.success("Create successfully!");
-            getData();
-          });
-      } else {
-        await serverAllocationService
-          .createServerAllocation(session?.user.access_token!, data)
-          .then(() => {
-            message.success("Create successfully!");
-            getData();
-          });
-      }
-    } catch (errors) {
-      if (errors instanceof Error) {
-        // If errors is an instance of the Error class, handle it accordingly
-        const errorMessage = (errors as any).response?.data || errors.message;
-        message.error(errorMessage);
-      } else {
-        // If errors is of unknown type, provide a default error message
-        message.error("An unknown error occurred");
-      }
-    } finally {
-      setLoadingSubmit(false);
-      setOpenModalCreate(false);
-    }
-  };
+  //       // Gọi hàm getCustomerServerData với id của người dùng
+  //       await serverAllocationService
+  //         .createServerAllocation(session?.user.access_token!, data)
+  //         .then(() => {
+  //           message.success("Create successfully!");
+  //           getData();
+  //         });
+  //     } else {
+  //       await serverAllocationService
+  //         .createServerAllocation(session?.user.access_token!, data)
+  //         .then(() => {
+  //           message.success("Create successfully!");
+  //           getData();
+  //         });
+  //     }
+  //   } catch (errors) {
+  //     if (errors instanceof Error) {
+  //       // If errors is an instance of the Error class, handle it accordingly
+  //       const errorMessage = (errors as any).response?.data || errors.message;
+  //       message.error(errorMessage);
+  //     } else {
+  //       // If errors is of unknown type, provide a default error message
+  //       message.error("An unknown error occurred");
+  //     }
+  //   } finally {
+  //     setLoadingSubmit(false);
+  //     setOpenModalCreate(false);
+  //   }
+  // };
 
   const updateData = async (data: SAUpdateModel) => {
     await serverAllocationService
@@ -214,8 +218,8 @@ const Customer: React.FC = () => {
               <ModalCreate
                 open={openModalCreate}
                 onClose={() => setOpenModalCreate(false)}
-                onSubmit={(data: SACreateModel) => {
-                  createData(data);
+                onSubmit={() => {
+                  getData();
                 }}
                 customerParamGet={customerSelectParamGet}
                 setCustomerParamGet={setCustomerSelectParamGet}

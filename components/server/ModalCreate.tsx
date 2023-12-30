@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Button, Input, Modal, Select } from "antd";
+import { Button, Input, Modal, Select, message } from "antd";
 import { Form } from "antd";
 import { SACreateModel } from "@models/serverAllocation";
 import useSelector from "@hooks/use-selector";
@@ -7,6 +7,9 @@ import { ParamGet } from "@models/base";
 import { Customer } from "@models/customer";
 import customerService from "@services/customer";
 import { useSession } from "next-auth/react";
+import { areInArray, parseJwt } from "@utils/helpers";
+import serverAllocationService from "@services/serverAllocation";
+import { ROLE_CUSTOMER } from "@utils/constants";
 const { confirm } = Modal;
 const { Option } = Select;
 
@@ -14,7 +17,7 @@ interface Props {
   open: boolean;
   onClose: () => void;
   // loadingSubmit: boolean;
-  onSubmit: (saCreateModel: SACreateModel) => void;
+  onSubmit: (isClose: boolean) => void;
   customerParamGet?: ParamGet;
   setCustomerParamGet?: (value: ParamGet) => void;
 }
@@ -32,6 +35,10 @@ const ModalCreate: React.FC<Props> = (props) => {
   const [pageSizeCus, setPageSizeCus] = useState<number>(6);
   const [totalPageCus, setTotalPageCus] = useState<number>(2);
   const [pageIndexCus, setPageIndexCus] = useState<number>(0);
+  const [loadingSubmit, setLoadingSubmit] = useState<boolean>(false);
+  const [openModalCreate, setOpenModalCreate] = useState<boolean | undefined>(
+    undefined
+  );
 
   const disabled = async () => {
     var result = false;
@@ -67,10 +74,11 @@ const ModalCreate: React.FC<Props> = (props) => {
         title={
           <span className="inline-block m-auto">Create server allocation</span>
         }
-        open={open}
+        open={openModalCreate === undefined ? open : openModalCreate}
         confirmLoading={confirmLoading}
         onCancel={() => {
           onClose();
+          setOpenModalCreate(undefined);
           form.resetFields();
         }}
         footer={[
@@ -83,13 +91,59 @@ const ModalCreate: React.FC<Props> = (props) => {
                 confirm({
                   title: "Do you want to save?",
                   async onOk() {
-                    onSubmit({
+                    const data = {
                       name: form.getFieldValue("name"),
                       serialNumber: form.getFieldValue("serialNumber"),
                       power: form.getFieldValue("power"),
                       note: form.getFieldValue("note"),
-                    } as SACreateModel);
-                    form.resetFields();
+                    } as SACreateModel;
+                    setLoadingSubmit(true);
+
+                    try {
+                      const userRoles = session?.user.roles;
+
+                      if (areInArray(userRoles ?? [], ROLE_CUSTOMER)) {
+                        const userId = parseJwt(
+                          session?.user.access_token
+                        ).UserId;
+
+                        // Gọi hàm getCustomerServerData với id của người dùng
+                        await serverAllocationService
+                          .createServerAllocation(
+                            session?.user.access_token!,
+                            data
+                          )
+                          .then(() => {
+                            message.success("Create successfully!");
+                            form.resetFields();
+                            setOpenModalCreate(undefined);
+                            onClose;
+                          });
+                      } else {
+                        await serverAllocationService
+                          .createServerAllocation(
+                            session?.user.access_token!,
+                            data
+                          )
+                          .then(() => {
+                            message.success("Create successfully!");
+                            setOpenModalCreate(false);
+                          });
+                      }
+                    } catch (errors) {
+                      if (errors instanceof Error) {
+                        // If errors is an instance of the Error class, handle it accordingly
+                        const errorMessage =
+                          (errors as any).response?.data || errors.message;
+                        message.error(errorMessage);
+                      } else {
+                        // If errors is of unknown type, provide a default error message
+                        message.error("An unknown error occurred");
+                      }
+                    } finally {
+                      setLoadingSubmit(false);
+                      // setOpenModalCreate(false);
+                    }
                   },
                   onCancel() {},
                 });
