@@ -127,7 +127,7 @@ const Customer: React.FC = () => {
   useEffect(() => {
     session && getData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [session, paramGet, openModalCreate]);
+  }, [session, paramGet, openModalCreate]); //Loading: thêm openModalCreate
   return (
     <AntdLayoutNoSSR
       content={

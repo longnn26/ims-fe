@@ -1,5 +1,15 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Button, Col, Input, Modal, Row, Select, Card, DatePicker } from "antd";
+import {
+  Button,
+  Col,
+  Input,
+  Modal,
+  Row,
+  Select,
+  Card,
+  DatePicker,
+  message,
+} from "antd";
 import { CloseOutlined } from "@ant-design/icons";
 import { Form } from "antd";
 import useSelector from "@hooks/use-selector";
@@ -7,6 +17,7 @@ import customerService from "@services/customer";
 import serverService from "@services/serverAllocation";
 import requestUpgradeService from "@services/requestUpgrade";
 import requestExpandService from "@services/requestExpand";
+import appointmentService from "@services/appointment";
 import { AppointmentCreateModel } from "@models/appointment";
 import { dateAdvFormat } from "@utils/constants";
 import { ServerAllocation } from "@models/serverAllocation";
@@ -43,6 +54,10 @@ const ModalCreate: React.FC<Props> = (props) => {
   const [pageIndexUp, setPageIndexUp] = useState<number>(0);
   const [selectedServer, setSelectedServer] = useState<ServerAllocation>();
   const [selectedReason, setSelectedReason] = useState<string>("");
+  const [loadingSubmit, setLoadingSubmit] = useState<boolean>(false);
+  const [openModalCreate, setOpenModalCreate] = useState<boolean | undefined>(
+    undefined
+  );
 
   const disabled = async () => {
     var result = false;
@@ -170,12 +185,12 @@ const ModalCreate: React.FC<Props> = (props) => {
     <>
       <Modal
         title={<span className="inline-block m-auto">Create Appointment</span>}
-        open={open}
+        open={openModalCreate === undefined ? open : openModalCreate}
         confirmLoading={confirmLoading}
         onCancel={() => {
           onClose();
+          setOpenModalCreate(undefined);
           form.resetFields();
-          resetAllLists(3);
         }}
         footer={[
           <Button
@@ -187,7 +202,7 @@ const ModalCreate: React.FC<Props> = (props) => {
                 confirm({
                   title: "Do you want to save?",
                   async onOk() {
-                    onSubmit({
+                    const data = {
                       appointedCustomer:
                         form.getFieldValue("appointedCustomer"),
                       dateAppointed: form.getFieldValue("dateAppointed"),
@@ -197,8 +212,22 @@ const ModalCreate: React.FC<Props> = (props) => {
                         form.getFieldValue("requestUpgradeIds"),
                       serverAllocationId: selectedServer?.id,
                       requestExpandId: form.getFieldValue("requestExpandId"),
-                    } as AppointmentCreateModel);
-                    form.resetFields();
+                    } as AppointmentCreateModel;
+                    setLoadingSubmit(true);
+                    await appointmentService
+                      .create(session?.user.access_token!, data)
+                      .then((res) => {
+                        message.success("Create successfully!");
+                        form.resetFields();
+                        setOpenModalCreate(undefined);
+                        onClose();
+                      })
+                      .catch((errors) => {
+                        message.error(errors.response.data);
+                      })
+                      .finally(() => {
+                        setLoadingSubmit(false);
+                      });
                   },
                   onCancel() {},
                 });
@@ -231,8 +260,7 @@ const ModalCreate: React.FC<Props> = (props) => {
                 {
                   required: true,
                   validator: (_, value) => {
-                    const todate = convertDatePicker(moment().toString());
-                    if (value.isAfter(todate)) {
+                    if (value.isAfter(moment())) {
                       return Promise.resolve();
                     } else {
                       return Promise.reject("Visit date must be later!");

@@ -4,7 +4,11 @@ import ModalUpdate from "@components/appointment/ModalUpdate";
 import AppointmentTable from "@components/server/requestUpgrade/AppointmentTable";
 import useDispatch from "@hooks/use-dispatch";
 import useSelector from "@hooks/use-selector";
-import { Appointment, AppointmentCreateModel, AppointmentUpdateModel } from "@models/appointment";
+import {
+  Appointment,
+  AppointmentCreateModel,
+  AppointmentUpdateModel,
+} from "@models/appointment";
 import { ParamGet } from "@models/base";
 import { RUAppointmentParamGet } from "@models/requestUpgrade";
 import appointmentService from "@services/appointment";
@@ -28,7 +32,9 @@ const Appoinment: React.FC = () => {
   const router = useRouter();
   const { data: session } = useSession();
   const { listAppointmentData } = useSelector((state) => state.appointment);
-  const [appointmentUpdate, setAppointmentUpdate] = useState<Appointment | undefined>(undefined);
+  const [appointmentUpdate, setAppointmentUpdate] = useState<
+    Appointment | undefined
+  >(undefined);
   const [loadingSubmit, setLoadingSubmit] = useState<boolean>(false);
   const [itemBreadcrumbs, setItemBreadcrumbs] = useState<ItemType[]>([]);
   const [openModalCreate, setOpenModalCreate] = useState<boolean>(false);
@@ -41,7 +47,9 @@ const Appoinment: React.FC = () => {
 
   const getData = async () => {
     if (session?.user.roles.includes("Customer")) {
-      rUAppointmentParamGet.CustomerId = parseJwt(session.user.access_token).UserId;
+      rUAppointmentParamGet.CustomerId = parseJwt(
+        session.user.access_token
+      ).UserId;
     }
     await dispatch(
       getListAppointment({
@@ -51,18 +59,18 @@ const Appoinment: React.FC = () => {
     );
   };
 
-  const createData = async (data: AppointmentCreateModel) => {
-    await appointmentService
-      .create(session?.user.access_token!, data)
-      .then((res) => {
-        message.success("Create successfully!");
-        getData();
-        setOpenModalCreate(false);
-      })
-      .catch((errors) => {
-        message.error(errors.response.data);
-      })
-  };
+  // const createData = async (data: AppointmentCreateModel) => {
+  //   await appointmentService
+  //     .create(session?.user.access_token!, data)
+  //     .then((res) => {
+  //       message.success("Create successfully!");
+  //       getData();
+  //       setOpenModalCreate(false);
+  //     })
+  //     .catch((errors) => {
+  //       message.error(errors.response.data);
+  //     })
+  // };
 
   const updateData = async (data: AppointmentUpdateModel) => {
     await appointmentService
@@ -92,10 +100,7 @@ const Appoinment: React.FC = () => {
       async onOk() {
         setLoadingSubmit(true);
         await appointmentService
-          .deleteAppointment(
-            session?.user.access_token!,
-            appointment.id
-          )
+          .deleteAppointment(session?.user.access_token!, appointment.id)
           .then(() => {
             getData();
             message.success(`Delete successfully!`);
@@ -105,7 +110,7 @@ const Appoinment: React.FC = () => {
             setLoadingSubmit(false);
           });
       },
-      onCancel() { },
+      onCancel() {},
     });
   };
 
@@ -115,7 +120,7 @@ const Appoinment: React.FC = () => {
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [session, rUAppointmentParamGet]);
+  }, [session, rUAppointmentParamGet, openModalCreate]);
 
   return (
     <AntdLayoutNoSSR
@@ -136,14 +141,21 @@ const Appoinment: React.FC = () => {
                 <ModalCreate
                   open={openModalCreate}
                   onClose={() => setOpenModalCreate(false)}
-                  onSubmit={(data: AppointmentCreateModel) => {
-                    createData(data);
+                  onSubmit={() => {
+                    //Loading: thêm chỗ này
+                    setOpenModalCreate(false);
+                    getData();
                   }}
                 />
               </>
             )}
           </div>
-          {areInArray(session?.user.roles!, ROLE_TECH, ROLE_SALES, ROLE_CUSTOMER) && (
+          {areInArray(
+            session?.user.roles!,
+            ROLE_TECH,
+            ROLE_SALES,
+            ROLE_CUSTOMER
+          ) && (
             <>
               <ModalUpdate
                 appointment={appointmentUpdate!}
@@ -155,8 +167,12 @@ const Appoinment: React.FC = () => {
               <AppointmentTable
                 typeGet="All"
                 urlOncell=""
-                onEdit={(record) => { setAppointmentUpdate(record); }}
-                onDelete={async (record) => { deleteAppointment(record); }}
+                onEdit={(record) => {
+                  setAppointmentUpdate(record);
+                }}
+                onDelete={async (record) => {
+                  deleteAppointment(record);
+                }}
               />
               {listAppointmentData?.totalPage > 0 && (
                 <Pagination
