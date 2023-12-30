@@ -102,7 +102,7 @@ const Customer: React.FC = () => {
       title: "Delete",
       content: (
         <Alert
-          message={`Do you want to delete with Id ${customer.id}?`}
+          message={`Do you want to delete Customer ${customer.companyName}?`}
           // description={`${serverAllocation.id}`}
           type="warning"
         />
