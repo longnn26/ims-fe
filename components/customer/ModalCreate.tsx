@@ -117,7 +117,8 @@ const ModalCreate: React.FC<Props> = (props) => {
                         .then((res) => {
                           message.success("Create successfully!");
                           form.resetFields();
-                          setOpenModalCreate(false);
+                          setOpenModalCreate(undefined);
+                          onClose();
                         })
                         .catch((errors) => {
                           setOpenModalCreate(true);

@@ -49,8 +49,11 @@ const Customer: React.FC = () => {
       })
     ).then(({ payload }) => {
       var res = payload as CustomerData;
-      if (res.totalPage < paramGet.PageIndex && res.totalPage != 0) {
-        setParamGet({ ...paramGet, PageIndex: res.totalPage });
+      //muốn k lỗi res.totalPage
+      if (res) {
+        if (res.totalPage < paramGet.PageIndex && res.totalPage != 0) {
+          setParamGet({ ...paramGet, PageIndex: res.totalPage });
+        }
       }
     });
   };
@@ -117,7 +120,7 @@ const Customer: React.FC = () => {
             setLoadingSubmit(false);
           });
       },
-      onCancel() {},
+      onCancel() { },
     });
   };
 
