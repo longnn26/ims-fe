@@ -21,4 +21,6 @@ export interface IpAddressParamGet extends ParamGet {
   ServerAllocationId?: number;
   IsAssigned?: boolean;
   IsAvailable?: boolean;
+  Id?: number;
+  Address?: string;
 }
