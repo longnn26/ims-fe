@@ -214,6 +214,7 @@ const RequestExpand: React.FC = () => {
               />
               <ServerDetail
                 serverAllocationDetail={serverAllocationDetail!}
+                hardware={undefined}
               ></ServerDetail>
               <RequestExpandTable
                 urlOncell={`/server/${serverAllocationDetail?.id}`}
