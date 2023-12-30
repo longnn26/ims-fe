@@ -18,7 +18,7 @@ export interface IpAddressData extends PagingModel {
 }
 
 export interface IpAddressParamGet extends ParamGet {
-  Address: string;
+  ServerAllocationId?: number;
   IsAssigned?: boolean;
   IsAvailable?: boolean;
 }

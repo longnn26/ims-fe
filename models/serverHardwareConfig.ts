@@ -5,7 +5,7 @@ export interface ServerHardwareConfig extends BaseWithIdNumber {
   serverAllocationId: number;
   componentId: number;
   component: ComponentObj;
-  descriptions: DescriptionsObj[];
+  description: string;
 }
 
 export interface SHCParamGet extends ParamGet {
@@ -17,19 +17,13 @@ export interface ServerHardwareConfigData extends PagingModel {
 }
 
 export interface SHCCreateModel {
-  descriptions: DescriptionsObj[];
+  descriptions: string;
   serverAllocationId: number;
   componentId: number;
 }
 export interface SHCUpdateModel {
   id: number;
-  descriptions: DescriptionsObj[];
+  description: string;
   componentId: number;
   serverAllocationId: number;
-}
-export interface DescriptionsObj {
-  serialNumber: string;
-  model: string;
-  capacity: number;
-  description: string;
 }

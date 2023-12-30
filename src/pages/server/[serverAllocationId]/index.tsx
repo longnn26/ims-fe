@@ -18,8 +18,6 @@ import {
 import serverAllocationService from "@services/serverAllocation";
 import serverHardwareConfigService from "@services/serverHardwareConfig";
 import ipAddressService from "@services/ipAddress";
-import { getComponentAll } from "@slices/component";
-import { getServerHardwareConfigData } from "@slices/serverHardwareConfig";
 import { Alert, Button, FloatButton, Modal, Pagination, message } from "antd";
 import { ItemType } from "antd/es/breadcrumb/Breadcrumb";
 import { useSession } from "next-auth/react";
@@ -28,7 +26,7 @@ import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { MdUpgrade } from "react-icons/md";
 import { FaExpand } from "react-icons/fa";
-import { IpAddress, IpAddressData } from "@models/ipAddress";
+import { IpAddress, IpAddressData, IpAddressParamGet } from "@models/ipAddress";
 import ModalAssign from "@components/server/ipAddress/ModalAssign";
 import { BsFillHddNetworkFill } from "react-icons/bs";
 import { GrHost } from "react-icons/gr";
@@ -39,6 +37,7 @@ import { ROLE_CUSTOMER, ROLE_SALES, ROLE_TECH } from "@utils/constants";
 import { areInArray } from "@utils/helpers";
 import ModalEmpty from "@components/ModalEmpty";
 import { error } from "console";
+import serverHardwareConfig from "@services/serverHardwareConfig";
 
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
@@ -48,9 +47,6 @@ const Customer: React.FC = () => {
   const dispatch = useDispatch();
   const router = useRouter();
   const { data: session } = useSession();
-  const { serverHardwareConfigData } = useSelector(
-    (state) => state.serverHardwareConfig
-  );
   const { serverIpAdressData } = useSelector((state) => state.serverAllocation);
 
   const [paramGet, setParamGet] = useState<SHCParamGet>({
@@ -69,13 +65,14 @@ const Customer: React.FC = () => {
   const [itemBreadcrumbs, setItemBreadcrumbs] = useState<ItemType[]>([]);
   const [ipSuggestMaster, setIpSuggestMaster] = useState<IpAddress>();
   const [content, setContent] = useState<string>("");
+  const [hardware, setHardware] = useState<ServerHardwareConfigData>();
 
-  const [rUIpAddressParamGet, setRUIpAddressParamGet] =
-    useState<RUIpAdressParamGet>({
+  const [ipAddressParamGet, setIpAddressParamGet] =
+    useState<IpAddressParamGet>({
       PageIndex: 1,
       PageSize: 10,
       ServerAllocationId: router.query.serverAllocationId ?? -1,
-    } as unknown as RUIpAdressParamGet);
+    } as unknown as IpAddressParamGet);
 
   const getData = async () => {
     await serverAllocationService
@@ -89,37 +86,30 @@ const Customer: React.FC = () => {
       .catch((errors) => {
         setContent(errors.response.data);
       });
-    if (serverAllocationDetail !== undefined) {
-      dispatch(
-        getServerHardwareConfigData({
-          token: session?.user.access_token!,
-          paramGet: { ...paramGet },
-        })
-      ).then(({ payload }) => {
-        var res = payload as ServerHardwareConfigData;
-        if (res.totalPage < paramGet.PageIndex && res.totalPage != 0) {
-          setParamGet({ ...paramGet, PageIndex: res.totalPage });
-        }
-      });
-      dispatch(getComponentAll({ token: session?.user.access_token! }));
+      serverHardwareConfig.getServerHardwareConfigData(
+        session?.user.access_token!,
+        paramGet
+      ).then((res) => {
+        setHardware(res);
+      })
       dispatch(
         getServerIpAdressData({
           token: session?.user.access_token!,
-          paramGet: { ...rUIpAddressParamGet },
+          paramGet: { ...ipAddressParamGet, IsAssigned: true },
         })
       ).then(({ payload }) => {
         var res = payload as IpAddressData;
         if (
-          res.totalPage < rUIpAddressParamGet.PageIndex &&
+          res &&
+          res.totalPage < ipAddressParamGet.PageIndex &&
           res.totalPage != 0
         ) {
-          setRUIpAddressParamGet({
-            ...rUIpAddressParamGet,
+          setIpAddressParamGet({
+            ...ipAddressParamGet,
             PageIndex: res.totalPage,
           });
         }
       });
-    }
   };
 
   const createData = async (data: SHCCreateModel) => {
@@ -148,38 +138,6 @@ const Customer: React.FC = () => {
       .finally(() => {
         setOpenModalUpdate(false);
       });
-  };
-
-  const deleteData = (serverHardwareConfig: ServerHardwareConfig) => {
-    confirm({
-      title: "Delete",
-      content: (
-        <Alert
-          message={`Do you want to delete with Id ${serverHardwareConfig.id}?`}
-          // description={`${serverAllocation.id}`}
-          type="warning"
-        />
-      ),
-      async onOk() {
-        setLoadingSubmit(true);
-        await serverHardwareConfigService
-          .deleteServerHardwareConfig(
-            session?.user.access_token!,
-            serverHardwareConfig.id.toString()
-          )
-          .then(() => {
-            getData();
-            message.success(`Delete hardware config successfully`);
-          })
-          .catch((errors) => {
-            message.error(
-              errors.response.data ?? "Delete hardware config failed"
-            );
-            setLoadingSubmit(false);
-          });
-      },
-      onCancel() {},
-    });
   };
 
   const handleBreadCumb = () => {
@@ -213,53 +171,13 @@ const Customer: React.FC = () => {
       paramGet.ServerAllocationId = parseInt(
         router.query.serverAllocationId!.toString()
       );
-      rUIpAddressParamGet.Id = parseInt(
+      ipAddressParamGet.ServerAllocationId = parseInt(
         router.query.serverAllocationId!.toString()
       );
       getData();
       handleBreadCumb();
-
-      const fetchData = async () => {
-        // Fetch data for ServerHardwareConfigTable
-        await dispatch(
-          getServerHardwareConfigData({
-            token: session?.user.access_token!,
-            paramGet: { ...paramGet },
-          })
-        ).then(({ payload }) => {
-          var res = payload as ServerHardwareConfigData;
-          if (res.totalPage < paramGet.PageIndex && res.totalPage !== 0) {
-            setParamGet({ ...paramGet, PageIndex: res.totalPage });
-          }
-        });
-
-        // Fetch data for IpAddressTable
-        await dispatch(
-          getServerIpAdressData({
-            token: session?.user.access_token!,
-            paramGet: {
-              ...paramGet,
-              Id: parseInt(router.query.serverAllocationId!.toString()),
-            },
-          })
-        ).then(({ payload }) => {
-          if (payload) {
-            var res = payload as IpAddressData;
-            if (
-              res &&
-              res.totalPage !== undefined &&
-              res.totalPage < paramGet.PageIndex &&
-              res.totalPage !== 0
-            ) {
-              setParamGet({ ...paramGet, PageIndex: res.totalPage });
-            }
-          }
-        });
-      };
-
-      fetchData();
     }
-  }, [router, session, paramGet, rUIpAddressParamGet]);
+  }, [router, session, paramGet, ipAddressParamGet]);
 
   if (serverAllocationDetail === undefined) {
     return (
@@ -308,7 +226,7 @@ const Customer: React.FC = () => {
                       setOpenModalCreate(true);
                     }}
                   >
-                    Hardware Config
+                    Add Hardware Information
                   </Button>
                 )}
               </div>
@@ -346,43 +264,18 @@ const Customer: React.FC = () => {
               <>
                 <ServerDetail
                   serverAllocationDetail={serverAllocationDetail!}
+                  hardware={hardware!}
                 ></ServerDetail>
-                <ServerHardwareConfigTable
-                  onEdit={(record) => {
-                    setServerHardwareConfigUpdate(record);
-                    setOpenModalUpdate(true);
-                  }}
-                  onDelete={async (record) => {
-                    deleteData(record);
-                  }}
-                  serverStatus={serverAllocationDetail?.status}
-                />
-                {serverHardwareConfigData.totalPage > 0 && (
-                  <Pagination
-                    className="text-end m-4"
-                    current={paramGet.PageIndex}
-                    pageSize={serverHardwareConfigData.pageSize ?? 10}
-                    total={serverHardwareConfigData.totalSize}
-                    onChange={(page, pageSize) => {
-                      setParamGet({
-                        ...paramGet,
-                        PageIndex: page,
-                        PageSize: pageSize,
-                      });
-                    }}
-                  />
-                )}
-
                 <IpAddressTable typeGet="ServerAllocation" />
                 {serverIpAdressData?.totalPage > 0 && (
                   <Pagination
                     className="text-end m-4"
-                    current={rUIpAddressParamGet?.PageIndex}
+                    current={ipAddressParamGet?.PageIndex}
                     pageSize={serverIpAdressData?.pageSize ?? 10}
                     total={serverIpAdressData?.totalSize}
                     onChange={(page, pageSize) => {
-                      setRUIpAddressParamGet({
-                        ...rUIpAddressParamGet,
+                      setIpAddressParamGet({
+                        ...ipAddressParamGet,
                         PageIndex: page,
                         PageSize: pageSize,
                       });

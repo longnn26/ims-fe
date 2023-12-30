@@ -4,8 +4,8 @@ import customerService from "@services/customer";
 import { ParamGet, ParamGetWithId } from "@models/base";
 import { ServerAllocationData } from "@models/serverAllocation";
 import { CustomerData } from "@models/customer";
-import { RUIpAdressParamGet } from "@models/requestHost";
-import { IpAddressData } from "@models/ipAddress";
+import { IpAddressData, IpAddressParamGet } from "@models/ipAddress";
+import ipAddress from "@services/ipAddress";
 
 interface State {
   serverAllocationData: ServerAllocationData;
@@ -55,8 +55,8 @@ const getCustomerData = createAsyncThunk(
 
 const getServerIpAdressData = createAsyncThunk(
   `${TYPE_PREFIX}/getServerIpAdressData`,
-  async (arg: { token: string; paramGet: RUIpAdressParamGet }) => {
-    const result = await serverAllocationService.serverIpAddressData(
+  async (arg: { token: string; paramGet: IpAddressParamGet }) => {
+    const result = await ipAddress.getData(
       arg.token,
       arg.paramGet
     );

@@ -13,6 +13,7 @@ export interface ServerAllocation extends BaseWithIdNumber {
   masterIp: IpAddress;
   masterIpAddress: string;
   techNote: string;
+  partNumber: string;
   ipCount: number;
   location: string;
   inspectionRecordFilePath: string;
