@@ -2,13 +2,19 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import customerService from "@services/customer";
 import { ParamGet } from "@models/base";
 import { CustomerData } from "@models/customer";
+import serverAllocation from "@services/serverAllocation";
+import { ServerAllocationData } from "@models/serverAllocation";
 
 interface State {
+  serverAllocationData: ServerAllocationData;
+  serverAllocationDataLoading: boolean;
   customerData: CustomerData;
   customerDataLoading: boolean;
 }
 
 const initialState: State = {
+  serverAllocationData: {} as ServerAllocationData,
+  serverAllocationDataLoading: false,
   customerData: {} as CustomerData,
   customerDataLoading: false,
 };
@@ -17,10 +23,10 @@ const TYPE_PREFIX = "customer";
 
 const getServerAllocationData = createAsyncThunk(
   `${TYPE_PREFIX}/getData`,
-  async (arg: { token: string; id: string }) => {
-    const result = await customerService.getServerById(
+  async (arg: { token: string; param: ParamGet; }) => {
+    const result = await serverAllocation.getServerAllocationData(
       arg.token,
-      arg.id,
+      arg.param,
     );
     return result;
   }

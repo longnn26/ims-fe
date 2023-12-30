@@ -20,7 +20,7 @@ import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import ModalUpdate from "@components/server/ModalUpdate";
 import ServerAllocationTable from "@components/customer/ServerAllocationTable";
-import { getServerAllocationData } from "@slices/customer";
+import { getServerAllocationData } from "@slices/serverAllocation";
 import { areInArray } from "@utils/helpers";
 import { ROLE_CUSTOMER, ROLE_SALES, ROLE_TECH } from "@utils/constants";
 import ModalEmpty from "@components/ModalEmpty";
@@ -30,6 +30,7 @@ const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
 });
 const Customer: React.FC = () => {
+  const dispatch = useDispatch();
   const router = useRouter();
   const { data: session } = useSession();
   const { serverAllocationData } = useSelector(
@@ -38,16 +39,12 @@ const Customer: React.FC = () => {
 
   const [paramGet, setParamGet] = useState<ParamGet>({
     PageIndex: 1,
-    PageSize: 10,
-    CustomerId: router.query.customerId ?? -1,
-  } as unknown as ParamGet);
-  const [loadingSubmit, setLoadingSubmit] = useState<boolean>(false);
+    PageSize: 10
+  } as ParamGet);
   const [serverUpdate, setUpdate] = useState<ServerAllocation | undefined>(
     undefined
   );
   const [customerDetail, setCustomerDetail] = useState<Customer>();
-  const [serverList, setServerList] = useState<ServerAllocationData>();
-  const [totalServerListSize, setTotalServerListSize] = useState<number>(0);
 
   const [itemBreadcrumbs, setItemBreadcrumbs] = useState<ItemType[]>([]);
   const [content, setContent] = useState<string>("");
@@ -65,20 +62,20 @@ const Customer: React.FC = () => {
         setCustomerDetail(undefined);
         setContent("Customer NOT EXISTED");
       });
-    await serverService
-      .getServerAllocationData(
-        session?.user.access_token!,
-        paramGet
-      )
-      .then((result) => {
-        setServerList(result);
-        setTotalServerListSize(result?.totalSize ?? 0);
-        var res = result as ServerAllocationData;
-        if (res.totalPage < paramGet.PageIndex && res.totalPage != 0) {
-          setParamGet({ ...paramGet, PageIndex: res.totalPage });
+      dispatch(
+        getServerAllocationData({
+          token: session?.user.access_token!,
+          param: {...paramGet, CustomerId: router.query.customerId+""},
+        })
+      ).then(({ payload }) => {
+        var res = payload as ServerAllocationData;
+        if (res?.totalPage < paramGet.PageIndex && res.totalPage != 0) {
+          setParamGet({
+            ...paramGet,
+            PageIndex: res.totalPage,
+            CustomerId: router.query.customerId+"",
+          });
         }
-      })
-      .catch((errors) => {
       });
   };
 
@@ -173,26 +170,26 @@ const Customer: React.FC = () => {
                   <CustomerDetail customerDetail={customerDetail!}></CustomerDetail>
                   <ServerAllocationTable
                     urlOncell={`/customer/${customerDetail?.id}`}
-                    data={serverList}
+                    data={serverAllocationData}
                     onEdit={(record) => {
                       setUpdate(record);
                     }}
                   />
-                  {totalServerListSize > 0 && (
-                    <Pagination
-                      className="text-end m-4"
-                      current={paramGet.PageIndex}
-                      pageSize={totalServerListSize ?? 10}
-                      total={totalServerListSize}
-                      onChange={(page, pageSize) => {
-                        setParamGet({
-                          ...paramGet,
-                          PageIndex: page,
-                          PageSize: pageSize,
-                        });
-                      }}
-                    />
-                  )}
+                {serverAllocationData?.totalPage > 0 && (
+                  <Pagination
+                    className="text-end m-4"
+                    current={paramGet.PageIndex}
+                    pageSize={serverAllocationData?.pageSize ?? 10}
+                    total={serverAllocationData?.totalSize}
+                    onChange={(page, pageSize) => {
+                      setParamGet({
+                        ...paramGet,
+                        PageIndex: page,
+                        PageSize: pageSize,
+                      });
+                    }}
+                  />
+                )}
                 </>
               )}
           </>

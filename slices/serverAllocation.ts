@@ -25,10 +25,10 @@ const TYPE_PREFIX = "serverAllocation";
 
 const getServerAllocationData = createAsyncThunk(
   `${TYPE_PREFIX}/getData`,
-  async (arg: { token: string; paramGet: ParamGet }) => {
+  async (arg: { token: string; param: ParamGet }) => {
     const result = await serverAllocationService.getServerAllocationData(
       arg.token,
-      arg.paramGet
+      arg.param
     );
     return result;
   }

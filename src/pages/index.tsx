@@ -46,7 +46,7 @@ const Customer: React.FC = () => {
     dispatch(
       getServerAllocationData({
         token: session?.user.access_token!,
-        paramGet: { ...paramGet },
+        param: { ...paramGet },
       })
     ).then(({ payload }) => {
       var res = payload as ServerAllocationData;
