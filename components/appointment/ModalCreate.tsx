@@ -56,15 +56,12 @@ const ModalCreate: React.FC<Props> = (props) => {
 
   const getMoreServer = async () => {
     await serverService
-      .getServerAllocationData(
-        session?.user.access_token!,
-        {
-          PageIndex: pageIndexCus + 1,
-          PageSize: pageSizeCus,
-          //truyền param như vầy nè
-          CustomerId: parseJwt(session?.user.access_token).UserId,
-        } as ParamGet
-      )
+      .getServerAllocationData(session?.user.access_token!, {
+        PageIndex: pageIndexCus + 1,
+        PageSize: pageSizeCus,
+        //truyền param như vầy nè
+        CustomerId: parseJwt(session?.user.access_token).UserId,
+      } as ParamGet)
       .then(async (data) => {
         setTotalPageCus(data.totalPage);
         setPageIndexCus(data.pageIndex);
@@ -97,15 +94,17 @@ const ModalCreate: React.FC<Props> = (props) => {
     pageIndex?: number,
     req?: RequestExpand[]
   ) => {
+    var customerId = "";
+    if (session?.user.roles.includes("Customer")) {
+      customerId = parseJwt(session.user.access_token).UserId;
+    }
     await requestExpandService
-      .getData(
-        session?.user.access_token!,
-        {
-          PageIndex: pageIndex === 0 ? pageIndex : pageIndexUp + 1,
-          PageSize: pageSizeCus,
-          ServerAllocationId: serverId
-        } as RUParamGet,
-      )
+      .getData(session?.user.access_token!, {
+        PageIndex: pageIndex === 0 ? pageIndex : pageIndexUp + 1,
+        PageSize: pageSizeCus,
+        ServerAllocationId: serverId,
+        CustomerId: customerId,
+      } as RUParamGet)
       .then(async (data) => {
         setTotalPageUp(data.totalPage);
         setPageIndexUp(data.pageIndex);

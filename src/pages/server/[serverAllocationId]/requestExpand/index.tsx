@@ -6,7 +6,10 @@ import ModalCreate from "@components/server/requestExpand/ModalCreate";
 import ModalUpdate from "@components/server/requestUpgrade/ModalUpdate";
 import useDispatch from "@hooks/use-dispatch";
 import useSelector from "@hooks/use-selector";
-import { RequestExpandCreateModel } from "@models/requestExpand";
+import {
+  RequestExpandCreateModel,
+  RequestExpandData,
+} from "@models/requestExpand";
 import {
   RUParamGet,
   RequestUpgrade,
@@ -64,7 +67,6 @@ const RequestExpand: React.FC = () => {
     } else if (session?.user.roles.includes("Tech")) {
       userId = parseJwt(session?.user.access_token!).UserId;
     }
-
     await serverAllocationService
       .getServerAllocationById(
         session?.user.access_token!,
@@ -83,7 +85,7 @@ const RequestExpand: React.FC = () => {
         },
       })
     ).then(({ payload }) => {
-      var res = payload as RequestUpgradeData;
+      var res = payload as RequestExpandData;
       if (res?.totalPage < paramGet.PageIndex && res.totalPage != 0) {
         setParamGet({ ...paramGet, PageIndex: res.totalPage });
       }
