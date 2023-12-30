@@ -108,6 +108,18 @@ const deleteRole = async (
   return response.data;
 }
 
+const changePassword = async (
+  token: string,
+  data: UserUpdateRole
+): Promise<any> => {
+  const response = await httpClient.put({
+    token: token,
+    url: apiLinks.user.updateRole,
+    data: data,
+  });
+  return response.data;
+}
+
 const authService = {
   login,
   getUserTechData,

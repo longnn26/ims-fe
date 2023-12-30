@@ -6,7 +6,7 @@ import { useRouter } from "next/router";
 import { Form, Input, Space, message, Button } from "antd";
 import { useEffect, useState } from "react";
 
-interface Props {}
+interface Props { }
 
 const Signin: React.FC<Props> = (props) => {
   const [form] = Form.useForm();
@@ -55,6 +55,9 @@ const Signin: React.FC<Props> = (props) => {
       return message.error("Wrong login account information!");
     } else {
       message.success("Login successfully!");
+      if (values.password === "Password@123") {
+        return router.push(`/changePassword`)
+      }
       return router.push("/");
     }
   };

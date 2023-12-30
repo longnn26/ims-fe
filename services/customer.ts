@@ -87,7 +87,7 @@ const deleteData = async (token: string, id: string): Promise<any> => {
 };
 
 const changePassword = async (token: string, currentPass: string, password: string): Promise<any> => {
-  const response = await httpClient.delete({
+  const response = await httpClient.put({
     url: apiLinks.customer.changePassword,
     token: token,
     data: {

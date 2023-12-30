@@ -18,7 +18,7 @@ import {
 import userService from "@services/user";
 import customerService from "@services/customer";
 import AccountDetail from "@components/myAccount/AccountDetail";
-import ModalUpdate from "@components/admin/ModalUpdate";
+import ModalUpdate from "@components/myAccount/ModalUpdate";
 import ContactsTable from "@components/myAccount/ContactsTable";
 import { parseJwt } from "@utils/helpers";
 
@@ -63,38 +63,6 @@ const MyAccountPage: React.FC = () => {
             })
         }
     };
-    const updateData = async (data?: UserUpdateModel, currentPass?: string, password?: string) => {
-        if (isCustomer) {
-            await customerService
-            .changePassword(
-                session?.user.access_token!,
-                currentPass!,
-                password!,
-            ).then((res) => {
-                message.success("Update password successfully!");
-                getData();
-            })
-            .catch((errors) => {
-                message.error(errors.response.data);
-            })
-            .finally(() => {
-                setOpenModalUpdate(false);
-            });
-        } else {
-            await userService
-                .update(session?.user.access_token!, data!)
-                .then((res) => {
-                    message.success("Update successfully!");
-                    getData();
-                })
-                .catch((errors) => {
-                    message.error(errors.response.data);
-                })
-                .finally(() => {
-                    setOpenModalUpdate(false);
-                });
-        }
-    };
 
     useEffect(() => {
         session && getData();
@@ -116,16 +84,17 @@ const MyAccountPage: React.FC = () => {
                             Change Password
                         </Button>
                     </div>
-                    {/* <ModalUpdate
+                    <ModalUpdate
+                        isCustomer={isCustomer}
                         open={openModalUpdate}
                         onClose={() => setOpenModalUpdate(false)}
-                        data={staffAccountDetail}
-                        onSubmit={(data: UserUpdateModel, currentPass: string, password: string) => {
-                            isCustomer === true ?
-                            updateData(data) :
-                            updateData(data, currentPass, password)
+                        dataStaff={staffAccountDetail}
+                        dataCust={customerDetail}
+                        onSubmit={() => {
+                            getData();
+                            setOpenModalUpdate(false);
                         }}
-                    /> */}
+                    />
                     <div className="flex justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
                         <AccountDetail 
                             isCustomer={isCustomer}
