@@ -101,7 +101,7 @@ const apiLinks = {
   },
 
   requestExpand: {
-    get: `${url}/api/ServerAllocation`,
+    get: `${url}/api/RequestExpand`,
     getAppointmentsById: `${url}/api/RequestExpand`,
     update: `${url}/api/RequestExpand`,
     create: `${url}/api/RequestExpand`,
