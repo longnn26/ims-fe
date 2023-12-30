@@ -156,8 +156,8 @@ const Customer: React.FC = () => {
           <ModalCreate
             open={openModalCreate}
             onClose={() => setOpenModalCreate(false)}
-            onSubmit={(data: SACreateModel) => {
-              createData(data);
+            onSubmit={() => {
+              getData();
             }}
           />
           <ModalUpdate
