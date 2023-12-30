@@ -35,7 +35,7 @@ const ModalUpdate: React.FC<Props> = (props) => {
     return result;
   };
   const showAllDescriptions = () => {
-    const descriptions = form.getFieldValue("descriptions");
+    const description = form.getFieldValue("description");
   };
 
   const setFieldsValueInitial = () => {
@@ -60,19 +60,7 @@ const ModalUpdate: React.FC<Props> = (props) => {
 
       const requireCapacity = component?.requireCapacity || false;
 
-      const descriptions = serverHardwareConfig.descriptions?.map(
-        (description, index) => ({
-          serialNumber: description.serialNumber,
-          model: description.model,
-          capacity: description.capacity,
-          description: description.description,
-        })
-      );
-
-      form.setFieldsValue({
-        descriptions: descriptions || [],
-        requireCapacity: requireCapacity,
-      });
+      const description = serverHardwareConfig.description;
     }
   };
 
@@ -109,7 +97,7 @@ const ModalUpdate: React.FC<Props> = (props) => {
                   title: "Do you want to save?",
                   async onOk() {
                     const formData = {
-                      descriptions: form
+                      description: form
                         .getFieldValue("descriptions")
                         .map((item, index) => ({
                           serialNumber: form.getFieldValue([

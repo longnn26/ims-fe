@@ -6,7 +6,6 @@ import { BiEdit } from "react-icons/bi";
 import { AiFillDelete } from "react-icons/ai";
 import moment from "moment";
 import {
-  DescriptionsObj,
   ServerHardwareConfig,
 } from "@models/serverHardwareConfig";
 import { ComponentObj } from "@models/component";
@@ -25,10 +24,6 @@ interface DataType {
   key: React.Key;
   id: number;
   component: ComponentObj;
-  serialNumber: DescriptionsObj[];
-  model: DescriptionsObj[];
-  capacity: DescriptionsObj[];
-  descriptions: DescriptionsObj[];
   dateCreated: string;
 }
 
@@ -76,57 +71,12 @@ const ServerHardwareConfigTable: React.FC<Props> = (props) => {
       : {},
   ];
 
-  const expandedRowRender = (record: DataType) => {
-    const nestedColumns = [
-      {
-        title: "Serial Number",
-        dataIndex: "serialNumber",
-        key: "serialNumber",
-      },
-      {
-        title: "Model",
-        dataIndex: "model",
-        key: "model",
-      },
-      {
-        title: "Capacity (GB)",
-        dataIndex: "capacity",
-        key: "capacity",
-      },
-      {
-        title: "Description",
-        dataIndex: "description",
-        key: "description",
-      },
-    ];
-
-    const nestedData = record.serialNumber.map((des, index) => ({
-      key: index,
-      serialNumber: record.serialNumber[index].serialNumber,
-      model: record.model[index].model,
-      capacity: record.capacity[index].capacity,
-      description: record.descriptions[index].description,
-    }));
-
-    return (
-      <Table
-        columns={nestedColumns}
-        dataSource={nestedData}
-        pagination={false}
-      />
-    );
-  };
-
   const data: DataType[] = [];
   for (let i = 0; i < serverHardwareConfigData?.data?.length; ++i) {
     data.push({
       key: serverHardwareConfigData?.data[i].id,
       id: serverHardwareConfigData?.data[i].id,
       component: serverHardwareConfigData?.data[i].component,
-      serialNumber: serverHardwareConfigData?.data[i].descriptions,
-      model: serverHardwareConfigData?.data[i].descriptions,
-      capacity: serverHardwareConfigData?.data[i].descriptions,
-      descriptions: serverHardwareConfigData?.data[i].descriptions,
       dateCreated: moment(serverHardwareConfigData?.data[i].dateCreated).format(
         dateAdvFormat
       ),
@@ -141,7 +91,6 @@ const ServerHardwareConfigTable: React.FC<Props> = (props) => {
       <Table
         columns={columns}
         dataSource={data}
-        expandable={{ expandedRowRender }}
         scroll={{ x: 1300 }}
         pagination={false}
         loading={serverHardwareConfigDataLoading} // Thêm dòng này
