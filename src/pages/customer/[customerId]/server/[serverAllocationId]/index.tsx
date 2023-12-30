@@ -343,6 +343,7 @@ const Customer: React.FC = () => {
                   <>
                     <ServerDetail
                       serverAllocationDetail={serverAllocationDetail!}
+                      hardware={undefined}
                     />
                     <ServerHardwareConfigTable
                       onEdit={(record) => {
