@@ -120,14 +120,14 @@ const Customer: React.FC = () => {
             setLoadingSubmit(false);
           });
       },
-      onCancel() { },
+      onCancel() {},
     });
   };
 
   useEffect(() => {
     session && getData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [session, paramGet]);
+  }, [session, paramGet, openModalCreate]);
   return (
     <AntdLayoutNoSSR
       content={
@@ -183,6 +183,7 @@ const Customer: React.FC = () => {
             onClose={() => setOpenModalCreate(false)}
             onSubmit={() => {
               //Loading: thêm chỗ này
+              setOpenModalCreate(false);
               getData();
             }}
           />
