@@ -1,4 +1,5 @@
 import { AppointmentData } from "@models/appointment";
+import { ParamGet } from "@models/base";
 import { RequestExpandData } from "@models/requestExpand";
 import {
   RUAppointmentParamGet,
@@ -25,7 +26,7 @@ const TYPE_PREFIX = "appointment";
 
 const getListAppointment = createAsyncThunk(
   `${TYPE_PREFIX}/getListAppointment`,
-  async (arg: { token: string; paramGet: RUAppointmentParamGet }) => {
+  async (arg: { token: string; paramGet: ParamGet }) => {
     const result = await appointment.getListAppointments(
       arg.token,
       arg.paramGet

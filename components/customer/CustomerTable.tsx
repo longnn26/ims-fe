@@ -174,7 +174,7 @@ const CustomerTable: React.FC<Props> = (props) => {
         pagination={false}
         expandable={{
           expandedRowRender: nestedRowRender,
-          rowExpandable: (record) => ((record.contacts === null || record.contacts.length === 0 ) ? false : true),
+          rowExpandable: (record) => ((record.contacts === null || record.contacts === undefined || record.contacts.length === 0 ) ? false : true),
         }}
       />
     </>

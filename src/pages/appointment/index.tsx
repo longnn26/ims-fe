@@ -15,7 +15,7 @@ import appointmentService from "@services/appointment";
 import { getListAppointment } from "@slices/appointment";
 import { ROLE_CUSTOMER, ROLE_SALES, ROLE_TECH } from "@utils/constants";
 import { areInArray, parseJwt } from "@utils/helpers";
-import { Pagination, Button, message, Alert, Modal } from "antd";
+import { Pagination, Button, message, Alert, Modal, Spin } from "antd";
 import { ItemType } from "antd/es/breadcrumb/Breadcrumb";
 import { useSession } from "next-auth/react";
 import dynamic from "next/dynamic";
@@ -32,31 +32,33 @@ const Appoinment: React.FC = () => {
   const router = useRouter();
   const { data: session } = useSession();
   const { listAppointmentData } = useSelector((state) => state.appointment);
-  const [appointmentUpdate, setAppointmentUpdate] = useState<
-    Appointment | undefined
-  >(undefined);
+  const [appointmentUpdate, setAppointmentUpdate] = useState<Appointment | undefined>(undefined);
   const [loadingSubmit, setLoadingSubmit] = useState<boolean>(false);
   const [itemBreadcrumbs, setItemBreadcrumbs] = useState<ItemType[]>([]);
   const [openModalCreate, setOpenModalCreate] = useState<boolean>(false);
-  const [rUAppointmentParamGet, setRUAppointmentParamGet] =
-    useState<RUAppointmentParamGet>({
+  const [loading, setLoading] = useState<boolean>(false);
+  const [paramGet, setParamGet] =
+    useState<ParamGet>({
       PageIndex: 1,
       PageSize: 10,
-      CustomerId: "",
-    } as unknown as RUAppointmentParamGet);
+    } as unknown as ParamGet);
 
   const getData = async () => {
+    var customerId = "", userId = "";
     if (session?.user.roles.includes("Customer")) {
-      rUAppointmentParamGet.CustomerId = parseJwt(
-        session.user.access_token
-      ).UserId;
+      customerId = parseJwt(session.user.access_token).UserId;
+    } else if (session?.user.roles.includes("Tech")) {
+      userId = parseJwt(session.user.access_token).UserId
     }
+    setLoading(true);
     await dispatch(
       getListAppointment({
         token: session?.user.access_token!,
-        paramGet: { ...rUAppointmentParamGet },
+        paramGet: { ...paramGet, CustomerId: customerId, UserId: userId  },
       })
-    );
+    ).finally(() => {
+      setLoading(false);
+    });
   };
 
   // const createData = async (data: AppointmentCreateModel) => {
@@ -118,9 +120,15 @@ const Appoinment: React.FC = () => {
     if (session) {
       getData();
     }
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [session, rUAppointmentParamGet, openModalCreate]);
+  }, [session]);
+
+  useEffect(() => {
+    if (session) {
+      getData();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [openModalCreate]);
 
   return (
     <AntdLayoutNoSSR
@@ -164,25 +172,44 @@ const Appoinment: React.FC = () => {
                   updateData(data);
                 }}
               />
-              <AppointmentTable
-                typeGet="All"
-                urlOncell=""
-                onEdit={(record) => {
-                  setAppointmentUpdate(record);
-                }}
-                onDelete={async (record) => {
-                  deleteAppointment(record);
-                }}
-              />
+              {loading === true ? (
+                <>
+                  <Spin size="large" tip="Loading data...">
+                    <AppointmentTable
+                      typeGet="All"
+                      urlOncell=""
+                      onEdit={(record) => {
+                        setAppointmentUpdate(record);
+                      }}
+                      onDelete={async (record) => {
+                        deleteAppointment(record);
+                      }}
+                    />
+                  </Spin>
+                </>
+              ) : (
+                <>
+                  <AppointmentTable
+                    typeGet="All"
+                    urlOncell=""
+                    onEdit={(record) => {
+                      setAppointmentUpdate(record);
+                    }}
+                    onDelete={async (record) => {
+                      deleteAppointment(record);
+                    }}
+                  />
+                </>
+              )}
               {listAppointmentData?.totalPage > 0 && (
                 <Pagination
                   className="text-end m-4"
-                  current={rUAppointmentParamGet?.PageIndex}
+                  current={paramGet?.PageIndex}
                   pageSize={listAppointmentData?.pageSize ?? 10}
                   total={listAppointmentData?.totalSize}
                   onChange={(page, pageSize) => {
-                    setRUAppointmentParamGet({
-                      ...rUAppointmentParamGet,
+                    setParamGet({
+                      ...paramGet,
                       PageIndex: page,
                       PageSize: pageSize,
                     });

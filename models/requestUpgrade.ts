@@ -51,6 +51,7 @@ export interface RequestUpgradeRemoveModel {
 export interface RUAppointmentParamGet extends ParamGet {
   Id: number;
   CustomerId?: string;
+  UserId?: string;
 }
 
 export interface Descriptions {

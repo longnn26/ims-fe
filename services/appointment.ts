@@ -6,6 +6,7 @@ import {
   AppointmentUpdateModel,
   ParamGetExtend,
 } from "@models/appointment";
+import { ParamGet } from "@models/base";
 import { RequestExpandData } from "@models/requestExpand";
 import {
   RUAppointmentParamGet,
@@ -16,7 +17,7 @@ import httpClient from "@utils/http-client";
 
 const getListAppointments = async (
   token: string,
-  params: RUAppointmentParamGet
+  params: ParamGet
 ): Promise<AppointmentData> => {
   const response = await httpClient.get({
     url: apiLinks.appointment.get,
