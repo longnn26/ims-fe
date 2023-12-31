@@ -205,7 +205,9 @@ const ModalCreate: React.FC<Props> = (props) => {
                     const data = {
                       appointedCustomer:
                         form.getFieldValue("appointedCustomer"),
-                      dateAppointed: form.getFieldValue("dateAppointed"),
+                      dateAppointed: form
+                        .getFieldValue("dateAppointed")
+                        ?.format(dateAdvFormat),
                       reason: selectedReason,
                       note: form.getFieldValue("note"),
                       requestUpgradeIds:
@@ -274,7 +276,12 @@ const ModalCreate: React.FC<Props> = (props) => {
                 placeholder="Visit date"
                 showTime
                 format={dateAdvFormat}
-              />
+                onChange={(value) =>
+                  form.setFieldsValue({
+                    dateAppointed: value,
+                  })
+                }
+              />{" "}
             </Form.Item>
 
             <Form.Item
