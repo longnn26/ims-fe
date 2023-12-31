@@ -14,7 +14,7 @@ interface Props {
   onClose: () => void;
   // loadingSubmit: boolean;
   //Loading: sửa chỗ này
-  onSubmit: (isClose: boolean) => void;
+  onSubmit: () => void;
 }
 
 const ModalCreate: React.FC<Props> = (props) => {
@@ -125,6 +125,7 @@ const ModalCreate: React.FC<Props> = (props) => {
                           message.error(errors.response.data);
                         })
                         .finally(() => {
+                          onSubmit();
                           setLoadingSubmit(false);
                         });                  
                   },

@@ -234,11 +234,9 @@ const Customer: React.FC = () => {
             <ModalCreate
               open={openModalCreate}
               onClose={() => setOpenModalCreate(false)}
-              onSubmit={(data: SHCCreateModel) => {
-                data.serverAllocationId = parseInt(
-                  router.query!.serverAllocationId!.toString()
-                );
-                createData(data);
+              onSubmit={() => {
+                setOpenModalCreate(false);
+                getData();
               }}
             />
             <ModalUpdate
