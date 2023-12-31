@@ -101,19 +101,7 @@ const RequestUpgrade: React.FC = () => {
       }
     });
   };
-
-  const createData = async (data: RequestUpgradeCreateModel) => {
-    await requestUpgradeService
-      .createData(session?.user.access_token!, data)
-      .then((res) => {
-        message.success("Create successfully!");
-        getData();
-        setOpenModalCreate(false);
-      })
-      .catch((errors) => {
-        message.error(errors.response.data);
-      });
-  };
+  
   const removeData = async (data: RequestUpgradeRemoveModel) => {
     await requestUpgradeService
       .removeData(session?.user.access_token!, data)
@@ -126,21 +114,6 @@ const RequestUpgrade: React.FC = () => {
       })
       .finally(() => {
         setOpenModalCreate(false);
-      });
-  };
-
-  const updateData = async (data: RequestUpgradeUpdateModel) => {
-    await requestUpgradeService
-      .updateData(session?.user.access_token!, data)
-      .then((res) => {
-        message.success("Update successfully!");
-        getData();
-      })
-      .catch((errors) => {
-        message.error(errors.response.data);
-      })
-      .finally(() => {
-        setOpenModalUpdate(false);
       });
   };
 
@@ -251,11 +224,9 @@ const RequestUpgrade: React.FC = () => {
               setRequestUpgradeUpdate(undefined);
               setOpenModalUpdate(false);
             }}
-            onSubmit={(data: RequestUpgradeUpdateModel) => {
-              data.serverAllocationId = parseInt(
-                router.query!.serverAllocationId!.toString()
-              );
-              updateData(data);
+            onSubmit={() => {
+              setRequestUpgradeUpdate(undefined);
+              setOpenModalUpdate(false);
             }}
           />
           <ModalRemove
@@ -272,11 +243,9 @@ const RequestUpgrade: React.FC = () => {
           <ModalCreate
             open={openModalCreate}
             onClose={() => setOpenModalCreate(false)}
-            onSubmit={(data: RequestUpgradeCreateModel) => {
-              data.serverAllocationId = parseInt(
-                router.query!.serverAllocationId!.toString()
-              );
-              createData(data);
+            onSubmit={() => {
+              getData();
+              setOpenModalCreate(false);
             }}
           />
           {areInArray(

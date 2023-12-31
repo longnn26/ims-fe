@@ -1,10 +1,13 @@
 import React, { useRef, useState } from "react";
-import { Button, Input, Modal, Select, Space, Card } from "antd";
+import { Button, Input, Modal, Select, Space, Card, message } from "antd";
 import { Form } from "antd";
 import { CloseOutlined } from "@ant-design/icons";
 import useSelector from "@hooks/use-selector";
-import { RequestUpgradeUpdateModel } from "@models/requestUpgrade";
+import { RequestUpgradeCreateModel, RequestUpgradeUpdateModel } from "@models/requestUpgrade";
+import requestUpgradeService from "@services/requestUpgrade";
 import { title } from "process";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/router";
 const { Option } = Select;
 const { confirm } = Modal;
 
@@ -12,15 +15,19 @@ interface Props {
   open: boolean;
   onClose: () => void;
   // loadingSubmit: boolean;
-  onSubmit: (saCreateModel: RequestUpgradeUpdateModel) => void;
+  onSubmit: () => void;
 }
 
 const ModalCreate: React.FC<Props> = (props) => {
   const formRef = useRef(null);
+  const { data: session } = useSession();
+  const router = useRouter();
   const [form] = Form.useForm();
   const { onSubmit, open, onClose } = props;
 
   const [confirmLoading, setConfirmLoading] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [openModalCreate, setOpenModalCreate] = useState<boolean | undefined>(undefined);
   const { componentOptions } = useSelector((state) => state.component);
 
   const disabled = async () => {
@@ -39,10 +46,11 @@ const ModalCreate: React.FC<Props> = (props) => {
         title={
           <span className="inline-block m-auto">Create Request Upgrade</span>
         }
-        open={open}
+        open={openModalCreate === undefined ? open : openModalCreate}
         confirmLoading={confirmLoading}
         onCancel={() => {
           onClose();
+          setOpenModalCreate(undefined);
           form.resetFields();
         }}
         footer={[
@@ -56,38 +64,30 @@ const ModalCreate: React.FC<Props> = (props) => {
                   title: "Do you want to save?",
                   async onOk() {
                     const formData = {
-                      descriptions: form
-                        .getFieldValue("descriptions")
-                        .map((item, index) => ({
-                          serialNumber: form.getFieldValue([
-                            "descriptions",
-                            index,
-                            "serialNumber",
-                          ]),
-                          model: form.getFieldValue([
-                            "descriptions",
-                            index,
-                            "model",
-                          ]),
-                          capacity: form.getFieldValue([
-                            "descriptions",
-                            index,
-                            "capacity",
-                          ]),
-                          description: form.getFieldValue([
-                            "descriptions",
-                            index,
-                            "description",
-                          ]),
-                        })),
-                      componentId: form.getFieldValue("component").value,
-                    } as RequestUpgradeUpdateModel;
-
-                    // Call the provided onSubmit function with the formData
-                    onSubmit(formData);
-                    form.resetFields();
+                      description: form.getFieldValue("description"),
+                      componentId: form.getFieldValue("component"),
+                      serverAllocationId: parseInt(router.query.serverAllocationId+""),
+                      note: form.getFieldValue("note"),
+                    } as RequestUpgradeCreateModel;
+                    setLoading(true);
+                    await requestUpgradeService
+                      .createData(session?.user.access_token!, formData)
+                      .then((res) => {
+                        message.success("Create successfully!");
+                        form.resetFields();
+                        setOpenModalCreate(undefined);
+                        onClose();
+                      })
+                      .catch((errors) => {
+                        setOpenModalCreate(true);
+                        message.error(errors.response.data);
+                      })
+                      .finally(() => {
+                        onSubmit();
+                        setLoading(false);
+                      });
                   },
-                  onCancel() {},
+                  onCancel() { },
                 });
             }}
           >
@@ -108,137 +108,32 @@ const ModalCreate: React.FC<Props> = (props) => {
               name="component"
               label="Component"
               rules={[
-                { required: true, message: "Please select a component." },
-                ({ getFieldValue }) => ({
-                  validator(_, component) {
-                    const isRequired =
-                      getFieldValue("component").isRequired === true;
-                    const hasDescriptions =
-                      getFieldValue("descriptions")?.length > 0;
-                    if (isRequired && !hasDescriptions) {
-                      return Promise.reject(
-                        "At least one description is required for the selected component."
-                      );
-                    }
-
-                    return Promise.resolve();
-                  },
-                }),
+                { required: true, message: "Please select a hardware type." },
               ]}
             >
               <Select
                 allowClear
-                onSelect={(value, option) => {
-                  form.setFieldsValue({
-                    component: {
-                      value: value,
-                      label: option.label,
-                      isRequired: option.isRequired,
-                      requireCapacity: option.requireCapacity,
-                    },
-                  });
-                }}
+                placeholder="Select a hardware type."
               >
-                {componentOptions.map((l, index) => (
-                  <Option
-                    value={l.id}
-                    label={`${l.name} - ${
-                      l.isRequired == true ? "Required" : "Optional"
-                    } ${
-                      l.requireCapacity == true ? " - Capacity Required" : ""
-                    }`}
-                    key={index}
-                    isRequired={l?.isRequired}
-                    requireCapacity={l?.requireCapacity}
-                  >
-                    {`${l.name} - ${
-                      l.isRequired == true ? "Required" : "Optional"
-                    } ${
-                      l.requireCapacity == true ? " - Capacity Required" : ""
-                    }`}
-                  </Option>
-                ))}
+                <Option value={1}>CPU</Option>
+                <Option value={2}>Memory</Option>
+                <Option value={3}>Storage</Option>
               </Select>
             </Form.Item>
-            <Form.List name="descriptions">
-              {(fields, { add, remove }) => (
-                <div
-                  style={{
-                    display: "flex",
-                    rowGap: 16,
-                    flexDirection: "column",
-                  }}
-                >
-                  {fields.map((field) => (
-                    <Card
-                      size="small"
-                      title={`Hardware ${field.name + 1}`}
-                      key={field.key}
-                      extra={
-                        <CloseOutlined
-                          onClick={() => {
-                            remove(field.name);
-                          }}
-                        />
-                      }
-                    >
-                      <Form.Item
-                        label="Serial Number"
-                        name={[field.name, "serialNumber"]}
-                        rules={[{ required: true, min: 20, max: 255 }]}
-                      >
-                        <Input.TextArea
-                          autoSize={{ minRows: 1, maxRows: 6 }}
-                          allowClear
-                          placeholder="Serial Number"
-                        />
-                      </Form.Item>
-                      <Form.Item
-                        label="Model Name"
-                        name={[field.name, "model"]}
-                        rules={[{ required: true, min: 8, max: 255 }]}
-                      >
-                        <Input.TextArea
-                          autoSize={{ minRows: 1, maxRows: 6 }}
-                          allowClear
-                          placeholder="Model Name"
-                        />
-                      </Form.Item>
-                      {form.getFieldValue(["component", "requireCapacity"]) && (
-                        <Form.Item
-                          label="Capacity (GB)"
-                          name={[field.name, "capacity"]}
-                          rules={[
-                            {
-                              required: true,
-                              message: "Capacity is required",
-                            },
-                            {
-                              pattern: new RegExp(/^[0-9]+$/),
-                              message:
-                                "Capacity must be a number greater than 0",
-                            },
-                          ]}
-                        >
-                          <Input allowClear placeholder="Capacity (GB)" />
-                        </Form.Item>
-                      )}
-                      <Form.Item
-                        label="Description"
-                        name={[field.name, "description"]}
-                        rules={[{ max: 2000 }]}
-                      >
-                        <Input allowClear placeholder="Description" />
-                      </Form.Item>
-                    </Card>
-                  ))}
-
-                  <Button type="dashed" onClick={() => add()} block>
-                    + Add
-                  </Button>
-                </div>
-              )}
-            </Form.List>
+            <Form.Item
+              label="Description"
+              name="descrition"
+              rules={[{ required: true, min: 6, max: 2000 }]}
+            >
+              <Input allowClear placeholder="Description" />
+            </Form.Item>
+            <Form.Item
+              label="Note"
+              name="note"
+              rules={[{ max: 2000 }]}
+            >
+              <Input allowClear placeholder="Note" />
+            </Form.Item>
           </Form>
         </div>
       </Modal>

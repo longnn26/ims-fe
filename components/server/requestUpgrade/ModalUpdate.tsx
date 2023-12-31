@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { Button, Input, Modal, Select, Card } from "antd";
+import { Button, Input, Modal, Select, Card, message } from "antd";
 import { Form } from "antd";
 import { CloseOutlined } from "@ant-design/icons";
 import useSelector from "@hooks/use-selector";
@@ -9,6 +9,10 @@ import {
   RequestUpgrade,
   RequestUpgradeUpdateModel,
 } from "@models/requestUpgrade";
+import requestUpgradeService from "@services/requestUpgrade";
+import { useSession } from "next-auth/react";
+import { areInArray } from "@utils/helpers";
+import { ROLE_CUSTOMER, ROLE_SALES, ROLE_TECH } from "@utils/constants";
 const { Option } = Select;
 const { confirm } = Modal;
 
@@ -16,16 +20,19 @@ interface Props {
   open: boolean;
   requestUpgrade: RequestUpgrade;
   onClose: () => void;
-  onSubmit: (saCreateModel: RequestUpgradeUpdateModel) => void;
+  onSubmit: () => void;
 }
 
 const ModalUpdate: React.FC<Props> = (props) => {
   const formRef = useRef(null);
+  const { data: session } = useSession();
   const [form] = Form.useForm();
   const { onSubmit, requestUpgrade, onClose, open } = props;
 
   const [confirmLoading, setConfirmLoading] = useState(false);
   const { componentOptions } = useSelector((state) => state.component);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [openModalUpdate, setOpenModalUpdate] = useState<boolean | undefined>(undefined);
 
   const disabled = async () => {
     var result = false;
@@ -36,42 +43,14 @@ const ModalUpdate: React.FC<Props> = (props) => {
     }
     return result;
   };
-  const showAllDescriptions = () => {
-    const descriptions = form.getFieldValue("descriptions");
-  };
 
   const setFieldsValueInitial = () => {
-    var component = componentOptions.find(
-      (_) => _.id === requestUpgrade.component?.id
-    );
-
     if (formRef.current) {
       form.setFieldsValue({
-        id: requestUpgrade.id,
-        component: `${requestUpgrade.component.name} - ${
-          requestUpgrade.component.isRequired == true ? "Required" : "Optional"
-        } ${
-          requestUpgrade.component.requireCapacity == true
-            ? "- Capacity Required"
-            : ""
-        } `,
-        serverAllocationId: requestUpgrade.serverAllocationId,
-      });
-
-      const requireCapacity = component?.requireCapacity || false;
-
-      const descriptions = requestUpgrade.descriptions?.map(
-        (description, index) => ({
-          serialNumber: description.serialNumber,
-          model: description.model,
-          capacity: description.capacity,
-          description: description.description,
-        })
-      );
-
-      form.setFieldsValue({
-        descriptions: descriptions || [],
-        requireCapacity: requireCapacity,
+        description: requestUpgrade.description,
+        note: requestUpgrade.note,
+        saleNote: requestUpgrade.saleNote,
+        techNote: requestUpgrade.techNote,
       });
     }
   };
@@ -80,7 +59,6 @@ const ModalUpdate: React.FC<Props> = (props) => {
     // refresh after submit for fileList
     if (requestUpgrade && formRef.current) {
       setFieldsValueInitial();
-      showAllDescriptions();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [requestUpgrade]);
@@ -91,11 +69,12 @@ const ModalUpdate: React.FC<Props> = (props) => {
         title={
           <span className="inline-block m-auto">Update Request Upgrade</span>
         }
-        open={open}
+        open={openModalUpdate === undefined ? open : openModalUpdate}
         confirmLoading={confirmLoading}
         onCancel={() => {
           onClose();
-          // form.resetFields();
+          setOpenModalUpdate(undefined);
+          form.resetFields();
         }}
         footer={[
           <Button
@@ -108,37 +87,29 @@ const ModalUpdate: React.FC<Props> = (props) => {
                   title: "Do you want to save?",
                   async onOk() {
                     const formData = {
-                      descriptions: form
-                        .getFieldValue("descriptions")
-                        .map((item, index) => ({
-                          serialNumber: form.getFieldValue([
-                            "descriptions",
-                            index,
-                            "serialNumber",
-                          ]),
-                          model: form.getFieldValue([
-                            "descriptions",
-                            index,
-                            "model",
-                          ]),
-                          capacity: form.getFieldValue([
-                            "descriptions",
-                            index,
-                            "capacity",
-                          ]),
-                          description: form.getFieldValue([
-                            "descriptions",
-                            index,
-                            "description",
-                          ]),
-                        })),
-                      componentId: requestUpgrade.component.id,
                       id: requestUpgrade.id,
+                      description: form.getFieldValue("description"),
+                      note: form.getFieldValue("note") ? form.getFieldValue("note") : requestUpgrade.note,
+                      techNote: form.getFieldValue("techNote") ? form.getFieldValue("techNote") : requestUpgrade.techNote,
+                      saleNote: form.getFieldValue("saleNote") ? form.getFieldValue("saleNote") : requestUpgrade.saleNote,
                     } as RequestUpgradeUpdateModel;
-
-                    // Call the provided onSubmit function with the formData
-                    onSubmit(formData);
-                    //form.resetFields();
+                    await setLoading(true);
+                    await requestUpgradeService
+                    .updateData(session?.user.access_token!, formData)
+                    .then((res) => {
+                      message.success("Update successfully!");
+                      form.resetFields();
+                      setOpenModalUpdate(undefined);
+                      onClose();
+                    })
+                    .catch((errors) => {
+                      setOpenModalUpdate(true);
+                      message.error(errors.response.data);
+                    })
+                    .finally(() => {
+                      onSubmit();
+                      setLoading(false);
+                    });
                   },
                   onCancel() {},
                 });
@@ -161,106 +132,52 @@ const ModalUpdate: React.FC<Props> = (props) => {
               name="component"
               label="Component"
               rules={[
-                ({ getFieldValue }) => ({
-                  validator(_, component) {
-                    const isRequired =
-                      getFieldValue("component").isRequired === true;
-                    const hasDescriptions =
-                      getFieldValue("descriptions")?.length > 0;
-                    if (isRequired && !hasDescriptions) {
-                      return Promise.reject(
-                        "At least one description is required for the selected component."
-                      );
-                    }
-
-                    return Promise.resolve();
-                  },
-                }),
+                { required: true, message: "Please select a hardware type." },
               ]}
             >
-              <Input readOnly />
+              <Select
+                allowClear
+                placeholder="Select a hardware type."
+              >
+                <Option value={1}>CPU</Option>
+                <Option value={2}>Memory</Option>
+                <Option value={3}>Storage</Option>
+              </Select>
             </Form.Item>
-            <Form.List name="descriptions">
-              {(fields, { add, remove }) => (
-                <div
-                  style={{
-                    display: "flex",
-                    rowGap: 16,
-                    flexDirection: "column",
-                  }}
-                >
-                  {fields.map((field) => (
-                    <Card
-                      size="small"
-                      title={`Hardware ${field.name + 1}`}
-                      key={field.key}
-                      extra={
-                        fields.length > 1 && (
-                          <CloseOutlined
-                            onClick={() => {
-                              remove(field.name);
-                            }}
-                          />
-                        )
-                      }
-                    >
-                      <Form.Item
-                        label="Serial Number"
-                        name={[field.name, "serialNumber"]}
-                        rules={[{ required: true, min: 20, max: 255 }]}
-                      >
-                        <Input.TextArea
-                          autoSize={{ minRows: 1, maxRows: 6 }}
-                          allowClear
-                          placeholder="Serial Number"
-                        />
-                      </Form.Item>
-                      <Form.Item
-                        label="Model Name"
-                        name={[field.name, "model"]}
-                        rules={[{ required: true, min: 8, max: 255 }]}
-                      >
-                        <Input.TextArea
-                          autoSize={{ minRows: 1, maxRows: 6 }}
-                          allowClear
-                          placeholder="Model Name"
-                        />
-                      </Form.Item>
-                      {form.getFieldValue(["requireCapacity"]) && (
-                        <Form.Item
-                          label="Capacity (GB)"
-                          name={[field.name, "capacity"]}
-                          rules={[
-                            {
-                              required: true,
-                              message: "Capacity is required",
-                            },
-                            {
-                              pattern: new RegExp(/^[0-9]+$/),
-                              message:
-                                "Capacity must be a number greater than 0",
-                            },
-                          ]}
-                        >
-                          <Input allowClear placeholder="Capacity (GB)" />
-                        </Form.Item>
-                      )}
-                      <Form.Item
-                        label="Description"
-                        name={[field.name, "description"]}
-                        rules={[{ max: 2000 }]}
-                      >
-                        <Input allowClear placeholder="Description" />
-                      </Form.Item>
-                    </Card>
-                  ))}
-
-                  <Button type="dashed" onClick={() => add()} block>
-                    + Add Hardware
-                  </Button>
-                </div>
-              )}
-            </Form.List>
+            <Form.Item
+              label="Description"
+              name="descrition"
+              rules={[{ required: true, min: 6, max: 2000 }]}
+            >
+              <Input allowClear placeholder="Description" />
+            </Form.Item>
+            {areInArray(session?.user.roles!, ROLE_CUSTOMER) && (
+              <Form.Item
+                label="Note"
+                name="note"
+                rules={[{ max: 2000 }]}
+              >
+                <Input allowClear placeholder="Note" />
+              </Form.Item>
+            )}
+            {areInArray(session?.user.roles!, ROLE_SALES) && (
+              <Form.Item
+                label="Note"
+                name="saleNote"
+                rules={[{ required: true, max: 2000 }]}
+              >
+                <Input allowClear placeholder="Note" />
+              </Form.Item>
+            )}
+            {areInArray(session?.user.roles!, ROLE_TECH) && (
+              <Form.Item
+                label="Note"
+                name="techNote"
+                rules={[{required: true, max: 2000 }]}
+              >
+                <Input allowClear placeholder="Note" />
+              </Form.Item>
+            )}
           </Form>
         </div>
       </Modal>

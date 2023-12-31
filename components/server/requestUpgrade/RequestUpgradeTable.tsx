@@ -39,10 +39,7 @@ interface DataType {
   id: number;
   component: ComponentObj;
   requestType: string;
-  serialNumber: Descriptions[];
-  model: Descriptions[];
-  capacity: Descriptions[];
-  descriptions: Descriptions[];
+  description: string;
   serverAllocationId: number;
   componentId: number;
   status: string;
@@ -144,47 +141,6 @@ const RequestUpgradeTable: React.FC<Props> = (props) => {
     },
   ];
 
-  const expandedRowRender = (record: DataType) => {
-    const nestedColumns = [
-      {
-        title: "Serial Number",
-        dataIndex: "serialNumber",
-        key: "serialNumber",
-      },
-      {
-        title: "Model",
-        dataIndex: "model",
-        key: "model",
-      },
-      {
-        title: "Capacity",
-        dataIndex: "capacity",
-        key: "capacity",
-      },
-      {
-        title: "Description",
-        dataIndex: "description",
-        key: "description",
-      },
-    ];
-
-    const nestedData = record.serialNumber.map((des, index) => ({
-      key: index,
-      serialNumber: record.serialNumber[index].serialNumber,
-      model: record.model[index].model,
-      capacity: record.capacity[index].capacity,
-      description: record.descriptions[index].description,
-    }));
-
-    return (
-      <Table
-        columns={nestedColumns}
-        dataSource={nestedData}
-        pagination={false}
-      />
-    );
-  };
-
   const data: DataType[] = [];
   for (let i = 0; i < listData?.data?.length; ++i) {
     data.push({
@@ -195,10 +151,7 @@ const RequestUpgradeTable: React.FC<Props> = (props) => {
       serverAllocationId: listData?.data[i].serverAllocationId,
       componentId: listData?.data[i].componentId,
       status: listData?.data[i].status,
-      serialNumber: listData?.data[i].descriptions,
-      model: listData?.data[i].descriptions,
-      capacity: listData?.data[i].descriptions,
-      descriptions: listData?.data[i].descriptions,
+      description: listData?.data[i].description,
       dateCreated: moment(listData?.data[i].dateCreated).format(dateAdvFormat),
       dateUpdated: moment(listData?.data[i].dateUpdated).format(dateAdvFormat),
     });
@@ -213,7 +166,6 @@ const RequestUpgradeTable: React.FC<Props> = (props) => {
         loading={requestUpgradeDataLoading}
         columns={columns}
         dataSource={data}
-        expandable={{ expandedRowRender }}
         scroll={{ x: 1300 }}
         pagination={false}
         className="cursor-pointer"

@@ -37,25 +37,24 @@ const getDetail = async (token: string, id: string): Promise<Appointment> => {
 
 const getRequestUpgradesById = async (
   token: string,
-  params: ParamGetExtend
+  params: RUAppointmentParamGet
 ): Promise<RequestUpgradeData> => {
   const response = await httpClient.get({
-    url:
-      apiLinks.appointment.getRequestUpgradesById +
-      `/${params.Id}/RequestUpgrade`,
+    url: apiLinks.appointment.getRequestUpgradesById,
     token: token,
+    params: params,
   });
   return response.data;
 };
 
 const getRequestExpandsById = async (
   token: string,
-  params: ParamGetExtend
+  params: RUAppointmentParamGet
 ): Promise<RequestExpandData> => {
   const response = await httpClient.get({
-    url:
-      apiLinks.appointment.getRequestExpandById + `/${params.Id}/RequestExpand`,
+    url: apiLinks.appointment.getRequestExpandById,
     token: token,
+    params: params
   });
   return response.data;
 };

@@ -10,7 +10,7 @@ export interface RequestUpgrade extends BaseWithIdNumber {
   componentId: number;
   customer: Customer;
   component: ComponentObj;
-  descriptions: Descriptions[];
+  description: string;
   serverAllocationId: number;
   succeededAppointment: Appointment;
   note: string;
@@ -30,15 +30,17 @@ export interface RequestUpgradeData extends PagingModel {
 
 export interface RequestUpgradeCreateModel {
   componentId: number;
+  description: string;
+  note: string;
   serverAllocationId: number;
-  descriptions: Descriptions[];
 }
 
 export interface RequestUpgradeUpdateModel {
   id: number;
-  componentId: number;
-  descriptions: Descriptions[];
-  serverAllocationId: number;
+  description: string;
+  note: string;
+  saleNote: string;
+  techNote: string;
 }
 
 export interface RequestUpgradeRemoveModel {
@@ -52,6 +54,7 @@ export interface RUAppointmentParamGet extends ParamGet {
   Id: number;
   CustomerId?: string;
   UserId?: string;
+  AppointmentId?: number;
 }
 
 export interface Descriptions {

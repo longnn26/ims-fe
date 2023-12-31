@@ -36,6 +36,7 @@ import RequestUpgradeTable from "@components/server/requestUpgrade/RequestUpgrad
 import { AiOutlineFileDone } from "react-icons/ai";
 import { MdCancel } from "react-icons/md";
 import {
+  RUAppointmentParamGet,
   RequestUpgrade,
   RequestUpgradeUpdateModel,
 } from "@models/requestUpgrade";
@@ -64,18 +65,11 @@ const Appoinment: React.FC = () => {
   const [fileReceiptOfRecipient, setFileReceiptOfRecipient] = useState<
     UploadFile[]
   >([]);
-  const [paramGetExtend, setParamGetExtend] = useState<ParamGetExtend>({
+  const [paramGet, setParamGet] = useState<RUAppointmentParamGet>({
     PageIndex: 1,
     PageSize: 10,
-    id: router.query.appointmentId,
-  } as unknown as ParamGetExtend);
-
-  const [paramGetExpandExtend, setParamGetExpandExtend] =
-    useState<ParamGetExtend>({
-      PageIndex: 1,
-      PageSize: 10,
-      id: router.query.appointmentId,
-    } as unknown as ParamGetExtend);
+    AppoinmentId: router.query.appointmentId,
+  } as unknown as RUAppointmentParamGet);
 
   const [loadingUploadDocument, setLoadingUploadDocument] =
     useState<boolean>(false);
@@ -209,21 +203,18 @@ const Appoinment: React.FC = () => {
     if (router.query.appointmentId && session) {
       getData();
       handleBreadCumb();
-      paramGetExtend.Id = parseInt(router.query.appointmentId!.toString());
-      paramGetExpandExtend.Id = parseInt(
-        router.query.appointmentId!.toString()
-      );      
+      paramGet.AppointmentId = parseInt(router.query.appointmentId!.toString());
       dispatch(
         getRequestUpgradeData({
           token: session?.user.access_token!,
-          paramGet: { ...paramGetExtend },
+          paramGet: { ...paramGet },
         })
       );
 
       dispatch(
         getRequestExpandData({
           token: session?.user.access_token!,
-          paramGet: { ...paramGetExpandExtend },
+          paramGet: { ...paramGet },
         })
       );
     }
@@ -231,8 +222,7 @@ const Appoinment: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     session,
-    paramGetExtend,
-    paramGetExpandExtend,
+    paramGet,
     router.query.appointmentId,
   ]);
 
@@ -253,12 +243,12 @@ const Appoinment: React.FC = () => {
           {requestUpgradeData?.totalPage > 0 && (
             <Pagination
               className="text-end m-4"
-              current={paramGetExtend?.PageIndex}
+              current={paramGet?.PageIndex}
               pageSize={requestUpgradeData?.pageSize ?? 10}
               total={requestUpgradeData?.totalSize}
               onChange={(page, pageSize) => {
-                setParamGetExtend({
-                  ...paramGetExtend,
+                setParamGet({
+                  ...paramGet,
                   PageIndex: page,
                   PageSize: pageSize,
                 });
@@ -284,12 +274,12 @@ const Appoinment: React.FC = () => {
           {requestExpandData?.totalPage > 0 && (
             <Pagination
               className="text-end m-4"
-              current={paramGetExtend?.PageIndex}
+              current={paramGet?.PageIndex}
               pageSize={requestExpandData?.pageSize ?? 10}
               total={requestExpandData?.totalSize}
               onChange={(page, pageSize) => {
-                setParamGetExtend({
-                  ...paramGetExpandExtend,
+                setParamGet({
+                  ...paramGet,
                   PageIndex: page,
                   PageSize: pageSize,
                 });
@@ -396,21 +386,6 @@ const Appoinment: React.FC = () => {
               )}
 
               <Tabs className="m-5" defaultActiveKey="1" items={items} />
-              <ModalUpdate
-                open={openModalUpdate}
-                requestUpgrade={requestUpgradeUpdate!}
-                onClose={() => {
-                  setRequestUpgradeUpdate(undefined);
-                  setOpenModalUpdate(false);
-                }}
-                onSubmit={(data: RequestUpgradeUpdateModel) => {
-                  data.serverAllocationId = parseInt(
-                    router.query!.serverAllocationId!.toString()
-                  );
-                  updateRequestUpgrade(data);
-                }}
-              />
-
               <ModalComplete
                 open={openComplete}
                 appointment={appointmentDetail!}

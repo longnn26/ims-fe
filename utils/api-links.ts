@@ -88,8 +88,8 @@ const apiLinks = {
   appointment: {
     get: `${url}/api/Appointment`,
     getById: `${url}/api/Appointment`,
-    getRequestUpgradesById: `${url}/api/Appointment`,
-    getRequestExpandById: `${url}/api/Appointment`,
+    getRequestUpgradesById: `${url}/api/RequestUpgrade`,
+    getRequestExpandById: `${url}/api/RequestExpand`,
     upload: `${url}/api/Appointment`,
     accept: `${url}/api/Appointment`,
     deny: `${url}/api/Appointment`,
