@@ -19,7 +19,7 @@ const getData = async (
 ): Promise<RequestHostData> => {
   const response = await httpClient.get({
     token: token,
-    url: `${apiLinks.requestHost.get}/${id}/RequestHost`,
+    url: `${apiLinks.requestHost.get}`,
     params: params,
   });
   return response.data;

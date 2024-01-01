@@ -129,7 +129,7 @@ const apiLinks = {
   },
 
   requestHost: {
-    get: `${url}/api/ServerAllocation`,
+    get: `${url}/api/RequestHost`,
     getAll: `${url}/api/RequestHost`,
     getById: `${url}/api/RequestHost`,
     create: `${url}/api/RequestHost`,
