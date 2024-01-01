@@ -60,8 +60,8 @@ const RequestHostDetail: React.FC = () => {
   const [provideIpsData, setProvideIpsData] = useState<SuggestAdditionalModel>();
 
   const [itemBreadcrumbs, setItemBreadcrumbs] = useState<ItemType[]>([]);
-  const [requestHostUpdate, setRequestHostUpdate] = useState<RequestHost>();
-  const [requestHostUpdateRemoval, setRequestHostUpdateRemoval] = useState<RequestHost>();
+  const [requestHostUpdate, setRequestHostUpdate] = useState<boolean>();
+  const [requestHostUpdateRemoval, setRequestHostUpdateRemoval] = useState<boolean>();
   const [openModalDenyHost, setOpenModalDenyHost] = useState<boolean>(false);
   const [openModalRejectHost, setOpenModalRejectHost] = useState<boolean>(false);
   const [openModalCompleteHost, setOpenModalCompleteHost] = useState<boolean>(false);
@@ -115,13 +115,13 @@ const RequestHostDetail: React.FC = () => {
       .catch((errors) => {
         setServerAllocationDetail(undefined);
         setContent(errors.response.data);
-      });  
-    await serverHardwareConfig.getServerHardwareConfigData(
-        session?.user.access_token!,
-        {...paramGet, ServerAllocationId: serverAllocationDetail?.id!} as SHCParamGet
-      ).then((res) => {
-        setHardware(res);
       });
+    await serverHardwareConfig.getServerHardwareConfigData(
+      session?.user.access_token!,
+      { ...paramGet, ServerAllocationId: serverAllocationDetail?.id! } as SHCParamGet
+    ).then((res) => {
+      setHardware(res);
+    });
   };
 
   const checkPermission = () => {
@@ -240,6 +240,19 @@ const RequestHostDetail: React.FC = () => {
     checkPermission();
   }, [requestHostDetail]);
 
+  console.log(Boolean(
+    requestHostDetail?.status !== "Success" &&
+    requestHostDetail?.status !== "Failed" &&
+    areInArray(
+      session?.user.roles!,
+      ROLE_SALES,
+      ROLE_TECH,
+      ROLE_CUSTOMER
+    ) &&
+    permission &&
+    !(requestHostDetail?.status === "Accepted")
+  ), requestHostUpdate);
+
   if (requestHostDetail === undefined) {
     return (<AntdLayoutNoSSR
       content={
@@ -288,6 +301,7 @@ const RequestHostDetail: React.FC = () => {
                   {Boolean(
                     requestHostDetail?.status !== "Success" &&
                     requestHostDetail?.status !== "Failed" &&
+                    requestHostDetail?.isRemoval === false &&
                     areInArray(
                       session?.user.roles!,
                       ROLE_SALES,
@@ -299,10 +313,10 @@ const RequestHostDetail: React.FC = () => {
                   ) && (
                       <Button
                         type="primary"
-                        className="mb-2 mr-2"
+                        className="mb-2"
                         icon={<EditOutlined />}
-                        onClick={async () => {
-                          setRequestHostUpdate(requestHostDetail);
+                        onClick={() => {
+                          setRequestHostUpdate(true);
                         }}
                       >
                         Update
@@ -314,17 +328,17 @@ const RequestHostDetail: React.FC = () => {
                     areInArray(session?.user.roles!, ROLE_CUSTOMER, ROLE_SALES) &&
                     permission
                   ) && (
-                    <>
-                      <Button
-                        type="primary"
-                        className="mb-2"
-                        icon={<EditOutlined />}
-                        onClick={async () => {
-                          setRequestHostUpdateRemoval(requestHostDetail);
-                        }}
-                      >
-                        Update IP Removal Request
-                      </Button>
+                      <>
+                        <Button
+                          type="primary"
+                          className="mb-2"
+                          icon={<EditOutlined />}
+                          onClick={async () => {
+                            setRequestHostUpdateRemoval(true);
+                          }}
+                        >
+                          Update IP Removal Request
+                        </Button>
                       </>
                     )}
                   {Boolean(
@@ -338,7 +352,7 @@ const RequestHostDetail: React.FC = () => {
                         className="mb-2"
                         icon={<EditOutlined />}
                         onClick={async () => {
-                          setRequestHostUpdateRemoval(requestHostDetail);
+                          setRequestHostUpdateRemoval(true);
                         }}
                       >
                         Update IP Removal Request
@@ -502,26 +516,31 @@ const RequestHostDetail: React.FC = () => {
                         />
                       </>
                     )}
-                  <ModalUpdate
-                    requestHost={requestHostUpdate!}
-                    onClose={() => {
-                      setRequestHostUpdate(undefined);
-                    }}
-                    onSubmit={() => {
-                      getData();
-                      setRequestHostUpdateRemoval(undefined);
-                    }}
-                  />
-                  <ModalUpdateRemoval
-                    requestHost={requestHostUpdate!}
-                    onClose={() => {
-                      setRequestHostUpdateRemoval(undefined);
-                    }}
-                    onSubmit={() => {
-                      getData();
-                      setRequestHostUpdateRemoval(undefined);
-                    }}
-                  />
+                  {requestHostDetail.isRemoval === false ? (
+                    <ModalUpdate
+                    open={requestHostUpdate!}
+                      requestHost={requestHostDetail}
+                      onClose={() => {
+                        setRequestHostUpdate(false);
+                      }}
+                      onSubmit={() => {
+                        getData();
+                        setRequestHostUpdate(false);
+                      }}
+                    />
+                  ) : (
+                    <ModalUpdateRemoval
+                      open={requestHostUpdateRemoval!}
+                      requestHost={requestHostDetail!}
+                      onClose={() => {
+                        setRequestHostUpdateRemoval(false);
+                      }}
+                      onSubmit={() => {
+                        getData();
+                        setRequestHostUpdateRemoval(false);
+                      }}
+                    />
+                  )}
                 </>
               )}
           </>

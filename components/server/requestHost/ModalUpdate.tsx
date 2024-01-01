@@ -12,7 +12,8 @@ const { Option } = Select;
 const { confirm } = Modal;
 
 interface Props {
-  requestHost: RequestHostUpdateModel;
+  open: boolean;
+  requestHost: RequestHostUpdateModel | undefined;
   onClose: () => void;
   onSubmit: () => void;
 }
@@ -20,7 +21,7 @@ interface Props {
 const ModalUpdateRemoval: React.FC<Props> = (props) => {
   const formRef = useRef(null);
   const [form] = Form.useForm();
-  const { onSubmit, requestHost, onClose } = props;
+  const { onSubmit, requestHost, onClose, open } = props;
   const { data: session } = useSession();
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [selectedCapacities, setSelectedCapacities] = useState<number[]>(
@@ -64,15 +65,22 @@ const ModalUpdateRemoval: React.FC<Props> = (props) => {
     }
   }, [requestHost, requestType]);
 
+  useEffect(() => {
+    setFieldsValueInitial();
+    setHiddenQuantity(form.getFieldValue("type") === "Port");
+    if (requestHost) {
+      setSelectedCapacities(requestHost?.capacities || []);
+    }
+  }, [open]);
+
   return (
     <>
       <Modal
         title={<span className="inline-block m-auto">Update IP Request</span>}
-        open={Boolean(requestHost)}
+        open={open}
         confirmLoading={confirmLoading}
         onCancel={() => {
           onClose();
-          onSubmit();
           form.resetFields();
         }}
         footer={[

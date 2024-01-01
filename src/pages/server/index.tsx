@@ -17,7 +17,7 @@ import {
   ServerAllocation,
   ServerAllocationData,
 } from "@models/serverAllocation";
-import { Button, Pagination, message, Modal, Alert } from "antd";
+import { Button, Pagination, message, Modal, Alert, Tabs } from "antd";
 import ServerAllocationTable from "@components/server/ServerAllocationTable";
 import ModalCreate from "@components/server/ModalCreate";
 import serverAllocationService from "@services/serverAllocation";
@@ -177,6 +177,71 @@ const Customer: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session, customerSelectParamGet]);
 
+  // const items: TabsProps["items"] = [
+  //   {
+  //     key: "1",
+  //     label: "Request Upgrade",
+  //     children: (
+  //       <>
+  //         <RequestUpgradeTable
+  //           urlOncell=""
+  //           typeGet="ByAppointmentId"
+  //           onEdit={(value) => {
+  //             setRequestUpgradeUpdate(value);
+  //           }}
+  //           onDelete={(value) => {}}
+  //         />
+  //         {requestUpgradeData?.totalPage > 0 && (
+  //           <Pagination
+  //             className="text-end m-4"
+  //             current={paramGet?.PageIndex}
+  //             pageSize={requestUpgradeData?.pageSize ?? 10}
+  //             total={requestUpgradeData?.totalSize}
+  //             onChange={(page, pageSize) => {
+  //               setParamGet({
+  //                 ...paramGet,
+  //                 PageIndex: page,
+  //                 PageSize: pageSize,
+  //               });
+  //             }}
+  //           />
+  //         )}
+  //       </>
+  //     ),
+  //   },
+  //   {
+  //     key: "2",
+  //     label: "Request Expand",
+  //     children: (
+  //       <>
+  //         <RequestExpandTable
+  //           urlOncell=""
+  //           typeGet="ByAppointmentId"
+  //           onEdit={(value) => {
+  //             // setRequestUpgradeUpdate(value);
+  //           }}
+  //           onDelete={(value) => {}}
+  //         />
+  //         {requestExpandData?.totalPage > 0 && (
+  //           <Pagination
+  //             className="text-end m-4"
+  //             current={paramGet?.PageIndex}
+  //             pageSize={requestExpandData?.pageSize ?? 10}
+  //             total={requestExpandData?.totalSize}
+  //             onChange={(page, pageSize) => {
+  //               setParamGet({
+  //                 ...paramGet,
+  //                 PageIndex: page,
+  //                 PageSize: pageSize,
+  //               });
+  //             }}
+  //           />
+  //         )}
+  //       </>
+  //     ),
+  //   },
+  // ];
+
   return (
     <AntdLayoutNoSSR
       content={
@@ -199,6 +264,7 @@ const Customer: React.FC = () => {
               setParamGet({ ...paramGet, SearchValue: value })
             }
           />
+          {/* <Tabs className="m-5" defaultActiveKey="1" items={items} /> */}
           </div>
           {areInArray(
             session?.user.roles!,
