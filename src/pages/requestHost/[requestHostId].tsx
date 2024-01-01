@@ -242,27 +242,6 @@ const RequestDetail: React.FC = () => {
                       Provide Ips
                     </Button>
                   )}
-                  {Boolean(
-                    requestHostDetail?.status !== "Success" &&
-                      requestHostDetail?.status !== "Failed" &&
-                      areInArray(
-                        session?.user.roles!,
-                        ROLE_TECH,
-                        ROLE_SALES,
-                        ROLE_CUSTOMER
-                      )
-                  ) && (
-                    <Button
-                      type="primary"
-                      className="mb-2"
-                      icon={<EditOutlined />}
-                      onClick={async () => {
-                        setRequestHostUpdate(requestHostDetail);
-                      }}
-                    >
-                      Update
-                    </Button>
-                  )}
                 </div>
               </div>
 
@@ -370,16 +349,6 @@ const RequestDetail: React.FC = () => {
                   )}
                 </FloatButton.Group>
               )}
-              <ModalUpdate
-                requestHost={requestHostUpdate!}
-                onClose={() => {
-                  setRequestHostUpdate(undefined);
-                }}
-                onSubmit={() => {
-                  getData();
-                  setRequestHostUpdate(undefined);
-                }}
-              />
               <ModalDenyHost
                 open={openModalDenyHost}
                 onClose={() => setOpenModalDenyHost(false)}
