@@ -86,6 +86,7 @@ const ModalUpdateRemoval: React.FC<Props> = (props) => {
         PageSize: pageSize,
         ServerAllocationId: serverId,
         IsAssigned: true,
+        AssignmentTypes: requestHost?.type,
       } as IpAddressParamGet)
       .then(async (data) => {
         setTotalPage(data.totalPage);
@@ -98,16 +99,6 @@ const ModalUpdateRemoval: React.FC<Props> = (props) => {
   };
 
   useEffect(() => {
-    // Khi requestType thay đổi, reset selectedCapacities và hiển thị/ẩn quantity
-    setSelectedCapacities([]);
-    const filterIp =
-      requestType === "Additional"
-        ? ipAddresses.filter((l) => l.assignmentType === "Additional")
-        : ipAddresses.filter((l) => l.assignmentType === "Port");
-    setMaxQuantity(filterIp.length);
-  }, [requestType]);
-
-  useEffect(() => {
     session && getMoreIp(0, []);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -115,18 +106,6 @@ const ModalUpdateRemoval: React.FC<Props> = (props) => {
 
   useEffect(() => {
     setFieldsValueInitial();
-    setHiddenQuantity(form.getFieldValue("type") === "Port");
-    if (requestHost) {
-      setSelectedCapacities(requestHost?.capacities || []);
-    }
-  }, [requestHost, requestType]);
-
-  useEffect(() => {
-    setFieldsValueInitial();
-    setHiddenQuantity(form.getFieldValue("type") === "Port");
-    if (requestHost) {
-      setSelectedCapacities(requestHost?.capacities || []);
-    }
   }, [open]);
 
   return (
