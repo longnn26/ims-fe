@@ -79,7 +79,7 @@ const ModalUpdateRemoval: React.FC<Props> = (props) => {
       setRequestType(requestHost.type);
     }
   };
-  const getMoreIp = async (pageIndexInp?: number, ip?: IpAddress[]) => {
+  const getMoreIp = async (pageIndexInp?: number) => {
     await ipAddress
       .getData(session?.user.access_token!, {
         PageIndex: pageIndexInp === 0 ? pageIndexInp : pageIndex + 1,
@@ -91,16 +91,14 @@ const ModalUpdateRemoval: React.FC<Props> = (props) => {
       .then(async (data) => {
         setTotalPage(data.totalPage);
         setPageIndex(data.pageIndex);
-        ip
-          ? setIpAddresses([...ip, ...data.data])
-          : setIpAddresses([...ipAddresses, ...data.data]);
-        setMaxQuantity(ipAddresses.length);
+        setIpAddresses([...data.data])
       });
   };
 
   useEffect(() => {
-    session && getMoreIp(0, []);
-
+    if (session){
+      setFieldsValueInitial();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session]);
 
