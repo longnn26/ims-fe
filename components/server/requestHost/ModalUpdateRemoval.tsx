@@ -152,7 +152,7 @@ const ModalUpdateRemoval: React.FC<Props> = (props) => {
                     let formData: RequestHostUpdateModel;
                     let ipData: number[];
                     const submittedCapacities =
-                      form.getFieldValue("type") === "Additional"
+                      requestHost?.type === "Additional"
                         ? undefined
                         : selectedCapacities;
                     ipData = form
