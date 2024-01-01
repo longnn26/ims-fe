@@ -93,7 +93,7 @@ const ServerAllocationTable: React.FC<Props> = (props) => {
       render: (record: ServerAllocation) => (
         <Space wrap>
           <Tooltip title="View detail" color={"black"}>
-            <Button onClick={() => router.push(`${urlOncell}/server/${record.id}`)}>
+            <Button onClick={() => router.push(`/server/${record.id}`)}>
               <BiSolidCommentDetail />
             </Button>
           </Tooltip>
