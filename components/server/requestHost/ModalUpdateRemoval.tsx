@@ -104,7 +104,11 @@ const ModalUpdateRemoval: React.FC<Props> = (props) => {
 
   useEffect(() => {
     setFieldsValueInitial();
-  }, [open]);
+  }, [open]);  
+
+  useEffect(() => {
+    setFieldsValueInitial();
+  }, [initialIp]);
 
   return (
     <>
