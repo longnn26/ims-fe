@@ -212,7 +212,7 @@ const ModalCreate: React.FC<Props> = (props) => {
                                 {`${l.address} - ${
                                   l.capacity! === 0.1
                                     ? "100 Mbps"
-                                    : "1 GB (mai Vỹ sửa API khúc lày)"
+                                    : "1 GBps"
                                 }`}
                               </Option>
                             ))}

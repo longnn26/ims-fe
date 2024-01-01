@@ -240,19 +240,6 @@ const RequestHostDetail: React.FC = () => {
     checkPermission();
   }, [requestHostDetail]);
 
-  console.log(Boolean(
-    requestHostDetail?.status !== "Success" &&
-    requestHostDetail?.status !== "Failed" &&
-    areInArray(
-      session?.user.roles!,
-      ROLE_SALES,
-      ROLE_TECH,
-      ROLE_CUSTOMER
-    ) &&
-    permission &&
-    !(requestHostDetail?.status === "Accepted")
-  ), requestHostUpdate);
-
   if (requestHostDetail === undefined) {
     return (<AntdLayoutNoSSR
       content={

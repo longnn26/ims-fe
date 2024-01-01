@@ -7,6 +7,10 @@ import { useSession } from "next-auth/react";
 import { ROLE_CUSTOMER, ROLE_SALES, ROLE_TECH } from "@utils/constants";
 import requestHostService from "@services/requestHost";
 import serverAllocation from "@services/serverAllocation";
+import ipAddress from "@services/ipAddress";
+import { IpAddress, IpAddressParamGet } from "@models/ipAddress";
+import { useRouter } from "next/router";
+import { error } from "console";
 
 const { Option } = Select;
 const { confirm } = Modal;
@@ -20,6 +24,7 @@ interface Props {
 
 const ModalUpdateRemoval: React.FC<Props> = (props) => {
   const formRef = useRef(null);
+  const router = useRouter();
   const [form] = Form.useForm();
   const { onSubmit, requestHost, onClose, open } = props;
   const { data: session } = useSession();
@@ -30,6 +35,14 @@ const ModalUpdateRemoval: React.FC<Props> = (props) => {
   const [hiddenQuantity, setHiddenQuantity] = useState(false);
   const [requestType, setRequestType] = useState<string | undefined>(undefined);
   const [loading, setLoading] = useState<boolean>(false);
+  const [ipAddresses, setIpAddresses] = useState<IpAddress[]>([]);
+  const [pageSize, setPageSize] = useState<number>(6);
+  const [totalPage, setTotalPage] = useState<number>(2);
+  const [pageIndex, setPageIndex] = useState<number>(0);
+  const [maxQuantity, setMaxQuantity] = useState<number>(1);
+  const serverId = parseInt(router.query.serverAllocationId + "");
+  const [openModal, setOpenModal] = useState<boolean | undefined>(undefined);
+  const [initialIp, setInitialIp] = useState<IpAddress[]>([]);
 
   const disabled = async () => {
     var result = false;
@@ -43,19 +56,62 @@ const ModalUpdateRemoval: React.FC<Props> = (props) => {
 
   const setFieldsValueInitial = () => {
     if (formRef.current && requestHost) {
+      ipAddress.getData(
+        session?.user.access_token!,
+        {
+          RequestHostId: requestHost.id!,
+        } as IpAddressParamGet
+      ).then((res) => {
+        setInitialIp(res.data);
+      })
       const initialValues = {
         id: requestHost.id,
         note: requestHost.note,
         saleNote: requestHost.saleNote,
         techNote: requestHost.techNote,
         quantity: requestHost.quantity,
-        type: requestHost.type,
+        type: requestHost.type === "Additional" ? "IP" : "Port",
         // capacities: requestHost?.capacities || [],
         capacities: requestHost?.capacities?.map((value) => ({ value })) || [],
+        ipAddressIds: initialIp.map((i) => ({ label: i.address, value: i.id })),
       };
       form.setFieldsValue(initialValues);
+      setRequestType(requestHost.type);
     }
   };
+  const getMoreIp = async (pageIndexInp?: number, ip?: IpAddress[]) => {
+    await ipAddress
+      .getData(session?.user.access_token!, {
+        PageIndex: pageIndexInp === 0 ? pageIndexInp : pageIndex + 1,
+        PageSize: pageSize,
+        ServerAllocationId: serverId,
+        IsAssigned: true,
+      } as IpAddressParamGet)
+      .then(async (data) => {
+        setTotalPage(data.totalPage);
+        setPageIndex(data.pageIndex);
+        ip
+          ? setIpAddresses([...ip, ...data.data])
+          : setIpAddresses([...ipAddresses, ...data.data]);
+        setMaxQuantity(ipAddresses.length);
+      });
+  };
+
+  useEffect(() => {
+    // Khi requestType thay đổi, reset selectedCapacities và hiển thị/ẩn quantity
+    setSelectedCapacities([]);
+    const filterIp =
+      requestType === "Additional"
+        ? ipAddresses.filter((l) => l.assignmentType === "Additional")
+        : ipAddresses.filter((l) => l.assignmentType === "Port");
+    setMaxQuantity(filterIp.length);
+  }, [requestType]);
+
+  useEffect(() => {
+    session && getMoreIp(0, []);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [session]);
 
   useEffect(() => {
     setFieldsValueInitial();
@@ -77,10 +133,11 @@ const ModalUpdateRemoval: React.FC<Props> = (props) => {
     <>
       <Modal
         title={<span className="inline-block m-auto">Update IP Removal Request</span>}
-        open={open}
+        open={openModal === undefined ? open : openModal}
         confirmLoading={confirmLoading}
         onCancel={() => {
           onClose();
+          setOpenModal(undefined);
           form.resetFields();
         }}
         footer={[
@@ -92,35 +149,51 @@ const ModalUpdateRemoval: React.FC<Props> = (props) => {
                 confirm({
                   title: "Do you want to save?",
                   async onOk() {
+                    let formData: RequestHostUpdateModel;
+                    let ipData: number[];
                     const submittedCapacities =
                       form.getFieldValue("type") === "Additional"
-                        ? null
+                        ? undefined
                         : selectedCapacities;
-                    const data = {
-                      id: form.getFieldValue("id"),
+                    ipData = form
+                      .getFieldValue("ipAddressIds")
+                      ?.map((l) => l.value);
+                    form.resetFields();
+                    formData = {
+                      id: requestHost?.id,
                       saleNote: form.getFieldValue("saleNote"),
                       techNote: form.getFieldValue("techNote"),
                       quantity: submittedCapacities
                         ? submittedCapacities.length
-                        : form.getFieldValue("quantity"), // Cập nhật quantity
+                        : ipData.length,
                       note: form.getFieldValue("note"),
-                      type: form.getFieldValue("type"),
+                      type: requestHost?.type,
                       capacities: submittedCapacities,
                     } as RequestHostUpdateModel;
                     setLoading(true);
                     await requestHostService
-                      .updateData(session?.user.access_token!, data)
+                      .updateData(session?.user.access_token!, formData)
                       .then(async (res) => {
-                        message.success("Update successfully!");
-                        form.resetFields();
-                        onClose();
+                        await requestHostService.saveProvideIps(
+                          session?.user.access_token!,
+                          requestHost?.id!,
+                          ipData,
+                        ).then((res) => {
+                          message.success("Update successfully!");
+                          form.resetFields();
+                          setOpenModal(undefined);
+                          onClose();
+                        }).catch((errors) => {
+                          setOpenModal(true);
+                          message.error(errors.response.data);
+                        }).finally(() => {
+                          onSubmit();
+                          setLoading(false);
+                        });
                       })
                       .catch((errors) => {
+                        setOpenModal(true);
                         message.error(errors.response.data);
-                      })
-                      .finally(() => {
-                        onSubmit();
-                        setLoading(false);
                       });
                   },
                   onCancel() { },
@@ -133,221 +206,81 @@ const ModalUpdateRemoval: React.FC<Props> = (props) => {
         ]}
       >
         <div className="flex max-w-md flex-col gap-4 m-auto">
-          {loading === true ? (
+          <Form
+            ref={formRef}
+            form={form}
+            labelCol={{ span: 8 }}
+            wrapperCol={{ span: 16 }}
+            style={{ width: "100%" }}
+            name="dynamic_form_complex"
+          >
+            <Form.Item
+              name="type"
+              label="Remove Type"
+            >
+              <Input readOnly></Input>
+            </Form.Item>
             <>
-              <Spin size="large" tip="Updating data...">
-                <Form
-                  ref={formRef}
-                  form={form}
-                  labelCol={{ span: 8 }}
-                  wrapperCol={{ span: 16 }}
-                  style={{ width: "100%" }}
-                >
-                  {!hiddenQuantity && (
-                    <Form.Item
-                      label="Quantity IP"
-                    >
-                      <Input placeholder="Quantity IP" allowClear />
-                    </Form.Item>
-                  )}
-                  {form.getFieldValue("type") === "Port" && (
-                    <Form.Item
-                      label="Capacity"
-                      initialValue={selectedCapacities}
-                    >
-                      <Form.List name="">
-                        {(fields, { add, remove }) => (
-                          <div>
-                            {fields.map(({ key, name, fieldKey, ...restField }) => (
-                              <Space
-                                key={key}
-                                style={{ display: "flex", marginBottom: 8 }}
-                                align="baseline"
-                              >
-                                <Form.Item
-                                  {...restField}
-                                  rules={[
-                                    { required: true, message: "Missing capacity" },
-                                  ]}
-                                >
-                                  <Select
-                                    placeholder="Choose Capacity"
-                                    onChange={(value: number) => {
-                                      setSelectedCapacities((prevCapacities) => {
-                                        const updatedCapacities = [...prevCapacities];
-                                        updatedCapacities[
-                                          fields.findIndex(
-                                            (field) => field.key === key
-                                          )
-                                        ] = value;
-                                        return updatedCapacities;
-                                      });
-                                    }}
-                                    style={{ width: "250px" }}
-                                  >
-                                    <Option value={0.1}>100 MB</Option>
-                                    <Option value={1}>1 GB</Option>
-                                  </Select>
-                                </Form.Item>
-                                <CloseOutlined onClick={() => remove(name)} />
-                              </Space>
-                            ))}
-                            <Button type="dashed" onClick={() => add()} block>
-                              + Add Capacity
-                            </Button>
-                          </div>
-                        )}
-                      </Form.List>
-                    </Form.Item>
-                  )}
-
-                  {areInArray(session?.user.roles!, ROLE_SALES) && (
-                    <Form.Item
-                      label="Sale Note"
-                    >
-                      <Input placeholder="Sale Note" allowClear />
-                    </Form.Item>
-                  )}
-                  {areInArray(session?.user.roles!, ROLE_TECH) && (
-                    <Form.Item
-                      label="Tech Note"
-                    >
-                      <Input placeholder="Tech Note" allowClear />
-                    </Form.Item>
-                  )}
-                  {areInArray(session?.user.roles!, ROLE_CUSTOMER) && (
-                    <Form.Item
-                      label="Note"
-                    >
-                      <Input placeholder="Note" allowClear />
-                    </Form.Item>
-                  )}
-                </Form></Spin>
-            </>
-          ) : (
-            <>
-              <Form
-                ref={formRef}
-                form={form}
-                labelCol={{ span: 8 }}
-                wrapperCol={{ span: 16 }}
-                style={{ width: "100%" }}
-              >
-                {!hiddenQuantity && (
+              {requestType && (
+                <>
                   <Form.Item
-                    name="quantity"
-                    label="Quantity IP"
+                    name="ipAddressIds"
+                    label="IP Addresses"
+                    labelAlign="right"
                     rules={[
                       {
                         required: true,
-                      },
-                      {
-                        pattern: new RegExp(/^[0-9]+$/),
-                        message: "Quantity IP must be a number",
+                        message: "IP Addresses must not empty!",
                       },
                     ]}
                   >
-                    <Input placeholder="Quantity IP" allowClear />
-                  </Form.Item>
-                )}
-                {form.getFieldValue("type") === "Port" && (
-                  <Form.Item
-                    label="Capacity"
-                    name="capacities"
-                    initialValue={selectedCapacities}
-                  >
-                    <Form.List name="capacities">
-                      {(fields, { add, remove }) => (
-                        <div>
-                          {fields.map(({ key, name, fieldKey, ...restField }) => (
-                            <Space
-                              key={key}
-                              style={{ display: "flex", marginBottom: 8 }}
-                              align="baseline"
-                            >
-                              <Form.Item
-                                {...restField}
-                                name={[name, "value"]}
-                                rules={[
-                                  { required: true, message: "Missing capacity" },
-                                ]}
-                              >
-                                <Select
-                                  placeholder="Choose Capacity"
-                                  onChange={(value: number) => {
-                                    setSelectedCapacities((prevCapacities) => {
-                                      const updatedCapacities = [...prevCapacities];
-                                      updatedCapacities[
-                                        fields.findIndex(
-                                          (field) => field.key === key
-                                        )
-                                      ] = value;
-                                      return updatedCapacities;
-                                    });
-                                  }}
-                                  style={{ width: "250px" }}
-                                >
-                                  <Option value={0.1}>100 MB</Option>
-                                  <Option value={1}>1 GB</Option>
-                                </Select>
-                              </Form.Item>
-                              <CloseOutlined onClick={() => remove(name)} />
-                            </Space>
+                    <Select
+                      mode="multiple"
+                      labelInValue
+                      placeholder="Please select IPs to remove"
+                      allowClear
+                      listHeight={160}
+                      onChange={(res) => { }}
+                      onPopupScroll={async (e: any) => {
+                        const { target } = e;
+                        if (
+                          (target as any).scrollTop +
+                          (target as any).offsetHeight ===
+                          (target as any).scrollHeight
+                        ) {
+                          if (pageIndex < totalPage) {
+                            getMoreIp(serverId!);
+                          }
+                        }
+                      }}
+                    >
+                      {requestType === "Additional"
+                        ? ipAddresses
+                          .filter((l) => l.assignmentType === "Additional")
+                          .map((l, index) => (
+                            <Option value={l.id} key={index}>
+                              {`${l.address}`}
+                            </Option>
+                          ))
+                        : ipAddresses
+                          .filter((l) => l.assignmentType === "Port")
+                          .map((l, index) => (
+                            <Option value={l.id} key={index}>
+                              {`${l.address} - ${l.capacity! === 0.1
+                                ? "100 Mbps"
+                                : "1 GBps"
+                                }`}
+                            </Option>
                           ))}
-                          <Button type="dashed" onClick={() => add()} block>
-                            + Add Capacity
-                          </Button>
-                        </div>
-                      )}
-                    </Form.List>
+                    </Select>
                   </Form.Item>
-                )}
-
-                {areInArray(session?.user.roles!, ROLE_SALES) && (
-                  <Form.Item
-                    name="saleNote"
-                    label="Sale Note"
-                    rules={[
-                      {
-                        pattern: new RegExp(/^\b(\w+\W*){1,2000}\b/),
-                        message: "Sale note no more than 2000 words",
-                      },
-                    ]}
-                  >
-                    <Input placeholder="Sale Note" allowClear />
-                  </Form.Item>
-                )}
-                {areInArray(session?.user.roles!, ROLE_TECH) && (
-                  <Form.Item
-                    name="techNote"
-                    label="Tech Note"
-                    rules={[
-                      {
-                        pattern: new RegExp(/^\b(\w+\W*){1,2000}\b/),
-                        message: "Sale note no more than 2000 words",
-                      },
-                    ]}
-                  >
-                    <Input placeholder="Tech Note" allowClear />
-                  </Form.Item>
-                )}
-                {areInArray(session?.user.roles!, ROLE_CUSTOMER) && (
-                  <Form.Item
-                    name="note"
-                    label="Note"
-                    rules={[
-                      {
-                        pattern: new RegExp(/^\b(\w+\W*){1,2000}\b/),
-                        message: "Sale note no more than 2000 words",
-                      },
-                    ]}
-                  >
-                    <Input placeholder="Note" allowClear />
-                  </Form.Item>
-                )}
-              </Form>
+                </>
+              )}
             </>
-          )}
+            <Form.Item name="note" label="Note" rules={[{ max: 2000 }]}>
+              <Input placeholder="Note" allowClear />
+            </Form.Item>
+          </Form>
         </div>
       </Modal>
     </>
