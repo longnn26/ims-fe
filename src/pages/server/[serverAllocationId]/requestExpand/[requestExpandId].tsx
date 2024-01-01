@@ -38,6 +38,8 @@ import { areInArray } from "@utils/helpers";
 import { ROLE_CUSTOMER, ROLE_SALES, ROLE_TECH } from "@utils/constants";
 import ModalEmpty from "@components/ModalEmpty";
 import ModalDeny from "@components/server/requestExpand/ModalDeny";
+import serverHardwareConfig from "@services/serverHardwareConfig";
+import { ServerHardwareConfigData, SHCParamGet } from "@models/serverHardwareConfig";
 
 const { confirm } = Modal;
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
@@ -68,6 +70,11 @@ const RequestExpandDetail: React.FC = () => {
   const [openModalDeny, setOpenModalDeny] = useState<boolean>(false);
   const [permission, setPermission] = useState<boolean>(true);
   const [content, setContent] = useState<string>("");
+  const [paramGet, setParamGet] = useState<SHCParamGet>({
+    PageIndex: 1,
+    PageSize: 10,
+  } as unknown as SHCParamGet);
+  const [hardware, setHardware] = useState<ServerHardwareConfigData>();
 
   const getData = async () => {
     await requestExpandService
@@ -91,6 +98,12 @@ const RequestExpandDetail: React.FC = () => {
       .catch((errors) => {
         setServerAllocationDetail(undefined);
         setContent(errors.response.data);
+      });
+      await serverHardwareConfig.getServerHardwareConfigData(
+        session?.user.access_token!,
+        {...paramGet, ServerAllocationId: serverAllocationDetail?.id!} as SHCParamGet
+      ).then((res) => {
+        setHardware(res);
       });
   };
 
@@ -364,7 +377,7 @@ const RequestExpandDetail: React.FC = () => {
                   <div className="md:flex">
                     <ServerDetail
                       serverAllocationDetail={serverAllocationDetail!}
-                      hardware={undefined}
+                      hardware={hardware!}
                     ></ServerDetail>
                     <RequestExpandDetailInfor
                       requestExpandDetail={requestExpandDetail!}

@@ -41,6 +41,8 @@ import RequestHostIPAddressTable from "@components/server/requestHost/RequestHos
 import ModalCreateRemoval from "@components/server/requestHost/ModalCreateRemoval";
 import { IpAddressParamGet } from "@models/ipAddress";
 import ModalUpdateRemoval from "@components/server/requestHost/ModalUpdateRemoval";
+import serverHardwareConfig from "@services/serverHardwareConfig";
+import { ServerHardwareConfigData, SHCParamGet } from "@models/serverHardwareConfig";
 
 const { confirm } = Modal;
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
@@ -86,6 +88,11 @@ const RequestHostDetail: React.FC = () => {
     useState<boolean>(false);
   const [permission, setPermission] = useState<boolean>(true);
   const [content, setContent] = useState<string>("");
+  const [paramGet, setParamGet] = useState<SHCParamGet>({
+    PageIndex: 1,
+    PageSize: 10,
+  } as unknown as SHCParamGet);
+  const [hardware, setHardware] = useState<ServerHardwareConfigData>();
 
   const getData = async () => {
     await requestHost
@@ -108,6 +115,12 @@ const RequestHostDetail: React.FC = () => {
       .catch((errors) => {
         setServerAllocationDetail(undefined);
         setContent(errors.response.data);
+      });  
+    await serverHardwareConfig.getServerHardwareConfigData(
+        session?.user.access_token!,
+        {...paramGet, ServerAllocationId: serverAllocationDetail?.id!} as SHCParamGet
+      ).then((res) => {
+        setHardware(res);
       });
   };
 
@@ -345,7 +358,7 @@ const RequestHostDetail: React.FC = () => {
                   <div className="md:flex">
                     <ServerDetail
                       serverAllocationDetail={serverAllocationDetail!}
-                      hardware={undefined}
+                      hardware={hardware!}
                     ></ServerDetail>
                     <RequestHostDetailInfor
                       requestHostDetail={requestHostDetail!}

@@ -37,6 +37,8 @@ import type { UploadFile } from "antd/es/upload/interface";
 import { CaretLeftOutlined, UploadOutlined } from "@ant-design/icons";
 import { ROLE_CUSTOMER, ROLE_SALES, ROLE_TECH } from "@utils/constants";
 import { areInArray } from "@utils/helpers";
+import serverHardwareConfig from "@services/serverHardwareConfig";
+import { ServerHardwareConfigData, SHCParamGet } from "@models/serverHardwareConfig";
 
 const { confirm } = Modal;
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
@@ -70,6 +72,10 @@ const RequestDetail: React.FC = () => {
       PageSize: 10,
       RequestHostId: router.query.requestHostId ?? -1,
     } as unknown as RUIpAdressParamGet);
+    const [paramGet, setParamGet] = useState<SHCParamGet>({
+        PageIndex: 1,
+        PageSize: 10,
+      } as unknown as SHCParamGet);
 
   const [provideIpsParamGet, setProvideIpsParamGet] =
     useState<ParamGetSuggestAdditional>({
@@ -83,6 +89,7 @@ const RequestDetail: React.FC = () => {
     useState<boolean>(false);
   const [disabledInspectionReport, setDisabledInspectionReport] =
     useState<boolean>(false);
+    const [hardware, setHardware] = useState<ServerHardwareConfigData>();
 
   const getData = async () => {
     await requestHostService
@@ -98,6 +105,12 @@ const RequestDetail: React.FC = () => {
           });
         setRequestHostDetail(res);
       });
+    await serverHardwareConfig.getServerHardwareConfigData(
+      session?.user.access_token!,
+      { ...paramGet, ServerAllocationId: serverAllocationDetail?.id! } as SHCParamGet
+    ).then((res) => {
+      setHardware(res);
+    });
   };
 
   const updateData = async (data: RequestHostUpdateModel) => {
@@ -256,7 +269,7 @@ const RequestDetail: React.FC = () => {
               <div className="md:flex">
                 <ServerDetail
                   serverAllocationDetail={serverAllocationDetail!}
-                  hardware={undefined}
+                  hardware={hardware!}
                 ></ServerDetail>
                 <RequestHostDetailInfor
                   requestHostDetail={requestHostDetail!}

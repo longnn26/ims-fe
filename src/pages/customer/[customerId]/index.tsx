@@ -97,9 +97,6 @@ const Customer: React.FC = () => {
   const handleBreadCumb = () => {
     var itemBrs = [] as ItemType[];
     var items = router.asPath.split("/").filter((_) => _ != "");
-    if (customerDetail?.companyName) {
-      items.push(customerDetail?.companyName);
-    }
     var path = "";
     items.forEach((element) => {
       if (element !== customerDetail?.id + "") {
@@ -107,6 +104,12 @@ const Customer: React.FC = () => {
         itemBrs.push({
           href: path,
           title: element,
+        });
+      } else {
+        path += `/${element}`;
+        itemBrs.push({
+          href: path,
+          title: customerDetail?.companyName,
         });
       }
     });

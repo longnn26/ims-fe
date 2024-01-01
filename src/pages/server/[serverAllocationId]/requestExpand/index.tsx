@@ -33,6 +33,8 @@ import React, { useEffect, useState } from "react";
 import { AiOutlineFileDone } from "react-icons/ai";
 import { MdCancel } from "react-icons/md";
 import { IoIosSend } from "react-icons/io";
+import { SHCParamGet, ServerHardwareConfigData } from "@models/serverHardwareConfig";
+import serverHardwareConfig from "@services/serverHardwareConfig";
 
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
@@ -56,6 +58,11 @@ const RequestExpand: React.FC = () => {
   const [openModalCreate, setOpenModalCreate] = useState<boolean>(false);
   const [serverAllocationDetail, setServerAllocationDetail] =
     useState<ServerAllocation>();
+  const [param, setParam] = useState<SHCParamGet>({
+      PageIndex: 1,
+      PageSize: 10,
+    } as unknown as SHCParamGet);
+    const [hardware, setHardware] = useState<ServerHardwareConfigData>();
 
   const [itemBreadcrumbs, setItemBreadcrumbs] = useState<ItemType[]>([]);
 
@@ -74,6 +81,12 @@ const RequestExpand: React.FC = () => {
       )
       .then((res) => {
         setServerAllocationDetail(res);
+      });
+    await serverHardwareConfig.getServerHardwareConfigData(
+        session?.user.access_token!,
+        {...param, ServerAllocationId: serverAllocationDetail?.id!} as SHCParamGet
+      ).then((res) => {
+        setHardware(res);
       });
     dispatch(
       getRequestExpandData({
@@ -216,7 +229,7 @@ const RequestExpand: React.FC = () => {
               />
               <ServerDetail
                 serverAllocationDetail={serverAllocationDetail!}
-                hardware={undefined}
+                hardware={hardware!}
               ></ServerDetail>
               <RequestExpandTable
                 urlOncell={`/server/${serverAllocationDetail?.id}`}

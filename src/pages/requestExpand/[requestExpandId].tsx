@@ -29,6 +29,8 @@ import ModalUpdate from "@components/server/requestExpand/ModalUpdate";
 import { areInArray } from "@utils/helpers";
 import { ROLE_CUSTOMER, ROLE_SALES, ROLE_TECH } from "@utils/constants";
 import ModalDeny from "@components/server/requestExpand/ModalDeny";
+import serverHardwareConfig from "@services/serverHardwareConfig";
+import { ServerHardwareConfigData, SHCParamGet } from "@models/serverHardwareConfig";
 const { confirm } = Modal;
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
@@ -50,13 +52,17 @@ const RequestExpandDetail: React.FC = () => {
       PageSize: 10,
       RequestUpgradeId: router.query.requestExpandId ?? -1,
     } as unknown as RUAppointmentParamGet);
-
+  const [paramGet, setParamGet] = useState<SHCParamGet>({
+      PageIndex: 1,
+      PageSize: 10,
+    } as unknown as SHCParamGet);
   const [itemBreadcrumbs, setItemBreadcrumbs] = useState<ItemType[]>([]);
   const [requestExpandUpdate, setRequestExpandUpdate] =
     useState<RequestExpand>();
 
   const [openModalDeny, setOpenModalDeny] = useState<boolean>(false);
   const { appointmentData } = useSelector((state) => state.requestExpand);
+  const [hardware, setHardware] = useState<ServerHardwareConfigData>();
 
   const getData = async () => {
     await requestExpandService
@@ -72,6 +78,12 @@ const RequestExpandDetail: React.FC = () => {
           });
         setRequestExpandDetail(res);
       });
+    await serverHardwareConfig.getServerHardwareConfigData(
+      session?.user.access_token!,
+      {...paramGet, ServerAllocationId: serverAllocationDetail?.id!} as SHCParamGet
+    ).then((res) => {
+      setHardware(res);
+    });
   };
 
   const rejectRequestExpand = async () => {
@@ -303,7 +315,7 @@ const RequestExpandDetail: React.FC = () => {
               <div className="md:flex">
                 <ServerDetail
                   serverAllocationDetail={serverAllocationDetail!}
-                  hardware={undefined}
+                  hardware={hardware!}
                 ></ServerDetail>
                 <RequestExpandDetailInfor
                   requestExpandDetail={requestExpandDetail!}

@@ -46,6 +46,8 @@ import BreadcrumbComponent from "@components/BreadcrumbComponent";
 import ServerDetail from "@components/server/ServerDetail";
 import { areInArray, parseJwt } from "@utils/helpers";
 import ModalRemove from "@components/server/requestUpgrade/ModalRemove";
+import { SHCParamGet, ServerHardwareConfigData } from "@models/serverHardwareConfig";
+import serverHardwareConfig from "@services/serverHardwareConfig";
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
 });
@@ -70,7 +72,7 @@ const RequestUpgrade: React.FC = () => {
   const [openModalUpdate, setOpenModalUpdate] = useState<boolean>(false);
   const [serverAllocationDetail, setServerAllocationDetail] =
     useState<ServerAllocation>();
-
+    const [hardware, setHardware] = useState<ServerHardwareConfigData>();
   const [itemBreadcrumbs, setItemBreadcrumbs] = useState<ItemType[]>([]);
 
   const getData = async () => {
@@ -88,6 +90,12 @@ const RequestUpgrade: React.FC = () => {
       )
       .then((res) => {
         setServerAllocationDetail(res);
+      });
+    await serverHardwareConfig.getServerHardwareConfigData(
+        session?.user.access_token!,
+        {...paramGet, ServerAllocationId: serverAllocationDetail?.id!} as SHCParamGet
+      ).then((res) => {
+        setHardware(res);
       });
     dispatch(
       getRequestUpgradeData({
@@ -257,7 +265,7 @@ const RequestUpgrade: React.FC = () => {
             <>
               <ServerDetail
                 serverAllocationDetail={serverAllocationDetail!}
-                hardware={undefined}
+                hardware={hardware!}
               ></ServerDetail>
               <RequestUpgradeTable
                 urlOncell={`/server/${serverAllocationDetail?.id}`}

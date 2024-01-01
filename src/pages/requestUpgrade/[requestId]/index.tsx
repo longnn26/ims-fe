@@ -22,6 +22,8 @@ import { CaretLeftOutlined } from "@ant-design/icons";
 import { areInArray } from "@utils/helpers";
 import { ROLE_CUSTOMER, ROLE_SALES, ROLE_TECH } from "@utils/constants";
 import ModalDeny from "@components/server/requestUpgrade/ModalDeny";
+import serverHardwareConfig from "@services/serverHardwareConfig";
+import { SHCParamGet, ServerHardwareConfigData } from "@models/serverHardwareConfig";
 const { confirm } = Modal;
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
@@ -38,7 +40,7 @@ const RequestDetail: React.FC = () => {
   const [requestUpgradeDetail, setRequestUpgradeDetail] =
     useState<RequestUpgrade>();
 
-  const [itemBreadcrumbs, setItemBreadcrumbs] = useState<ItemType[]>([]); 
+  const [itemBreadcrumbs, setItemBreadcrumbs] = useState<ItemType[]>([]);
   const [openModalDeny, setOpenModalDeny] = useState<boolean>(false);
 
   const [rUAppointmentParamGet, setRUAppointmentParamGet] =
@@ -47,6 +49,11 @@ const RequestDetail: React.FC = () => {
       PageSize: 10,
       RequestUpgradeId: router.query.requestId ?? -1,
     } as unknown as RUAppointmentParamGet);
+  const [paramGet, setParamGet] = useState<SHCParamGet>({
+    PageIndex: 1,
+    PageSize: 10,
+  } as unknown as SHCParamGet);
+  const [hardware, setHardware] = useState<ServerHardwareConfigData>();
 
   const getData = async () => {
     await requestUpgradeService
@@ -62,6 +69,12 @@ const RequestDetail: React.FC = () => {
           });
         setRequestUpgradeDetail(res);
       });
+    await serverHardwareConfig.getServerHardwareConfigData(
+      session?.user.access_token!,
+      { ...paramGet, ServerAllocationId: serverAllocationDetail?.id! } as SHCParamGet
+    ).then((res) => {
+      setHardware(res);
+    });
   };
 
   const acceptRequestUpgrade = async () => {
@@ -86,9 +99,9 @@ const RequestDetail: React.FC = () => {
           .catch((errors) => {
             message.error(errors.response.data);
           })
-          .finally(() => {});
+          .finally(() => { });
       },
-      onCancel() {},
+      onCancel() { },
     });
   };
 
@@ -114,9 +127,9 @@ const RequestDetail: React.FC = () => {
           .catch((errors) => {
             message.error(errors.response.data);
           })
-          .finally(() => {});
+          .finally(() => { });
       },
-      onCancel() {},
+      onCancel() { },
     });
   };
 
@@ -142,9 +155,9 @@ const RequestDetail: React.FC = () => {
           .catch((errors) => {
             message.error(errors.response.data);
           })
-          .finally(() => {});
+          .finally(() => { });
       },
-      onCancel() {},
+      onCancel() { },
     });
   };
 
@@ -190,107 +203,107 @@ const RequestDetail: React.FC = () => {
     <AntdLayoutNoSSR
       content={
         <>
-        <ModalDeny
-              open={openModalDeny}
-              onClose={() => setOpenModalDeny(false)}
-              getData={() => getData()}
-              requestUpgradeId={parseInt(router.query.requestId+"")}
-            />
+          <ModalDeny
+            open={openModalDeny}
+            onClose={() => setOpenModalDeny(false)}
+            getData={() => getData()}
+            requestUpgradeId={parseInt(router.query.requestId + "")}
+          />
           {areInArray(
             session?.user.roles!,
             ROLE_TECH,
             ROLE_SALES,
             ROLE_CUSTOMER
           ) && (
-            <>
-              <div className="flex flex-wrap items-center justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
-                <div>
-                  <Button
-                    type="primary"
-                    className="mb-2"
-                    icon={<CaretLeftOutlined />}
-                    onClick={() => router.back()}
-                  ></Button>
-                  <BreadcrumbComponent itemBreadcrumbs={itemBreadcrumbs} />
+              <>
+                <div className="flex flex-wrap items-center justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
+                  <div>
+                    <Button
+                      type="primary"
+                      className="mb-2"
+                      icon={<CaretLeftOutlined />}
+                      onClick={() => router.back()}
+                    ></Button>
+                    <BreadcrumbComponent itemBreadcrumbs={itemBreadcrumbs} />
+                  </div>
                 </div>
-              </div>
-              <div className="md:flex">
-                <ServerDetail
-                  serverAllocationDetail={serverAllocationDetail!}
-                  hardware={undefined}
-                ></ServerDetail>
-                <RequestUpgradeDetailInfor
-                  requestUpgradeDetail={requestUpgradeDetail!}
-                />
-              </div>
-              <AppointmentTable
-                typeGet="ByRequestUpgradeId"
-                urlOncell=""
-                onEdit={(record) => {}}
-                onDelete={async (record) => {}}
-              />
-              {appointmentData?.totalPage > 0 && (
-                <Pagination
-                  className="text-end m-4"
-                  current={rUAppointmentParamGet?.PageIndex}
-                  pageSize={appointmentData?.pageSize ?? 10}
-                  total={appointmentData?.totalSize}
-                  onChange={(page, pageSize) => {
-                    setRUAppointmentParamGet({
-                      ...rUAppointmentParamGet,
-                      PageIndex: page,
-                      PageSize: pageSize,
-                    });
-                  }}
-                />
-              )}
-              {(requestUpgradeDetail?.status === "Waiting" &&
-              areInArray(session?.user.roles!, ROLE_SALES)) && (
-                <FloatButton.Group
-                  trigger="hover"
-                  type="primary"
-                  style={{ right: 60, bottom: 500 }}
-                  icon={<AiOutlineFileDone />}
-                >
-                  <FloatButton
-                    icon={<MdCancel color="red" />}
-                    tooltip="Deny"
-                    onClick={() => setOpenModalDeny(true)}
+                <div className="md:flex">
+                  <ServerDetail
+                    serverAllocationDetail={serverAllocationDetail!}
+                    hardware={hardware!}
+                  ></ServerDetail>
+                  <RequestUpgradeDetailInfor
+                    requestUpgradeDetail={requestUpgradeDetail!}
                   />
-                  <FloatButton
-                    onClick={() => acceptRequestUpgrade()}
-                    icon={<AiOutlineFileDone color="green" />}
-                    tooltip="Accept"
+                </div>
+                <AppointmentTable
+                  typeGet="ByRequestUpgradeId"
+                  urlOncell=""
+                  onEdit={(record) => { }}
+                  onDelete={async (record) => { }}
+                />
+                {appointmentData?.totalPage > 0 && (
+                  <Pagination
+                    className="text-end m-4"
+                    current={rUAppointmentParamGet?.PageIndex}
+                    pageSize={appointmentData?.pageSize ?? 10}
+                    total={appointmentData?.totalSize}
+                    onChange={(page, pageSize) => {
+                      setRUAppointmentParamGet({
+                        ...rUAppointmentParamGet,
+                        PageIndex: page,
+                        PageSize: pageSize,
+                      });
+                    }}
                   />
-                </FloatButton.Group>
-              )}
+                )}
+                {(requestUpgradeDetail?.status === "Waiting" &&
+                  areInArray(session?.user.roles!, ROLE_SALES)) && (
+                    <FloatButton.Group
+                      trigger="hover"
+                      type="primary"
+                      style={{ right: 60, bottom: 500 }}
+                      icon={<AiOutlineFileDone />}
+                    >
+                      <FloatButton
+                        icon={<MdCancel color="red" />}
+                        tooltip="Deny"
+                        onClick={() => setOpenModalDeny(true)}
+                      />
+                      <FloatButton
+                        onClick={() => acceptRequestUpgrade()}
+                        icon={<AiOutlineFileDone color="green" />}
+                        tooltip="Accept"
+                      />
+                    </FloatButton.Group>
+                  )}
 
-              {Boolean(
-                areInArray(session?.user.roles!, ROLE_TECH) &&
-                requestUpgradeDetail?.status === "Accepted" &&
+                {Boolean(
+                  areInArray(session?.user.roles!, ROLE_TECH) &&
+                  requestUpgradeDetail?.status === "Accepted" &&
                   requestUpgradeDetail?.succeededAppointment?.status ===
-                    "Success"
-              ) && (
-                <FloatButton.Group
-                  trigger="hover"
-                  type="primary"
-                  style={{ right: 60, bottom: 500 }}
-                  icon={<AiOutlineFileDone />}
-                >
-                  <FloatButton
-                    icon={<MdCancel color="red" />}
-                    tooltip="Fail"
-                    onClick={() => rejectRequestUpgrade()}
-                  />
-                  <FloatButton
-                    onClick={() => completeRequestUpgrade()}
-                    icon={<AiOutlineFileDone color="green" />}
-                    tooltip="Complete"
-                  />
-                </FloatButton.Group>
-              )}
-            </>
-          )}
+                  "Success"
+                ) && (
+                    <FloatButton.Group
+                      trigger="hover"
+                      type="primary"
+                      style={{ right: 60, bottom: 500 }}
+                      icon={<AiOutlineFileDone />}
+                    >
+                      <FloatButton
+                        icon={<MdCancel color="red" />}
+                        tooltip="Fail"
+                        onClick={() => rejectRequestUpgrade()}
+                      />
+                      <FloatButton
+                        onClick={() => completeRequestUpgrade()}
+                        icon={<AiOutlineFileDone color="green" />}
+                        tooltip="Complete"
+                      />
+                    </FloatButton.Group>
+                  )}
+              </>
+            )}
         </>
       }
     />

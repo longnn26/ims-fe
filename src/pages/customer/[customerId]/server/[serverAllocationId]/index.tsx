@@ -19,7 +19,6 @@ import serverAllocationService from "@services/serverAllocation";
 import serverHardwareConfigService from "@services/serverHardwareConfig";
 import ipAddressService from "@services/ipAddress";
 import { getComponentAll } from "@slices/component";
-import { getServerHardwareConfigData } from "@slices/serverHardwareConfig";
 import { Alert, Button, FloatButton, Modal, Pagination, message } from "antd";
 import { ItemType } from "antd/es/breadcrumb/Breadcrumb";
 import { useSession } from "next-auth/react";
@@ -28,7 +27,7 @@ import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { MdUpgrade } from "react-icons/md";
 import { FaExpand } from "react-icons/fa";
-import { IpAddress, IpAddressData } from "@models/ipAddress";
+import { IpAddress, IpAddressData, IpAddressParamGet } from "@models/ipAddress";
 import ModalAssign from "@components/server/ipAddress/ModalAssign";
 import { BsFillHddNetworkFill } from "react-icons/bs";
 import { GrHost } from "react-icons/gr";
@@ -40,6 +39,7 @@ import { areInArray } from "@utils/helpers";
 import ModalEmpty from "@components/ModalEmpty";
 import customerService from "@services/customer";
 import { Customer } from "@models/customer";
+import serverHardwareConfig from "@services/serverHardwareConfig";
 
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
@@ -49,9 +49,6 @@ const Customer: React.FC = () => {
   const dispatch = useDispatch();
   const router = useRouter();
   const { data: session } = useSession();
-  const { serverHardwareConfigData } = useSelector(
-    (state) => state.serverHardwareConfig
-  );
   const { serverIpAdressData } = useSelector((state) => state.serverAllocation);
 
   const [paramGet, setParamGet] = useState<SHCParamGet>({
@@ -72,13 +69,14 @@ const Customer: React.FC = () => {
   const [permission, setPermission] = useState<boolean>(true);
   const [content, setContent] = useState<string>("");
   const [customerDetail, setCustomerDetail] = useState<Customer>();
+  const [hardware, setHardware] = useState<ServerHardwareConfigData>();
 
-  const [rUIpAddressParamGet, setRUIpAddressParamGet] =
-    useState<RUIpAdressParamGet>({
+  const [ipAddressParamGet, setIpAddressParamGet] =
+    useState<IpAddressParamGet>({
       PageIndex: 1,
       PageSize: 10,
       ServerAllocationId: router.query.serverAllocationId ?? -1,
-    } as unknown as RUIpAdressParamGet);
+    } as unknown as IpAddressParamGet);
 
   const getData = async () => {
     await serverAllocationService
@@ -88,42 +86,34 @@ const Customer: React.FC = () => {
       )
       .then((res) => {
         setServerAllocationDetail(res);
-        dispatch(
-          getServerHardwareConfigData({
-            token: session?.user.access_token!,
-            paramGet: { ...paramGet },
-          })
-        ).then(({ payload }) => {
-          var res = payload as ServerHardwareConfigData;
-          if (res.totalPage < paramGet.PageIndex && res.totalPage != 0) {
-            setParamGet({ ...paramGet, PageIndex: res.totalPage });
-          }
-        });
-        dispatch(getComponentAll({ token: session?.user.access_token! }));
-        dispatch(
-          getServerIpAdressData({
-            token: session?.user.access_token!,
-            paramGet: { ...rUIpAddressParamGet },
-          })
-        )
-          .then(({ payload }) => {
-            var res = payload as IpAddressData;
-            if (
-              res.totalPage < rUIpAddressParamGet.PageIndex &&
-              res.totalPage != 0
-            ) {
-              setRUIpAddressParamGet({
-                ...rUIpAddressParamGet,
-                PageIndex: res.totalPage,
-              });
-            }
-          })
-          .catch(() => {});
       })
       .catch((errors) => {
-        setServerAllocationDetail(undefined);
         setContent(errors.response.data);
       });
+    await serverHardwareConfig.getServerHardwareConfigData(
+      session?.user.access_token!,
+      paramGet
+    ).then((res) => {
+      setHardware(res);
+    });
+    dispatch(
+      getServerIpAdressData({
+        token: session?.user.access_token!,
+        paramGet: { ...ipAddressParamGet, IsAssigned: true },
+      })
+    ).then(({ payload }) => {
+      var res = payload as IpAddressData;
+      if (
+        res &&
+        res.totalPage < ipAddressParamGet.PageIndex &&
+        res.totalPage != 0
+      ) {
+        setIpAddressParamGet({
+          ...ipAddressParamGet,
+          PageIndex: res.totalPage,
+        });
+      }
+    });
     await customerService
       .getCustomerById(
         session?.user.access_token!,
@@ -146,20 +136,20 @@ const Customer: React.FC = () => {
     }
   };
 
-  const createData = async (data: SHCCreateModel) => {
-    await serverHardwareConfigService
-      .createServerHardwareConfig(session?.user.access_token!, data)
-      .then((res) => {
-        message.success("Create successfully!");
-        getData();
-      })
-      .catch((errors) => {
-        message.error(errors.response.data);
-      })
-      .finally(() => {
-        setOpenModalCreate(false);
-      });
-  };
+  // const createData = async (data: SHCCreateModel) => {
+  //   await serverHardwareConfigService
+  //     .createServerHardwareConfig(session?.user.access_token!, data)
+  //     .then((res) => {
+  //       message.success("Create successfully!");
+  //       getData();
+  //     })
+  //     .catch((errors) => {
+  //       message.error(errors.response.data);
+  //     })
+  //     .finally(() => {
+  //       setOpenModalCreate(false);
+  //     });
+  // };
 
   const updateData = async (data: SHCUpdateModel) => {
     await serverHardwareConfigService
@@ -204,7 +194,7 @@ const Customer: React.FC = () => {
             setLoadingSubmit(false);
           });
       },
-      onCancel() {},
+      onCancel() { },
     });
   };
 
@@ -213,11 +203,19 @@ const Customer: React.FC = () => {
     var items = router.asPath.split("/").filter((_) => _ != "");
     var path = "";
     items.forEach((element) => {
-      path += `/${element}`;
-      itemBrs.push({
-        href: path,
-        title: element,
-      });
+      if (element === customerDetail?.id) {
+        path += `/${element}`;
+        itemBrs.push({
+          href: path,
+          title: customerDetail?.companyName,
+        });
+      } else {
+        path += `/${element}`;
+        itemBrs.push({
+          href: path,
+          title: element,
+        });
+      }
     });
     setItemBreadcrumbs(itemBrs);
   };
@@ -231,27 +229,35 @@ const Customer: React.FC = () => {
       .catch((errors) => {
         // message.error(errors.response.data);
       })
-      .finally(() => {});
+      .finally(() => { });
   };
 
-  useEffect(() => {}, [session]);
+  useEffect(() => {
+    if (router.query.customerId && session) {
+      handleBreadCumb();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [customerDetail]);
 
   useEffect(() => {
     if (router.query.serverAllocationId && session) {
       paramGet.ServerAllocationId = parseInt(
         router.query.serverAllocationId!.toString()
       );
-      rUIpAddressParamGet.Id = parseInt(
+      ipAddressParamGet.ServerAllocationId = parseInt(
         router.query.serverAllocationId!.toString()
       );
       getData();
       handleBreadCumb();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [session, paramGet, rUIpAddressParamGet, router.query.serverAllocationId]);
+  }, [session, paramGet, ipAddressParamGet, router.query.serverAllocationId]);
 
   useEffect(() => {
-    checkPermission();
+    if (router.query.serverAllocationId && session) {
+      checkPermission();
+      handleBreadCumb();
+    }
   }, [serverAllocationDetail]);
 
   if (serverAllocationDetail === undefined || customerDetail === undefined) {
@@ -278,36 +284,36 @@ const Customer: React.FC = () => {
                   <div>
                     {Boolean(
                       !serverAllocationDetail?.masterIp?.address &&
-                        serverAllocationDetail?.status !== "Removed" &&
-                        areInArray(session?.user.roles!, ROLE_TECH)
+                      serverAllocationDetail?.status !== "Removed" &&
+                      areInArray(session?.user.roles!, ROLE_TECH)
                     ) && (
-                      <Button
-                        type="primary"
-                        htmlType="submit"
-                        className="mr-2"
-                        icon={<BsFillHddNetworkFill />}
-                        onClick={() => {
-                          getIpSuggestMaster();
-                        }}
-                      >
-                        Assign IP
-                      </Button>
-                    )}
+                        <Button
+                          type="primary"
+                          htmlType="submit"
+                          className="mr-2"
+                          icon={<BsFillHddNetworkFill />}
+                          onClick={() => {
+                            getIpSuggestMaster();
+                          }}
+                        >
+                          Assign IP
+                        </Button>
+                      )}
                     {Boolean(
                       serverAllocationDetail?.status !== "Removed" &&
-                        areInArray(session?.user.roles!, ROLE_TECH)
+                      areInArray(session?.user.roles!, ROLE_TECH)
                     ) && (
-                      <Button
-                        type="primary"
-                        htmlType="submit"
-                        icon={<AppstoreAddOutlined />}
-                        onClick={() => {
-                          setOpenModalCreate(true);
-                        }}
-                      >
-                        Hardware Config
-                      </Button>
-                    )}
+                        <Button
+                          type="primary"
+                          htmlType="submit"
+                          icon={<AppstoreAddOutlined />}
+                          onClick={() => {
+                            setOpenModalCreate(true);
+                          }}
+                        >
+                          Hardware Config
+                        </Button>
+                      )}
                   </div>
                 </div>
                 <ModalCreate
@@ -338,97 +344,72 @@ const Customer: React.FC = () => {
                   ROLE_SALES,
                   ROLE_CUSTOMER
                 ) && (
-                  <>
-                    <ServerDetail
-                      serverAllocationDetail={serverAllocationDetail!}
-                      hardware={undefined}
-                    />
-                    <ServerHardwareConfigTable
-                      onEdit={(record) => {
-                        setServerHardwareConfigUpdate(record);
-                        setOpenModalUpdate(true);
-                      }}
-                      onDelete={async (record) => {
-                        deleteData(record);
-                      }}
-                      serverStatus={serverAllocationDetail?.status}
-                    />
-                    {serverHardwareConfigData.totalPage > 0 && (
-                      <Pagination
-                        className="text-end m-4"
-                        current={paramGet.PageIndex}
-                        pageSize={serverHardwareConfigData.pageSize ?? 10}
-                        total={serverHardwareConfigData.totalSize}
-                        onChange={(page, pageSize) => {
-                          setParamGet({
-                            ...paramGet,
-                            PageIndex: page,
-                            PageSize: pageSize,
-                          });
-                        }}
+                    <>
+                      <ServerDetail
+                        serverAllocationDetail={serverAllocationDetail!}
+                        hardware={hardware!}
                       />
-                    )}
 
-                    <IpAddressTable typeGet="ServerAllocation" />
-                    {serverIpAdressData?.totalPage > 0 && (
-                      <Pagination
-                        className="text-end m-4"
-                        current={rUIpAddressParamGet?.PageIndex}
-                        pageSize={serverIpAdressData?.pageSize ?? 10}
-                        total={serverIpAdressData?.totalSize}
-                        onChange={(page, pageSize) => {
-                          setRUIpAddressParamGet({
-                            ...rUIpAddressParamGet,
-                            PageIndex: page,
-                            PageSize: pageSize,
-                          });
+                      <IpAddressTable typeGet="ServerAllocation" />
+                      {serverIpAdressData?.totalPage > 0 && (
+                        <Pagination
+                          className="text-end m-4"
+                          current={ipAddressParamGet?.PageIndex}
+                          pageSize={serverIpAdressData?.pageSize ?? 10}
+                          total={serverIpAdressData?.totalSize}
+                          onChange={(page, pageSize) => {
+                            setIpAddressParamGet({
+                              ...ipAddressParamGet,
+                              PageIndex: page,
+                              PageSize: pageSize,
+                            });
+                          }}
+                        />
+                      )}
+                      <ModalAssign
+                        id={serverAllocationDetail?.id!}
+                        ipSuggestMaster={ipSuggestMaster}
+                        onClose={() => setIpSuggestMaster(undefined)}
+                        onRefresh={() => {
+                          getData();
                         }}
                       />
-                    )}
-                    <ModalAssign
-                      id={serverAllocationDetail?.id!}
-                      ipSuggestMaster={ipSuggestMaster}
-                      onClose={() => setIpSuggestMaster(undefined)}
-                      onRefresh={() => {
-                        getData();
-                      }}
-                    />
-                    <FloatButton.Group
-                      trigger="hover"
-                      type="primary"
-                      style={{ right: 60, bottom: 400 }}
-                      icon={<SendOutlined />}
-                    >
-                      <FloatButton
-                        tooltip="Request upgrade"
-                        icon={<MdUpgrade />}
-                        onClick={() =>
-                          router.push(
-                            `/customer/${serverAllocationDetail.customer.id}/server/${serverAllocationDetail?.id}/requestUpgrade`
-                          )
-                        }
-                      />
-                      <FloatButton
-                        onClick={() =>
-                          router.push(
-                            `/customer/${serverAllocationDetail.customer.id}/server/${serverAllocationDetail?.id}/requestExpand`
-                          )
-                        }
-                        icon={<FaExpand />}
-                        tooltip="Request expand"
-                      />
-                      <FloatButton
-                        tooltip="IP Request"
-                        icon={<GrHost />}
-                        onClick={() =>
-                          router.push(
-                            `/customer/${serverAllocationDetail.customer.id}/server/${serverAllocationDetail?.id}/requestHost`
-                          )
-                        }
-                      />
-                    </FloatButton.Group>
-                  </>
-                )}
+                      <FloatButton.Group
+                        trigger="hover"
+                        type="primary"
+                        style={{ right: 60, bottom: 400 }}
+                        icon={<SendOutlined />}
+                      >
+                        <FloatButton
+                          tooltip="Request upgrade"
+                          icon={<MdUpgrade />}
+                          onClick={() =>
+                            router.push(
+                              `/customer/${serverAllocationDetail.customer.id}/server/${serverAllocationDetail?.id}/requestUpgrade`
+                            )
+                          }
+                        />
+                        <FloatButton
+                          onClick={() =>
+                            router.push(
+                              `/customer/${serverAllocationDetail.customer.id}/server/${serverAllocationDetail?.id}/requestExpand`
+                            )
+                          }
+                          icon={<FaExpand />}
+                          tooltip="Request expand"
+                        />
+                        <FloatButton
+                          tooltip="IP Request"
+                          icon={<GrHost />}
+                          onClick={() =>
+                            router.push(
+                              `/customer/${serverAllocationDetail.customer.id}/server/${serverAllocationDetail?.id}/requestHost`
+                            )
+                          }
+                        />
+                      </FloatButton.Group>
+                    </>
+                  )}
               </>
             )}
             ;

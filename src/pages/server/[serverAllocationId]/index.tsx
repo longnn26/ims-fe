@@ -86,30 +86,30 @@ const Customer: React.FC = () => {
       .catch((errors) => {
         setContent(errors.response.data);
       });
-      serverHardwareConfig.getServerHardwareConfigData(
-        session?.user.access_token!,
-        paramGet
-      ).then((res) => {
-        setHardware(res);
+    await serverHardwareConfig.getServerHardwareConfigData(
+      session?.user.access_token!,
+      paramGet
+    ).then((res) => {
+      setHardware(res);
+    });
+    dispatch(
+      getServerIpAdressData({
+        token: session?.user.access_token!,
+        paramGet: { ...ipAddressParamGet, IsAssigned: true },
       })
-      dispatch(
-        getServerIpAdressData({
-          token: session?.user.access_token!,
-          paramGet: { ...ipAddressParamGet, IsAssigned: true },
-        })
-      ).then(({ payload }) => {
-        var res = payload as IpAddressData;
-        if (
-          res &&
-          res.totalPage < ipAddressParamGet.PageIndex &&
-          res.totalPage != 0
-        ) {
-          setIpAddressParamGet({
-            ...ipAddressParamGet,
-            PageIndex: res.totalPage,
-          });
-        }
-      });
+    ).then(({ payload }) => {
+      var res = payload as IpAddressData;
+      if (
+        res &&
+        res.totalPage < ipAddressParamGet.PageIndex &&
+        res.totalPage != 0
+      ) {
+        setIpAddressParamGet({
+          ...ipAddressParamGet,
+          PageIndex: res.totalPage,
+        });
+      }
+    });
   };
 
   const createData = async (data: SHCCreateModel) => {

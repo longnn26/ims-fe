@@ -31,6 +31,8 @@ import { IoIosSend } from "react-icons/io";
 import { MdOutlineCancelScheduleSend } from "react-icons/md";
 import ModalCreateRemoval from "@components/server/requestHost/ModalCreateRemoval";
 import ModalUpdateRemoval from "@components/server/requestHost/ModalUpdateRemoval";
+import serverHardwareConfig from "@services/serverHardwareConfig";
+import { SHCParamGet, ServerHardwareConfigData } from "@models/serverHardwareConfig";
 
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
@@ -55,8 +57,9 @@ const RequestHost: React.FC = () => {
   const [openModalRemoval, setOpenModalRemoval] = useState<boolean>(false);
   const [serverAllocationDetail, setServerAllocationDetail] =
     useState<ServerAllocation>();
-
+    const [hardware, setHardware] = useState<ServerHardwareConfigData>();
   const [itemBreadcrumbs, setItemBreadcrumbs] = useState<ItemType[]>([]);
+
   const getData = async () => {
     var customerId = "", userId = "";
     if (session?.user.roles.includes("Customer")) {
@@ -71,6 +74,12 @@ const RequestHost: React.FC = () => {
       )
       .then((res) => {
         setServerAllocationDetail(res);
+      });
+    await serverHardwareConfig.getServerHardwareConfigData(
+        session?.user.access_token!,
+        {...paramGet, ServerAllocationId: serverAllocationDetail?.id!} as SHCParamGet
+      ).then((res) => {
+        setHardware(res);
       });
     dispatch(
       getRequestHostData({
@@ -252,7 +261,7 @@ const RequestHost: React.FC = () => {
 
               <ServerDetail
                 serverAllocationDetail={serverAllocationDetail!}
-                hardware={undefined}
+                hardware={hardware!}
               ></ServerDetail>
               <RequestHostTable
                 urlOncell={`/server/${serverAllocationDetail?.id}`}
