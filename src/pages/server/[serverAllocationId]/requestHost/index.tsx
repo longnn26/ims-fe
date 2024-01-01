@@ -30,6 +30,7 @@ import { AiOutlineFileDone } from "react-icons/ai";
 import { IoIosSend } from "react-icons/io";
 import { MdOutlineCancelScheduleSend } from "react-icons/md";
 import ModalCreateRemoval from "@components/server/requestHost/ModalCreateRemoval";
+import ModalUpdateRemoval from "@components/server/requestHost/ModalUpdateRemoval";
 
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
@@ -44,7 +45,7 @@ const RequestHost: React.FC = () => {
   const [paramGet, setParamGet] = useState<RUParamGet>({
     PageIndex: 1,
     PageSize: 10,
-    // ServerAllocationId: router.query.serverAllocationId ?? -1,
+    ServerAllocationId: router.query.serverAllocationId ?? -1,
   } as unknown as RUParamGet);
   const [loadingSubmit, setLoadingSubmit] = useState<boolean>(false);
   const [requestUpgradeUpdate, setRequestUpgradeUpdate] = useState<
@@ -74,7 +75,6 @@ const RequestHost: React.FC = () => {
     dispatch(
       getRequestHostData({
         token: session?.user.access_token!,
-        id: parseInt(router.query.serverAllocationId?.toString()!) ?? -1,
         paramGet: { ...paramGet, CustomerId: customerId, UserId: userId },
       })
     ).then(({ payload }) => {

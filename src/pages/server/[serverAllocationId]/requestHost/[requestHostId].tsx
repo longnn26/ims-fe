@@ -39,6 +39,8 @@ import { ROLE_CUSTOMER, ROLE_SALES, ROLE_TECH } from "@utils/constants";
 import ModalEmpty from "@components/ModalEmpty";
 import RequestHostIPAddressTable from "@components/server/requestHost/RequestHostIPAddressTable";
 import ModalCreateRemoval from "@components/server/requestHost/ModalCreateRemoval";
+import { IpAddressParamGet } from "@models/ipAddress";
+import ModalUpdateRemoval from "@components/server/requestHost/ModalUpdateRemoval";
 
 const { confirm } = Modal;
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
@@ -53,25 +55,22 @@ const RequestHostDetail: React.FC = () => {
   const { ipAdressData } = useSelector((state) => state.requestHost);
 
   const [requestHostDetail, setRequestHostDetail] = useState<RequestHost>();
-  const [provideIpsData, setProvideIpsData] =
-    useState<SuggestAdditionalModel>();
+  const [provideIpsData, setProvideIpsData] = useState<SuggestAdditionalModel>();
 
   const [itemBreadcrumbs, setItemBreadcrumbs] = useState<ItemType[]>([]);
   const [requestHostUpdate, setRequestHostUpdate] = useState<RequestHost>();
+  const [requestHostUpdateRemoval, setRequestHostUpdateRemoval] = useState<RequestHost>();
   const [openModalDenyHost, setOpenModalDenyHost] = useState<boolean>(false);
-  const [openModalRejectHost, setOpenModalRejectHost] =
-    useState<boolean>(false);
-  const [openModalCompleteHost, setOpenModalCompleteHost] =
-    useState<boolean>(false);
-  const [openModalAcceptHost, setOpenModalAcceptHost] =
-    useState<boolean>(false);
+  const [openModalRejectHost, setOpenModalRejectHost] = useState<boolean>(false);
+  const [openModalCompleteHost, setOpenModalCompleteHost] = useState<boolean>(false);
+  const [openModalAcceptHost, setOpenModalAcceptHost] = useState<boolean>(false);
 
-  const [rUIpAddressParamGet, setRUIpAddressParamGet] =
-    useState<RUIpAdressParamGet>({
+  const [ipAddressParamGet, setIpAddressParamGet] =
+    useState<IpAddressParamGet>({
       PageIndex: 1,
       PageSize: 10,
       RequestHostId: router.query.requestHostId ?? -1,
-    } as unknown as RUIpAdressParamGet);
+    } as unknown as IpAddressParamGet);
 
   const [provideIpsParamGet, setProvideIpsParamGet] =
     useState<ParamGetSuggestAdditional>({
@@ -99,17 +98,17 @@ const RequestHostDetail: React.FC = () => {
         setContent(errors.response.data);
       });
     await serverAllocationService
-    .getServerAllocationById(
-      session?.user.access_token!,
-      router.query.serverAllocationId + "",
-    )
-    .then((res) => {
-      setServerAllocationDetail(res);
-    })
-    .catch((errors) => {
-      setServerAllocationDetail(undefined);
-      setContent(errors.response.data);
-    });
+      .getServerAllocationById(
+        session?.user.access_token!,
+        router.query.serverAllocationId + "",
+      )
+      .then((res) => {
+        setServerAllocationDetail(res);
+      })
+      .catch((errors) => {
+        setServerAllocationDetail(undefined);
+        setContent(errors.response.data);
+      });
   };
 
   const checkPermission = () => {
@@ -213,16 +212,16 @@ const RequestHostDetail: React.FC = () => {
   useEffect(() => {
     if (router.query.requestHostId && session) {
       handleBreadCumb();
-      rUIpAddressParamGet.Id = parseInt(router.query.requestHostId!.toString());
+      ipAddressParamGet.RequestHostId = parseInt(router.query.requestHostId!.toString());
       dispatch(
         getIpAdressData({
           token: session?.user.access_token!,
-          paramGet: { ...rUIpAddressParamGet },
+          paramGet: { ...ipAddressParamGet },
         })
       );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [session, rUIpAddressParamGet]);
+  }, [session, ipAddressParamGet]);
 
   useEffect(() => {
     checkPermission();
@@ -233,7 +232,7 @@ const RequestHostDetail: React.FC = () => {
       content={
         <>
           <ModalEmpty
-            isPermission = {false}
+            isPermission={false}
             content={content}
           />
         </>
@@ -254,12 +253,12 @@ const RequestHostDetail: React.FC = () => {
                 <div>
                   {Boolean(
                     requestHostDetail?.isRemoval != true &&
-                      Boolean(
-                        requestHostDetail?.status !== "Success" &&
-                          requestHostDetail?.status !== "Failed" &&
-                          requestHostDetail?.status !== "Waiting" &&
-                          areInArray(session?.user.roles!, ROLE_TECH)
-                      )
+                    Boolean(
+                      requestHostDetail?.status !== "Success" &&
+                      requestHostDetail?.status !== "Failed" &&
+                      requestHostDetail?.status !== "Waiting" &&
+                      areInArray(session?.user.roles!, ROLE_TECH)
+                    )
                   ) &&
                     permission && (
                       <Button
@@ -275,27 +274,63 @@ const RequestHostDetail: React.FC = () => {
                     )}
                   {Boolean(
                     requestHostDetail?.status !== "Success" &&
-                      requestHostDetail?.status !== "Failed" &&
-                      areInArray(
-                        session?.user.roles!,
-                        ROLE_SALES,
-                        ROLE_TECH,
-                        ROLE_CUSTOMER
-                      ) &&
-                      permission &&
-                      !(requestHostDetail?.status === "Accepted")
+                    requestHostDetail?.status !== "Failed" &&
+                    areInArray(
+                      session?.user.roles!,
+                      ROLE_SALES,
+                      ROLE_TECH,
+                      ROLE_CUSTOMER
+                    ) &&
+                    permission &&
+                    !(requestHostDetail?.status === "Accepted")
                   ) && (
-                    <Button
-                      type="primary"
-                      className="mb-2"
-                      icon={<EditOutlined />}
-                      onClick={async () => {
-                        setRequestHostUpdate(requestHostDetail);
-                      }}
-                    >
-                      Update
-                    </Button>
-                  )}
+                      <Button
+                        type="primary"
+                        className="mb-2"
+                        icon={<EditOutlined />}
+                        onClick={async () => {
+                          setRequestHostUpdate(requestHostDetail);
+                        }}
+                      >
+                        Update
+                      </Button>
+                    )}
+                  {Boolean(
+                    requestHostDetail?.status === "Waiting" &&
+                    requestHostDetail?.isRemoval === true &&
+                    areInArray(session?.user.roles!, ROLE_CUSTOMER, ROLE_SALES) &&
+                    permission
+                  ) && (
+                    <>
+                      <Button
+                        type="primary"
+                        className="mb-2"
+                        icon={<EditOutlined />}
+                        onClick={async () => {
+                          setRequestHostUpdateRemoval(requestHostDetail);
+                        }}
+                      >
+                        Update IP Removal Request
+                      </Button>
+                      </>
+                    )}
+                  {Boolean(
+                    requestHostDetail?.status === "Accepted" &&
+                    requestHostDetail?.isRemoval === true &&
+                    areInArray(session?.user.roles!, ROLE_TECH) &&
+                    permission
+                  ) && (
+                      <Button
+                        type="primary"
+                        className="mb-2"
+                        icon={<EditOutlined />}
+                        onClick={async () => {
+                          setRequestHostUpdateRemoval(requestHostDetail);
+                        }}
+                      >
+                        Update IP Removal Request
+                      </Button>
+                    )}
                 </div>
               </div>
             )}
@@ -318,34 +353,34 @@ const RequestHostDetail: React.FC = () => {
                   </div>
                   {Boolean(
                     requestHostDetail?.status === "Success" &&
-                      !requestHostDetail.documentConfirm
+                    !requestHostDetail.documentConfirm
                   ) && (
-                    <div className="p-5">
-                      <UploadComponent
-                        fileList={fileInspectionReport}
-                        title="BBNT"
-                        setFileList={setFileInspectionReport}
-                        multiple={false}
-                        maxCount={1}
-                        disabled={setDisabledInspectionReport}
-                      />
-                      <Button
-                        icon={<UploadOutlined />}
-                        loading={loadingUploadDocument}
-                        className="w-full"
-                        type="primary"
-                        disabled={
-                          !Boolean(fileInspectionReport.length > 0) ||
-                          disabledInspectionReport
-                        }
-                        onClick={() => {
-                          uploadDocument();
-                        }}
-                      >
-                        Upload
-                      </Button>
-                    </div>
-                  )}
+                      <div className="p-5">
+                        <UploadComponent
+                          fileList={fileInspectionReport}
+                          title="BBNT"
+                          setFileList={setFileInspectionReport}
+                          multiple={false}
+                          maxCount={1}
+                          disabled={setDisabledInspectionReport}
+                        />
+                        <Button
+                          icon={<UploadOutlined />}
+                          loading={loadingUploadDocument}
+                          className="w-full"
+                          type="primary"
+                          disabled={
+                            !Boolean(fileInspectionReport.length > 0) ||
+                            disabledInspectionReport
+                          }
+                          onClick={() => {
+                            uploadDocument();
+                          }}
+                        >
+                          Upload
+                        </Button>
+                      </div>
+                    )}
 
                   <RequestHostIPAddressTable
                     requestHostDetail={requestHostDetail}
@@ -353,12 +388,12 @@ const RequestHostDetail: React.FC = () => {
                   {ipAdressData?.totalPage > 0 && (
                     <Pagination
                       className="text-end m-4"
-                      current={rUIpAddressParamGet?.PageIndex}
+                      current={ipAddressParamGet?.PageIndex}
                       pageSize={ipAdressData?.pageSize ?? 10}
                       total={ipAdressData?.totalSize}
                       onChange={(page, pageSize) => {
-                        setRUIpAddressParamGet({
-                          ...rUIpAddressParamGet,
+                        setIpAddressParamGet({
+                          ...ipAddressParamGet,
                           PageIndex: page,
                           PageSize: pageSize,
                         });
@@ -368,54 +403,92 @@ const RequestHostDetail: React.FC = () => {
 
                   {Boolean(
                     requestHostDetail?.status === "Waiting" &&
-                      areInArray(session?.user.roles!, ROLE_SALES)
+                    areInArray(session?.user.roles!, ROLE_SALES)
                   ) && (
-                    <FloatButton.Group
-                      trigger="hover"
-                      type="primary"
-                      style={{ right: 60, bottom: 505 }}
-                      icon={<AiOutlineFileDone />}
-                    >
-                      <FloatButton
-                        icon={<MdCancel color="red" />}
-                        tooltip="Deny"
-                        onClick={() => setOpenModalDenyHost(true)}
-                      />
-                      <FloatButton
-                        onClick={() => setOpenModalAcceptHost(true)}
-                        icon={<AiOutlineFileDone color="green" />}
-                        tooltip="Accept"
-                      />
-                    </FloatButton.Group>
-                  )}
+                      <>
+                        <FloatButton.Group
+                          trigger="hover"
+                          type="primary"
+                          style={{ right: 60, bottom: 505 }}
+                          icon={<AiOutlineFileDone />}
+                        >
+                          <FloatButton
+                            icon={<MdCancel color="red" />}
+                            tooltip="Deny"
+                            onClick={() => setOpenModalDenyHost(true)}
+                          />
+                          <FloatButton
+                            onClick={() => setOpenModalAcceptHost(true)}
+                            icon={<AiOutlineFileDone color="green" />}
+                            tooltip="Accept"
+                          />
+                        </FloatButton.Group>
+
+                        <ModalAcceptRequestHost
+                          open={openModalAcceptHost}
+                          onClose={() => setOpenModalAcceptHost(false)}
+                          requestHostId={requestHostDetail?.id!}
+                          getData={() => getData()}
+                        />
+                        <ModalDenyHost
+                          open={openModalDenyHost}
+                          onClose={() => setOpenModalDenyHost(false)}
+                          requestHostId={requestHostDetail?.id!}
+                          getData={() => getData()}
+                        />
+                      </>
+                    )}
 
                   {Boolean(
                     requestHostDetail?.status === "Accepted" &&
-                      areInArray(session?.user.roles!, ROLE_SALES, ROLE_TECH)
+                    areInArray(session?.user.roles!, ROLE_SALES, ROLE_TECH)
                   ) && (
-                    <FloatButton.Group
-                      trigger="hover"
-                      type="primary"
-                      style={{ right: 60, bottom: 500 }}
-                      icon={<AiOutlineFileDone />}
-                    >
-                      <FloatButton
-                        icon={<MdCancel color="red" />}
-                        tooltip="Fail"
-                        onClick={() => setOpenModalRejectHost(true)}
-                      />
-                      {Boolean(
-                        ipAdressData?.data?.length > 0 &&
-                          areInArray(session?.user.roles!, ROLE_TECH)
-                      ) && (
-                        <FloatButton
-                          onClick={() => setOpenModalCompleteHost(true)}
-                          icon={<AiOutlineFileDone color="green" />}
-                          tooltip="Complete"
+                      <>
+                        <FloatButton.Group
+                          trigger="hover"
+                          type="primary"
+                          style={{ right: 60, bottom: 500 }}
+                          icon={<AiOutlineFileDone />}
+                        >
+                          <FloatButton
+                            icon={<MdCancel color="red" />}
+                            tooltip="Fail"
+                            onClick={() => setOpenModalRejectHost(true)}
+                          />
+                          {Boolean(
+                            ipAdressData?.data?.length > 0 &&
+                            areInArray(session?.user.roles!, ROLE_TECH)
+                          ) && (
+                              <FloatButton
+                                onClick={() => setOpenModalCompleteHost(true)}
+                                icon={<AiOutlineFileDone color="green" />}
+                                tooltip="Complete"
+                              />
+                            )}
+                        </FloatButton.Group>
+                        <ModalCompletetHost
+                          requestHostId={requestHostDetail?.id!}
+                          onRefresh={() => getData()}
+                          open={openModalCompleteHost}
+                          onClose={() => setOpenModalCompleteHost(false)}
                         />
-                      )}
-                    </FloatButton.Group>
-                  )}
+
+                        <ModalRejectHost
+                          requestHostId={requestHostDetail?.id!}
+                          onRefresh={() => getData()}
+                          open={openModalRejectHost}
+                          onClose={() => setOpenModalRejectHost(false)}
+                        />
+
+                        <ModalProvideIps
+                          provideIpsData={provideIpsData!}
+                          quantity={requestHostDetail?.quantity!}
+                          requestHostId={requestHostDetail?.id!}
+                          onClose={() => setProvideIpsData(undefined)}
+                          onRefresh={() => getData()}
+                        />
+                      </>
+                    )}
                   <ModalUpdate
                     requestHost={requestHostUpdate!}
                     onClose={() => {
@@ -423,42 +496,17 @@ const RequestHostDetail: React.FC = () => {
                     }}
                     onSubmit={(value) => {
                       updateData(value);
+                      setRequestHostUpdate(undefined);
                     }}
                   />
-                  <ModalDenyHost
-                    open={openModalDenyHost}
-                    onClose={() => setOpenModalDenyHost(false)}
-                    requestHostId={requestHostDetail?.id!}
-                    getData={() => getData()}
-                  />
-
-                  <ModalCompletetHost
-                    requestHostId={requestHostDetail?.id!}
-                    onRefresh={() => getData()}
-                    open={openModalCompleteHost}
-                    onClose={() => setOpenModalCompleteHost(false)}
-                  />
-
-                  <ModalRejectHost
-                    requestHostId={requestHostDetail?.id!}
-                    onRefresh={() => getData()}
-                    open={openModalRejectHost}
-                    onClose={() => setOpenModalRejectHost(false)}
-                  />
-
-                  <ModalAcceptRequestHost
-                    open={openModalAcceptHost}
-                    onClose={() => setOpenModalAcceptHost(false)}
-                    requestHostId={requestHostDetail?.id!}
-                    getData={() => getData()}
-                  />
-
-                  <ModalProvideIps
-                    provideIpsData={provideIpsData!}
-                    quantity={requestHostDetail?.quantity!}
-                    requestHostId={requestHostDetail?.id!}
-                    onClose={() => setProvideIpsData(undefined)}
-                    onRefresh={() => getData()}
+                  <ModalUpdateRemoval
+                    requestHost={requestHostUpdate!}
+                    onClose={() => {
+                      setRequestHostUpdateRemoval(undefined);
+                    }}
+                    onSubmit={() => {
+                      setRequestHostUpdateRemoval(undefined);
+                    }}
                   />
                 </>
               )}

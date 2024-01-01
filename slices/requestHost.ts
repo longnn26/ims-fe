@@ -1,7 +1,8 @@
 import { ParamGet } from "@models/base";
-import { IpAddressData } from "@models/ipAddress";
+import { IpAddressData, IpAddressParamGet } from "@models/ipAddress";
 import { RUIpAdressParamGet, RequestHostData } from "@models/requestHost";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import ipAddress from "@services/ipAddress";
 import requestHost from "@services/requestHost";
 
 interface State {
@@ -22,8 +23,8 @@ const TYPE_PREFIX = "requestHost";
 
 const getRequestHostData = createAsyncThunk(
   `${TYPE_PREFIX}/getRequestHostData`,
-  async (arg: { token: string; paramGet: ParamGet; id: number }) => {
-    const result = await requestHost.getData(arg.token, arg.paramGet, arg.id);
+  async (arg: { token: string; paramGet: ParamGet}) => {
+    const result = await requestHost.getData(arg.token, arg.paramGet);
     return result;
   }
 );
@@ -38,8 +39,8 @@ const getRequestHostDataAll = createAsyncThunk(
 
 const getIpAdressData = createAsyncThunk(
   `${TYPE_PREFIX}/getIpAdressData`,
-  async (arg: { token: string; paramGet: RUIpAdressParamGet }) => {
-    const result = await requestHost.getIpAddressById(arg.token, arg.paramGet);
+  async (arg: { token: string; paramGet: IpAddressParamGet }) => {
+    const result = await ipAddress.getData(arg.token, arg.paramGet);
     return result;
   }
 );

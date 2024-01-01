@@ -14,8 +14,7 @@ import httpClient from "@utils/http-client";
 
 const getData = async (
   token: string,
-  params: ParamGet,
-  id: number
+  params: ParamGet
 ): Promise<RequestHostData> => {
   const response = await httpClient.get({
     token: token,
@@ -121,18 +120,6 @@ const updateData = async (
   return response.data;
 };
 
-const getIpAddressById = async (
-  token: string,
-  params: RUIpAdressParamGet
-): Promise<IpAddressData> => {
-  const response = await httpClient.get({
-    url: apiLinks.requestHost.getIpAdress + `/${params.Id}/IpAddress`,
-    token: token,
-    params: params,
-  });
-  return response.data;
-};
-
 const saveProvideIps = async (
   token: string,
   id: number,
@@ -169,7 +156,6 @@ const requestHost = {
   completeRequestHost,
   rejectRequestHost,
   updateData,
-  getIpAddressById,
   saveProvideIps,
   uploadDocument,
   getDataAll,

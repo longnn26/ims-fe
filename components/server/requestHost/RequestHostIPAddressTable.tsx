@@ -58,7 +58,7 @@ const RequestHostIPAddressTable: React.FC<Props> = (props) => {
   return (
     <div className="shadow m-5">
       <Divider orientation="left" plain>
-        <h3>Ip Address</h3>
+        <h3>Ip Address của Request</h3>
       </Divider>
       <Table
         columns={columns}

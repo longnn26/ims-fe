@@ -15,7 +15,7 @@ interface Props {
   onSubmit: (requestHostUpdateModel: RequestHostUpdateModel) => void;
 }
 
-const ModalUpdate: React.FC<Props> = (props) => {
+const ModalUpdateRemoval: React.FC<Props> = (props) => {
   const formRef = useRef(null);
   const [form] = Form.useForm();
   const { onSubmit, requestHost, onClose } = props;
@@ -235,4 +235,4 @@ const ModalUpdate: React.FC<Props> = (props) => {
   );
 };
 
-export default ModalUpdate;
+export default ModalUpdateRemoval;

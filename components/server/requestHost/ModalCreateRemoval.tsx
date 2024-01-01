@@ -15,7 +15,8 @@ import { useSession } from "next-auth/react";
 import { parseJwt } from "@utils/helpers";
 import { ServerAllocation } from "@models/serverAllocation";
 import serverAllocationService from "@services/serverAllocation";
-import { IpAddress, IpAddressData } from "@models/ipAddress";
+import { IpAddress, IpAddressData, IpAddressParamGet } from "@models/ipAddress";
+import ipAddress from "@services/ipAddress";
 const { Option } = Select;
 const { confirm } = Modal;
 
@@ -55,13 +56,13 @@ const ModalCreate: React.FC<Props> = (props) => {
   };
 
   const getMoreIp = async (pageIndexInp?: number, ip?: IpAddress[]) => {
-    await serverAllocationService
-      .serverIpAddressData(session?.user.access_token!, {
+    await ipAddress
+      .getData(session?.user.access_token!, {
         PageIndex: pageIndexInp === 0 ? pageIndexInp : pageIndex + 1,
         PageSize: pageSize,
-        Id: serverId,
+        ServerAllocationId: serverId,
         IsAssigned: true,
-      } as RUIpAdressParamGet)
+      } as IpAddressParamGet)
       .then(async (data) => {
         setTotalPage(data.totalPage);
         setPageIndex(data.pageIndex);

@@ -23,4 +23,5 @@ export interface IpAddressParamGet extends ParamGet {
   IsAvailable?: boolean;
   Id?: number;
   Address?: string;
+  RequestHostId?: number;
 }

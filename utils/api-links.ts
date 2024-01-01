@@ -21,7 +21,6 @@ const apiLinks = {
     update: `${url}/api/ServerAllocation`,
     delete: `${url}/api/ServerAllocation`,
     createMasterIp: `${url}/api/ServerAllocation`,
-    getServerIpAddress: `${url}/api/ServerAllocation`,
   },
 
   serverHardwareConfig: {
