@@ -122,7 +122,7 @@ const ModalCreate: React.FC<Props> = (props) => {
             </Form.Item>
             <Form.Item
               label="Description"
-              name="descrition"
+              name="description"
               rules={[{ required: true, min: 6, max: 2000 }]}
             >
               <Input allowClear placeholder="Description" />
