@@ -375,8 +375,9 @@ const RequestDetail: React.FC = () => {
                 onClose={() => {
                   setRequestHostUpdate(undefined);
                 }}
-                onSubmit={(value) => {
-                  updateData(value);
+                onSubmit={() => {
+                  getData();
+                  setRequestHostUpdate(undefined);
                 }}
               />
               <ModalDenyHost
