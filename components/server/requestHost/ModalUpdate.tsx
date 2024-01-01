@@ -72,6 +72,7 @@ const ModalUpdateRemoval: React.FC<Props> = (props) => {
         confirmLoading={confirmLoading}
         onCancel={() => {
           onClose();
+          onSubmit();
           form.resetFields();
         }}
         footer={[

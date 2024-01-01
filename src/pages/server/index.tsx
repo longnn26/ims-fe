@@ -24,6 +24,7 @@ import serverAllocationService from "@services/serverAllocation";
 import ModalUpdate from "@components/server/ModalUpdate";
 import { areInArray, parseJwt } from "@utils/helpers";
 import { ROLE_CUSTOMER, ROLE_SALES, ROLE_TECH } from "@utils/constants";
+import SearchComponent from "@components/SearchComponent";
 
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
@@ -192,12 +193,12 @@ const Customer: React.FC = () => {
                 Create
               </Button>
             )}
-            {/* <SearchComponent
+            <SearchComponent
             placeholder="Search Name, Description..."
             setSearchValue={(value) =>
               setParamGet({ ...paramGet, SearchValue: value })
             }
-          /> */}
+          />
           </div>
           {areInArray(
             session?.user.roles!,
