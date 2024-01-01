@@ -299,7 +299,7 @@ const RequestHostDetail: React.FC = () => {
                   ) && (
                       <Button
                         type="primary"
-                        className="mb-2"
+                        className="mb-2 mr-2"
                         icon={<EditOutlined />}
                         onClick={async () => {
                           setRequestHostUpdate(requestHostDetail);
@@ -507,9 +507,9 @@ const RequestHostDetail: React.FC = () => {
                     onClose={() => {
                       setRequestHostUpdate(undefined);
                     }}
-                    onSubmit={(value) => {
-                      updateData(value);
-                      setRequestHostUpdate(undefined);
+                    onSubmit={() => {
+                      getData();
+                      setRequestHostUpdateRemoval(undefined);
                     }}
                   />
                   <ModalUpdateRemoval
@@ -518,6 +518,7 @@ const RequestHostDetail: React.FC = () => {
                       setRequestHostUpdateRemoval(undefined);
                     }}
                     onSubmit={() => {
+                      getData();
                       setRequestHostUpdateRemoval(undefined);
                     }}
                   />
