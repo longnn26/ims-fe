@@ -341,23 +341,6 @@ const RequestHostDetail: React.FC = () => {
                         </Button>
                       </>
                     )}
-                  {Boolean(
-                    requestHostDetail?.status === "Accepted" &&
-                    requestHostDetail?.isRemoval === true &&
-                    areInArray(session?.user.roles!, ROLE_TECH) &&
-                    permission
-                  ) && (
-                      <Button
-                        type="primary"
-                        className="mb-2"
-                        icon={<EditOutlined />}
-                        onClick={async () => {
-                          setRequestHostUpdateRemoval(true);
-                        }}
-                      >
-                        Update IP Removal Request
-                      </Button>
-                    )}
                 </div>
               </div>
             )}

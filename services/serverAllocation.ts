@@ -5,6 +5,7 @@ import {
   MasterIpCreateModel,
   SACreateModel,
   SAUpdateModel,
+  SParamGet,
   ServerAllocation,
   ServerAllocationData,
 } from "@models/serverAllocation";
@@ -14,7 +15,7 @@ import httpClient from "@utils/http-client";
 
 const getServerAllocationData = async (
   token: string,
-  params: ParamGet
+  params: SParamGet
 ): Promise<ServerAllocationData> => {
   const response = await httpClient.get({
     token: token,

@@ -14,10 +14,11 @@ import {
 import {
   SACreateModel,
   SAUpdateModel,
+  SParamGet,
   ServerAllocation,
   ServerAllocationData,
 } from "@models/serverAllocation";
-import { Button, Pagination, message, Modal, Alert, Tabs } from "antd";
+import { Button, Pagination, message, Modal, Alert, Tabs, TabsProps } from "antd";
 import ServerAllocationTable from "@components/server/ServerAllocationTable";
 import ModalCreate from "@components/server/ModalCreate";
 import serverAllocationService from "@services/serverAllocation";
@@ -38,11 +39,12 @@ const Customer: React.FC = () => {
   const { serverAllocationData } = useSelector(
     (state) => state.serverAllocation
   );
+  const [status, setStatus] = useState<string|undefined>(undefined);
 
-  const [paramGet, setParamGet] = useState<ParamGet>({
+  const [paramGet, setParamGet] = useState<SParamGet>({
     PageIndex: 1,
     PageSize: 7,
-  } as ParamGet);
+  } as SParamGet);
 
   const [customerSelectParamGet, setCustomerSelectParamGet] =
     useState<ParamGet>({
@@ -63,7 +65,7 @@ const Customer: React.FC = () => {
     dispatch(
       getServerAllocationData({
         token: session?.user.access_token!,
-        param: { ...paramGet, CustomerId: customerId },
+        param: { ...paramGet, CustomerId: customerId, Status: status },
       })
     ).then(({ payload }) => {
       var res = payload as ServerAllocationData;
@@ -157,9 +159,34 @@ const Customer: React.FC = () => {
             setLoadingSubmit(false);
           });
       },
-      onCancel() {},
+      onCancel() { },
     });
   };
+
+  const handleChange = (value) => {
+    switch (value) {
+      case "0":
+        setStatus(undefined);
+        break;
+      case "1":
+        setStatus("Waiting");
+        break;
+      case "2":
+        setStatus("Working");
+        break;
+      case "3":
+        setStatus("Pausing");
+        break;
+      case "4":
+        setStatus("Removed");
+        break;
+    };
+  };
+
+  useEffect(() => {
+    session && getData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [status]);
 
   useEffect(() => {
     session && getData();
@@ -177,70 +204,28 @@ const Customer: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session, customerSelectParamGet]);
 
-  // const items: TabsProps["items"] = [
-  //   {
-  //     key: "1",
-  //     label: "Request Upgrade",
-  //     children: (
-  //       <>
-  //         <RequestUpgradeTable
-  //           urlOncell=""
-  //           typeGet="ByAppointmentId"
-  //           onEdit={(value) => {
-  //             setRequestUpgradeUpdate(value);
-  //           }}
-  //           onDelete={(value) => {}}
-  //         />
-  //         {requestUpgradeData?.totalPage > 0 && (
-  //           <Pagination
-  //             className="text-end m-4"
-  //             current={paramGet?.PageIndex}
-  //             pageSize={requestUpgradeData?.pageSize ?? 10}
-  //             total={requestUpgradeData?.totalSize}
-  //             onChange={(page, pageSize) => {
-  //               setParamGet({
-  //                 ...paramGet,
-  //                 PageIndex: page,
-  //                 PageSize: pageSize,
-  //               });
-  //             }}
-  //           />
-  //         )}
-  //       </>
-  //     ),
-  //   },
-  //   {
-  //     key: "2",
-  //     label: "Request Expand",
-  //     children: (
-  //       <>
-  //         <RequestExpandTable
-  //           urlOncell=""
-  //           typeGet="ByAppointmentId"
-  //           onEdit={(value) => {
-  //             // setRequestUpgradeUpdate(value);
-  //           }}
-  //           onDelete={(value) => {}}
-  //         />
-  //         {requestExpandData?.totalPage > 0 && (
-  //           <Pagination
-  //             className="text-end m-4"
-  //             current={paramGet?.PageIndex}
-  //             pageSize={requestExpandData?.pageSize ?? 10}
-  //             total={requestExpandData?.totalSize}
-  //             onChange={(page, pageSize) => {
-  //               setParamGet({
-  //                 ...paramGet,
-  //                 PageIndex: page,
-  //                 PageSize: pageSize,
-  //               });
-  //             }}
-  //           />
-  //         )}
-  //       </>
-  //     ),
-  //   },
-  // ];
+  const items: TabsProps["items"] = [
+    {
+      key: "0",
+      label: "All",
+    },
+    {
+      key: "1",
+      label: "Waiting",
+    },
+    {
+      key: "2",
+      label: "Working",
+    },
+    {
+      key: "3",
+      label: "Pausing",
+    },
+    {
+      key: "4",
+      label: "Removed",
+    },
+  ];
 
   return (
     <AntdLayoutNoSSR
@@ -259,63 +244,65 @@ const Customer: React.FC = () => {
               </Button>
             )}
             <SearchComponent
-            placeholder="Search Name, Description..."
-            setSearchValue={(value) =>
-              setParamGet({ ...paramGet, SearchValue: value })
-            }
-          />
-          {/* <Tabs className="m-5" defaultActiveKey="1" items={items} /> */}
+              placeholder="Search Name, Description..."
+              setSearchValue={(value) =>
+                setParamGet({ ...paramGet, SearchValue: value })
+              }
+            />
           </div>
+          <Tabs className="m-5" defaultActiveKey="0" items={items} centered
+            onTabClick={(value) => handleChange(value)}
+          />
           {areInArray(
             session?.user.roles!,
             ROLE_SALES,
             ROLE_TECH,
             ROLE_CUSTOMER
           ) && (
-            <>
-              <ServerAllocationTable
-                onEdit={(record) => {
-                  setServerAllocationUpdate(record);
-                }}
-                onDelete={async (record) => {
-                  deleteServerAllocation(record);
-                }}
-              />
-
-              <ModalCreate
-                open={openModalCreate}
-                onClose={() => setOpenModalCreate(false)}
-                onSubmit={() => {
-                  setOpenModalCreate(false);
-                  getData();
-                }}
-                customerParamGet={customerSelectParamGet}
-                setCustomerParamGet={setCustomerSelectParamGet}
-              />
-              <ModalUpdate
-                serverAllocation={serverAllocationUpdate!}
-                onClose={() => setServerAllocationUpdate(undefined)}
-                onSubmit={(data: SAUpdateModel) => {
-                  updateData(data);
-                }}
-              />
-              {serverAllocationData?.totalPage > 0 && (
-                <Pagination
-                  className="text-end m-4"
-                  current={paramGet.PageIndex}
-                  pageSize={serverAllocationData?.pageSize ?? 10}
-                  total={serverAllocationData?.totalSize}
-                  onChange={(page, pageSize) => {
-                    setParamGet({
-                      ...paramGet,
-                      PageIndex: page,
-                      PageSize: pageSize,
-                    });
+              <>
+                <ServerAllocationTable
+                  onEdit={(record) => {
+                    setServerAllocationUpdate(record);
+                  }}
+                  onDelete={async (record) => {
+                    deleteServerAllocation(record);
                   }}
                 />
-              )}
-            </>
-          )}
+
+                <ModalCreate
+                  open={openModalCreate}
+                  onClose={() => setOpenModalCreate(false)}
+                  onSubmit={() => {
+                    setOpenModalCreate(false);
+                    getData();
+                  }}
+                  customerParamGet={customerSelectParamGet}
+                  setCustomerParamGet={setCustomerSelectParamGet}
+                />
+                <ModalUpdate
+                  serverAllocation={serverAllocationUpdate!}
+                  onClose={() => setServerAllocationUpdate(undefined)}
+                  onSubmit={(data: SAUpdateModel) => {
+                    updateData(data);
+                  }}
+                />
+                {serverAllocationData?.totalPage > 0 && (
+                  <Pagination
+                    className="text-end m-4"
+                    current={paramGet.PageIndex}
+                    pageSize={serverAllocationData?.pageSize ?? 10}
+                    total={serverAllocationData?.totalSize}
+                    onChange={(page, pageSize) => {
+                      setParamGet({
+                        ...paramGet,
+                        PageIndex: page,
+                        PageSize: pageSize,
+                      });
+                    }}
+                  />
+                )}
+              </>
+            )}
         </>
       }
     />

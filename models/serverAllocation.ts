@@ -26,6 +26,10 @@ export interface ServerAllocationData extends PagingModel {
   data: ServerAllocation[];
 }
 
+export interface SParamGet extends ParamGet {
+  Status?: string;
+}
+
 export interface SACreateModel {
   name: string;
   serialNumber: string;
