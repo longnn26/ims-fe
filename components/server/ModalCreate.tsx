@@ -95,6 +95,7 @@ const ModalCreate: React.FC<Props> = (props) => {
                       name: form.getFieldValue("name"),
                       serialNumber: form.getFieldValue("serialNumber"),
                       power: form.getFieldValue("power"),
+                      partNumber: form.getFieldValue("partNumber"),
                       note: form.getFieldValue("note"),
                     } as SACreateModel;
                     setLoadingSubmit(true);
@@ -162,6 +163,19 @@ const ModalCreate: React.FC<Props> = (props) => {
               ]}
             >
               <Input placeholder="Power" allowClear />
+            </Form.Item>
+            <Form.Item
+              name="partNumber"
+              label="Part Number"
+              rules={[
+                {
+                  required: true,
+                  min: 3,
+                  max: 255,
+                }
+              ]}
+            >
+              <Input placeholder="Part Number" allowClear />
             </Form.Item>
             <Form.Item name="note" label="Note">
               <Input placeholder="Note" allowClear />

@@ -36,6 +36,7 @@ export interface SACreateModel {
   power: number;
   note: string;
   customerId: number;
+  partNumber: string;
 }
 
 export interface SAUpdateModel {
