@@ -307,29 +307,28 @@ const Appoinment: React.FC = () => {
                   <div>
                     <Button
                       type="primary"
-                      className="mb-2"
                       icon={<CaretLeftOutlined />}
                       onClick={() => router.back()}
                     ></Button>
-                    <div className="flex justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
+                    <div className="flex items-center">
                       <BreadcrumbComponent itemBreadcrumbs={itemBreadcrumbs} />
-                      {Boolean(appointmentDetail?.status === "Success" &&
-                        !appointmentDetail.documentConfirm &&
-                        areInArray(session?.user.roles!, ROLE_SALES, ROLE_TECH)
-                      ) && (
-                          <>
-                            <Button
-                              type="primary"
-                              className="mb-2"
-                              // icon={<CaretLeftOutlined />}
-                              onClick={() => setOpenUpdateDocument(true)}
-                            >
-                              Sửa biên bản
-                            </Button>
-                          </>
-                        )}
                     </div>
                   </div>
+                  {Boolean(appointmentDetail?.status === "Success" &&
+                    !appointmentDetail.documentConfirm &&
+                    areInArray(session?.user.roles!, ROLE_SALES, ROLE_TECH)
+                  ) && (
+                      <>
+                        <Button
+                          type="primary"
+                          className="mb-2"
+                          // icon={<CaretLeftOutlined />}
+                          onClick={() => setOpenUpdateDocument(true)}
+                        >
+                          Sửa biên bản
+                        </Button>
+                      </>
+                    )}
                   <AppointmentDetail appointmentDetail={appointmentDetail!} />
                   {Boolean(
                     appointmentDetail?.status === "Success"

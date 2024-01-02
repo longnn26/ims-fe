@@ -117,7 +117,7 @@ const ModalCreate: React.FC<Props> = (props) => {
                       type: form.getFieldValue("type"),
                       quantity: form.getFieldValue("ipAddressIds")?.length || 0,
                       note: form.getFieldValue("note"),
-                      serverAllocationId: serverId
+                      serverAllocationId: serverId,
                     } as RequestHostCreateModel;
 
                     ipData = form
