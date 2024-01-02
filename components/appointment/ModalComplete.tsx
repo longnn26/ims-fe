@@ -86,10 +86,10 @@ const ModalComplete: React.FC<Props> = (props) => {
                       qtName: form.getFieldValue("qtName"),
                       position: form.getFieldValue("position"),
                       location: form.getFieldValue("location"),
-                      username: form.getFieldValue("username"),
-                      isSendMS: form.getFieldValue("isSendMS"),
+                      username: form.getFieldValue("username") ? form.getFieldValue("username") : null,
+                      isSendMS: form.getFieldValue("isSendMS") ? form.getFieldValue("isSendMS") : null,
                       good: form.getFieldValue("good"),
-                      guid: form.getFieldValue("guid"),
+                      guid: form.getFieldValue("guid") ? form.getFieldValue("guid") : null,
                       note: form.getFieldValue("note"),
                     } as DocumentModelAppointment;
 
