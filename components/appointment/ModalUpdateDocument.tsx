@@ -28,7 +28,8 @@ const ModalComplete: React.FC<Props> = (props) => {
 
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [loading, setLoading] = useState<boolean>(false);
-
+  const [openModal, setOpenModal] = useState<boolean | undefined>(undefined);
+  
   const disabled = async () => {
     var result = false;
     try {
@@ -63,10 +64,11 @@ const ModalComplete: React.FC<Props> = (props) => {
           <span className="inline-block m-auto">Update Appointment Document</span>
         }
         width={700}
-        open={open}
+        open={openModal===undefined?open:openModal}
         confirmLoading={confirmLoading}
         onCancel={() => {
           onClose();
+          setOpenModal(undefined);
           form.resetFields();
         }}
         footer={[
@@ -88,6 +90,7 @@ const ModalComplete: React.FC<Props> = (props) => {
                       good: form.getFieldValue("good"),
                       guid: form.getFieldValue("guid"),
                       note: form.getFieldValue("note"),
+                      deviceCondition: form.getFieldValue("deviceCondition"),
                     } as DocumentModelAppointment;
                     setLoading(true);
                     await appointmentService
@@ -99,9 +102,11 @@ const ModalComplete: React.FC<Props> = (props) => {
                       .then((res) => {
                         message.success("Complete appointment successfully!");
                         onSubmit();
+                        setOpenModal(undefined);
                         form.resetFields();
                       })
                       .catch((errors) => {
+                        setOpenModal(true);
                         message.error(errors.response.data);
                       })
                       .finally(() => {
