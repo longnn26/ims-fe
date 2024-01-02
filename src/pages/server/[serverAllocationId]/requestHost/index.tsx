@@ -236,33 +236,34 @@ const RequestHost: React.FC = () => {
             <>
               <div className="flex flex-wrap items-center justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
                 <BreadcrumbComponent itemBreadcrumbs={itemBreadcrumbs} />
-                {(areInArray(session?.user.roles!, ROLE_CUSTOMER) && serverAllocationDetail?.status === "Working") && (
-                  <>
-                    <div>
-                      <Button
-                        type="primary"
-                        htmlType="submit"
-                        className="mr-2"
-                        icon={<MdOutlineCancelScheduleSend />}
-                        onClick={() => {
-                          setOpenModalRemoval(true);
-                        }}
-                      >
-                        Create IP Removal Request
-                      </Button>
-                      <Button
-                        type="primary"
-                        htmlType="submit"
-                        icon={<IoIosSend />}
-                        onClick={() => {
-                          setOpenModalCreate(true);
-                        }}
-                      >
-                        Create IP Request
-                      </Button>
-                    </div>
-                  </>
-                )}
+                {areInArray(session?.user.roles!, ROLE_CUSTOMER) &&
+                  serverAllocationDetail?.status === "Working" && (
+                    <>
+                      <div>
+                        <Button
+                          type="primary"
+                          htmlType="submit"
+                          className="mr-2"
+                          icon={<MdOutlineCancelScheduleSend />}
+                          onClick={() => {
+                            setOpenModalRemoval(true);
+                          }}
+                        >
+                          Create IP Removal Request
+                        </Button>
+                        <Button
+                          type="primary"
+                          htmlType="submit"
+                          icon={<IoIosSend />}
+                          onClick={() => {
+                            setOpenModalCreate(true);
+                          }}
+                        >
+                          Create IP Request
+                        </Button>
+                      </div>
+                    </>
+                  )}
               </div>
 
               <ServerDetail

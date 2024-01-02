@@ -41,7 +41,6 @@ const ModalUpdate: React.FC<Props> = (props) => {
       form.setFieldsValue({
         id: requestExpand.id,
         size: requestExpand.size,
-        note: requestExpand.note,
         techNote: requestExpand.techNote,
         // location: `${suggestLocation?.areaId} - ${suggestLocation?.rackId} - ${suggestLocation?.position}`,
       });
@@ -83,11 +82,8 @@ const ModalUpdate: React.FC<Props> = (props) => {
               >
                 <Input placeholder="Size" allowClear />
               </Form.Item>
-              <Form.Item name="note" label="Note">
-                <Input placeholder="Note" allowClear />
-              </Form.Item>
-              <Form.Item name="techNote" label="Tech Note">
-                <Input placeholder="Tech Note" allowClear />
+              <Form.Item name="techNote" label="Technical Note">
+                <Input placeholder="Technical Note" allowClear />
               </Form.Item>
               <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
                 <Button
@@ -102,7 +98,6 @@ const ModalUpdate: React.FC<Props> = (props) => {
                           onSubmit({
                             id: form.getFieldValue("id"),
                             size: Number.parseInt(form.getFieldValue("size")),
-                            note: form.getFieldValue("note"),
                             techNote: form.getFieldValue("techNote"),
                           } as RequestExpandUpdateModel);
                           // form.resetFields();
