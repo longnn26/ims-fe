@@ -137,15 +137,12 @@ const ModalCreate: React.FC<Props> = (props) => {
                             message.success("Create successfully!");
                             form.resetFields();
                             setOpenModal(undefined);
-                            onClose();
+                            onSubmit();
                           })
                           .catch((errors) => {
                             setOpenModal(true);
                             message.error(errors.response.data);
                           })
-                          .finally(() => {
-                            onSubmit();
-                          });
                       })
                       .catch((errors) => {
                         setOpenModal(true);
