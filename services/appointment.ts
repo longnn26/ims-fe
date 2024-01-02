@@ -169,6 +169,7 @@ const updateDocument = async (
   const response = await httpClient.put({
     token: token,
     url: apiLinks.appointment.updateDocument + `/${id}/Document`,
+    data: data,
   });
   return response.data;
 };
