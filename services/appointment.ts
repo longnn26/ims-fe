@@ -118,7 +118,7 @@ const uploadDocument = async (
 ): Promise<any> => {
   const response = await httpClient.post({
     contentType: "multipart/form-data",
-    url: apiLinks.appointment.upload + `/${id}/Document`,
+    url: apiLinks.appointment.upload + `/${id}/FinalDocument`,
     token: token,
     data: data,
   });

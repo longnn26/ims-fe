@@ -313,8 +313,8 @@ const Appoinment: React.FC = () => {
                 </div>
                 <AppointmentDetail appointmentDetail={appointmentDetail!} />
                 {Boolean(
-                  appointmentDetail?.status === "Success" &&
-                    !appointmentDetail.documentConfirm
+                  appointmentDetail?.status === "Success"
+                    // && !appointmentDetail.documentConfirm
                 ) && (
                   <>
                     <div className="w-full md:m-5 md:flex">
