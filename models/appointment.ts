@@ -12,7 +12,7 @@ export interface Appointment extends BaseWithIdNumber {
   note: string;
   techNote: string;
   saleNote: string;
-  isCorrectPerson: boolean;
+  //isCorrectPerson: boolean;
   status: string;
   serverAllocationId: number;
   inspectionReportFilePath: string;
@@ -49,7 +49,7 @@ export interface AppointmentComplete {
   documentModel: DocumentModelAppointment;
   dateCheckedIn: string;
   dateCheckedOut: string;
-  isCorrectPerson: boolean;
+  //isCorrectPerson: boolean;
 }
 
 export interface AppointmentParseJson {

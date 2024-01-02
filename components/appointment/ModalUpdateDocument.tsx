@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Button, DatePicker, Input, Modal, Select, Switch } from "antd";
+import { Button, DatePicker, Input, Modal, Select, Switch, message } from "antd";
 import { Form } from "antd";
 import { ComponentUpdateModel, ComponentObj } from "@models/component";
 import { dateAdvFormat, optionStatus } from "@utils/constants";
@@ -8,22 +8,26 @@ import {
   AppointmentComplete,
   DocumentModelAppointment,
 } from "@models/appointment";
+import appointmentService from "@services/appointment";
 import { convertDatePicker } from "@utils/helpers";
+import { useSession } from "next-auth/react";
 const { confirm } = Modal;
 
 interface Props {
   open: boolean;
   appointment: Appointment;
   onClose: () => void;
-  onSubmit: (data: AppointmentComplete) => void;
+  onSubmit: () => void;
 }
 
 const ModalComplete: React.FC<Props> = (props) => {
   const formRef = useRef(null);
+  const {data: session} = useSession();
   const [form] = Form.useForm();
   const { onSubmit, appointment, onClose, open } = props;
 
   const [confirmLoading, setConfirmLoading] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const disabled = async () => {
     var result = false;
@@ -38,13 +42,6 @@ const ModalComplete: React.FC<Props> = (props) => {
   const setFieldsValueInitial = () => {
     if (formRef.current)
       form.setFieldsValue({
-        id: appointment.id,
-        dateCheckedIn: !appointment.dateCheckedIn
-          ? undefined
-          : convertDatePicker(appointment?.dateCheckedIn),
-        dateCheckedOut: !appointment.dateCheckedOut
-          ? undefined
-          : convertDatePicker(appointment?.dateCheckedOut),
         techNote: appointment.techNote,
         //isCorrectPerson: appointment.isCorrectPerson,
       });
@@ -92,19 +89,25 @@ const ModalComplete: React.FC<Props> = (props) => {
                       guid: form.getFieldValue("guid"),
                       note: form.getFieldValue("note"),
                     } as DocumentModelAppointment;
-
-                    var model = {
-                      documentModel: documentModel,
-                      dateCheckedIn: form
-                        .getFieldValue("dateCheckedIn")
-                        ?.format(dateAdvFormat),
-                      dateCheckedOut: form
-                        .getFieldValue("dateCheckedOut")
-                        ?.format(dateAdvFormat),
-                      //isCorrectPerson: form.getFieldValue("isCorrectPerson"),
-                    } as AppointmentComplete;
-
-                    onSubmit(model);
+                    setLoading(true);
+                    await appointmentService
+                      .updateDocument(
+                        session?.user.access_token!,
+                        appointment?.id,
+                        documentModel
+                      )
+                      .then((res) => {
+                        message.success("Complete appointment successfully!");
+                        onSubmit();
+                        form.resetFields();
+                      })
+                      .catch((errors) => {
+                        message.error(errors.response.data);
+                      })
+                      .finally(() => {
+                        setLoading(false);
+                      });
+                    onSubmit();
                     // form.resetFields();
                   },
                   onCancel() {},
@@ -225,7 +228,7 @@ const ModalComplete: React.FC<Props> = (props) => {
             <Form.Item name="note" label="Note" rules={[{ max: 2000 }]}>
               <Input placeholder="Note" allowClear />
             </Form.Item>
-            <Form.Item
+            {/* <Form.Item
               name="dateCheckedIn"
               label="Date CheckedIn"
               rules={[{ required: true }]}
@@ -260,7 +263,7 @@ const ModalComplete: React.FC<Props> = (props) => {
               />{" "}
             </Form.Item>
 
-            {/* <Form.Item name="isCorrectPerson" label="Correct Person">
+            <Form.Item name="isCorrectPerson" label="Correct Person">
               <Switch
                 defaultChecked={appointment?.isCorrectPerson}
                 onChange={(value) =>

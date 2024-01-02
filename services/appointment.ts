@@ -4,6 +4,7 @@ import {
   AppointmentCreateModel,
   AppointmentData,
   AppointmentUpdateModel,
+  DocumentModelAppointment,
   ParamGetExtend,
 } from "@models/appointment";
 import { ParamGet } from "@models/base";
@@ -160,6 +161,18 @@ const deleteAppointment = async (
   return response.data;
 };
 
+const updateDocument = async (
+  token: string,
+  id: number,
+  data: DocumentModelAppointment,
+): Promise<any> => {
+  const response = await httpClient.put({
+    token: token,
+    url: apiLinks.appointment.updateDocument + `/${id}/Document`,
+  });
+  return response.data;
+};
+
 const appointment = {
   getListAppointments,
   getDetail,
@@ -173,6 +186,7 @@ const appointment = {
   create,
   update,
   deleteAppointment,
+  updateDocument,
 };
 
 export default appointment;
