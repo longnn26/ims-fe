@@ -54,15 +54,14 @@ const ModalUpdateRemoval: React.FC<Props> = (props) => {
     return result;
   };
 
-  const setFieldsValueInitial = () => {
+  const setFieldsValueInitial = async () => {
     if (formRef.current && requestHost) {
-      ipAddress
-        .getData(session?.user.access_token!, {
-          RequestHostId: requestHost.id!,
-        } as IpAddressParamGet)
-        .then((res) => {
-          setInitialIp(res.data);
-        });
+      const res = await ipAddress.getData(session?.user.access_token!, {
+        RequestHostId: requestHost.id!,
+      } as IpAddressParamGet);
+
+      setInitialIp(res.data);
+
       const initialValues = {
         id: requestHost.id,
         note: requestHost.note,
@@ -72,7 +71,7 @@ const ModalUpdateRemoval: React.FC<Props> = (props) => {
         type: requestHost.type === "Additional" ? "IP" : "Port",
         // capacities: requestHost?.capacities || [],
         capacities: requestHost?.capacities?.map((value) => ({ value })) || [],
-        ipAddressIds: initialIp.map((i) => ({ label: i.address, value: i.id })),
+        ipAddressIds: res.data.map((i) => ({ label: i.address, value: i.id })),
       };
       form.setFieldsValue(initialValues);
       setRequestType(requestHost.type);
@@ -98,11 +97,14 @@ const ModalUpdateRemoval: React.FC<Props> = (props) => {
   };
 
   useEffect(() => {
-    session && getMoreIp(0, []);
-    if (session) {
-      setFieldsValueInitial();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const fetchData = async () => {
+      session && (await getMoreIp(0, []));
+      if (session) {
+        setFieldsValueInitial();
+      }
+    };
+
+    fetchData();
   }, [session]);
 
   useEffect(() => {
