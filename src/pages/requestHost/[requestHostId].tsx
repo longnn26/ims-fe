@@ -255,8 +255,8 @@ const RequestDetail: React.FC = () => {
                 />
               </div>
               {Boolean(
-                requestHostDetail?.status === "Success" &&
-                  !requestHostDetail.documentConfirm
+                requestHostDetail?.status === "Success"
+                //  && !requestHostDetail.documentConfirm
               ) && (
                 <div className="p-5">
                   <UploadComponent

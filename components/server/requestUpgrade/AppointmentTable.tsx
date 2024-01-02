@@ -33,7 +33,7 @@ interface DataType {
   reason: string;
   note: string;
   techNote: string;
-  isCorrectPerson: boolean;
+  //isCorrectPerson: boolean;
   status: string;
   dateCreated: string;
   dateUpdated: string;
@@ -173,7 +173,7 @@ const AppointmentTable: React.FC<Props> = (props) => {
       reason: listData?.data[i].reason,
       note: listData?.data[i].note,
       techNote: listData?.data[i].techNote,
-      isCorrectPerson: listData?.data[i].isCorrectPerson,
+      //isCorrectPerson: listData?.data[i].isCorrectPerson,
       dateCreated: moment(listData?.data[i].dateCreated).format(dateAdvFormat),
       dateUpdated: moment(listData?.data[i].dateUpdated).format(dateAdvFormat),
       purpose: listData?.data[i].purpose,
