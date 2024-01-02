@@ -32,7 +32,10 @@ import { MdOutlineCancelScheduleSend } from "react-icons/md";
 import ModalCreateRemoval from "@components/server/requestHost/ModalCreateRemoval";
 import ModalUpdateRemoval from "@components/server/requestHost/ModalUpdateRemoval";
 import serverHardwareConfig from "@services/serverHardwareConfig";
-import { SHCParamGet, ServerHardwareConfigData } from "@models/serverHardwareConfig";
+import {
+  SHCParamGet,
+  ServerHardwareConfigData,
+} from "@models/serverHardwareConfig";
 
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
@@ -57,11 +60,12 @@ const RequestHost: React.FC = () => {
   const [openModalRemoval, setOpenModalRemoval] = useState<boolean>(false);
   const [serverAllocationDetail, setServerAllocationDetail] =
     useState<ServerAllocation>();
-    const [hardware, setHardware] = useState<ServerHardwareConfigData>();
+  const [hardware, setHardware] = useState<ServerHardwareConfigData>();
   const [itemBreadcrumbs, setItemBreadcrumbs] = useState<ItemType[]>([]);
 
   const getData = async () => {
-    var customerId = "", userId = "";
+    var customerId = "",
+      userId = "";
     if (session?.user.roles.includes("Customer")) {
       customerId = parseJwt(session?.user.access_token!).UserId;
     } else if (session?.user.roles.includes("Tech")) {
@@ -75,10 +79,12 @@ const RequestHost: React.FC = () => {
       .then((res) => {
         setServerAllocationDetail(res);
       });
-    await serverHardwareConfig.getServerHardwareConfigData(
-        session?.user.access_token!,
-        {...paramGet, ServerAllocationId: serverAllocationDetail?.id!} as SHCParamGet
-      ).then((res) => {
+    await serverHardwareConfig
+      .getServerHardwareConfigData(session?.user.access_token!, {
+        ...paramGet,
+        ServerAllocationId: serverAllocationDetail?.id!,
+      } as SHCParamGet)
+      .then((res) => {
         setHardware(res);
       });
     dispatch(
@@ -107,27 +113,27 @@ const RequestHost: React.FC = () => {
       });
   };
 
-  const createRemoval = async (data: RequestHostCreateModel, ip: number[]) => {
-    await requestHostService
-      .createData(session?.user.access_token!, data)
-      .then(async (res) => {
-        await requestHostService
-          .saveProvideIps(session?.user.access_token!, res.id, ip)
-          .then((res) => {
-            message.success("Create successfully!");
-          })
-          .catch((errors) => {
-            message.error(errors.response.data);
-          });
-        getData();
-      })
-      .catch((errors) => {
-        message.error(errors.response.data);
-      })
-      .finally(() => {
-        setOpenModalRemoval(false);
-      });
-  };
+  // const createRemoval = async (data: RequestHostCreateModel, ip: number[]) => {
+  //   await requestHostService
+  //     .createData(session?.user.access_token!, data)
+  //     .then(async (res) => {
+  //       await requestHostService
+  //         .saveProvideIps(session?.user.access_token!, res.id, ip)
+  //         .then((res) => {
+  //           message.success("Create successfully!");
+  //         })
+  //         .catch((errors) => {
+  //           message.error(errors.response.data);
+  //         });
+  //       getData();
+  //     })
+  //     .catch((errors) => {
+  //       message.error(errors.response.data);
+  //     })
+  //     .finally(() => {
+  //       setOpenModalRemoval(false);
+  //     });
+  // };
 
   const updateData = async (data: RequestUpgradeUpdateModel) => {
     await requestUpgradeService
@@ -196,7 +202,7 @@ const RequestHost: React.FC = () => {
       handleBreadCumb();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [session, paramGet]);
+  }, [session, paramGet, openModalRemoval]);
 
   return (
     <AntdLayoutNoSSR
@@ -216,9 +222,9 @@ const RequestHost: React.FC = () => {
             serverId={parseInt(router.query!.serverAllocationId! + "")}
             open={openModalRemoval}
             onClose={() => setOpenModalRemoval(false)}
-            onSubmit={(data: RequestHostCreateModel, ip: number[]) => {
-              data.serverAllocationId = serverAllocationDetail?.id!;
-              createRemoval(data, ip);
+            onSubmit={() => {
+              setOpenModalRemoval(false);
+              getData();
             }}
           />
           {areInArray(

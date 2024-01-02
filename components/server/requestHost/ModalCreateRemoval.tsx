@@ -1,21 +1,13 @@
 import React, { useRef, useState, useEffect } from "react";
-import { Button, Input, Modal, Select, Space, Card } from "antd";
+import { Button, Input, Modal, Select, message } from "antd";
 import { Form } from "antd";
-import { CloseOutlined } from "@ant-design/icons";
 import useSelector from "@hooks/use-selector";
-import {
-  IPAddress,
-  RUIpAdressParamGet,
-  RequestHostCreateModel,
-  RequestHostIp,
-} from "@models/requestHost";
-import customerService from "@services/customer";
-import session from "redux-persist/lib/storage/session";
+import { RequestHostCreateModel } from "@models/requestHost";
+
 import { useSession } from "next-auth/react";
-import { parseJwt } from "@utils/helpers";
+import requestHostService from "@services/requestHost";
 import { ServerAllocation } from "@models/serverAllocation";
-import serverAllocationService from "@services/serverAllocation";
-import { IpAddress, IpAddressData, IpAddressParamGet } from "@models/ipAddress";
+import { IpAddress, IpAddressParamGet } from "@models/ipAddress";
 import ipAddress from "@services/ipAddress";
 const { Option } = Select;
 const { confirm } = Modal;
@@ -24,7 +16,7 @@ interface Props {
   serverId: number | undefined;
   open: boolean;
   onClose: () => void;
-  onSubmit: (saCreateModel: RequestHostCreateModel, ip: number[]) => void;
+  onSubmit: () => void;
 }
 
 const ModalCreate: React.FC<Props> = (props) => {
@@ -41,7 +33,10 @@ const ModalCreate: React.FC<Props> = (props) => {
   const [totalPage, setTotalPage] = useState<number>(2);
   const [pageIndex, setPageIndex] = useState<number>(0);
   const [maxQuantity, setMaxQuantity] = useState<number>(1);
-  const [server, setServer] = useState<ServerAllocation[]>([]);
+  // const [server, setServer] = useState<ServerAllocation[]>([]);
+  const [openModal, setOpenModal] = useState<boolean | undefined>(undefined);
+  const [loading, setLoading] = useState<boolean>(false);
+
   const [ipAddresses, setIpAddresses] = useState<IpAddress[]>([]);
   const [requestType, setRequestType] = useState<string | undefined>(undefined);
 
@@ -96,10 +91,11 @@ const ModalCreate: React.FC<Props> = (props) => {
         title={
           <span className="inline-block m-auto">Create IP Removal Request</span>
         }
-        open={open}
+        open={openModal === undefined ? open : openModal}
         confirmLoading={confirmLoading}
         onCancel={() => {
           onClose();
+          setOpenModal(undefined);
           form.resetFields();
         }}
         footer={[
@@ -112,7 +108,7 @@ const ModalCreate: React.FC<Props> = (props) => {
                 confirm({
                   title: "Do you want to save?",
                   async onOk() {
-                    setLoadingSubmit(true); // Đặt trạng thái loading khi bắt đầu gửi dữ liệu
+                    setLoading(true); // Đặt trạng thái loading khi bắt đầu gửi dữ liệu
                     let formData: RequestHostCreateModel;
                     let ipData: number[];
 
@@ -127,9 +123,37 @@ const ModalCreate: React.FC<Props> = (props) => {
                       .getFieldValue("ipAddressIds")
                       ?.map((l) => l.value);
                     // Call the provided onSubmit function with the formData
-                    onSubmit(formData, ipData);
-                    setLoadingSubmit(false); // Đặt trạng thái loading về false sau khi hoàn thành
-                    form.resetFields();
+                    setLoading(true);
+                    await requestHostService
+                      .createData(session?.user.access_token!, formData)
+                      .then(async (res) => {
+                        await requestHostService
+                          .saveProvideIps(
+                            session?.user.access_token!,
+                            res.id,
+                            ipData
+                          )
+                          .then((res) => {
+                            message.success("Create successfully!");
+                            form.resetFields();
+                            setOpenModal(undefined);
+                            onClose();
+                          })
+                          .catch((errors) => {
+                            setOpenModal(true);
+                            message.error(errors.response.data);
+                          })
+                          .finally(() => {
+                            onSubmit();
+                          });
+                      })
+                      .catch((errors) => {
+                        setOpenModal(true);
+                        message.error(errors.response.data);
+                      })
+                      .finally(() => {
+                        setLoading(false);
+                      });
                   },
                   onCancel() {},
                 });
@@ -211,9 +235,7 @@ const ModalCreate: React.FC<Props> = (props) => {
                             .map((l, index) => (
                               <Option value={l.id} key={index}>
                                 {`${l.address} - ${
-                                  l.capacity! === 0.1
-                                    ? "100 Mbps"
-                                    : "1 GBps"
+                                  l.capacity! === 0.1 ? "100 Mbps" : "1 GBps"
                                 }`}
                               </Option>
                             ))}
