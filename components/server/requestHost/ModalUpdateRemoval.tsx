@@ -56,14 +56,13 @@ const ModalUpdateRemoval: React.FC<Props> = (props) => {
 
   const setFieldsValueInitial = () => {
     if (formRef.current && requestHost) {
-      ipAddress.getData(
-        session?.user.access_token!,
-        {
+      ipAddress
+        .getData(session?.user.access_token!, {
           RequestHostId: requestHost.id!,
-        } as IpAddressParamGet
-      ).then((res) => {
-        setInitialIp(res.data);
-      })
+        } as IpAddressParamGet)
+        .then((res) => {
+          setInitialIp(res.data);
+        });
       const initialValues = {
         id: requestHost.id,
         note: requestHost.note,
@@ -79,24 +78,28 @@ const ModalUpdateRemoval: React.FC<Props> = (props) => {
       setRequestType(requestHost.type);
     }
   };
-  const getMoreIp = async (pageIndexInp?: number) => {
+  const getMoreIp = async (pageIndexInp?: number, ip?: IpAddress[]) => {
     await ipAddress
       .getData(session?.user.access_token!, {
         PageIndex: pageIndexInp === 0 ? pageIndexInp : pageIndex + 1,
         PageSize: pageSize,
         ServerAllocationId: serverId,
+        AssignmentTypes: requestType,
         IsAssigned: true,
-        AssignmentTypes: requestHost?.type,
       } as IpAddressParamGet)
       .then(async (data) => {
         setTotalPage(data.totalPage);
         setPageIndex(data.pageIndex);
-        setIpAddresses([...data.data])
+        ip
+          ? setIpAddresses([...ip, ...data.data])
+          : setIpAddresses([...ipAddresses, ...data.data]);
+        setMaxQuantity(ipAddresses.length);
       });
   };
 
   useEffect(() => {
-    if (session){
+    session && getMoreIp(0, []);
+    if (session) {
       setFieldsValueInitial();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -109,7 +112,9 @@ const ModalUpdateRemoval: React.FC<Props> = (props) => {
   return (
     <>
       <Modal
-        title={<span className="inline-block m-auto">Update IP Removal Request</span>}
+        title={
+          <span className="inline-block m-auto">Update IP Removal Request</span>
+        }
         open={openModal === undefined ? open : openModal}
         confirmLoading={confirmLoading}
         onCancel={() => {
@@ -151,29 +156,33 @@ const ModalUpdateRemoval: React.FC<Props> = (props) => {
                     await requestHostService
                       .updateData(session?.user.access_token!, formData)
                       .then(async (res) => {
-                        await requestHostService.saveProvideIps(
-                          session?.user.access_token!,
-                          requestHost?.id!,
-                          ipData,
-                        ).then((res) => {
-                          message.success("Update successfully!");
-                          form.resetFields();
-                          setOpenModal(undefined);
-                          onClose();
-                        }).catch((errors) => {
-                          setOpenModal(true);
-                          message.error(errors.response.data);
-                        }).finally(() => {
-                          onSubmit();
-                          setLoading(false);
-                        });
+                        await requestHostService
+                          .saveProvideIps(
+                            session?.user.access_token!,
+                            requestHost?.id!,
+                            ipData
+                          )
+                          .then((res) => {
+                            message.success("Update successfully!");
+                            form.resetFields();
+                            setOpenModal(undefined);
+                            onClose();
+                          })
+                          .catch((errors) => {
+                            setOpenModal(true);
+                            message.error(errors.response.data);
+                          })
+                          .finally(() => {
+                            onSubmit();
+                            setLoading(false);
+                          });
                       })
                       .catch((errors) => {
                         setOpenModal(true);
                         message.error(errors.response.data);
                       });
                   },
-                  onCancel() { },
+                  onCancel() {},
                 });
               }
             }}
@@ -191,10 +200,7 @@ const ModalUpdateRemoval: React.FC<Props> = (props) => {
             style={{ width: "100%" }}
             name="dynamic_form_complex"
           >
-            <Form.Item
-              name="type"
-              label="Remove Type"
-            >
+            <Form.Item name="type" label="Remove Type">
               <Input readOnly></Input>
             </Form.Item>
             <>
@@ -217,12 +223,12 @@ const ModalUpdateRemoval: React.FC<Props> = (props) => {
                       placeholder="Please select IPs to remove"
                       allowClear
                       listHeight={160}
-                      onChange={(res) => { }}
+                      onChange={(res) => {}}
                       onPopupScroll={async (e: any) => {
                         const { target } = e;
                         if (
                           (target as any).scrollTop +
-                          (target as any).offsetHeight ===
+                            (target as any).offsetHeight ===
                           (target as any).scrollHeight
                         ) {
                           if (pageIndex < totalPage) {
@@ -233,22 +239,21 @@ const ModalUpdateRemoval: React.FC<Props> = (props) => {
                     >
                       {requestType === "Additional"
                         ? ipAddresses
-                          .filter((l) => l.assignmentType === "Additional")
-                          .map((l, index) => (
-                            <Option value={l.id} key={index}>
-                              {`${l.address}`}
-                            </Option>
-                          ))
+                            .filter((l) => l.assignmentType === "Additional")
+                            .map((l, index) => (
+                              <Option value={l.id} key={index}>
+                                {`${l.address}`}
+                              </Option>
+                            ))
                         : ipAddresses
-                          .filter((l) => l.assignmentType === "Port")
-                          .map((l, index) => (
-                            <Option value={l.id} key={index}>
-                              {`${l.address} - ${l.capacity! === 0.1
-                                ? "100 Mbps"
-                                : "1 GBps"
+                            .filter((l) => l.assignmentType === "Port")
+                            .map((l, index) => (
+                              <Option value={l.id} key={index}>
+                                {`${l.address} - ${
+                                  l.capacity! === 0.1 ? "100 Mbps" : "1 GBps"
                                 }`}
-                            </Option>
-                          ))}
+                              </Option>
+                            ))}
                     </Select>
                   </Form.Item>
                 </>
