@@ -60,7 +60,7 @@ const ModalComplete: React.FC<Props> = (props) => {
     <>
       <Modal
         title={
-          <span className="inline-block m-auto">Complete Appointment</span>
+          <span className="inline-block m-auto">Update Appointment Document</span>
         }
         width={700}
         open={open}
