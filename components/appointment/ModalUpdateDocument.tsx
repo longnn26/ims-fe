@@ -79,7 +79,7 @@ const ModalComplete: React.FC<Props> = (props) => {
             onClick={async () => {
               if (!(await disabled()))
                 confirm({
-                  title: "Do you want to complete appointment?",
+                  title: "Do you want to update appointment document?",
                   async onOk() {
                     var documentModel = {
                       qtName: form.getFieldValue("qtName"),
