@@ -20,6 +20,7 @@ export interface Appointment extends BaseWithIdNumber {
   documentConfirm: boolean;
   customer: Customer;
   serverAllocation: ServerAllocation;
+  purpose: string;
   evaluator: Evaluator;
   executor: Executor;
 }
