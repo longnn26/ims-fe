@@ -216,7 +216,7 @@ const Customer: React.FC = () => {
                 )}
                 {Boolean(
                   serverAllocationDetail?.status !== "Removed" &&
-                    areInArray(session?.user.roles!, ROLE_TECH) && hardware === undefined
+                    areInArray(session?.user.roles!, ROLE_TECH) && hardware?.data.length === 0
                 ) && (
                   <Button
                     type="primary"
@@ -231,7 +231,7 @@ const Customer: React.FC = () => {
                 )}
                 {Boolean(
                   serverAllocationDetail?.status !== "Removed" &&
-                    areInArray(session?.user.roles!, ROLE_TECH) && hardware !== undefined
+                    areInArray(session?.user.roles!, ROLE_TECH) && hardware?.data.length !== 0
                 ) && (
                   <Button
                     type="primary"
