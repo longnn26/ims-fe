@@ -170,7 +170,7 @@ const ModalCreate: React.FC<Props> = (props) => {
               rules={[
                 {
                   required: true,
-                  min: 3,
+                  min: 6,
                   max: 255,
                 }
               ]}

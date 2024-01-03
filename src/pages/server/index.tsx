@@ -232,23 +232,26 @@ const Customer: React.FC = () => {
       content={
         <>
           <div className="flex justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
-            <SearchComponent
-              placeholder="Search Name, Description..."
-              setSearchValue={(value) =>
-                setParamGet({ ...paramGet, SearchValue: value })
-              }
-            />
+            <div>
             {areInArray(session?.user.roles!, ROLE_CUSTOMER) && (
               <Button
                 type="primary"
                 htmlType="submit"
+                className="mb-2"
                 onClick={() => {
                   setOpenModalCreate(true);
                 }}
               >
                 Create
               </Button>
-            )}
+            )}            
+            <SearchComponent
+              placeholder="Search Name, Description..."
+              setSearchValue={(value) =>
+                setParamGet({ ...paramGet, SearchValue: value })
+              }
+            />
+            </div>
           </div>
           <Tabs className="m-5" defaultActiveKey="0" items={items} centered
             onTabClick={(value) => handleChange(value)}
