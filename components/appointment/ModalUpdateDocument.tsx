@@ -186,8 +186,8 @@ const ModalComplete: React.FC<Props> = (props) => {
               <Input placeholder="Installation/ Delivery location" allowClear />
             </Form.Item>
             {appointment &&
-              appointment.reason &&
-              appointment.reason === "Install" && (
+              appointment?.reason &&
+              appointment?.reason === "Install" && (
                 <>
                   <Form.Item
                     name="username"

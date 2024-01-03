@@ -179,8 +179,8 @@ const ModalComplete: React.FC<Props> = (props) => {
               <Input placeholder="Installation/ Delivery location" allowClear />
             </Form.Item> */}
             {appointment &&
-              appointment.reason &&
-              appointment.reason === "Install" && (
+              appointment?.reason &&
+              appointment?.reason === "Install" && (
                 <>
                   <Form.Item
                     name="username"
@@ -255,7 +255,7 @@ const ModalComplete: React.FC<Props> = (props) => {
                     convertDatePicker(appointment.dateAppointed).endOf("day")
                 }
                 disabledTime={
-                  appointment.reason !== "Incident"
+                  appointment?.reason !== "Incident"
                     ? () => ({
                         disabledHours: () => [
                           0, 1, 2, 3, 4, 5, 6, 7, 18, 19, 20, 21, 22, 23, 24,
@@ -305,7 +305,7 @@ const ModalComplete: React.FC<Props> = (props) => {
                     ).endOf("hour")
                 }
                 disabledTime={
-                  appointment.reason !== "Incident"
+                  appointment?.reason !== "Incident"
                     ? () => ({
                         disabledHours: () => [
                           0, 1, 2, 3, 4, 5, 6, 7, 18, 19, 20, 21, 22, 23, 24,
