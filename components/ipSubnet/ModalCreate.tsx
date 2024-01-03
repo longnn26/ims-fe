@@ -1,11 +1,12 @@
 import React, { useRef, useState } from "react";
-import { Button, Input, Modal, Space, Spin, message } from "antd";
+import { Button, Input, Modal, Select, Space, Spin, message } from "antd";
 import { Form } from "antd";
 import { IpSubnetCreateModel } from "@models/ipSubnet";
 import { CloseOutlined } from "@ant-design/icons";
 import ipSubnetService from "@services/ipSubnet";
 import { useSession } from "next-auth/react";
 const { confirm } = Modal;
+const { Option } = Select;
 
 interface Props {
   open: boolean;
@@ -124,7 +125,19 @@ const ModalCreate: React.FC<Props> = (props) => {
                     },
                   ]}
                 >
-                  <Input placeholder="Prefix Length" allowClear />
+                  <Select
+                    placeholder="Prefix Length"
+                    allowClear
+                  >
+                    <Option value={24}>24</Option>
+                    <Option value={25}>25</Option>
+                    <Option value={26}>26</Option>
+                    <Option value={27}>27</Option>
+                    <Option value={28}>28</Option>
+                    <Option value={29}>29</Option>
+                    <Option value={30}>30</Option>
+                    <Option value={31}>31</Option>
+                  </Select>
                 </Form.Item>
               </Space.Compact>
 
