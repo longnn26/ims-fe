@@ -37,7 +37,6 @@ interface DataType {
   status: string;
   dateCreated: string;
   dateUpdated: string;
-  purpose: string;
   name: string;
   companyName: string;
 }
@@ -86,11 +85,6 @@ const AppointmentTable: React.FC<Props> = (props) => {
       key: "name",
     },
     {
-      title: "Purpose",
-      dataIndex: "purpose",
-      key: "purpose",
-    },
-    {
       title: "Visiter",
       dataIndex: "appointedCustomer",
       key: "appointedCustomer",
@@ -137,12 +131,12 @@ const AppointmentTable: React.FC<Props> = (props) => {
             </Button>
           </Tooltip>
           {(record.status === "Waiting" || record.status === "Accepted") && (
-              <Tooltip title="Edit" color={"black"}>
-                <Button onClick={() => onEdit(record)}>
-                  <BiEdit />
-                </Button>
-              </Tooltip>
-            )}
+            <Tooltip title="Edit" color={"black"}>
+              <Button onClick={() => onEdit(record)}>
+                <BiEdit />
+              </Button>
+            </Tooltip>
+          )}
         </Space>
         //   <Tooltip title="Delete" color={"black"}>
         //     <Button onClick={() => onDelete(record)}>
@@ -176,7 +170,6 @@ const AppointmentTable: React.FC<Props> = (props) => {
       //isCorrectPerson: listData?.data[i].isCorrectPerson,
       dateCreated: moment(listData?.data[i].dateCreated).format(dateAdvFormat),
       dateUpdated: moment(listData?.data[i].dateUpdated).format(dateAdvFormat),
-      purpose: listData?.data[i].purpose,
       name: listData?.data[i].serverAllocation.name,
       companyName: listData?.data[i].customer.companyName,
     });
