@@ -56,7 +56,7 @@ const Customer: React.FC = () => {
   } as unknown as SHCParamGet);
   const [loadingSubmit, setLoadingSubmit] = useState<boolean>(false);
   const [serverHardwareConfigUpdate, setServerHardwareConfigUpdate] = useState<
-  ServerHardwareConfigData | undefined
+    ServerHardwareConfigData | undefined
   >(undefined);
   const [openModalCreate, setOpenModalCreate] = useState<boolean>(false);
   const [openModalUpdate, setOpenModalUpdate] = useState<boolean>(false);
@@ -67,12 +67,13 @@ const Customer: React.FC = () => {
   const [content, setContent] = useState<string>("");
   const [hardware, setHardware] = useState<ServerHardwareConfigData>();
 
-  const [ipAddressParamGet, setIpAddressParamGet] =
-    useState<IpAddressParamGet>({
+  const [ipAddressParamGet, setIpAddressParamGet] = useState<IpAddressParamGet>(
+    {
       PageIndex: 1,
       PageSize: 10,
       ServerAllocationId: router.query.serverAllocationId ?? -1,
-    } as unknown as IpAddressParamGet);
+    } as unknown as IpAddressParamGet
+  );
 
   const getData = async () => {
     await serverAllocationService
@@ -86,12 +87,11 @@ const Customer: React.FC = () => {
       .catch((errors) => {
         setContent(errors.response.data);
       });
-    await serverHardwareConfig.getServerHardwareConfigData(
-      session?.user.access_token!,
-      paramGet
-    ).then((res) => {
-      setHardware(res);
-    });
+    await serverHardwareConfig
+      .getServerHardwareConfigData(session?.user.access_token!, paramGet)
+      .then((res) => {
+        setHardware(res);
+      });
     dispatch(
       getServerIpAdressData({
         token: session?.user.access_token!,
@@ -216,7 +216,8 @@ const Customer: React.FC = () => {
                 )}
                 {Boolean(
                   serverAllocationDetail?.status !== "Removed" &&
-                    areInArray(session?.user.roles!, ROLE_TECH) && hardware === undefined
+                    areInArray(session?.user.roles!, ROLE_TECH) &&
+                    hardware?.data.length === 0
                 ) && (
                   <Button
                     type="primary"
@@ -231,7 +232,8 @@ const Customer: React.FC = () => {
                 )}
                 {Boolean(
                   serverAllocationDetail?.status !== "Removed" &&
-                    areInArray(session?.user.roles!, ROLE_TECH) && hardware !== undefined
+                    areInArray(session?.user.roles!, ROLE_TECH) &&
+                    hardware?.data.length !== 0
                 ) && (
                   <Button
                     type="primary"
