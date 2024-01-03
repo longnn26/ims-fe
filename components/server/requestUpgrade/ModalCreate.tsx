@@ -44,7 +44,7 @@ const ModalCreate: React.FC<Props> = (props) => {
     <>
       <Modal
         title={
-          <span className="inline-block m-auto">Create Request Upgrade</span>
+          <span className="inline-block m-auto">Create Hardware Upgrade request</span>
         }
         open={openModalCreate === undefined ? open : openModalCreate}
         confirmLoading={confirmLoading}

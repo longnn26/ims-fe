@@ -34,7 +34,7 @@ const ModalDenyHost: React.FC<Props> = (props) => {
   return (
     <>
       <Modal
-        title={<span className="inline-block m-auto">Deny Request Upgrade</span>}
+        title={<span className="inline-block m-auto">Deny Hardware Upgrade request</span>}
         open={open}
         confirmLoading={confirmLoading}
         onCancel={() => {
