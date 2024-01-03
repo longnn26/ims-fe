@@ -34,9 +34,6 @@ const ServerDetail: React.FC<Props> = (props) => {
             }
           </Tag>
         </Descriptions.Item>
-        <Descriptions.Item label="Purpose" span={2}>
-          {appointmentDetail?.purpose}
-        </Descriptions.Item>
 
         <Descriptions.Item label="Date Created">
           {moment(appointmentDetail?.dateCreated).format(dateAdvFormat)}
