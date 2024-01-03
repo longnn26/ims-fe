@@ -33,7 +33,7 @@ const ModalDenyHost: React.FC<Props> = (props) => {
   return (
     <>
       <Modal
-        title={<span className="inline-block m-auto">Deny Request Expand</span>}
+        title={<span className="inline-block m-auto">Deny Rack Expansion request</span>}
         open={open}
         confirmLoading={confirmLoading}
         onCancel={() => {
@@ -84,7 +84,7 @@ const ModalDenyHost: React.FC<Props> = (props) => {
           >
             <Form.Item
               name="saleNote"
-              label="Sales Staff Note"
+              label="Sale note for failure"
               rules={[{ required: true }]}
             >
               <Input placeholder="Note" allowClear />

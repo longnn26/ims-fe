@@ -72,7 +72,7 @@ const ModalCreate: React.FC<Props> = (props) => {
     <>
       <Modal
         title={
-          <span className="inline-block m-auto">Create server allocation</span>
+          <span className="inline-block m-auto">Create server</span>
         }
         open={openModalCreate === undefined ? open : openModalCreate}
         confirmLoading={confirmLoading}
@@ -138,20 +138,20 @@ const ModalCreate: React.FC<Props> = (props) => {
             <Form.Item
               name="name"
               label="Server Name"
-              rules={[{ required: true }]}
+              rules={[{ required: true, min: 6, max: 255 }]}
             >
               <Input placeholder="Server Name" allowClear />
             </Form.Item>
             <Form.Item
               name="serialNumber"
               label="Serial Number"
-              rules={[{ required: true }]}
+              rules={[{ required: true, min: 6, max: 30 }]}
             >
               <Input placeholder="Serial Number" allowClear />
             </Form.Item>
             <Form.Item
               name="power"
-              label="Power"
+              label="Power (W)"
               rules={[
                 {
                   required: true,
@@ -159,6 +159,20 @@ const ModalCreate: React.FC<Props> = (props) => {
                 {
                   pattern: new RegExp(/^[0-9]+$/),
                   message: "Power must be a number",
+                },
+                {
+                  validator: (_, value) => {
+                    const powerValue = parseInt(value, 10);            
+                    if (powerValue < 100) {
+                      return Promise.reject("Power must be at least 100 W");
+                    }
+            
+                    if (powerValue > 9999) {
+                      return Promise.reject("Power must be at most 9999 W");
+                    }
+            
+                    return Promise.resolve();
+                  },
                 },
               ]}
             >
@@ -171,13 +185,21 @@ const ModalCreate: React.FC<Props> = (props) => {
                 {
                   required: true,
                   min: 6,
-                  max: 255,
+                  max: 30,
                 }
               ]}
             >
               <Input placeholder="Part Number" allowClear />
             </Form.Item>
-            <Form.Item name="note" label="Note">
+            <Form.Item
+              name="note"
+              label="Note"
+              rules={[
+                {
+                  max: 2000,
+                }
+              ]}
+            >
               <Input placeholder="Note" allowClear />
             </Form.Item>
           </Form>

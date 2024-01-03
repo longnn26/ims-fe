@@ -231,7 +231,7 @@ const Appoinment: React.FC = () => {
   const items: TabsProps["items"] = [
     {
       key: "1",
-      label: "Request Upgrade",
+      label: "Hardware Upgrade request",
       children: (
         <>
           <RequestUpgradeTable
@@ -262,7 +262,7 @@ const Appoinment: React.FC = () => {
     },
     {
       key: "2",
-      label: "Request Expand",
+      label: "Rack Expansion request",
       children: (
         <>
           <RequestExpandTable

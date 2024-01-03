@@ -67,7 +67,7 @@ const ModalUpdate: React.FC<Props> = (props) => {
     <>
       <Modal
         title={
-          <span className="inline-block m-auto">Update Request Upgrade</span>
+          <span className="inline-block m-auto">Update Hardware Upgrade request</span>
         }
         open={openModalUpdate === undefined ? open : openModalUpdate}
         confirmLoading={confirmLoading}

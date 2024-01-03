@@ -83,7 +83,7 @@ const ModalDenyHost: React.FC<Props> = (props) => {
           >
             <Form.Item
               name="saleNote"
-              label="Sale Note"
+              label="Sale note for failure"
               rules={[{ required: true }]}
             >
               <Input placeholder="Note" allowClear />

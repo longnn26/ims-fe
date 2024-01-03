@@ -46,9 +46,9 @@ const ModalUpdate: React.FC<Props> = (props) => {
   const setFieldsValueInitial = () => {
     if (formRef.current) {
       form.setFieldsValue({
-        cpu: serverHardwareConfig.data.find(c => c.componentId === 1)!.description,
-        ram: serverHardwareConfig.data.find(c => c.componentId === 2)!.description,
-        harddisk: serverHardwareConfig.data.find(c => c.componentId === 3)!.description,
+        cpu: serverHardwareConfig.data.find(c => c.componentId === 1)?.description,
+        ram: serverHardwareConfig.data.find(c => c.componentId === 2)?.description,
+        harddisk: serverHardwareConfig.data.find(c => c.componentId === 3)?.description,
       });
     };
   }

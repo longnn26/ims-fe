@@ -270,9 +270,9 @@ const ModalCreate: React.FC<Props> = (props) => {
                   name="contractNumber"
                   label="Contract number"
                   rules={[
-                    { required: true, min: 6, max: 20 },
+                    { required: true, min: 3, max: 4 },
                     {
-                      pattern: /^\d{6,255}$/,
+                      pattern: /^\d{3,4}$/,
                       message: "Contract number is invalid!"
                     }
                   ]}
