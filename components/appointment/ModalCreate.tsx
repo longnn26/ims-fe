@@ -204,12 +204,10 @@
               className="btn-submit"
               key="submit"
               onClick={async () => {
-                console.log(form.getFieldValue("requestExpandId"))
                 if (!(await disabled()))
                   confirm({
                     title: "Do you want to save?",
                     async onOk() {
-                      const reqEx = parseInt(form.getFieldValue("requestExpandId"))
                       const data = {
                         appointedCustomer:
                           form.getFieldValue("appointedCustomer"),
@@ -221,7 +219,7 @@
                         requestUpgradeIds:
                           form.getFieldValue("requestUpgradeIds"),
                         serverAllocationId: selectedServer?.id,
-                        requestExpandId: reqEx,
+                        requestExpandId: requestExpand?.id,
                       } as AppointmentCreateModel;
                       setLoadingSubmit(true);
                       await appointmentService
@@ -397,7 +395,7 @@
                 <>
                   <Form.Item
                     name="requestUpgradeIds"
-                    label="Request Upgrade"
+                    label="Hardware Upgrade request"
                     labelAlign="right"
                     rules={[
                       { required: true, message: "Request must not empty!" },
@@ -437,7 +435,7 @@
                 <>
                   <Form.Item
                     name="requestExpandId"
-                    label="Request Expand"
+                    label="Rack Expansion request"
                     labelAlign="right"
                     labelCol={{ span: 8 }}
                     wrapperCol={{ span: 20 }}
