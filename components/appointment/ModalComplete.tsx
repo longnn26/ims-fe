@@ -9,6 +9,7 @@ import {
   DocumentModelAppointment,
 } from "@models/appointment";
 import { convertDatePicker } from "@utils/helpers";
+import dayjs from "dayjs";
 const { confirm } = Modal;
 
 interface Props {
@@ -235,7 +236,7 @@ const ModalComplete: React.FC<Props> = (props) => {
                 style={{ width: "100%" }}
                 placeholder="Date CheckedIn"
                 showTime
-                disabledDate={(current) => appointment.dateAppointed !== undefined && current < convertDatePicker(appointment.dateAppointed).endOf('day')}
+                disabledDate={(current) => appointment.dateAppointed !== undefined && current < convertDatePicker(appointment.dateAppointed).endOf('minute')}
                 disabledTime={
                   appointment.purpose !== "Incident"
                     ? () => ({
@@ -262,8 +263,7 @@ const ModalComplete: React.FC<Props> = (props) => {
                 ({ getFieldValue }) => ({
                   validator(_, value) {
                     const dateCheckedIn = form.getFieldValue("dateCheckedIn");
-                    console.log(dateCheckedIn.add('1', 'minute'))
-                    if (value.isAfter(dateCheckedIn.add('1', 'minute'))) {
+                    if (value.isAfter(dateCheckedIn.add('1', 'second'))) {
                       return Promise.resolve();
                     }
                     return Promise.reject("Date CheckedOut must be after Date CheckedIn");
@@ -275,7 +275,7 @@ const ModalComplete: React.FC<Props> = (props) => {
                 style={{ width: "100%" }}
                 placeholder="Date CheckedOut"
                 showTime
-                disabledDate={(current) => form.getFieldValue("dateCheckedIn") !== undefined && current < convertDatePicker(form.getFieldValue("dateCheckedIn")).endOf('hour')}
+                disabledDate={(current) => appointment.dateAppointed !== undefined && current.isBefore(dayjs(form.getFieldValue("dateCheckedIn")))}
                 disabledTime={
                   appointment.purpose !== "Incident"
                     ? () => ({
