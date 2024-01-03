@@ -46,7 +46,7 @@ const ModalCreate: React.FC<Props> = (props) => {
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [server, setServer] = useState<ServerAllocation[]>([]);
   const [requestUpgrade, setRequestUpgrade] = useState<RequestUpgrade[]>([]);
-  const [requestExpand, setRequestExpand] = useState<RequestExpand[]>([]);
+  const [requestExpand, setRequestExpand] = useState<RequestExpand | undefined>(undefined);
   const [pageSizeCus, setPageSizeCus] = useState<number>(6);
   const [totalPageCus, setTotalPageCus] = useState<number>(2);
   const [pageIndexCus, setPageIndexCus] = useState<number>(0);
@@ -105,9 +105,6 @@ const ModalCreate: React.FC<Props> = (props) => {
   };
 
   const getMoreRequestExpand = async (
-    serverId: number,
-    pageIndex?: number,
-    req?: RequestExpand[]
   ) => {
     var customerId = "";
     if (session?.user.roles.includes("Customer")) {
@@ -115,17 +112,15 @@ const ModalCreate: React.FC<Props> = (props) => {
     }
     await requestExpandService
       .getData(session?.user.access_token!, {
-        PageIndex: pageIndex === 0 ? pageIndex : pageIndexUp + 1,
+        PageIndex: pageIndexUp + 1,
         PageSize: pageSizeCus,
-        ServerAllocationId: serverId,
+        ServerAllocationId: selectedServer?.id,
         CustomerId: customerId,
       } as RUParamGet)
       .then(async (data) => {
         setTotalPageUp(data.totalPage);
         setPageIndexUp(data.pageIndex);
-        req
-          ? setRequestExpand([...req, ...data.data])
-          : setRequestExpand([...requestExpand, ...data.data]);
+        setRequestExpand(data.data.at(0));
       });
   };
 
@@ -134,7 +129,7 @@ const ModalCreate: React.FC<Props> = (props) => {
       setSelectedReason("");
       setSelectedServer(undefined);
       setServer([]);
-      setRequestExpand([]);
+      setRequestExpand(undefined);
       setRequestUpgrade([]);
       setPageIndexUp(0);
       setPageIndexCus(0);
@@ -156,7 +151,7 @@ const ModalCreate: React.FC<Props> = (props) => {
         .then((server) => {
           setSelectedServer(server);
           getMoreRequestUpgrade(server.id!, 0, []);
-          getMoreRequestExpand(server.id!, 0, []);
+          getMoreRequestExpand();
         });
     }
   };
@@ -180,6 +175,7 @@ const ModalCreate: React.FC<Props> = (props) => {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session]);
+  console.log(selectedServer)
 
   return (
     <>
@@ -424,11 +420,14 @@ const ModalCreate: React.FC<Props> = (props) => {
                   name="requestExpandId"
                   label="Request Expand"
                   labelAlign="right"
-                  rules={[
-                    { required: true, message: "Request must not empty!" },
-                  ]}
                 >
-                  <Select
+                  {selectedServer?.id === undefined && (
+                    <Input readOnly/>
+                  )}
+                  {(selectedReason === "Install" && selectedServer?.id)
+                  ? <Input value={requestExpand?.id} readOnly>{`${selectedServer?.serialNumber} Installation`}</Input>
+                  : <Input value={requestExpand?.id} readOnly>{`${selectedServer?.serialNumber} Removal Request`}</Input>}
+                  {/* <Select
                     placeholder="Please select a request"
                     allowClear
                     onPopupScroll={async (e: any) => {
@@ -470,7 +469,7 @@ const ModalCreate: React.FC<Props> = (props) => {
                               {`${selectedServer?.serialNumber} Removal Request`}
                             </Option>
                           ))}
-                  </Select>
+                  </Select> */}
                 </Form.Item>
               </>
             )}
