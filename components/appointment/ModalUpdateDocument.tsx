@@ -1,5 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Button, DatePicker, Input, Modal, Select, Switch, message } from "antd";
+import {
+  Button,
+  DatePicker,
+  Input,
+  Modal,
+  Select,
+  Switch,
+  message,
+} from "antd";
 import { Form } from "antd";
 import { ComponentUpdateModel, ComponentObj } from "@models/component";
 import { dateAdvFormat, optionStatus } from "@utils/constants";
@@ -22,14 +30,14 @@ interface Props {
 
 const ModalComplete: React.FC<Props> = (props) => {
   const formRef = useRef(null);
-  const {data: session} = useSession();
+  const { data: session } = useSession();
   const [form] = Form.useForm();
   const { onSubmit, appointment, onClose, open } = props;
 
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [openModal, setOpenModal] = useState<boolean | undefined>(undefined);
-  
+
   const disabled = async () => {
     var result = false;
     try {
@@ -61,10 +69,12 @@ const ModalComplete: React.FC<Props> = (props) => {
     <>
       <Modal
         title={
-          <span className="inline-block m-auto">Update Appointment Document</span>
+          <span className="inline-block m-auto">
+            Update Appointment Document
+          </span>
         }
         width={700}
-        open={openModal===undefined?open:openModal}
+        open={openModal === undefined ? open : openModal}
         confirmLoading={confirmLoading}
         onCancel={() => {
           onClose();
@@ -175,50 +185,52 @@ const ModalComplete: React.FC<Props> = (props) => {
             >
               <Input placeholder="Installation/ Delivery location" allowClear />
             </Form.Item>
-            { (appointment && appointment.purpose && appointment.purpose === "Expand") && (
-              <>
-                <Form.Item
-                  name="username"
-                  label="Username"
-                  rules={[{ max: 255 }]}
-                >
-                  <Input placeholder="Username" allowClear />
-                </Form.Item>
-                <Form.Item name="isSendMS" label="SMS Password message send">
-                  <Switch
-                    onChange={(value) =>
-                      form.setFieldsValue({
-                        isSendMS: value,
-                      })
+            {appointment &&
+              appointment.reason &&
+              appointment.reason === "Install" && (
+                <>
+                  <Form.Item
+                    name="username"
+                    label="Username"
+                    rules={[{ max: 255 }]}
+                  >
+                    <Input placeholder="Username" allowClear />
+                  </Form.Item>
+                  <Form.Item name="isSendMS" label="SMS Password message send">
+                    <Switch
+                      onChange={(value) =>
+                        form.setFieldsValue({
+                          isSendMS: value,
+                        })
+                      }
+                    />{" "}
+                  </Form.Item>
+                  <Form.Item
+                    name="guid"
+                    label={
+                      <span style={{ width: "200px", display: "inline-block" }}>
+                        Instructed customers to change password after the 1st
+                        login
+                      </span>
                     }
-                  />{" "}
-                </Form.Item>
-                <Form.Item
-                  name="guid"
-                  label={
-                    <span style={{ width: "200px", display: "inline-block" }}>
-                      Instructed customers to change password after the 1st
-                      login
-                    </span>
-                  }
-                >
-                  <Switch
-                    onChange={(value) =>
-                      form.setFieldsValue({
-                        guid: value,
-                      })
-                    }
-                  />{" "}
-                </Form.Item>
-                <Form.Item
-                  name="deviceCondition"
-                  label="Device condition"
-                  rules={[{ max: 2000 }]}
-                >
-                  <Input placeholder="Device condition" allowClear />
-                </Form.Item>
-              </>
-            )}
+                  >
+                    <Switch
+                      onChange={(value) =>
+                        form.setFieldsValue({
+                          guid: value,
+                        })
+                      }
+                    />{" "}
+                  </Form.Item>
+                  <Form.Item
+                    name="deviceCondition"
+                    label="Device condition"
+                    rules={[{ max: 2000 }]}
+                  >
+                    <Input placeholder="Device condition" allowClear />
+                  </Form.Item>
+                </>
+              )}
 
             <Form.Item name="good" label="Good">
               <Switch
