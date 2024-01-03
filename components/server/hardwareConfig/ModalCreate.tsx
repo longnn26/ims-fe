@@ -24,7 +24,6 @@ const ModalCreate: React.FC<Props> = (props) => {
   const { onSubmit, open, onClose } = props;
 
   const [confirmLoading, setConfirmLoading] = useState(false);
-  const { componentOptions } = useSelector((state) => state.component);
   const [openModalCreate, setOpenModalCreate] = useState<boolean | undefined>(undefined);
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -140,7 +139,7 @@ const ModalCreate: React.FC<Props> = (props) => {
                 name="cpu"
                 label="CPU"
                 labelAlign="left"
-                rules={[{ required: true, min: 8, max: 255 }]}
+                rules={[{ required: true, min: 3, max: 255 }]}
               >
                 <Input.TextArea
                   placeholder="CPU"
@@ -152,7 +151,7 @@ const ModalCreate: React.FC<Props> = (props) => {
                 name="ram"
                 labelAlign="left"
                 label="Memory"
-                rules={[{ required: true, min: 8, max: 255 }]}
+                rules={[{ required: true, min: 3, max: 255 }]}
               >
                 <Input.TextArea
                   placeholder="Memory"
@@ -164,7 +163,7 @@ const ModalCreate: React.FC<Props> = (props) => {
                 name="harddisk"
                 labelAlign="left"
                 label="Storage"
-                rules={[{ required: true, min: 8, max: 255 }]}
+                rules={[{ required: true, min: 3, max: 255 }]}
               >
                 <Input.TextArea
                   placeholder="Storage"

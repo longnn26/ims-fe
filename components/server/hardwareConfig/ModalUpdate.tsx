@@ -1,29 +1,37 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Button, Input, Modal, Select, Card } from "antd";
+import { Button, Input, Modal, Select, Card, Spin, message } from "antd";
 import { Form } from "antd";
 import { CloseOutlined } from "@ant-design/icons";
 import {
+  SHCCreateModel,
   SHCUpdateModel,
   ServerHardwareConfig,
+  ServerHardwareConfigData,
 } from "@models/serverHardwareConfig";
+import serverHardwareConfigService from "@services/serverHardwareConfig";
 import useSelector from "@hooks/use-selector";
+import { useRouter } from "next/router";
+import { useSession } from "next-auth/react";
 const { Option } = Select;
 const { confirm } = Modal;
 
 interface Props {
   open: boolean;
-  serverHardwareConfig: ServerHardwareConfig;
+  serverHardwareConfig: ServerHardwareConfigData;
   onClose: () => void;
-  onSubmit: (saCreateModel: SHCUpdateModel) => void;
+  onSubmit: () => void;
 }
 
 const ModalUpdate: React.FC<Props> = (props) => {
   const formRef = useRef(null);
   const [form] = Form.useForm();
+  const router = useRouter();
+  const { data: session } = useSession();
   const { onSubmit, serverHardwareConfig, onClose, open } = props;
 
   const [confirmLoading, setConfirmLoading] = useState(false);
-  const { componentOptions } = useSelector((state) => state.component);
+  const [openModalCreate, setOpenModalCreate] = useState<boolean | undefined>(undefined);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const disabled = async () => {
     var result = false;
@@ -34,41 +42,21 @@ const ModalUpdate: React.FC<Props> = (props) => {
     }
     return result;
   };
-  const showAllDescriptions = () => {
-    const description = form.getFieldValue("description");
-  };
 
   const setFieldsValueInitial = () => {
-    var component = componentOptions.find(
-      (_) => _.id === serverHardwareConfig.component?.id
-    );
-
     if (formRef.current) {
       form.setFieldsValue({
-        id: serverHardwareConfig.id,
-        component: `${serverHardwareConfig.component.name} - ${
-          serverHardwareConfig.component.isRequired == true
-            ? "Required"
-            : "Optional"
-        } ${
-          serverHardwareConfig.component.requireCapacity == true
-            ? "- Capacity Required"
-            : ""
-        } `,
-        serverAllocationId: serverHardwareConfig.serverAllocationId,
+        cpu: serverHardwareConfig.data.find(c => c.componentId === 1)!.description,
+        ram: serverHardwareConfig.data.find(c => c.componentId === 2)!.description,
+        harddisk: serverHardwareConfig.data.find(c => c.componentId === 3)!.description,
       });
-
-      const requireCapacity = component?.requireCapacity || false;
-
-      const description = serverHardwareConfig.description;
-    }
-  };
+    };
+  }
 
   useEffect(() => {
     // refresh after submit for fileList
     if (serverHardwareConfig && formRef.current) {
       setFieldsValueInitial();
-      showAllDescriptions();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [serverHardwareConfig]);
@@ -77,14 +65,14 @@ const ModalUpdate: React.FC<Props> = (props) => {
     <>
       <Modal
         title={
-          <span className="inline-block m-auto">Update hardware config</span>
+          <span className="inline-block m-auto">Update Hardware Information</span>
         }
-        open={open}
+        open={openModalCreate === undefined ? open : openModalCreate}
         confirmLoading={confirmLoading}
         onCancel={() => {
           onClose();
-          setFieldsValueInitial();
-          showAllDescriptions();
+          setOpenModalCreate(undefined);
+          form.resetFields();
         }}
         footer={[
           <Button
@@ -96,40 +84,32 @@ const ModalUpdate: React.FC<Props> = (props) => {
                 confirm({
                   title: "Do you want to save?",
                   async onOk() {
+                    //đợi api ròi sửa khúc submit
                     const formData = {
-                      description: form
-                        .getFieldValue("descriptions")
-                        .map((item, index) => ({
-                          serialNumber: form.getFieldValue([
-                            "descriptions",
-                            index,
-                            "serialNumber",
-                          ]),
-                          model: form.getFieldValue([
-                            "descriptions",
-                            index,
-                            "model",
-                          ]),
-                          capacity: form.getFieldValue([
-                            "descriptions",
-                            index,
-                            "capacity",
-                          ]),
-                          description: form.getFieldValue([
-                            "descriptions",
-                            index,
-                            "description",
-                          ]),
-                        })),
-                      componentId: serverHardwareConfig.component.id,
-                      id: serverHardwareConfig.id,
-                    } as SHCUpdateModel;
-
-                    // Call the provided onSubmit function with the formData
-                    onSubmit(formData);
-                    //form.resetFields();
+                      cpu: form.getFieldValue("cpu"),
+                      ram: form.getFieldValue("ram"),
+                      harddisk: form.getFieldValue("harddisk"),
+                      serverAllocationId: parseInt(router.query.serverAllocationId + ""),
+                    } as SHCCreateModel;
+                    setLoading(true);
+                    await serverHardwareConfigService
+                      .createServerHardwareConfig(session?.user.access_token!, formData)
+                      .then((res) => {
+                        form.resetFields();
+                        setOpenModalCreate(undefined);
+                        onClose();
+                        message.success("Create successfully!");
+                      })
+                      .catch((errors) => {
+                        setOpenModalCreate(true);
+                        message.error(errors.response.data);
+                      })
+                      .finally(() => {
+                        setLoading(false);
+                        onSubmit();
+                      });
                   },
-                  onCancel() {},
+                  onCancel() { },
                 });
             }}
           >
@@ -138,119 +118,86 @@ const ModalUpdate: React.FC<Props> = (props) => {
         ]}
       >
         <div className="flex max-w-md flex-col gap-4 m-auto">
-          <Form
-            ref={formRef}
-            form={form}
-            labelCol={{ span: 8 }}
-            wrapperCol={{ span: 16 }}
-            style={{ width: "100%" }}
-            name="dynamic_form_complex"
-          >
-            <Form.Item
-              name="component"
-              label="Component"
-              rules={[
-                ({ getFieldValue }) => ({
-                  validator(_, component) {
-                    const isRequired =
-                      getFieldValue("component").isRequired === true;
-                    const hasDescriptions =
-                      getFieldValue("descriptions")?.length > 0;
-                    if (isRequired && !hasDescriptions) {
-                      return Promise.reject(
-                        "At least one description is required for the selected component."
-                      );
-                    }
-
-                    return Promise.resolve();
-                  },
-                }),
-              ]}
-            >
-              <Input readOnly />
-            </Form.Item>
-            <Form.List name="descriptions">
-              {(fields, { add, remove }) => (
-                <div
-                  style={{
-                    display: "flex",
-                    rowGap: 16,
-                    flexDirection: "column",
-                  }}
+          {loading === true && (
+            <>
+              <Spin size="large" tip="Adding hardware information">
+                <Form
+                  ref={formRef}
+                  form={form}
+                  labelCol={{ span: 4 }}
+                  wrapperCol={{ span: 20 }}
+                  style={{ width: "100%" }}
+                  name="dynamic_form_complex"
                 >
-                  {fields.map((field) => (
-                    <Card
-                      size="small"
-                      title={`Hardware ${field.name + 1}`}
-                      key={field.key}
-                      extra={
-                        fields.length > 1 && (
-                          <CloseOutlined
-                            onClick={() => {
-                              remove(field.name);
-                            }}
-                          />
-                        )
-                      }
-                    >
-                      <Form.Item
-                        label="Serial Number"
-                        name={[field.name, "serialNumber"]}
-                        rules={[{ required: true, min: 20, max: 255 }]}
-                      >
-                        <Input.TextArea
-                          autoSize={{ minRows: 1, maxRows: 6 }}
-                          allowClear
-                          placeholder="Serial Number"
-                        />
-                      </Form.Item>
-                      <Form.Item
-                        label="Model Name"
-                        name={[field.name, "model"]}
-                        rules={[{ required: true, min: 8, max: 255 }]}
-                      >
-                        <Input.TextArea
-                          autoSize={{ minRows: 1, maxRows: 6 }}
-                          allowClear
-                          placeholder="Model Name"
-                        />
-                      </Form.Item>
-                      {form.getFieldValue(["requireCapacity"]) && (
-                        <Form.Item
-                          label="Capacity (GB)"
-                          name={[field.name, "capacity"]}
-                          rules={[
-                            {
-                              required: true,
-                              message: "Capacity is required",
-                            },
-                            {
-                              pattern: new RegExp(/^[0-9]+$/),
-                              message:
-                                "Capacity must be a number greater than 0",
-                            },
-                          ]}
-                        >
-                          <Input allowClear placeholder="Capacity (GB)" />
-                        </Form.Item>
-                      )}
-                      <Form.Item
-                        label="Description"
-                        name={[field.name, "description"]}
-                        rules={[{ max: 2000 }]}
-                      >
-                        <Input allowClear placeholder="Description" />
-                      </Form.Item>
-                    </Card>
-                  ))}
-
-                  <Button type="dashed" onClick={() => add()} block>
-                    + Add Hardware
-                  </Button>
-                </div>
-              )}
-            </Form.List>
-          </Form>
+                  <Form.Item
+                    label="CPU"
+                    labelAlign="left"
+                  >
+                    <Input.TextArea />
+                  </Form.Item>
+                  <Form.Item
+                    labelAlign="left"
+                    label="Memory"
+                  >
+                    <Input.TextArea />
+                  </Form.Item>
+                  <Form.Item
+                    labelAlign="left"
+                    label="Storage"
+                  >
+                    <Input.TextArea />
+                  </Form.Item>
+                </Form>
+              </Spin>
+            </>
+          )}
+          {loading === false && (
+            <Form
+              ref={formRef}
+              form={form}
+              labelCol={{ span: 4 }}
+              wrapperCol={{ span: 20 }}
+              style={{ width: "100%" }}
+              name="dynamic_form_complex"
+            >
+              <Form.Item
+                name="cpu"
+                label="CPU"
+                labelAlign="left"
+                rules={[{ required: true, min: 3, max: 255 }]}
+              >
+                <Input.TextArea
+                  placeholder="CPU"
+                  autoSize={{ minRows: 1, maxRows: 6 }}
+                  allowClear
+                />
+              </Form.Item>
+              <Form.Item
+                name="ram"
+                labelAlign="left"
+                label="Memory"
+                rules={[{ required: true, min: 3, max: 255 }]}
+              >
+                <Input.TextArea
+                  placeholder="Memory"
+                  autoSize={{ minRows: 1, maxRows: 6 }}
+                  allowClear
+                />
+              </Form.Item>
+              <Form.Item
+                name="harddisk"
+                labelAlign="left"
+                label="Storage"
+                rules={[{ required: true, min: 3, max: 255 }]}
+              >
+                <Input.TextArea
+                  placeholder="Storage"
+                  autoSize={{ minRows: 1, maxRows: 6 }}
+                  allowClear
+                />
+              </Form.Item>
+            </Form>
+          )}
         </div>
       </Modal>
     </>

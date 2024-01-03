@@ -95,10 +95,6 @@ export async function middleware(req: NextRequest) {
   if (req.url.includes(`/myAccount`)) {
     if (!token || !isExpiredTimeToken(token.loginDate, token.expiresIn)) {
       return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/signin`);
-    } else {
-      if (!areInArray(token?.roles, ROLE_CUSTOMER)) {
-        return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/empty`);
-      }
     }
   }
   switch (pathname) {

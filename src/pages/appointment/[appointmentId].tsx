@@ -131,7 +131,7 @@ const Appoinment: React.FC = () => {
     await appointmentService
       .completeAppointment(
         session?.user.access_token!,
-        appointmentDetail?.id + "",
+        appointmentDetail?.id!,
         data
       )
       .then((res) => {

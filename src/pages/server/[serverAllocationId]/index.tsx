@@ -56,7 +56,7 @@ const Customer: React.FC = () => {
   } as unknown as SHCParamGet);
   const [loadingSubmit, setLoadingSubmit] = useState<boolean>(false);
   const [serverHardwareConfigUpdate, setServerHardwareConfigUpdate] = useState<
-    ServerHardwareConfig | undefined
+  ServerHardwareConfigData | undefined
   >(undefined);
   const [openModalCreate, setOpenModalCreate] = useState<boolean>(false);
   const [openModalUpdate, setOpenModalUpdate] = useState<boolean>(false);
@@ -112,33 +112,33 @@ const Customer: React.FC = () => {
     });
   };
 
-  const createData = async (data: SHCCreateModel) => {
-    await serverHardwareConfigService
-      .createServerHardwareConfig(session?.user.access_token!, data)
-      .then((res) => {
-        message.success("Create successfully!");
-        getData();
-        setOpenModalCreate(false);
-      })
-      .catch((errors) => {
-        message.error(errors.response.data);
-      });
-  };
+  // const createData = async (data: SHCCreateModel) => {
+  //   await serverHardwareConfigService
+  //     .createServerHardwareConfig(session?.user.access_token!, data)
+  //     .then((res) => {
+  //       message.success("Create successfully!");
+  //       getData();
+  //       setOpenModalCreate(false);
+  //     })
+  //     .catch((errors) => {
+  //       message.error(errors.response.data);
+  //     });
+  // };
 
-  const updateData = async (data: SHCUpdateModel) => {
-    await serverHardwareConfigService
-      .updateServerHardwareConfig(session?.user.access_token!, data)
-      .then((res) => {
-        message.success("Update successfully!");
-        getData();
-      })
-      .catch((errors) => {
-        message.error(errors.response.data);
-      })
-      .finally(() => {
-        setOpenModalUpdate(false);
-      });
-  };
+  // const updateData = async (data: SHCUpdateModel) => {
+  //   await serverHardwareConfigService
+  //     .updateServerHardwareConfig(session?.user.access_token!, data)
+  //     .then((res) => {
+  //       message.success("Update successfully!");
+  //       getData();
+  //     })
+  //     .catch((errors) => {
+  //       message.error(errors.response.data);
+  //     })
+  //     .finally(() => {
+  //       setOpenModalUpdate(false);
+  //     });
+  // };
 
   const handleBreadCumb = () => {
     var itemBrs = [] as ItemType[];
@@ -216,7 +216,7 @@ const Customer: React.FC = () => {
                 )}
                 {Boolean(
                   serverAllocationDetail?.status !== "Removed" &&
-                    areInArray(session?.user.roles!, ROLE_TECH)
+                    areInArray(session?.user.roles!, ROLE_TECH) && hardware === undefined
                 ) && (
                   <Button
                     type="primary"
@@ -227,6 +227,22 @@ const Customer: React.FC = () => {
                     }}
                   >
                     Add Hardware Information
+                  </Button>
+                )}
+                {Boolean(
+                  serverAllocationDetail?.status !== "Removed" &&
+                    areInArray(session?.user.roles!, ROLE_TECH) && hardware !== undefined
+                ) && (
+                  <Button
+                    type="primary"
+                    htmlType="submit"
+                    icon={<AppstoreAddOutlined />}
+                    onClick={() => {
+                      setOpenModalUpdate(true);
+                      setServerHardwareConfigUpdate(hardware!);
+                    }}
+                  >
+                    Update Hardware Information
                   </Button>
                 )}
               </div>
@@ -246,11 +262,10 @@ const Customer: React.FC = () => {
                 setServerHardwareConfigUpdate(undefined);
                 setOpenModalUpdate(false);
               }}
-              onSubmit={(data: SHCUpdateModel) => {
-                data.serverAllocationId = parseInt(
-                  router.query!.serverAllocationId!.toString()
-                );
-                updateData(data);
+              onSubmit={() => {
+                setServerHardwareConfigUpdate(undefined);
+                setOpenModalUpdate(false);
+                getData();
               }}
             />
             {areInArray(

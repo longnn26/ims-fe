@@ -88,7 +88,7 @@ const denyAppointment = async (
 
 const completeAppointment = async (
   token: string,
-  id: string,
+  id: number,
   data: AppointmentComplete
 ): Promise<any> => {
   const response = await httpClient.put({

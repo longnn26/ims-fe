@@ -83,14 +83,14 @@ const ModalComplete: React.FC<Props> = (props) => {
                   title: "Do you want to complete appointment?",
                   async onOk() {
                     var documentModel = {
-                      qtName: form.getFieldValue("qtName"),
-                      position: form.getFieldValue("position"),
-                      location: form.getFieldValue("location"),
+                      // qtName: form.getFieldValue("qtName"),
+                      // position: form.getFieldValue("position"),
+                      // location: form.getFieldValue("location"),
                       username: form.getFieldValue("username") ? form.getFieldValue("username") : "abc",
                       isSendMS: form.getFieldValue("isSendMS") ? form.getFieldValue("isSendMS") : false,
                       good: form.getFieldValue("good"),
                       guid: form.getFieldValue("guid") ? form.getFieldValue("guid") : false,
-                      note: form.getFieldValue("note"),
+                      note: form.getFieldValue("note") ? form.getFieldValue("guid") : "Không có note",
                       deviceCondition: form.getFieldValue("deviceCondition") ? form.getFieldValue("deviceCondition") : "abc",
                     } as DocumentModelAppointment;
 
@@ -147,7 +147,7 @@ const ModalComplete: React.FC<Props> = (props) => {
             >
               <Input placeholder="Customer Position" allowClear />
             </Form.Item> */}
-            <Form.Item
+            {/* <Form.Item
               name="qtName"
               label="QTSC Representor"
               rules={[{ required: true, min: 6, max: 255 }]}
@@ -167,7 +167,7 @@ const ModalComplete: React.FC<Props> = (props) => {
               rules={[{ required: true, min: 6, max: 2000 }]}
             >
               <Input placeholder="Installation/ Delivery location" allowClear />
-            </Form.Item>
+            </Form.Item> */}
             { (appointment && appointment.purpose && appointment.purpose === "Expand") && (
               <>
                 <Form.Item
@@ -229,36 +229,69 @@ const ModalComplete: React.FC<Props> = (props) => {
             <Form.Item
               name="dateCheckedIn"
               label="Date CheckedIn"
-              rules={[{ required: true }]}
+              rules={[{ required: true, message: "Please select Date CheckedIn" }]}
             >
               <DatePicker
                 style={{ width: "100%" }}
                 placeholder="Date CheckedIn"
                 showTime
+                disabledDate={(current) => appointment.dateAppointed !== undefined && current < convertDatePicker(appointment.dateAppointed).endOf('day')}
+                disabledTime={
+                  appointment.purpose !== "Incident"
+                    ? () => ({
+                        disabledHours: () => [0, 1, 2, 3, 4, 5, 6, 7, 18, 19, 20, 21, 22, 23, 24],
+                      })
+                    : () => ({
+                      disabledHours: () => [],
+                    })
+                }
                 format={dateAdvFormat}
                 onChange={(value) =>
                   form.setFieldsValue({
                     dateCheckedIn: value,
+                    dateCheckedOut: value,
                   })
                 }
-              />{" "}
+              />
             </Form.Item>
             <Form.Item
               name="dateCheckedOut"
               label="Date CheckedOut"
-              rules={[{ required: true }]}
+              rules={[
+                { required: true, message: "Please select Date CheckedOut" },
+                ({ getFieldValue }) => ({
+                  validator(_, value) {
+                    const dateCheckedIn = form.getFieldValue("dateCheckedIn");
+                    console.log(dateCheckedIn.add('1', 'minute'))
+                    if (value.isAfter(dateCheckedIn.add('1', 'minute'))) {
+                      return Promise.resolve();
+                    }
+                    return Promise.reject("Date CheckedOut must be after Date CheckedIn");
+                  },
+                }),
+              ]}
             >
               <DatePicker
                 style={{ width: "100%" }}
                 placeholder="Date CheckedOut"
                 showTime
+                disabledDate={(current) => form.getFieldValue("dateCheckedIn") !== undefined && current < convertDatePicker(form.getFieldValue("dateCheckedIn")).endOf('hour')}
+                disabledTime={
+                  appointment.purpose !== "Incident"
+                    ? () => ({
+                        disabledHours: () => [0, 1, 2, 3, 4, 5, 6, 7, 18, 19, 20, 21, 22, 23, 24],
+                      })
+                    : () => ({
+                      disabledHours: () => [],
+                    })
+                }
                 format={dateAdvFormat}
                 onChange={(value) =>
                   form.setFieldsValue({
                     dateCheckedOut: value,
                   })
                 }
-              />{" "}
+              />
             </Form.Item>
 
             {/* <Form.Item name="isCorrectPerson" label="Correct Person">
