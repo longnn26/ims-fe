@@ -30,7 +30,9 @@ const ModalUpdate: React.FC<Props> = (props) => {
   const { onSubmit, serverHardwareConfig, onClose, open } = props;
 
   const [confirmLoading, setConfirmLoading] = useState(false);
-  const [openModalCreate, setOpenModalCreate] = useState<boolean | undefined>(undefined);
+  const [openModalCreate, setOpenModalCreate] = useState<boolean | undefined>(
+    undefined
+  );
   const [loading, setLoading] = useState<boolean>(false);
 
   const disabled = async () => {
@@ -46,12 +48,15 @@ const ModalUpdate: React.FC<Props> = (props) => {
   const setFieldsValueInitial = () => {
     if (formRef.current) {
       form.setFieldsValue({
-        cpu: serverHardwareConfig.data.find(c => c.componentId === 1)!.description,
-        ram: serverHardwareConfig.data.find(c => c.componentId === 2)!.description,
-        harddisk: serverHardwareConfig.data.find(c => c.componentId === 3)!.description,
+        cpu: serverHardwareConfig.data.find((c) => c.componentId === 1)
+          ?.description,
+        ram: serverHardwareConfig.data.find((c) => c.componentId === 2)
+          ?.description,
+        harddisk: serverHardwareConfig.data.find((c) => c.componentId === 3)
+          ?.description,
       });
-    };
-  }
+    }
+  };
 
   useEffect(() => {
     // refresh after submit for fileList
@@ -65,7 +70,9 @@ const ModalUpdate: React.FC<Props> = (props) => {
     <>
       <Modal
         title={
-          <span className="inline-block m-auto">Update Hardware Information</span>
+          <span className="inline-block m-auto">
+            Update Hardware Information
+          </span>
         }
         open={openModalCreate === undefined ? open : openModalCreate}
         confirmLoading={confirmLoading}
@@ -89,16 +96,21 @@ const ModalUpdate: React.FC<Props> = (props) => {
                       cpu: form.getFieldValue("cpu"),
                       ram: form.getFieldValue("ram"),
                       harddisk: form.getFieldValue("harddisk"),
-                      serverAllocationId: parseInt(router.query.serverAllocationId + ""),
+                      serverAllocationId: parseInt(
+                        router.query.serverAllocationId + ""
+                      ),
                     } as SHCCreateModel;
                     setLoading(true);
                     await serverHardwareConfigService
-                      .createServerHardwareConfig(session?.user.access_token!, formData)
+                      .createServerHardwareConfig(
+                        session?.user.access_token!,
+                        formData
+                      )
                       .then((res) => {
                         form.resetFields();
                         setOpenModalCreate(undefined);
                         onClose();
-                        message.success("Create successfully!");
+                        message.success("Update successfully!");
                       })
                       .catch((errors) => {
                         setOpenModalCreate(true);
@@ -109,7 +121,7 @@ const ModalUpdate: React.FC<Props> = (props) => {
                         onSubmit();
                       });
                   },
-                  onCancel() { },
+                  onCancel() {},
                 });
             }}
           >
@@ -129,22 +141,13 @@ const ModalUpdate: React.FC<Props> = (props) => {
                   style={{ width: "100%" }}
                   name="dynamic_form_complex"
                 >
-                  <Form.Item
-                    label="CPU"
-                    labelAlign="left"
-                  >
+                  <Form.Item label="CPU" labelAlign="left">
                     <Input.TextArea />
                   </Form.Item>
-                  <Form.Item
-                    labelAlign="left"
-                    label="Memory"
-                  >
+                  <Form.Item labelAlign="left" label="Memory">
                     <Input.TextArea />
                   </Form.Item>
-                  <Form.Item
-                    labelAlign="left"
-                    label="Storage"
-                  >
+                  <Form.Item labelAlign="left" label="Storage">
                     <Input.TextArea />
                   </Form.Item>
                 </Form>
