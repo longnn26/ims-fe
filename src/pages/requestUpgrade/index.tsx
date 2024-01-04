@@ -15,8 +15,9 @@ import requestUpgradeService from "@services/requestUpgrade";
 import ModalUpdate from "@components/server/requestUpgrade/ModalUpdate";
 import dynamic from "next/dynamic";
 import React, { useEffect, useState } from "react";
-import { ROLE_SALES, ROLE_TECH } from "@utils/constants";
+import { ROLE_CUSTOMER, ROLE_SALES, ROLE_TECH } from "@utils/constants";
 import { areInArray, parseJwt } from "@utils/helpers";
+import SearchComponent from "@components/SearchComponent";
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
 });
@@ -104,9 +105,16 @@ const Customer: React.FC = () => {
     <AntdLayoutNoSSR
       content={
         <>
-          {areInArray(session?.user.roles!, ROLE_TECH, ROLE_SALES) && (
+          {areInArray(session?.user.roles!, ROLE_TECH, ROLE_SALES, ROLE_CUSTOMER) && (
             <>
-              <div className="flex justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50"></div>
+              <div className="flex justify-end mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
+                <SearchComponent
+                  placeholder="Search Name, Description..."
+                  setSearchValue={(value) =>
+                    setParamGet({ ...paramGet, SearchValue: value })
+                  }
+                />
+              </div>
 
               <RequestUpgradeTable
                 urlOncell=""

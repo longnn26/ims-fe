@@ -30,7 +30,8 @@ export interface AppointmentData extends PagingModel {
 }
 
 export interface ParamGetExtend extends ParamGet {
-  AppointmentId: number;
+  AppointmentId?: number;
+  Statuses?: string;
 }
 
 export interface DocumentModelAppointment {
