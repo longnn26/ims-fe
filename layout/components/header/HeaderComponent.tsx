@@ -124,13 +124,19 @@ const HeaderComponent: React.FC<Props> = (props) => {
   };
   const items: MenuProps["items"] = [
     {
-      label: 
+      label: (
         <span
           onClick={() => {
-            router.push(`/myAccount/${parseJwt(session?.user.access_token).UserId}`)
-          }}>
-          {session?.user.roles.includes("Customer") ? parseJwt(session.user.access_token).Email : session?.user.name}
-        </span>,
+            router.push(
+              `/myAccount/${parseJwt(session?.user.access_token).UserId}`
+            );
+          }}
+        >
+          {session?.user.roles.includes("Customer")
+            ? parseJwt(session.user.access_token).Email
+            : session?.user.name}
+        </span>
+      ),
       key: "0",
     },
 
@@ -177,6 +183,9 @@ const HeaderComponent: React.FC<Props> = (props) => {
         break;
       case "/staffAccount":
         dispatch(setSliderMenuItemSelectedKey("staffAccount"));
+        break;
+      case "/informationDC":
+        dispatch(setSliderMenuItemSelectedKey("informationDC"));
         break;
       default:
         break;
@@ -384,7 +393,9 @@ const HeaderComponent: React.FC<Props> = (props) => {
         >
           <Space>
             <Avatar style={{ backgroundColor: "#fde3cf", color: "#f56a00" }}>
-              {session?.user.roles.includes("Customer")? parseJwt(session.user.access_token).Email.charAt(0) : session?.user.userName?.charAt(0)}
+              {session?.user.roles.includes("Customer")
+                ? parseJwt(session.user.access_token).Email.charAt(0)
+                : session?.user.userName?.charAt(0)}
             </Avatar>
           </Space>
         </Dropdown>
