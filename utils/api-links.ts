@@ -146,6 +146,11 @@ const apiLinks = {
     get: `${url}/api/Notification`,
     seenNotification: `${url}/api/Notification/SeenNotification`,
   },
+
+  informationDC: {
+    get: `${url}/api/Config`,
+    update: `${url}/api/Config`,
+  },
 };
 
 export default apiLinks;
