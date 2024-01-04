@@ -25,7 +25,6 @@ const StaffAccountPage: React.FC = () => {
   const router = useRouter();
   const dispatch = useDispatch();
   const { data: session } = useSession();
-  const { userData } = useSelector((state) => state.user);
   const [openModalUpdate, setOpenModalUpdate] = useState<boolean>(false);
 
   const [informationDCDetail, setInformationDCDetail] = useState<
@@ -40,9 +39,9 @@ const StaffAccountPage: React.FC = () => {
       });
   };
 
-  const updateData = async (data: UserUpdateModel) => {
-    await userService
-      .update(session?.user.access_token!, data)
+  const updateData = async (data: InformationDC) => {
+    await informationDCService
+      .updateData(session?.user.access_token!, data)
       .then((res) => {
         message.success("Update successfully!", 1.5);
         getData();
