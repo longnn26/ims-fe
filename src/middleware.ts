@@ -106,7 +106,13 @@ export async function middleware(req: NextRequest) {
       if (!token || !isExpiredTimeToken(token.loginDate, token.expiresIn)) {
         return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/signin`);
       } else {
-        return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/server`);
+        if (areInArray(token?.roles, ROLE_ADMIN)) {
+          return NextResponse.redirect(
+            `${process.env.NEXTAUTH_URL}/staffAccount`
+          );
+        } else {
+          return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/server`);
+        }
       }
     case "/component":
       if (!token || !isExpiredTimeToken(token.loginDate, token.expiresIn)) {
@@ -118,6 +124,24 @@ export async function middleware(req: NextRequest) {
       }
       break;
     case "/staffAccount":
+      if (!token || !isExpiredTimeToken(token.loginDate, token.expiresIn)) {
+        return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/signin`);
+      } else {
+        if (!areInArray(token?.roles, ROLE_ADMIN)) {
+          return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/empty`);
+        }
+      }
+      break;
+    case "/staffAccount":
+      if (!token || !isExpiredTimeToken(token.loginDate, token.expiresIn)) {
+        return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/signin`);
+      } else {
+        if (!areInArray(token?.roles, ROLE_ADMIN)) {
+          return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/empty`);
+        }
+      }
+      break;
+    case "/informationDC":
       if (!token || !isExpiredTimeToken(token.loginDate, token.expiresIn)) {
         return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/signin`);
       } else {
