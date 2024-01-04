@@ -4,6 +4,7 @@ import { BiServer, BiSolidComponent } from "react-icons/bi";
 import { BsFillHddNetworkFill } from "react-icons/bs";
 import { GrHost, GrSchedules } from "react-icons/gr";
 import { MdUpgrade } from "react-icons/md";
+import { IoInformationOutline } from "react-icons/io5";
 import { ROLE_ADMIN, ROLE_CUSTOMER, ROLE_SALES, ROLE_TECH } from "./constants";
 
 export interface SliderMenuItem {
@@ -66,6 +67,12 @@ export const sliderMenu = [
     key: "staffAccount",
     icon: <FaUser />,
     label: "Staff Account Management",
+    roles: [ROLE_ADMIN],
+  },
+  {
+    key: "InformationDC",
+    icon: <IoInformationOutline />,
+    label: "Information DC",
     roles: [ROLE_ADMIN],
   },
 ] as SliderMenuItem[];
