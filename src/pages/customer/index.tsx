@@ -20,6 +20,7 @@ import ModalUpdate from "@components/customer/ModalUpdate";
 import CustomerTable from "@components/customer/CustomerTable";
 import { areInArray } from "@utils/helpers";
 import { ROLE_SALES, ROLE_TECH } from "@utils/constants";
+import SearchComponent from "@components/SearchComponent";
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
 });
@@ -144,12 +145,15 @@ const Customer: React.FC = () => {
                 Create
               </Button>
             )}
-            {/* <SearchComponent
+            {!areInArray(session?.user.roles!, ROLE_SALES) && (
+              <div className="flex-grow"></div>
+            )}
+            <SearchComponent
               placeholder="Search Name, Description..."
               setSearchValue={(value) =>
                 setParamGet({ ...paramGet, SearchValue: value })
               }
-            /> */}
+            />
           </div>
           {areInArray(session?.user.roles!, ROLE_SALES, ROLE_TECH) && (
             <>

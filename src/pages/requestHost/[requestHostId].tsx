@@ -256,6 +256,7 @@ const RequestDetail: React.FC = () => {
               </div>
               {Boolean(
                 requestHostDetail?.status === "Success"
+                && serverAllocationDetail?.status === "Working"
                 //  && !requestHostDetail.documentConfirm
               ) && (
                 <div className="p-5">

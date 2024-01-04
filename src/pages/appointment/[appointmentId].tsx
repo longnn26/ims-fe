@@ -332,6 +332,7 @@ const Appoinment: React.FC = () => {
                   <AppointmentDetail appointmentDetail={appointmentDetail!} />
                   {Boolean(
                     appointmentDetail?.status === "Success"
+                    && appointmentDetail.serverAllocation.status === "Working"
                     // && !appointmentDetail.documentConfirm
                   ) && (
                       <>
@@ -380,10 +381,11 @@ const Appoinment: React.FC = () => {
                     )}
                 </div>
 
-                {Boolean(
-                  appointmentDetail?.status === "Waiting" &&
-                  areInArray(session?.user.roles!, ROLE_SALES)
-                ) && (
+              {Boolean(
+                appointmentDetail?.status === "Waiting" &&
+                areInArray(session?.user.roles!, ROLE_SALES)
+              ) && (
+                  <>
                     <FloatButton.Group
                       trigger="hover"
                       type="primary"
@@ -401,46 +403,47 @@ const Appoinment: React.FC = () => {
                         tooltip="Accept"
                       />
                     </FloatButton.Group>
-                  )}
+                    <ModalAccept
+                      open={openModalAccept}
+                      onClose={() => setOpenModalAccept(false)}
+                      appointmentId={appointmentDetail?.id!}
+                      getData={() => getData()}
+                    />
+                  </>
+                )}
 
-                <Tabs className="m-5" defaultActiveKey="1" items={items} />
-                <ModalComplete
-                  open={openComplete}
-                  appointment={appointmentDetail!}
-                  onSubmit={(value) => completeAppointment(value)}
-                  onClose={() => setOpenComplete(false)}
-                />
-                <ModalUpdateDocument
-                  open={openUpdateDocument}
-                  appointment={appointmentDetail!}
-                  onSubmit={() => {
-                    getData();
-                    setOpenUpdateDocument(false);
-                  }}
-                  onClose={() => setOpenUpdateDocument(false)}
-                />
-                <ModalFail
-                  open={openFail}
-                  onSubmit={(value) => failAppointment(value)}
-                  onClose={() => setOpenFail(false)}
-                />
-                <ModalAccept
-                  open={openModalAccept}
-                  onClose={() => setOpenModalAccept(false)}
-                  appointmentId={appointmentDetail?.id!}
-                  getData={() => getData()}
-                />
-                <ModalDeny
-                  open={openModalDeny}
-                  onClose={() => setOpenModalDeny(false)}
-                  appointmentId={appointmentDetail?.id!}
-                  getData={() => getData()}
-                />
+              <Tabs className="m-5" defaultActiveKey="1" items={items} />
+              <ModalComplete
+                open={openComplete}
+                appointment={appointmentDetail!}
+                onSubmit={(value) => completeAppointment(value)}
+                onClose={() => setOpenComplete(false)}
+              />
+              <ModalUpdateDocument
+                open={openUpdateDocument}
+                appointment={appointmentDetail!}
+                onSubmit={() => {
+                  getData();
+                  setOpenUpdateDocument(false);
+                }}
+                onClose={() => setOpenUpdateDocument(false)}
+              />
+              <ModalFail
+                open={openFail}
+                onSubmit={(value) => failAppointment(value)}
+                onClose={() => setOpenFail(false)}
+              />
+              <ModalDeny
+                open={openModalDeny}
+                onClose={() => setOpenModalDeny(false)}
+                appointmentId={appointmentDetail?.id!}
+                getData={() => getData()}
+              />
 
-                {Boolean(
-                  appointmentDetail?.status === "Accepted" &&
-                  areInArray(session?.user.roles!, ROLE_TECH)
-                ) && (
+              {Boolean(
+                appointmentDetail?.status === "Accepted" &&
+                areInArray(session?.user.roles!, ROLE_TECH)
+              ) && (
                     <FloatButton.Group
                       trigger="hover"
                       type="primary"

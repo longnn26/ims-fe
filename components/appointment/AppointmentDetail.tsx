@@ -56,8 +56,17 @@ const ServerDetail: React.FC<Props> = (props) => {
         <Descriptions.Item label="Serial Name" span={2}>
           {appointmentDetail?.serverAllocation.name}
         </Descriptions.Item>
-        <Descriptions.Item label="Visiter">
-          {appointmentDetail?.appointedCustomer}
+        <Descriptions.Item label="Visitor">
+          {appointmentDetail?.appointedCustomer && (
+            <>
+              {appointmentDetail.appointedCustomer.split('|').map((visitor, index) => (
+                <>
+                  {index > 0 && <br />}
+                  {visitor}
+                </>
+              ))}
+            </>
+          )}
         </Descriptions.Item>
 
         {/* <Descriptions.Item label="Appointed" span={4}>
