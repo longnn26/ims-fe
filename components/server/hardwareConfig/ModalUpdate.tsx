@@ -110,11 +110,11 @@ const ModalUpdate: React.FC<Props> = (props) => {
                         form.resetFields();
                         setOpenModalCreate(undefined);
                         onClose();
-                        message.success("Update successfully!");
+                        message.success("Update successfully!", 1.5);
                       })
                       .catch((errors) => {
                         setOpenModalCreate(true);
-                        message.error(errors.response.data);
+                        message.error(errors.response.data, 1.5);
                       })
                       .finally(() => {
                         setLoading(false);

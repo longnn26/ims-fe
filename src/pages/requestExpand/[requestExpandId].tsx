@@ -102,11 +102,11 @@ const RequestExpandDetail: React.FC = () => {
             requestExpandDetail?.id + ""
           )
           .then((res) => {
-            message.success("Reject request expand successfully!");
+            message.success("Reject request expand successfully!", 1.5);
             getData();
           })
           .catch((errors) => {
-            message.error(errors.response.data);
+            message.error(errors.response.data, 1.5);
           })
           .finally(() => {});
       },
@@ -130,11 +130,11 @@ const RequestExpandDetail: React.FC = () => {
             requestExpandDetail?.id + ""
           )
           .then((res) => {
-            message.success("Complete request expand successfully!");
+            message.success("Complete request expand successfully!", 1.5);
             getData();
           })
           .catch((errors) => {
-            message.error(errors.response.data);
+            message.error(errors.response.data, 1.5);
           })
           .finally(() => {});
       },
@@ -158,11 +158,11 @@ const RequestExpandDetail: React.FC = () => {
             requestExpandDetail?.id + ""
           )
           .then((res) => {
-            message.success("Accept request expand successfully!");
+            message.success("Accept request expand successfully!", 1.5);
             getData();
           })
           .catch((errors) => {
-            message.error(errors.response.data);
+            message.error(errors.response.data, 1.5);
           })
           .finally(() => {});
       },
@@ -174,7 +174,7 @@ const RequestExpandDetail: React.FC = () => {
     await requestExpandService
       .updateData(session?.user.access_token!, data)
       .then(async (res) => {
-        message.success("Update successfully!");
+        message.success("Update successfully!", 1.5);
         await requestExpandService
           .getDetail(
             session?.user.access_token!,
@@ -206,7 +206,7 @@ const RequestExpandDetail: React.FC = () => {
         // getData();
       })
       .catch((errors) => {
-        message.error(errors.response.data);
+        message.error(errors.response.data, 1.5);
       });
   };
 
@@ -214,11 +214,11 @@ const RequestExpandDetail: React.FC = () => {
     await requestExpandService
       .saveLocation(session?.user.access_token!, requestExpandUpdate?.id!, data)
       .then(async (res) => {
-        message.success("Save location successfully!");
+        message.success("Save location successfully!", 1.5);
         getData();
       })
       .catch((errors) => {
-        message.error(errors.response.data);
+        message.error(errors.response.data, 1.5);
       })
       .finally(() => {
         setRequestExpandUpdate(undefined);

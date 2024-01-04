@@ -97,14 +97,14 @@ const ModalUpdate: React.FC<Props> = (props) => {
                     await requestUpgradeService
                     .updateData(session?.user.access_token!, formData)
                     .then((res) => {
-                      message.success("Update successfully!");
+                      message.success("Update successfully!", 1.5);
                       form.resetFields();
                       setOpenModalUpdate(undefined);
                       onClose();
                     })
                     .catch((errors) => {
                       setOpenModalUpdate(true);
-                      message.error(errors.response.data);
+                      message.error(errors.response.data, 1.5);
                     })
                     .finally(() => {
                       onSubmit();

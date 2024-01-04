@@ -59,11 +59,11 @@ const Customer: React.FC = () => {
     await componentService
       .createComponent(session?.user.access_token!, data)
       .then((res) => {
-        message.success("Create successfully!");
+        message.success("Create successfully!", 1.5);
         getData();
       })
       .catch((errors) => {
-        message.error(errors.response.data);
+        message.error(errors.response.data, 1.5);
       })
       .finally(() => {
         setOpenModalCreate(false);
@@ -74,11 +74,11 @@ const Customer: React.FC = () => {
     await componentService
       .updateComponent(session?.user.access_token!, data)
       .then((res) => {
-        message.success("Update successfully!");
+        message.success("Update successfully!", 1.5);
         getData();
       })
       .catch((errors) => {
-        message.error(errors.response.data);
+        message.error(errors.response.data, 1.5);
       })
       .finally(() => {
         setComponentUpdate(undefined);
@@ -101,10 +101,10 @@ const Customer: React.FC = () => {
           .deleteComponent(session?.user.access_token!, serverAllocation.id)
           .then(() => {
             getData();
-            message.success(`Delete component successfully!`);
+            message.success(`Delete component successfully!`, 1.5);
           })
           .catch((errors) => {
-            message.error(errors.response.data ?? "Delete component failed");
+            message.error(errors.response.data ?? "Delete component failed", 1.5);
             setLoadingSubmit(false);
           });
       },

@@ -130,14 +130,14 @@ const ModalCreate: React.FC<Props> = (props) => {
                     await customerService
                       .createData(session?.user.access_token!, data)
                       .then((res) => {
-                        message.success("Create successfully!");
+                        message.success("Create successfully!", 1.5);
                         form.resetFields();
                         setOpenModalCreate(undefined);
                         onSubmit();
                       })
                       .catch((errors) => {
                         setOpenModalCreate(true);
-                        message.error(errors.response.data);
+                        message.error(errors.response.data, 1.5);
                       })
                       .finally(() => {
                         setLoading(false);

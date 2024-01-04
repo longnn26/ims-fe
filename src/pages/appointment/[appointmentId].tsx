@@ -114,11 +114,11 @@ const Appoinment: React.FC = () => {
         data
       )
       .then((res) => {
-        message.success("Upload document successfully!");
+        message.success("Upload document successfully!", 1.5);
         getData();
       })
       .catch((errors) => {
-        message.error(errors.response.data);
+        message.error(errors.response.data, 1.5);
       })
       .finally(() => {
         setLoadingUploadDocument(false);
@@ -135,11 +135,11 @@ const Appoinment: React.FC = () => {
         data
       )
       .then((res) => {
-        message.success("Complete appointment successfully!");
+        message.success("Complete appointment successfully!", 1.5);
         getData();
       })
       .catch((errors) => {
-        message.error(errors.response.data);
+        message.error(errors.response.data, 1.5);
       })
       .finally(() => {
         setOpenComplete(false);
@@ -154,11 +154,11 @@ const Appoinment: React.FC = () => {
         data
       )
       .then((res) => {
-        message.success("Fail appointment successfully!");
+        message.success("Fail appointment successfully!", 1.5);
         getData();
       })
       .catch((errors) => {
-        message.error(errors.response.data);
+        message.error(errors.response.data, 1.5);
       })
       .finally(() => { });
   };
@@ -181,11 +181,11 @@ const Appoinment: React.FC = () => {
     await requestUpgradeService
       .updateData(session?.user.access_token!, data)
       .then((res) => {
-        message.success("Update successfully!");
+        message.success("Update successfully!", 1.5);
         getData();
       })
       .catch((errors) => {
-        message.error(errors.response.data);
+        message.error(errors.response.data, 1.5);
       })
       .finally(() => {
         setRequestUpgradeUpdate(undefined);

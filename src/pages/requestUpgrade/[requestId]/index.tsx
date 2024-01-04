@@ -93,11 +93,11 @@ const RequestDetail: React.FC = () => {
             requestUpgradeDetail?.id + ""
           )
           .then((res) => {
-            message.success("Accept request upgrade successfully!");
+            message.success("Accept request upgrade successfully!", 1.5);
             getData();
           })
           .catch((errors) => {
-            message.error(errors.response.data);
+            message.error(errors.response.data, 1.5);
           })
           .finally(() => { });
       },
@@ -121,11 +121,11 @@ const RequestDetail: React.FC = () => {
             requestUpgradeDetail?.id + ""
           )
           .then((res) => {
-            message.success("Reject request upgrade successfully!");
+            message.success("Reject request upgrade successfully!", 1.5);
             getData();
           })
           .catch((errors) => {
-            message.error(errors.response.data);
+            message.error(errors.response.data, 1.5);
           })
           .finally(() => { });
       },
@@ -149,11 +149,11 @@ const RequestDetail: React.FC = () => {
             requestUpgradeDetail?.id + ""
           )
           .then((res) => {
-            message.success("Complete request upgrade successfully!");
+            message.success("Complete request upgrade successfully!", 1.5);
             getData();
           })
           .catch((errors) => {
-            message.error(errors.response.data);
+            message.error(errors.response.data, 1.5);
           })
           .finally(() => { });
       },

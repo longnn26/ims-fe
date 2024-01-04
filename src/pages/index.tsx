@@ -56,30 +56,30 @@ const Customer: React.FC = () => {
     });
   };
 
-  const createData = async (data: SACreateModel) => {
-    await serverAllocationService
-      .createServerAllocation(session?.user.access_token!, data)
-      .then((res) => {
-        message.success("Create successfully!");
-        getData();
-      })
-      .catch((errors) => {
-        message.error(errors.response.data);
-      })
-      .finally(() => {
-        setOpenModalCreate(false);
-      });
-  };
+  // const createData = async (data: SACreateModel) => {
+  //   await serverAllocationService
+  //     .createServerAllocation(session?.user.access_token!, data)
+  //     .then((res) => {
+  //       message.success("Create successfully!", 1.5);
+  //       getData();
+  //     })
+  //     .catch((errors) => {
+  //       message.error(errors.response.data);
+  //     })
+  //     .finally(() => {
+  //       setOpenModalCreate(false);
+  //     });
+  // };
 
   const updateData = async (data: SAUpdateModel) => {
     await serverAllocationService
       .updateServerAllocation(session?.user.access_token!, data)
       .then((res) => {
-        message.success("Update successfully!");
+        message.success("Update successfully!", 1.5);
         getData();
       })
       .catch((errors) => {
-        message.error(errors.response.data);
+        message.error(errors.response.data, 1.5);
       })
       .finally(() => {
         setServerAllocationUpdate(undefined);
@@ -105,11 +105,11 @@ const Customer: React.FC = () => {
           )
           .then(() => {
             getData();
-            message.success(`Delete server allocation successfully`);
+            message.success(`Delete server allocation successfully`, 1.5);
           })
           .catch((errors) => {
             message.error(
-              errors.response.data ?? "Delete server allocation failed"
+              errors.response.data ?? "Delete server allocation failed", 1.5
             );
             setLoadingSubmit(false);
           });

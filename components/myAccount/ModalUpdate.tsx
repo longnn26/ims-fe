@@ -72,14 +72,14 @@ const ModalUpdate: React.FC<Props> = (props) => {
                           form.getFieldValue("password")
                         )
                         .then((res) => {
-                          message.success("Update password successfully!");
+                          message.success("Update password successfully!", 1.5);
                           form.resetFields();
                           setOpenModalCreate(undefined);
                           onClose();
                         })
                         .catch((errors) => {
                           setOpenModalCreate(true);
-                          message.error(errors.response.data);
+                          message.error(errors.response.data, 1.5);
                         })
                         .finally(() => {
                           setLoadingSubmit(false);

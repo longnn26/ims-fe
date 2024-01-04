@@ -111,12 +111,12 @@ const ModalUpdateRemoval: React.FC<Props> = (props) => {
                     await requestHostService
                       .updateData(session?.user.access_token!, data)
                       .then(async (res) => {
-                        message.success("Update successfully!");
+                        message.success("Update successfully!", 1.5);
                         form.resetFields();
                         onClose();
                       })
                       .catch((errors) => {
-                        message.error(errors.response.data);
+                        message.error(errors.response.data, 1.5);
                       })
                       .finally(() => {
                         onSubmit();

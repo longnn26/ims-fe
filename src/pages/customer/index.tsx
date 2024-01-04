@@ -113,10 +113,10 @@ const Customer: React.FC = () => {
           .deleteData(session?.user.access_token!, customer.id)
           .then(() => {
             getData();
-            message.success(`Delete customer successfully!`);
+            message.success(`Delete customer successfully!`, 1.5);
           })
           .catch((errors) => {
-            message.error(errors.response.data ?? "Delete customer failed");
+            message.error(errors.response.data ?? "Delete customer failed", 1.5);
             setLoadingSubmit(false);
           });
       },
@@ -193,13 +193,6 @@ const Customer: React.FC = () => {
             onSubmit={() => {
               setCustomerUpdate(undefined);
               getData();
-            }}
-            messageShow={(mess: string, isError: boolean) => {
-              if (isError === false) {
-                message.success(mess);
-              } else {
-                message.error(mess);
-              }
             }}
           />
         </>

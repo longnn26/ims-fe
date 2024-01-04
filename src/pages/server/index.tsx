@@ -122,11 +122,11 @@ const Customer: React.FC = () => {
     await serverAllocationService
       .updateServerAllocation(session?.user.access_token!, data)
       .then((res) => {
-        message.success("Update successfully!");
+        message.success("Update successfully!", 1.5);
         getData();
       })
       .catch((errors) => {
-        message.error(errors.response.data);
+        message.error(errors.response.data, 1.5);
       })
       .finally(() => {
         setServerAllocationUpdate(undefined);
@@ -152,10 +152,10 @@ const Customer: React.FC = () => {
           )
           .then(() => {
             getData();
-            message.success(`Delete server allocation successfully!`);
+            message.success(`Delete server allocation successfully!`, 1.5);
           })
           .catch((errors) => {
-            message.error(errors.response.data ?? "Delete allocation failed");
+            message.error(errors.response.data ?? "Delete allocation failed", 1.5);
             setLoadingSubmit(false);
           });
       },

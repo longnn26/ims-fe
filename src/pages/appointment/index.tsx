@@ -78,11 +78,11 @@ const Appoinment: React.FC = () => {
     await appointmentService
       .update(session?.user.access_token!, data)
       .then((res) => {
-        message.success("Update successfully!");
+        message.success("Update successfully!", 1.5);
         getData();
       })
       .catch((errors) => {
-        message.error(errors.response.data);
+        message.error(errors.response.data, 1.5);
       })
       .finally(() => {
         setAppointmentUpdate(undefined);
@@ -105,10 +105,10 @@ const Appoinment: React.FC = () => {
           .deleteAppointment(session?.user.access_token!, appointment.id)
           .then(() => {
             getData();
-            message.success(`Delete successfully!`);
+            message.success(`Delete successfully!`, 1.5);
           })
           .catch((errors) => {
-            message.error(errors.response.data ?? "Delete failed");
+            message.error(errors.response.data ?? "Delete failed", 1.5);
             setLoadingSubmit(false);
           });
       },

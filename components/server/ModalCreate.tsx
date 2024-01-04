@@ -106,13 +106,13 @@ const ModalCreate: React.FC<Props> = (props) => {
                         data
                       )
                       .then(() => {
-                        message.success("Create successfully!");
+                        message.success("Create successfully!", 1.5);
                         form.resetFields();
                         setOpenModalCreate(undefined);
                         onClose();
                       })
                       .catch((errors) => {
-                        message.error(errors.response.data)
+                        message.error(errors.response.data, 1.5)
                         setOpenModalCreate(true);
                       })
                       .finally(() => {

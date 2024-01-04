@@ -110,14 +110,14 @@ const ModalComplete: React.FC<Props> = (props) => {
                         documentModel
                       )
                       .then((res) => {
-                        message.success("Complete appointment successfully!");
+                        message.success("Complete appointment successfully!", 1.5);
                         onSubmit();
                         setOpenModal(undefined);
                         form.resetFields();
                       })
                       .catch((errors) => {
                         setOpenModal(true);
-                        message.error(errors.response.data);
+                        message.error(errors.response.data, 1.5);
                       })
                       .finally(() => {
                         setLoading(false);

@@ -20,19 +20,20 @@ const UploadComponent: React.FC<Props> = (props) => {
   const beforeUpload = (file) => {
     const isJPEG = file.type === "image/jpeg";
     const isPDF = file.type === "application/pdf";
-    const isDOCX =
-      file.type ===
-      "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
-    const isDOC = file.type === "application/msword";
-    if (!isJPEG && !isPDF && !isDOCX && !isDOC) {
+    // const isDOCX =
+    //   file.type ===
+    //   "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+    // const isDOC = file.type === "application/msword";
+    if (!isJPEG && !isPDF) {
       disabled(true);
       message.error(
-        `System only accepts files with the following extensions: .pdf, .docx, .doc, .jpeg`
+        `System only accepts files with the following extensions: .pdf, .jpeg`,
+        1.5
       );
     } else {
       disabled(false);
     }
-    return isJPEG && isPDF && isDOCX && isDOC;
+    return isJPEG && isPDF;
   };
 
   const onChange = (info) => {

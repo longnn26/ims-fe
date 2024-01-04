@@ -139,7 +139,7 @@ const RequestHostDetail: React.FC = () => {
     await requestHost
       .updateData(session?.user.access_token!, data)
       .then(async (res) => {
-        message.success("Update successfully!");
+        message.success("Update successfully!", 1.5);
         await requestHost
           .getDetail(
             session?.user.access_token!,
@@ -160,7 +160,7 @@ const RequestHostDetail: React.FC = () => {
         getData();
       })
       .catch((errors) => {
-        message.error(errors.response.data);
+        message.error(errors.response.data, 1.5);
       });
   };
 
@@ -203,11 +203,11 @@ const RequestHostDetail: React.FC = () => {
         data
       )
       .then((res) => {
-        message.success("Upload document successfully!");
+        message.success("Upload document successfully!", 1.5);
         getData();
       })
       .catch((errors) => {
-        message.error(errors.response.data);
+        message.error(errors.response.data, 1.5);
       })
       .finally(() => {
         setLoadingUploadDocument(false);

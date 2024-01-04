@@ -165,14 +165,14 @@ const ModalUpdateRemoval: React.FC<Props> = (props) => {
                             ipData
                           )
                           .then((res) => {
-                            message.success("Update successfully!");
+                            message.success("Update successfully!", 1.5);
                             form.resetFields();
                             setOpenModal(undefined);
                             onClose();
                           })
                           .catch((errors) => {
                             setOpenModal(true);
-                            message.error(errors.response.data);
+                            message.error(errors.response.data, 1.5);
                           })
                           .finally(() => {
                             onSubmit();
@@ -181,7 +181,7 @@ const ModalUpdateRemoval: React.FC<Props> = (props) => {
                       })
                       .catch((errors) => {
                         setOpenModal(true);
-                        message.error(errors.response.data);
+                        message.error(errors.response.data, 1.5);
                       });
                   },
                   onCancel() {},

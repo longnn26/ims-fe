@@ -110,12 +110,12 @@ const RequestExpand: React.FC = () => {
     await requestExpandService
       .createData(session?.user.access_token!, data)
       .then((res) => {
-        message.success("Create successfully!");
+        message.success("Create successfully!", 1.5);
         getData();
         setOpenModalCreate(false);
       })
       .catch((errors) => {
-        message.error(errors.response.data);
+        message.error(errors.response.data, 1.5);
       });
   };
 
@@ -123,11 +123,11 @@ const RequestExpand: React.FC = () => {
     await requestUpgradeService
       .updateData(session?.user.access_token!, data)
       .then((res) => {
-        message.success("Update successfully!");
+        message.success("Update successfully!", 1.5);
         getData();
       })
       .catch((errors) => {
-        message.error(errors.response.data);
+        message.error(errors.response.data, 1.5);
       })
       .finally(() => {
         setRequestUpgradeUpdate(undefined);
@@ -150,11 +150,11 @@ const RequestExpand: React.FC = () => {
           .deleteData(session?.user.access_token!, requestUpgrade.id.toString())
           .then(() => {
             getData();
-            message.success(`Delete request upgrade successfully`);
+            message.success(`Delete request upgrade successfully`, 1.5);
           })
           .catch((errors) => {
             message.error(
-              errors.response.data ?? "Delete request upgrade failed"
+              errors.response.data ?? "Delete request upgrade failed", 1.5
             );
             setLoadingSubmit(false);
           });

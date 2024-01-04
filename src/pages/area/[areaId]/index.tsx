@@ -60,12 +60,12 @@ const AreaDetail: React.FC = () => {
     await rackService
       .createData(session?.user.access_token!, data)
       .then((res) => {
-        message.success("Create successfully!");
+        message.success("Create successfully!", 1.5);
         getData();
         setOpenModalCreate(false);
       })
       .catch((errors) => {
-        message.error(errors.response.data);
+        message.error(errors.response.data, 1.5);
       });
   };
 
@@ -73,11 +73,11 @@ const AreaDetail: React.FC = () => {
     await rackService
       .updateData(session?.user.access_token!, data)
       .then((res) => {
-        message.success("Update successfully!");
+        message.success("Update successfully!", 1.5);
         getData();
       })
       .catch((errors) => {
-        message.error(errors.response.data);
+        message.error(errors.response.data, 1.5);
       })
       .finally(() => {
         setRackUpdate(undefined);
@@ -100,10 +100,10 @@ const AreaDetail: React.FC = () => {
           .deleteData(session?.user.access_token!, area.id)
           .then(() => {
             getData();
-            message.success(`Delete rack successfully!`);
+            message.success(`Delete rack successfully!`, 1.5);
           })
           .catch((errors) => {
-            message.error(errors.response.data ?? "Delete rack failed");
+            message.error(errors.response.data ?? "Delete rack failed", 1.5);
             setLoadingSubmit(false);
           });
       },

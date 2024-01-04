@@ -13,14 +13,13 @@ interface Props {
   customer: Customer;
   onClose: () => void;
   onSubmit: () => void;
-  messageShow: (mess: string, isError: boolean) => void;
 }
 
 const ModalUpdate: React.FC<Props> = (props) => {
   const formRef = useRef(null);
   const [form] = Form.useForm();
   const { data: session } = useSession();
-  const { onSubmit, customer, onClose, messageShow } = props;
+  const { onSubmit, customer, onClose } = props;
 
   const [confirmLoading, setConfirmLoading] = useState(false);
   const { companyTypeList } = useSelector((state) => state.companyType);
@@ -169,13 +168,14 @@ const ModalUpdate: React.FC<Props> = (props) => {
                     await customerService
                       .updateData(session?.user.access_token!, data)
                       .then((res) => {
-                        messageShow("Update successfully!", false);
+                        message.success("Update successfully!", 1.5);
                         onSubmit();
                         form.resetFields();
-                        setLoading(false);
                       })
                       .catch((errors) => {
-                        messageShow(errors.response.data, true);
+                        message.error(errors.response.data, 1.5)
+                      })
+                      .finally(() => {
                         setLoading(false);
                       });
                   },

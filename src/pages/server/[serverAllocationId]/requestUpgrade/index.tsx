@@ -115,11 +115,11 @@ const RequestUpgrade: React.FC = () => {
     await requestUpgradeService
       .removeData(session?.user.access_token!, data)
       .then((res) => {
-        message.success("Remove Hardware successfully!");
+        message.success("Remove Hardware successfully!", 1.5);
         getData();
       })
       .catch((errors) => {
-        message.error(errors.response.data);
+        message.error(errors.response.data, 1.5);
       })
       .finally(() => {
         setOpenModalCreate(false);
@@ -142,11 +142,11 @@ const RequestUpgrade: React.FC = () => {
           .deleteData(session?.user.access_token!, requestUpgrade.id.toString())
           .then(() => {
             getData();
-            message.success(`Delete request upgrade successfully`);
+            message.success(`Delete request upgrade successfully`, 1.5);
           })
           .catch((errors) => {
             message.error(
-              errors.response.data ?? "Delete request upgrade failed"
+              errors.response.data ?? "Delete request upgrade failed", 1.5
             );
             setLoadingSubmit(false);
           });

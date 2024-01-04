@@ -58,12 +58,12 @@ const Area: React.FC = () => {
     await areaService
       .createData(session?.user.access_token!, data)
       .then((res) => {
-        message.success("Create successfully!");
+        message.success("Create successfully!", 1.5);
         getData();
         setOpenModalCreate(false);
       })
       .catch((errors) => {
-        message.error(errors.response.data);
+        message.error(errors.response.data, 1.5);
       });
   };
 
@@ -71,11 +71,11 @@ const Area: React.FC = () => {
     await areaService
       .updateData(session?.user.access_token!, data)
       .then((res) => {
-        message.success("Update successfully!");
+        message.success("Update successfully!", 1.5);
         getData();
       })
       .catch((errors) => {
-        message.error(errors.response.data);
+        message.error(errors.response.data, 1.5);
       })
       .finally(() => {
         setAreaUpdate(undefined);
@@ -98,10 +98,10 @@ const Area: React.FC = () => {
           .deleteData(session?.user.access_token!, area.id)
           .then(() => {
             getData();
-            message.success(`Delete area successfully`);
+            message.success(`Delete area successfully`, 1.5);
           })
           .catch((errors) => {
-            message.error(errors.response.data ?? "Delete area failed");
+            message.error(errors.response.data ?? "Delete area failed", 1.5);
             setLoadingSubmit(false);
           });
       },

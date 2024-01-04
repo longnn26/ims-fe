@@ -50,11 +50,11 @@ const PasswordChange: React.FC<Props> = (props) => {
         values.password
       )
       .then((res) => {
-        message.success("Password change successfully!");
+        message.success("Password change successfully!", 1.5);
         return router.push("/");
       })
       .catch((errors) => {
-        message.error(errors.response.data);
+        message.error(errors.response.data, 1.5);
       })
       .finally(() => {
         setLoading(false);
