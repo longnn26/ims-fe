@@ -17,6 +17,7 @@ import { getRequestHostDataAll } from "@slices/requestHost";
 import { ROLE_CUSTOMER, ROLE_SALES, ROLE_TECH } from "@utils/constants";
 import { areInArray, parseJwt } from "@utils/helpers";
 import ModalCreateRemoval from "@components/server/requestHost/ModalCreateRemoval";
+import SearchComponent from "@components/SearchComponent";
 
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
@@ -68,6 +69,14 @@ const RequestHostList: React.FC = () => {
     <AntdLayoutNoSSR
       content={
         <>
+          <div className="flex justify-end mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
+            <SearchComponent
+              placeholder="Search Name, Description..."
+              setSearchValue={(value) =>
+                setParamGet({ ...paramGet, SearchValue: value })
+              }
+            />
+          </div>
           {areInArray(session?.user.roles!, ROLE_CUSTOMER, ROLE_TECH, ROLE_SALES) && (
             <>
               <RequestHostTable

@@ -18,7 +18,7 @@ import httpClient from "@utils/http-client";
 
 const getListAppointments = async (
   token: string,
-  params: ParamGet
+  params: ParamGetExtend
 ): Promise<AppointmentData> => {
   const response = await httpClient.get({
     url: apiLinks.appointment.get,

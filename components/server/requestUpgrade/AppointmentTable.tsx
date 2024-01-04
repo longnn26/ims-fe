@@ -88,6 +88,16 @@ const AppointmentTable: React.FC<Props> = (props) => {
       title: "Visiter",
       dataIndex: "appointedCustomer",
       key: "appointedCustomer",
+      render: (appointedCustomer) => (
+        <>
+          {appointedCustomer.split('|').map((visitor, index) => (
+            <>
+              {index > 0 && <br />}
+              {visitor}
+            </>
+          ))}
+        </>
+      ),
     },
     { title: "Reason", dataIndex: "reason", key: "reason" },
     {

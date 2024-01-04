@@ -60,7 +60,7 @@ export const sliderMenu = [
     key: "requestUpgrade",
     icon: <MdUpgrade />,
     label: "Hardware Upgrade Request",
-    roles: [ROLE_SALES, ROLE_TECH],
+    roles: [ROLE_SALES, ROLE_TECH, ROLE_CUSTOMER],
   },
   {
     key: "staffAccount",

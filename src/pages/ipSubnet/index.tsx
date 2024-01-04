@@ -22,6 +22,7 @@ import type { DataNode, DirectoryTreeProps } from "antd/es/tree";
 import { useRouter } from "next/router";
 import { areInArray } from "@utils/helpers";
 import { ROLE_TECH } from "@utils/constants";
+import SearchComponent from "@components/SearchComponent";
 
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
@@ -124,6 +125,12 @@ const IpSubnet: React.FC = () => {
                 >
                   Create
                 </Button>
+                <SearchComponent
+                  placeholder="Search Name, Description..."
+                  setSearchValue={(value) =>
+                    setParamGet({ ...paramGet, SearchValue: value })
+                  }
+                />
               </div>
 
               <ModalCreate

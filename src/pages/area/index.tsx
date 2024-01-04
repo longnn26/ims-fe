@@ -16,6 +16,7 @@ import AreaTable from "@components/area/AreaTable";
 import AreaCollap from "@components/area/AreaCollap";
 import { ROLE_TECH } from "@utils/constants";
 import { areInArray } from "@utils/helpers";
+import SearchComponent from "@components/SearchComponent";
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
 });
@@ -105,7 +106,7 @@ const Area: React.FC = () => {
             setLoadingSubmit(false);
           });
       },
-      onCancel() {},
+      onCancel() { },
     });
   };
 
@@ -129,6 +130,12 @@ const Area: React.FC = () => {
                 >
                   Create
                 </Button>
+                <SearchComponent
+                  placeholder="Search Name, Description..."
+                  setSearchValue={(value) =>
+                    setParamGet({ ...paramGet, SearchValue: value })
+                  }
+                />
               </div>
               <AreaCollap />
 

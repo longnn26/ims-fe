@@ -1,4 +1,5 @@
 "use client";
+import SearchComponent from "@components/SearchComponent";
 import ModalCreate from "@components/appointment/ModalCreate";
 import ModalUpdate from "@components/appointment/ModalUpdate";
 import AppointmentTable from "@components/server/requestUpgrade/AppointmentTable";
@@ -8,6 +9,7 @@ import {
   Appointment,
   AppointmentCreateModel,
   AppointmentUpdateModel,
+  ParamGetExtend,
 } from "@models/appointment";
 import { ParamGet } from "@models/base";
 import { RUAppointmentParamGet } from "@models/requestUpgrade";
@@ -15,7 +17,7 @@ import appointmentService from "@services/appointment";
 import { getListAppointment } from "@slices/appointment";
 import { ROLE_CUSTOMER, ROLE_SALES, ROLE_TECH } from "@utils/constants";
 import { areInArray, parseJwt } from "@utils/helpers";
-import { Pagination, Button, message, Alert, Modal, Spin } from "antd";
+import { Pagination, Button, message, Alert, Modal, Spin, TabsProps, Tabs } from "antd";
 import { ItemType } from "antd/es/breadcrumb/Breadcrumb";
 import { useSession } from "next-auth/react";
 import dynamic from "next/dynamic";
@@ -37,11 +39,12 @@ const Appoinment: React.FC = () => {
   const [itemBreadcrumbs, setItemBreadcrumbs] = useState<ItemType[]>([]);
   const [openModalCreate, setOpenModalCreate] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
+  const [status, setStatus] = useState<string | undefined>(undefined);
   const [paramGet, setParamGet] =
-    useState<ParamGet>({
+    useState<ParamGetExtend>({
       PageIndex: 1,
       PageSize: 10,
-    } as unknown as ParamGet);
+    } as unknown as ParamGetExtend);
 
   const getData = async () => {
     var customerId = "", userId = "";
@@ -54,7 +57,7 @@ const Appoinment: React.FC = () => {
     await dispatch(
       getListAppointment({
         token: session?.user.access_token!,
-        paramGet: { ...paramGet, CustomerId: customerId, UserId: userId  },
+        paramGet: { ...paramGet, CustomerId: customerId, UserId: userId, Statuses: status  },
       })
     ).finally(() => {
       setLoading(false);
@@ -74,20 +77,20 @@ const Appoinment: React.FC = () => {
   //     })
   // };
 
-  const updateData = async (data: AppointmentUpdateModel) => {
-    await appointmentService
-      .update(session?.user.access_token!, data)
-      .then((res) => {
-        message.success("Update successfully!", 1.5);
-        getData();
-      })
-      .catch((errors) => {
-        message.error(errors.response.data, 1.5);
-      })
-      .finally(() => {
-        setAppointmentUpdate(undefined);
-      });
-  };
+  // const updateData = async (data: AppointmentUpdateModel) => {
+  //   await appointmentService
+  //     .update(session?.user.access_token!, data)
+  //     .then((res) => {
+  //       message.success("Update successfully!", 1.5);
+  //       getData();
+  //     })
+  //     .catch((errors) => {
+  //       message.error(errors.response.data, 1.5);
+  //     })
+  //     .finally(() => {
+  //       setAppointmentUpdate(undefined);
+  //     });
+  // };
 
   const deleteAppointment = (appointment: Appointment) => {
     confirm({
@@ -130,6 +133,62 @@ const Appoinment: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [openModalCreate]);
 
+  useEffect(() => {
+    session && getData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [status]);
+
+  const handleChange = (value) => {
+    switch (value) {
+      case "0":
+        setStatus(undefined);
+        break;
+      case "1":
+        setStatus("Waiting");
+        break;
+      case "2":
+        setStatus("Accepted");
+        break;
+      case "3":
+        setStatus("Denied");
+        break;
+      case "4":
+        setStatus("Success");
+        break;
+      case "5":
+        setStatus("Failed");
+        break;
+    };
+  };
+
+
+  const items: TabsProps["items"] = [
+    {
+      key: "0",
+      label: "All",
+    },
+    {
+      key: "1",
+      label: "Waiting",
+    },
+    {
+      key: "2",
+      label: "Accepted",
+    },
+    {
+      key: "3",
+      label: "Denied",
+    },
+    {
+      key: "4",
+      label: "Success",
+    },
+    {
+      key: "5",
+      label: "Failed",
+    },
+  ];
+
   return (
     <AntdLayoutNoSSR
       content={
@@ -157,7 +216,19 @@ const Appoinment: React.FC = () => {
                 />
               </>
             )}
+            {!areInArray(session?.user.roles!, ROLE_CUSTOMER) && (
+              <div className="flex-grow"></div>
+            )}
+            <SearchComponent
+              placeholder="Search Name, Description..."
+              setSearchValue={(value) =>
+                setParamGet({ ...paramGet, SearchValue: value })
+              }
+            />
           </div>
+          <Tabs className="m-5" defaultActiveKey="0" items={items} centered
+            onTabClick={(value) => handleChange(value)}
+          />
           {areInArray(
             session?.user.roles!,
             ROLE_TECH,
@@ -168,8 +239,9 @@ const Appoinment: React.FC = () => {
               <ModalUpdate
                 appointment={appointmentUpdate!}
                 onClose={() => setAppointmentUpdate(undefined)}
-                onSubmit={(data: AppointmentUpdateModel) => {
-                  updateData(data);
+                onSubmit={() => {
+                  setAppointmentUpdate(undefined);
+                  getData();
                 }}
               />
               {loading === true ? (
