@@ -17,8 +17,6 @@ const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
 });
 
 const InformationDCPage: React.FC = () => {
-  const router = useRouter();
-  const dispatch = useDispatch();
   const { data: session } = useSession();
   const [openModalUpdate, setOpenModalUpdate] = useState<boolean>(false);
 
@@ -52,16 +50,11 @@ const InformationDCPage: React.FC = () => {
   useEffect(() => {
     session && getData();
   }, [session]);
-
   useEffect(() => {
-    // Cập nhật InformationDCDetail khi informationDCDetail thay đổi
-    // Chắc chắn rằng informationDCDetail đã được set thông qua setInformationDCDetail
-    // và không phải chỉ thông qua getData
-    // Điều này đảm bảo rằng useEffect này không chỉ chạy khi session thay đổi
     if (informationDCDetail) {
+      // logic here
     }
   }, [informationDCDetail]);
-
   return (
     <AntdLayoutNoSSR
       content={
@@ -91,7 +84,6 @@ const InformationDCPage: React.FC = () => {
               />
               <div>
                 <InformationDCDetail
-                  key={Math.random()} // Thêm key ngẫu nhiên để kích thích render lại
                   informationDCDetail={informationDCDetail}
                 />
               </div>
