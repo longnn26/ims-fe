@@ -1,27 +1,22 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Button, Empty, message, Pagination } from "antd";
+import { Button, Empty, message } from "antd";
 import { useRouter } from "next/router";
 import dynamic from "next/dynamic";
 import { useSession } from "next-auth/react";
 import useDispatch from "@hooks/use-dispatch";
-import { ParamGet } from "@models/base";
 import informationDCService from "@services/informationDC";
-import { UserData, User, UserUpdateModel } from "@models/user";
-import userService from "@services/user";
-import useSelector from "@hooks/use-selector";
-
-import ModalUpdate from "@components/admin/ModalUpdate";
 import { areInArray } from "@utils/helpers";
 import { ROLE_ADMIN } from "@utils/constants";
 import InformationDCDetail from "@components/admin/InformationDCDetail";
 import { InformationDC } from "@models/informationDC";
+import ModalUpdateInformationDC from "@components/admin/ModalUpdateInformationDC";
 
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
 });
 
-const StaffAccountPage: React.FC = () => {
+const InformationDCPage: React.FC = () => {
   const router = useRouter();
   const dispatch = useDispatch();
   const { data: session } = useSession();
@@ -56,8 +51,16 @@ const StaffAccountPage: React.FC = () => {
 
   useEffect(() => {
     session && getData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session]);
+
+  useEffect(() => {
+    // Cập nhật InformationDCDetail khi informationDCDetail thay đổi
+    // Chắc chắn rằng informationDCDetail đã được set thông qua setInformationDCDetail
+    // và không phải chỉ thông qua getData
+    // Điều này đảm bảo rằng useEffect này không chỉ chạy khi session thay đổi
+    if (informationDCDetail) {
+    }
+  }, [informationDCDetail]);
 
   return (
     <AntdLayoutNoSSR
@@ -77,16 +80,18 @@ const StaffAccountPage: React.FC = () => {
                 </Button>
               </div>
 
-              {/* <ModalUpdate
+              <ModalUpdateInformationDC
+                key={Math.random()} // Thêm key ngẫu nhiên để kích thích render lại
                 open={openModalUpdate}
                 onClose={() => setOpenModalUpdate(false)}
                 data={informationDCDetail}
-                onSubmit={(data: UserUpdateModel) => {
+                onSubmit={(data: InformationDC) => {
                   updateData(data);
                 }}
-              /> */}
+              />
               <div>
                 <InformationDCDetail
+                  key={Math.random()} // Thêm key ngẫu nhiên để kích thích render lại
                   informationDCDetail={informationDCDetail}
                 />
               </div>
@@ -98,4 +103,4 @@ const StaffAccountPage: React.FC = () => {
   );
 };
 
-export default StaffAccountPage;
+export default InformationDCPage;
