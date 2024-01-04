@@ -52,10 +52,10 @@ const CustomerTable: React.FC<Props> = (props) => {
     } else {
       const nestedColumns = [
         { title: "Contacts" },
-        { title: "Thông tin liên lạc",
+        { title: "Thông tin loại",
           key: "forAppointment",
           render: (record: Contacts) =>
-        `${record.forAppointment === true ? "Yes" : "No"}`,  
+        `${record.forAppointment === true ? "Đăng kí ra vào DC" : "Liên lạc"}`,  
         },
         { title: "Name", dataIndex: "name", key: "name" },
         { title: "Position", dataIndex: "position", key: "position" },

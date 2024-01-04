@@ -27,6 +27,7 @@ const ModalCreate: React.FC<Props> = (props) => {
   const [confirmLoading, setConfirmLoading] = useState(false);
   //Loading: thêm biến này
   const [loading, setLoading] = useState<boolean>(false);
+  const [selectedType, setSelectedType] = useState<boolean>(false);
 
   const disabled = async () => {
     var result = false;
@@ -51,6 +52,10 @@ const ModalCreate: React.FC<Props> = (props) => {
       companyName: response.data.name,
       address: response.data.address,
     });
+  };
+
+  const handleContactType = (any) => {
+    setSelectedType(any);
   };
 
   return (
@@ -89,6 +94,16 @@ const ModalCreate: React.FC<Props> = (props) => {
                         form
                           .getFieldValue("contacts")
                           .map((item, index) => ({
+                            forAppointment: form.getFieldValue([
+                              "contacts",
+                              index,
+                              "forAppointment"
+                            ]),
+                            cccd: form.getFieldValue([
+                              "contacts",
+                              index,
+                              "cccd"
+                            ]),
                             name: form.getFieldValue([
                               "contacts",
                               index,
@@ -118,14 +133,13 @@ const ModalCreate: React.FC<Props> = (props) => {
                         message.success("Create successfully!");
                         form.resetFields();
                         setOpenModalCreate(undefined);
-                        onClose();
+                        onSubmit();
                       })
                       .catch((errors) => {
                         setOpenModalCreate(true);
                         message.error(errors.response.data);
                       })
                       .finally(() => {
-                        onSubmit();
                         setLoading(false);
                       });
                   },
@@ -346,6 +360,38 @@ const ModalCreate: React.FC<Props> = (props) => {
                           }
                         >
                           <Form.Item
+                            label="Loại contacts"
+                            name={[field.name, "forAppointment"]}
+                            rules={[{ required: true }]}
+                          >
+                            <Select
+                              placeholder="Contact Type"
+                              allowClear
+                              onChange={(res) => handleContactType(res)}
+                            >
+                              <Option value={true}>Đăng kí ra vào DC</Option>
+                              <Option value={false}>Thông tin liên hệ</Option>
+                            </Select>
+                          </Form.Item>
+                          {selectedType === true && (
+                            <>
+                              <Form.Item
+                                label="Citizen  Identification"
+                                name={[field.name, "cccd"]}
+                                rules={[{ required: true},
+                                {
+                                  pattern: /^\d{12}$/,
+                                  message: "Citizen ID must be 12 numbers!"
+                                }]}
+                              >
+                                <Input
+                                  placeholder="Citizen ID"
+                                  allowClear
+                                />
+                              </Form.Item>
+                            </>
+                          )}
+                          <Form.Item
                             label="Name"
                             name={[field.name, "name"]}
                             rules={[{ required: true, min: 8, max: 255 }]}
@@ -399,7 +445,13 @@ const ModalCreate: React.FC<Props> = (props) => {
                         </Card>
                       ))}
 
-                      <Button type="dashed" onClick={() => add()} block>
+                      <Button
+                        type="dashed"
+                        onClick={() => {
+                          add();
+                          setSelectedType(false);
+                        }}
+                        block>
                         + Add Contact
                       </Button>
                     </div>

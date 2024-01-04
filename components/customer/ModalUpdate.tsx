@@ -1,26 +1,31 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Button, Input, Modal, Select, Card, Row, Col } from "antd";
+import { Button, Input, Modal, Select, Card, Row, Col, Spin, message } from "antd";
 import { CloseOutlined } from "@ant-design/icons";
 import { Form } from "antd";
-import { CustomerUpdateModel, Customer } from "@models/customer";
+import { CustomerUpdateModel, Customer, CustomerCreateModel } from "@models/customer";
 import customerService from "@services/customer";
 import useSelector from "@hooks/use-selector";
+import { useSession } from "next-auth/react";
 const { Option } = Select;
 const { confirm } = Modal;
 
 interface Props {
   customer: Customer;
   onClose: () => void;
-  onSubmit: (data: CustomerUpdateModel) => void;
+  onSubmit: () => void;
+  messageShow: (mess: string, isError: boolean) => void;
 }
 
 const ModalUpdate: React.FC<Props> = (props) => {
   const formRef = useRef(null);
   const [form] = Form.useForm();
-  const { onSubmit, customer, onClose } = props;
+  const { data: session } = useSession();
+  const { onSubmit, customer, onClose, messageShow } = props;
 
   const [confirmLoading, setConfirmLoading] = useState(false);
   const { companyTypeList } = useSelector((state) => state.companyType);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [selectedType, setSelectedType] = useState<boolean>(false);
 
   const disabled = async () => {
     var result = false;
@@ -45,6 +50,8 @@ const ModalUpdate: React.FC<Props> = (props) => {
         position: contact.position,
         email: contact.email,
         phoneNumber: contact.phoneNumber,
+        forAppointment: contact.forAppointment,
+        cccd: contact.cccd,
       })
     );
     }
@@ -79,6 +86,10 @@ const ModalUpdate: React.FC<Props> = (props) => {
     });
   };
 
+  const handleContactType = (any) => {
+    setSelectedType(any);
+  };
+
   useEffect(() => {
     // refresh after submit for fileList
     if (customer) {
@@ -97,6 +108,7 @@ const ModalUpdate: React.FC<Props> = (props) => {
         confirmLoading={confirmLoading}
         onCancel={() => {
           onClose();
+          form.resetFields();
         }}
         footer={[
           <Button
@@ -108,8 +120,8 @@ const ModalUpdate: React.FC<Props> = (props) => {
                 confirm({
                   title: "Do you want to save?",
                   async onOk() {
-                    onSubmit({
-                      id: form.getFieldValue("id"),
+                    const data = {
+                      id: customer.id,
                       companyName: form.getFieldValue("companyName"),
                       taxNumber: form.getFieldValue("taxNumber"),
                       address: form.getFieldValue("address"),
@@ -121,6 +133,16 @@ const ModalUpdate: React.FC<Props> = (props) => {
                       contacts: form
                       .getFieldValue("contacts")
                       .map((item, index) => ({
+                        forAppointment: form.getFieldValue([
+                          "contacts",
+                          index,
+                          "forAppointment"
+                        ]),
+                        cccd: form.getFieldValue([
+                          "contacts",
+                          index,
+                          "cccd"
+                        ]),
                         name: form.getFieldValue([
                           "contacts",
                           index,
@@ -142,10 +164,22 @@ const ModalUpdate: React.FC<Props> = (props) => {
                           "phoneNumber",
                         ]),
                       })),
-                    });
-                    form.resetFields();
+                    } as CustomerUpdateModel;
+                    setLoading(true);
+                    await customerService
+                      .updateData(session?.user.access_token!, data)
+                      .then((res) => {
+                        messageShow("Update successfully!", false);
+                        onSubmit();
+                        form.resetFields();
+                        setLoading(false);
+                      })
+                      .catch((errors) => {
+                        messageShow(errors.response.data, true);
+                        setLoading(false);
+                      });
                   },
-                  onCancel() {},
+                  onCancel() { },
                 });
             }}
           >
@@ -154,153 +188,314 @@ const ModalUpdate: React.FC<Props> = (props) => {
         ]}
       >
         <div className="flex max-w-md flex-col gap-4 m-auto">
-          <Form
-            ref={formRef}
-            form={form}
-            labelCol={{ span: 8 }}
-            wrapperCol={{ span: 16 }}
-            style={{ width: "100%" }}
-          >           
-            <Row gutter={8}>
-              <Col span={18}>
-                <Form.Item
-                  name="taxNumber"
-                  label="Tax number"
-                  rules={[
-                    {
-                      required: true,
-                    },
-                  ]}
-                  style={{ paddingLeft: "55px" }}
+          {loading === true && (
+            <>
+              <Spin size="large" tip="Updating customer information...">
+                <Form
+                  ref={formRef}
+                  form={form}
+                  labelCol={{ span: 8 }}
+                  wrapperCol={{ span: 16 }}
+                  style={{ width: "100%" }}
                 >
-                  <Input placeholder="Tax number" allowClear />
-                </Form.Item>
-              </Col>
-              <Col span={6}>
-                <Button key="fetchData" onClick={handleFetchData}>
-                  Save
-                </Button>
-              </Col>
-            </Row>
-            <Form.Item
-              name="companyName"
-              label="Company name"
-              rules={[{ required: true }]}
-            >
-              <Input placeholder="Company name" allowClear />
-            </Form.Item>
-            <Form.Item
-              name="address"
-              label="Address"
-              rules={[{ required: true }]}
-            >
-              <Input placeholder="Address" allowClear />
-            </Form.Item>
-            <Form.Item
-              name="contractNumber"
-              label="Contract number"
-              rules={[{ required: true }]}
-            >
-              <Input placeholder="Contract number" allowClear />
-            </Form.Item>
-            <Form.Item
-              name="representator"
-              label="Representator"
-              rules={[{ required: true }]}
-            >
-              <Input placeholder="Representator name" allowClear />
-            </Form.Item>
-            <Form.Item
-              name="representatorPosition"
-              label="Representator Position"
-              rules={[{ required: true }]}
-            >
-              <Input placeholder="Representator position" allowClear />
-            </Form.Item>
-            <Form.Item name="email" label="Email" rules={[{ required: true }]}>
-              <Input placeholder="Email" allowClear />
-            </Form.Item>
-            <Form.Item
-              name="phoneNumber"
-              label="Phone number"
-              rules={[{ required: true }]}
-            >
-              <Input placeholder="Phone number" allowClear />
-            </Form.Item>
-            <Form.List name="contacts">
-              {(fields, { add, remove }) => (
-                <div
-                  style={{
-                    display: "flex",
-                    rowGap: 16,
-                    flexDirection: "column",
-                  }}
-                >
-                  {fields.map((field) => (
-                    <Card
-                      size="small"
-                      title={`Contact ${field.name + 1}`}
-                      key={field.key}
-                      extra={
-                          <CloseOutlined
-                            onClick={() => {
-                              remove(field.name);
-                            }}
-                          />
-                      }
-                    >
+                  <Row gutter={8}>
+                    <Col span={18}>
                       <Form.Item
-                        label="Name"
-                        name={[field.name, "name"]}
-                        rules={[{ required: true, min: 8, max: 255 }]}
+                        label="Tax number"
+                        style={{ paddingLeft: "55px" }}
                       >
-                        <Input.TextArea
-                          autoSize={{ minRows: 1, maxRows: 6 }}
-                          allowClear
-                          placeholder="Name"
-                        />
+                        <Input placeholder="Tax number" allowClear />
                       </Form.Item>
-                      <Form.Item
-                        label="Position"
-                        name={[field.name, "position"]}
-                        rules={[{ required: true, min: 8, max: 255 }]}
-                      >
-                        <Input.TextArea
-                          autoSize={{ minRows: 1, maxRows: 6 }}
-                          allowClear
-                          placeholder="Position"
-                        />
-                      </Form.Item>
-                      <Form.Item
-                        label="Email"
-                        name={[field.name, "email"]}
-                        rules={[{ required: true } , { max: 2000 }]}
-                      >
-                        <Input allowClear placeholder="Email" />
-                      </Form.Item>
-                      <Form.Item
-                        label="Phone Number"
-                        name={[field.name, "phoneNumber"]}
-                        rules={[ 
-                          { required: true, message: 'Please enter staff phone number' },
-                          {
-                              pattern: /^(0|84)(2(0[3-9]|1[0-689]|2[0-25-9]|3[2-9]|4[0-9]|5[124-9]|6[0369]|7[0-7]|8[0-9]|9[012346789])|3[2-9]|5[25689]|7[06-9]|8[0-9]|9[012346789])([0-9]{7})$/gm,
-                              message: 'Please enter a valid phone number',
-                          },
-                        ]}
-                      >
-                        <Input allowClear placeholder="Phone Number" />
-                      </Form.Item>
-                    </Card>
-                  ))}
+                    </Col>
+                    <Col span={6}>
+                      <Button>
+                        Save
+                      </Button>
+                    </Col>
+                  </Row>
+                  <Form.Item
+                    label="Company name"
+                  >
+                    <Input.TextArea
+                      placeholder="Company name"
+                      autoSize={{ minRows: 1, maxRows: 6 }}
+                      allowClear />
+                  </Form.Item>
+                  <Form.Item
+                    label="Address"
+                  >
+                    <Input.TextArea
+                      placeholder="Address"
+                      autoSize={{ minRows: 1, maxRows: 6 }}
+                      allowClear />
+                  </Form.Item>
+                  <Form.Item
+                    label="Contract number"
+                  >
+                    <Input placeholder="Contract number" allowClear />
+                  </Form.Item>
+                  <Form.Item
+                    label="Representator"
+                  >
+                    <Input placeholder="Representator name" allowClear />
+                  </Form.Item>
+                  <Form.Item
+                    label="Representator Position"
+                  >
+                    <Input placeholder="Representator position" allowClear />
+                  </Form.Item>
+                  <Form.Item
+                    label="Email"
+                  >
+                    <Input placeholder="Email" allowClear />
+                  </Form.Item>
+                  <Form.Item
+                    label="Phone number"
+                  >
+                    <Input placeholder="Phone number" allowClear />
+                  </Form.Item>
 
-                  <Button type="dashed" onClick={() => add()} block>
+                  <Button type="dashed">
                     + Add Contact
                   </Button>
-                </div>
-              )}
-            </Form.List>
-          </Form>
+                </Form>
+              </Spin>
+            </>
+          )}
+          {loading === false && (
+            <>
+              <Form
+                ref={formRef}
+                form={form}
+                labelCol={{ span: 8 }}
+                wrapperCol={{ span: 16 }}
+                style={{ width: "100%" }}
+              >
+                <Row gutter={8}>
+                  <Col span={18}>
+                    <Form.Item
+                      name="taxNumber"
+                      label="Tax number"
+                      rules={[
+                        {
+                          required: true,
+                        },
+                        {
+                          pattern: /^\d{10,13}$/,
+                          message: "Tax number is invalid!"
+                        }
+                      ]}
+                      style={{ paddingLeft: "55px" }}
+                    >
+                      <Input placeholder="Tax number" allowClear />
+                    </Form.Item>
+                  </Col>
+                  <Col span={6}>
+                    <Button key="fetchData" onClick={handleFetchData}>
+                      Save
+                    </Button>
+                  </Col>
+                </Row>
+                <Form.Item
+                  name="companyName"
+                  label="Company name"
+                  rules={[{ required: true, min: 6, max: 2000 }]}
+                >
+                  <Input.TextArea
+                    placeholder="Company name"
+                    autoSize={{ minRows: 1, maxRows: 6 }}
+                    allowClear />
+                </Form.Item>
+                <Form.Item
+                  name="address"
+                  label="Address"
+                  rules={[{ required: true, min: 6, max: 2000 }]}
+                >
+                  <Input.TextArea
+                    placeholder="Address"
+                    autoSize={{ minRows: 1, maxRows: 6 }}
+                    allowClear />
+                </Form.Item>
+                <Form.Item
+                  name="contractNumber"
+                  label="Contract number"
+                  rules={[
+                    { required: true, min: 3, max: 4 },
+                    {
+                      pattern: /^\d{3,4}$/,
+                      message: "Contract number is invalid!"
+                    }
+                  ]}
+                >
+                  <Input placeholder="Contract number" allowClear />
+                </Form.Item>
+                <Form.Item
+                  name="representator"
+                  label="Representator"
+                  rules={[{ required: true, min: 6, max: 255 }]}
+                >
+                  <Input placeholder="Representator name" allowClear />
+                </Form.Item>
+                <Form.Item
+                  name="representatorPosition"
+                  label="Representator Position"
+                  rules={[{ required: true, min: 6, max: 255 }]}
+                >
+                  <Input placeholder="Representator position" allowClear />
+                </Form.Item>
+                <Form.Item
+                  name="email"
+                  label="Email"
+                  rules={[
+                    { required: true, message: 'Please enter your email address' },
+                    {
+                      pattern: /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/,
+                      message: 'Please enter a valid email address',
+                    },
+                    {
+                      min: 6,
+                      max: 255,
+                      message: 'Email must be between 6 and 255 characters',
+                    },
+                  ]}>
+                  <Input placeholder="Email" allowClear />
+                </Form.Item>
+                <Form.Item
+                  name="phoneNumber"
+                  label="Phone number"
+                  rules={[
+                    { required: true, message: 'Please enter staff phone number' },
+                    {
+                      pattern: /^(0|84)(2(0[3-9]|1[0-689]|2[0-25-9]|3[2-9]|4[0-9]|5[124-9]|6[0369]|7[0-7]|8[0-9]|9[012346789])|3[2-9]|5[25689]|7[06-9]|8[0-9]|9[012346789])([0-9]{7})$/gm,
+                      message: 'Please enter a valid phone number',
+                    },
+                  ]}
+                >
+                  <Input placeholder="Phone number" allowClear />
+                </Form.Item>
+                <Form.List name="contacts">
+                  {(fields, { add, remove }) => (
+                    <div
+                      style={{
+                        display: "flex",
+                        rowGap: 16,
+                        flexDirection: "column",
+                      }}
+                    >
+                      {fields.map((field) => (
+                        <Card
+                          size="small"
+                          title={`Contact ${field.name + 1}`}
+                          key={field.key}
+                          extra={
+                            <CloseOutlined
+                              onClick={() => {
+                                remove(field.name);
+                              }}
+                            />
+                          }
+                        >
+                          <Form.Item
+                            label="Loại contacts"
+                            name={[field.name, "forAppointment"]}
+                            rules={[{ required: true }]}
+                          >
+                            <Select
+                              placeholder="Contact Type"
+                              allowClear
+                              onChange={(res) => handleContactType(res)}
+                            >
+                              <Option value={true}>Đăng kí ra vào DC</Option>
+                              <Option value={false}>Thông tin liên hệ</Option>
+                            </Select>
+                          </Form.Item>
+                          {selectedType === true && (
+                            <>
+                              <Form.Item
+                                label="Citizen  Identification"
+                                name={[field.name, "cccd"]}
+                                rules={[{ required: true, min: 12, max: 12 },
+                                {
+                                  pattern: /^\d{12}$/,
+                                  message: "Citizen ID is invalid!"
+                                }]}
+                              >
+                                <Input
+                                  placeholder="Citizen ID"
+                                  allowClear
+                                />
+                              </Form.Item>
+                            </>
+                          )}
+                          <Form.Item
+                            label="Name"
+                            name={[field.name, "name"]}
+                            rules={[{ required: true, min: 8, max: 255 }]}
+                          >
+                            <Input.TextArea
+                              autoSize={{ minRows: 1, maxRows: 6 }}
+                              allowClear
+                              placeholder="Name"
+                            />
+                          </Form.Item>
+                          <Form.Item
+                            label="Position"
+                            name={[field.name, "position"]}
+                            rules={[{ required: true, min: 8, max: 255 }]}
+                          >
+                            <Input.TextArea
+                              autoSize={{ minRows: 1, maxRows: 6 }}
+                              allowClear
+                              placeholder="Position"
+                            />
+                          </Form.Item>
+                          <Form.Item
+                            label="Email"
+                            name={[field.name, "email"]}
+                            rules={[
+                              { required: true, message: 'Please enter your email address' },
+                              {
+                                pattern: /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/,
+                                message: 'Please enter a valid email address',
+                              },
+                              {
+                                min: 6,
+                                max: 255,
+                                message: 'Email must be between 6 and 255 characters',
+                              },
+                            ]}>
+                            <Input allowClear placeholder="Email" />
+                          </Form.Item>
+                          <Form.Item
+                            label="Phone Number"
+                            name={[field.name, "phoneNumber"]}
+                            rules={[{ required: true },
+                            {
+                              pattern: /^(0|84)(2(0[3-9]|1[0-689]|2[0-25-9]|3[2-9]|4[0-9]|5[124-9]|6[0369]|7[0-7]|8[0-9]|9[012346789])|3[2-9]|5[25689]|7[06-9]|8[0-9]|9[012346789])([0-9]{7})$/gm,
+                              message: 'Please enter a valid phone number',
+                            },
+                            ]}
+                          >
+                            <Input allowClear placeholder="Phone Number" />
+                          </Form.Item>
+                        </Card>
+                      ))}
+
+                      <Button 
+                        type="dashed"
+                        onClick={() => {
+                          add();
+                          setSelectedType(false);
+                        }} 
+                        block>
+                        + Add Contact
+                      </Button>
+                    </div>
+                  )}
+                </Form.List>
+              </Form>
+            </>
+          )}
         </div>
       </Modal>
     </>

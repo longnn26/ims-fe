@@ -31,7 +31,7 @@ export interface CustomerCreateModel {
 }
 
 export interface CustomerUpdateModel {
-  id: number;
+  id: string;
   companyName: string;
   address: string;
   taxNumber: string;
@@ -49,4 +49,5 @@ export interface Contacts {
   phoneNumber: string;
   email: string;
   forAppointment: boolean;
+  cccd: string;
 }

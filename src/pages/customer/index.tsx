@@ -82,20 +82,20 @@ const Customer: React.FC = () => {
   //   })
   // };
 
-  const updateData = async (data: CustomerUpdateModel) => {
-    await customerService
-      .updateData(session?.user.access_token!, data)
-      .then((res) => {
-        message.success("Update successfully!");
-        getData();
-      })
-      .catch((errors) => {
-        message.error(errors.response.data);
-      })
-      .finally(() => {
-        setCustomerUpdate(undefined);
-      });
-  };
+  // const updateData = async (data: CustomerUpdateModel) => {
+  //   await customerService
+  //     .updateData(session?.user.access_token!, data)
+  //     .then((res) => {
+  //       message.success("Update successfully!");
+  //       getData();
+  //     })
+  //     .catch((errors) => {
+  //       message.error(errors.response.data);
+  //     })
+  //     .finally(() => {
+  //       setCustomerUpdate(undefined);
+  //     });
+  // };
 
   const deleteComponent = (customer: Customer) => {
     confirm({
@@ -190,8 +190,16 @@ const Customer: React.FC = () => {
           <ModalUpdate
             customer={customerUpdate!}
             onClose={() => setCustomerUpdate(undefined)}
-            onSubmit={(data: CustomerUpdateModel) => {
-              updateData(data);
+            onSubmit={() => {
+              setCustomerUpdate(undefined);
+              getData();
+            }}
+            messageShow={(mess: string, isError: boolean) => {
+              if (isError === false) {
+                message.success(mess);
+              } else {
+                message.error(mess);
+              }
             }}
           />
         </>
