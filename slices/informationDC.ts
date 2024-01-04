@@ -33,6 +33,10 @@ const slice = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) => {
+    builder.addCase(getInformationDCData.pending, (state) => ({
+      ...state,
+      informationDCDataLoading: true,
+    }));
     builder.addCase(getInformationDCData.fulfilled, (state, { payload }) => ({
       ...state,
       informationDCData: payload,
