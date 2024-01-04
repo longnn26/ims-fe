@@ -70,7 +70,7 @@ export const sliderMenu = [
     roles: [ROLE_ADMIN],
   },
   {
-    key: "InformationDC",
+    key: "informationDC",
     icon: <IoInformationOutline />,
     label: "Information DC",
     roles: [ROLE_ADMIN],
