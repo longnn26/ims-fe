@@ -86,14 +86,14 @@ const RequestHostDetailInfor: React.FC<Props> = (props) => {
         <Descriptions.Item label="Customer's Note" span={4}>
           {requestHostDetail?.note}
         </Descriptions.Item>
-        <Descriptions.Item label="Acceptance Report" span={0}>
+        <Descriptions.Item label="Acceptance Report" span={2}>
           {requestHostDetail?.inspectionReportFilePath !== null && (
             <a href={`${requestHostDetail?.inspectionReportFilePath}`}>
               Biên bản nghiệm thu (dịch vụ sử dụng IP)
             </a>
           )}
         </Descriptions.Item>
-        <Descriptions.Item label="Acceptance Report (Signed)" span={2}>
+        <Descriptions.Item label="Acceptance Report (Signed)">
           {requestHostDetail?.finalInspectionReport !== null && (
             <a href={`${requestHostDetail?.finalInspectionReport}`}>
               Hình ảnh chữ ký
