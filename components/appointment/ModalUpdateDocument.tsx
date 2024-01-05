@@ -110,7 +110,10 @@ const ModalComplete: React.FC<Props> = (props) => {
                         documentModel
                       )
                       .then((res) => {
-                        message.success("Complete appointment successfully!", 1.5);
+                        message.success(
+                          "Complete appointment successfully!",
+                          1.5
+                        );
                         onSubmit();
                         setOpenModal(undefined);
                         form.resetFields();
@@ -222,16 +225,16 @@ const ModalComplete: React.FC<Props> = (props) => {
                       }
                     />{" "}
                   </Form.Item>
-                  <Form.Item
-                    name="deviceCondition"
-                    label="Device condition"
-                    rules={[{ max: 2000 }]}
-                  >
-                    <Input placeholder="Device condition" allowClear />
-                  </Form.Item>
                 </>
               )}
 
+            <Form.Item
+              name="deviceCondition"
+              label="Device condition"
+              rules={[{ max: 2000 }]}
+            >
+              <Input placeholder="Device condition" allowClear />
+            </Form.Item>
             <Form.Item name="good" label="Good">
               <Switch
                 onChange={(value) =>
