@@ -122,6 +122,12 @@ const RequestHostDetail: React.FC = () => {
     ).then((res) => {
       setHardware(res);
     });
+    dispatch(
+      getIpAdressData({
+        token: session?.user.access_token!,
+        paramGet: { ...ipAddressParamGet },
+      })
+    );
   };
 
   const checkPermission = () => {
@@ -349,7 +355,7 @@ const RequestHostDetail: React.FC = () => {
                     />
                   </div>
                   {Boolean(
-                    requestHostDetail?.status === "Success" 
+                    requestHostDetail?.status === "Success"
                     && serverAllocationDetail?.status === "Working"
                     // && !requestHostDetail.documentConfirm
                   ) && (
@@ -489,7 +495,7 @@ const RequestHostDetail: React.FC = () => {
                     )}
                   {requestHostDetail.isRemoval === false ? (
                     <ModalUpdate
-                    open={requestHostUpdate!}
+                      open={requestHostUpdate!}
                       requestHost={requestHostDetail}
                       onClose={() => {
                         setRequestHostUpdate(false);
