@@ -82,8 +82,8 @@ const ServerDetail: React.FC<Props> = (props) => {
           )}
         </Descriptions.Item>
         <Descriptions.Item label="Delivery Report (Removal)">
-          {serverAllocationDetail?.removalFilePath !== null && (
-            <a href={`${serverAllocationDetail?.removalFilePath}`}>
+          {serverAllocationDetail?.removalReceiptFilePath !== null && (
+            <a href={`${serverAllocationDetail?.removalReceiptFilePath}`}>
               Biên bản giao nhận (gỡ thiết bị)
             </a>
           )}

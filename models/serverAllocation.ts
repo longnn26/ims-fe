@@ -18,7 +18,7 @@ export interface ServerAllocation extends BaseWithIdNumber {
   location: string;
   inspectionRecordFilePath: string;
   receiptOfRecipientFilePath: string;
-  removalFilePath: string;
+  removalReceiptFilePath: string;
   serverLocation: string;
 }
 
