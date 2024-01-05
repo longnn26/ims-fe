@@ -409,7 +409,7 @@ const ModalUpdate: React.FC<Props> = (props) => {
                               <Option value={false}>Thông tin liên hệ</Option>
                             </Select>
                           </Form.Item>
-                          {selectedType === true && (
+                          {form.getFieldValue(["contacts", field.name, "forAppointment"]) === true && (
                             <>
                               <Form.Item
                                 label="Citizen  Identification"

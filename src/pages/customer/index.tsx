@@ -46,7 +46,7 @@ const Customer: React.FC = () => {
     dispatch(
       getCustomerData({
         token: session?.user.access_token!,
-        paramGet: { ...paramGet },
+        paramGet: { ...paramGet, SortKey: "DateCreated", SortOrder: "DESC" },
       })
     ).then(({ payload }) => {
       var res = payload as CustomerData;
