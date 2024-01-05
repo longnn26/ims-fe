@@ -13,6 +13,7 @@ export interface RequestHost extends BaseWithIdNumber {
   type: string;
   status: string;
   inspectionReportFilePath: string;
+  finalInspectionReport: string;
   requestType: string;
   dateCreated: string;
   dateUpdated: string;
