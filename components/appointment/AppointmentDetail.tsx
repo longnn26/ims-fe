@@ -59,7 +59,7 @@ const ServerDetail: React.FC<Props> = (props) => {
         <Descriptions.Item label="Visitor">
           {appointmentDetail?.appointedCustomer && (
             <>
-              {appointmentDetail.appointedCustomer.split('|').map((visitor, index) => (
+              {appointmentDetail.appointedCustomer.split(',').map((visitor, index) => (
                 <>
                   {index > 0 && <br />}
                   {visitor}

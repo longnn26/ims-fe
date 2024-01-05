@@ -6,7 +6,6 @@ import { InformationDC } from "@models/informationDC";
 const { confirm } = Modal;
 
 interface Props {
-  open: boolean;
   onClose: () => void;
   data: InformationDC | undefined;
   onSubmit: (informationUpdate: InformationDC) => void;
@@ -15,7 +14,7 @@ interface Props {
 const ModalUpdateInformationDC: React.FC<Props> = (props) => {
   const formRef = useRef(null);
   const [form] = Form.useForm();
-  const { onSubmit, open, onClose, data } = props;
+  const { onSubmit, onClose, data } = props;
 
   const [confirmLoading, setConfirmLoading] = useState(false);
 
@@ -51,7 +50,7 @@ const ModalUpdateInformationDC: React.FC<Props> = (props) => {
             Update staff account information
           </span>
         }
-        open={open}
+        open={Boolean(data)}
         confirmLoading={confirmLoading}
         onCancel={() => {
           onClose();
