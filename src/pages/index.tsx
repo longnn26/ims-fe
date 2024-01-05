@@ -36,9 +36,8 @@ const Customer: React.FC = () => {
     PageSize: 10,
   } as ParamGet);
   const [loadingSubmit, setLoadingSubmit] = useState<boolean>(false);
-  const [serverAllocationUpdate, setServerAllocationUpdate] = useState<
-    ServerAllocation | undefined
-  >(undefined);
+  const [serverAllocationUpdate, setServerAllocationUpdate] = useState<ServerAllocation | undefined>(undefined);
+  const [serverAllocationAlert, setServerAllocationAlert] = useState<ServerAllocation | undefined>(undefined);
   const [openModalCreate, setOpenModalCreate] = useState<boolean>(false);
   const router = useRouter();
 
@@ -150,6 +149,9 @@ const Customer: React.FC = () => {
             }}
             onDelete={async (record) => {
               // deleteServerAllocation(record);
+            }}
+            onAlert={(record) => {
+              setServerAllocationAlert(record);
             }}
           />
 

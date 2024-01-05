@@ -37,7 +37,7 @@ interface Props {
   open: boolean;
   onClose: () => void;
   // loadingSubmit: boolean;
-  onSubmit: (data: AppointmentCreateModel) => void;
+  onSubmit: () => void;
 }
 
 const ModalCreate: React.FC<Props> = (props) => {
@@ -60,6 +60,7 @@ const ModalCreate: React.FC<Props> = (props) => {
   const [selectedServer, setSelectedServer] = useState<ServerAllocation>();
   const [selectedReason, setSelectedReason] = useState<string>("");
   const [loadingSubmit, setLoadingSubmit] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
   const [openModalCreate, setOpenModalCreate] = useState<boolean | undefined>(
     undefined
   );
@@ -87,6 +88,17 @@ const ModalCreate: React.FC<Props> = (props) => {
         setTotalPageCus(data.totalPage);
         setPageIndexCus(data.pageIndex);
         setServer([...server, ...data.data]);
+      });
+  };
+
+  const getContacts = async () => {
+    await customerService
+      .getCustomerById(session?.user.access_token!, 
+       parseJwt(session?.user.access_token).UserId,
+      )
+      .then(async (data) => {
+        const contacts = data.contacts.filter((l) => l.forAppointment === true).map((contact, index) => (`${contact.name} - ${contact.email}`));
+        setContactList(contacts);
       });
   };
 
@@ -165,18 +177,6 @@ const ModalCreate: React.FC<Props> = (props) => {
     handleServerChange(undefined);
   };
 
-  const getContacts = async () => {
-    await customerService
-      .getCustomerById(
-        session?.user.access_token!,
-        parseJwt(session?.user.access_token!).UserId
-      )
-      .then(async (data) => {
-        const contacts = data.contacts.filter((l) => l.forAppointment === true).map((contact, index) => (`${contact.name} - ${contact.email}`));
-        setContactList(contacts);
-      });
-  };
-
   useEffect(() => {
     if (session) {
       getMoreServer();
@@ -237,20 +237,20 @@ const ModalCreate: React.FC<Props> = (props) => {
                       serverAllocationId: selectedServer?.id,
                       requestExpandId: requestExpand?.id,
                     } as AppointmentCreateModel;
-                    setLoadingSubmit(true);
+                    setLoading(true);
                     await appointmentService
                       .create(session?.user.access_token!, data)
                       .then((res) => {
                         message.success("Create successfully!", 1.5);
                         form.resetFields();
                         setOpenModalCreate(undefined);
-                        onClose();
+                        onSubmit();
                       })
                       .catch((errors) => {
                         message.error(errors.response.data, 1.5);
                       })
                       .finally(() => {
-                        setLoadingSubmit(false);
+                        setLoading(false);
                       });
                   },
                   onCancel() { },
@@ -265,8 +265,8 @@ const ModalCreate: React.FC<Props> = (props) => {
           <Form
             ref={formRef}
             form={form}
-            labelCol={{ span: 10 }}
-            wrapperCol={{ span: 16 }}
+            labelCol={{ span: 6 }}
+            wrapperCol={{ span: 20 }}
             style={{ width: "100%" }}
           >
             <Form.Item
