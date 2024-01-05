@@ -12,6 +12,7 @@ import {
   getServerAllocationData,
 } from "@slices/serverAllocation";
 import {
+  IncidentCreateModel,
   SACreateModel,
   SAUpdateModel,
   SParamGet,
@@ -26,6 +27,7 @@ import ModalUpdate from "@components/server/ModalUpdate";
 import { areInArray, parseJwt } from "@utils/helpers";
 import { ROLE_CUSTOMER, ROLE_SALES, ROLE_TECH } from "@utils/constants";
 import SearchComponent from "@components/SearchComponent";
+import ModalAlert from "@components/server/ModalAlert";
 
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
@@ -52,9 +54,8 @@ const Customer: React.FC = () => {
       PageSize: 6,
     } as ParamGet);
   const [loadingSubmit, setLoadingSubmit] = useState<boolean>(false);
-  const [serverAllocationUpdate, setServerAllocationUpdate] = useState<
-    ServerAllocation | undefined
-  >(undefined);
+  const [serverAllocationUpdate, setServerAllocationUpdate] = useState<ServerAllocation | undefined>(undefined);
+  const [serverAllocationAlert, setServerAllocationAlert] = useState<ServerAllocation | undefined>(undefined);
   const [openModalCreate, setOpenModalCreate] = useState<boolean>(false);
 
   const getData = async () => {
@@ -271,6 +272,9 @@ const Customer: React.FC = () => {
                   onDelete={async (record) => {
                     deleteServerAllocation(record);
                   }}
+                  onAlert={(record) => {
+                    setServerAllocationAlert(record);
+                  }}
                 />
 
                 <ModalCreate
@@ -288,6 +292,14 @@ const Customer: React.FC = () => {
                   onClose={() => setServerAllocationUpdate(undefined)}
                   onSubmit={(data: SAUpdateModel) => {
                     updateData(data);
+                  }}
+                />
+                <ModalAlert
+                  serverAllocation={serverAllocationAlert!}
+                  onClose={() => setServerAllocationAlert(undefined)}
+                  onSubmit={() => {
+                    setServerAllocationAlert(undefined);
+                    getData();
                   }}
                 />
                 {serverAllocationData?.totalPage > 0 && (

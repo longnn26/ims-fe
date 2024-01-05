@@ -151,6 +151,14 @@ const apiLinks = {
     get: `${url}/api/Config`,
     update: `${url}/api/Config`,
   },
+
+  incident: {
+    get: `${url}/api/Incident`,
+    create: `${url}/api/Incident`,
+    put: `${url}/api/Incident`,
+    getById: `${url}/api/Incident`,
+    resolve: `${url}/api/Incident`,
+  }
 };
 
 export default apiLinks;

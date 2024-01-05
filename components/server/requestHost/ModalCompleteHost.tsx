@@ -21,6 +21,7 @@ const ModalCompletetHost: React.FC<Props> = (props) => {
   const { data: session, update: sessionUpdate } = useSession();
 
   const [confirmLoading, setConfirmLoading] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const disabled = async () => {
     var result = false;
@@ -33,7 +34,8 @@ const ModalCompletetHost: React.FC<Props> = (props) => {
   };
 
   const completeRequestHost = async (data: RequestHostCompleteModel) => {
-    setConfirmLoading(true);
+    setLoading(true);
+    //setConfirmLoading(true);
     await requestHost
       .completeRequestHost(session?.user.access_token!, requestHostId, data)
       .then((res) => {
@@ -46,7 +48,8 @@ const ModalCompletetHost: React.FC<Props> = (props) => {
         message.error(errors.response.data, 1.5);
       })
       .finally(() => {
-        setConfirmLoading(false);
+        setLoading(false);
+        //setConfirmLoading(false);
       });
   };
 

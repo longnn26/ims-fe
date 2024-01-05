@@ -9,7 +9,7 @@ import {
 import { TableColumnsType, Tag } from "antd";
 import { Button, Space, Table, Tooltip } from "antd";
 import { BiEdit } from "react-icons/bi";
-import { AiFillDelete } from "react-icons/ai";
+import { AiFillDelete, AiFillWarning } from "react-icons/ai";
 import { BiSolidCommentDetail } from "react-icons/bi";
 import moment from "moment";
 import { ServerAllocation } from "@models/serverAllocation";
@@ -22,6 +22,7 @@ import { useSession } from "next-auth/react";
 interface Props {
   onEdit: (data: ServerAllocation) => void;
   onDelete: (data: ServerAllocation) => void;
+  onAlert: (data: ServerAllocation) => void;
 }
 
 interface DataType {
@@ -40,7 +41,7 @@ interface DataType {
 }
 
 const ServerAllocationTable: React.FC<Props> = (props) => {
-  const { onEdit, onDelete } = props;
+  const { onEdit, onDelete, onAlert } = props;
   const { data: session } = useSession();
 
   const router = useRouter();
@@ -94,6 +95,18 @@ const ServerAllocationTable: React.FC<Props> = (props) => {
       key: "operation",
       render: (record: ServerAllocation) => (
         <Space wrap>
+          {Boolean(
+            record.status === "Working" &&
+            areInArray(session?.user.roles!, ROLE_TECH)
+          ) && (
+              <>
+                <Tooltip title="Create Warning" color={"black"}>
+                  <Button onClick={() => onAlert(record)}>
+                    <AiFillWarning />
+                  </Button>
+                </Tooltip>
+              </>
+            )}
           <Tooltip title="View detail" color={"black"}>
             <Button onClick={() => router.push(`/server/${record.id}`)}>
               <BiSolidCommentDetail />
@@ -101,16 +114,16 @@ const ServerAllocationTable: React.FC<Props> = (props) => {
           </Tooltip>
           {Boolean(
             record.status === "Waiting" &&
-              areInArray(session?.user.roles!, ROLE_TECH)
+            areInArray(session?.user.roles!, ROLE_TECH)
           ) && (
-            <>
-              <Tooltip title="Edit" color={"black"}>
-                <Button onClick={() => onEdit(record)}>
-                  <BiEdit />
-                </Button>
-              </Tooltip>
-            </>
-          )}
+              <>
+                <Tooltip title="Edit" color={"black"}>
+                  <Button onClick={() => onEdit(record)}>
+                    <BiEdit />
+                  </Button>
+                </Tooltip>
+              </>
+            )}
           {/* <Tooltip title="Delete" color={"black"}>
             <Button onClick={() => onDelete(record)}>
               <AiFillDelete />

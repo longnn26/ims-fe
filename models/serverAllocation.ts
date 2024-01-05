@@ -43,6 +43,7 @@ export interface SAUpdateModel {
   id: number;
   name: string;
   power: number;
+  partNumber: string;
   serialNumber: string;
   techNote: string;
   // note: string;
@@ -50,4 +51,11 @@ export interface SAUpdateModel {
 
 export interface MasterIpCreateModel {
   ipAddressId: number;
+}
+
+export interface IncidentCreateModel {
+  serverAllocationId: number;
+  description: string;
+  isResolvByClient: boolean;
+  pausingRequired: boolean;
 }

@@ -236,6 +236,7 @@ const Appoinment: React.FC = () => {
             ROLE_CUSTOMER
           ) && (
             <>
+            {appointmentUpdate && (
               <ModalUpdate
                 appointment={appointmentUpdate!}
                 onClose={() => setAppointmentUpdate(undefined)}
@@ -244,6 +245,7 @@ const Appoinment: React.FC = () => {
                   getData();
                 }}
               />
+            )}
               {loading === true ? (
                 <>
                   <Spin size="large" tip="Loading data...">

@@ -183,7 +183,6 @@ const ModalCreate: React.FC<Props> = (props) => {
               label="Part Number"
               rules={[
                 {
-                  required: true,
                   min: 6,
                   max: 30,
                 }

@@ -416,7 +416,10 @@ const Appoinment: React.FC = () => {
               <ModalComplete
                 open={openComplete}
                 appointment={appointmentDetail!}
-                onSubmit={(value) => completeAppointment(value)}
+                onSubmit={() => {
+                  setOpenComplete(false);
+                  getData();
+                }}
                 onClose={() => setOpenComplete(false)}
               />
               <ModalUpdateDocument

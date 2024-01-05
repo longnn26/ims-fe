@@ -47,8 +47,9 @@ const ModalCreate: React.FC<Props> = (props) => {
 
   const getContacts = async () => {
     await customerService
-      .getCustomerById(session?.user.access_token!,
-        parseJwt(session?.user.access_token).UserId,
+      .getCustomerById(
+        session?.user.access_token!,
+        appointment.customer.id
       )
       .then(async (data) => {
         const contacts = data.contacts.filter((l) => l.forAppointment === true).map((contact, index) => (`${contact.name} - ${contact.email}`));
