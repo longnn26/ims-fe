@@ -97,17 +97,31 @@ const ServerDetail: React.FC<Props> = (props) => {
         <Descriptions.Item label="CheckedOut" span={2}>
           {moment(appointmentDetail?.dateCheckedOut).format(dateAdvFormat)}
         </Descriptions.Item>
-        <Descriptions.Item label="Acceptance Report" span={4}>
+        <Descriptions.Item label="Acceptance Report" span={0}>
           {appointmentDetail?.inspectionReportFilePath !== null && (
             <a href={`${appointmentDetail?.inspectionReportFilePath}`}>
               Biên bản nghiệm thu
             </a>
           )}
         </Descriptions.Item>
-        <Descriptions.Item label="Delivery Report" span={4}>
-          {appointmentDetail?.inspectionReportFilePath !== null && (
+        <Descriptions.Item label="Acceptance Report (Signed)" span={2}>
+          {appointmentDetail?.finalInspectionReport !== null && (
+            <a href={`${appointmentDetail?.finalInspectionReport}`}>
+              Hình ảnh chữ ký
+            </a>
+          )}
+        </Descriptions.Item>
+        <Descriptions.Item label="Delivery Report" span={0}>
+          {appointmentDetail?.receiptOfRecipientFilePath !== null && (
             <a href={`${appointmentDetail?.receiptOfRecipientFilePath}`}>
               Biên bản giao nhận
+            </a>
+          )}
+        </Descriptions.Item>
+        <Descriptions.Item label="Delivery Report (Signed)" span={2}>
+          {appointmentDetail?.finalReceiptOfRecipient !== null && (
+            <a href={`${appointmentDetail?.finalReceiptOfRecipient}`}>
+              Hình ảnh chữ ký
             </a>
           )}
         </Descriptions.Item>

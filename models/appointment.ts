@@ -16,7 +16,9 @@ export interface Appointment extends BaseWithIdNumber {
   status: string;
   serverAllocationId: number;
   inspectionReportFilePath: string;
+  finalInspectionReport: string;
   receiptOfRecipientFilePath: string;
+  finalReceiptOfRecipient: string;
   documentConfirm: boolean;
   customer: Customer;
   serverAllocation: ServerAllocation;
