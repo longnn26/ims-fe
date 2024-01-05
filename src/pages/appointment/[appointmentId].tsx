@@ -340,7 +340,7 @@ const Appoinment: React.FC = () => {
                           <div className="md:w-1/2 md:pr-5">
                             <UploadComponent
                               fileList={fileInspectionReport}
-                              title="Inspection report"
+                              title="Inspection report (Signed)"
                               setFileList={setFileInspectionReport}
                               multiple={false}
                               maxCount={1}
@@ -350,7 +350,7 @@ const Appoinment: React.FC = () => {
                           <div className="md:w-1/2 md:pl-5 h-28">
                             <UploadComponent
                               fileList={fileReceiptOfRecipient}
-                              title="Receipt of recipient"
+                              title="Receipt of recipient (Signed)"
                               setFileList={setFileReceiptOfRecipient}
                               multiple={false}
                               maxCount={1}

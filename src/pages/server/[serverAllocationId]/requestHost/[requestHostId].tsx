@@ -363,7 +363,7 @@ const RequestHostDetail: React.FC = () => {
                       <div className="p-5">
                         <UploadComponent
                           fileList={fileInspectionReport}
-                          title="BBNT"
+                          title="Inspection report (Signed)"
                           setFileList={setFileInspectionReport}
                           multiple={false}
                           maxCount={1}
