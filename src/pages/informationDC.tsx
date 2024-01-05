@@ -38,6 +38,7 @@ const InformationDCPage: React.FC = () => {
       .then((res) => {
         message.success("Update successfully!", 1.5);
         getData();
+        window.location.reload();
       })
       .catch((errors) => {
         message.error(errors.response.data, 1.5);
