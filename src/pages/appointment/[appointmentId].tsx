@@ -160,7 +160,7 @@ const Appoinment: React.FC = () => {
       .catch((errors) => {
         message.error(errors.response.data, 1.5);
       })
-      .finally(() => { });
+      .finally(() => {});
   };
 
   const handleBreadCumb = () => {
@@ -222,11 +222,7 @@ const Appoinment: React.FC = () => {
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    session,
-    paramGet,
-    router.query.appointmentId,
-  ]);
+  }, [session, paramGet, router.query.appointmentId]);
 
   const items: TabsProps["items"] = [
     {
@@ -240,7 +236,7 @@ const Appoinment: React.FC = () => {
             onEdit={(value) => {
               setRequestUpgradeUpdate(value);
             }}
-            onDelete={(value) => { }}
+            onDelete={(value) => {}}
           />
           {requestUpgradeData?.totalPage > 0 && (
             <Pagination
@@ -271,7 +267,7 @@ const Appoinment: React.FC = () => {
             onEdit={(value) => {
               // setRequestUpgradeUpdate(value);
             }}
-            onDelete={(value) => { }}
+            onDelete={(value) => {}}
           />
           {requestExpandData?.totalPage > 0 && (
             <Pagination
@@ -302,115 +298,116 @@ const Appoinment: React.FC = () => {
             ROLE_SALES,
             ROLE_CUSTOMER
           ) && (
-              <>
-                <div className="scroll-auto flex flex-wrap items-center justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
-                  <div>
-                    <Button
-                      type="primary"
-                      icon={<CaretLeftOutlined />}
-                      onClick={() => router.back()}
-                    ></Button>
-                    <div className="flex items-center">
-                      <BreadcrumbComponent itemBreadcrumbs={itemBreadcrumbs} />
-                    </div>
+            <>
+              <div className="scroll-auto flex flex-wrap items-center justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
+                <div>
+                  <Button
+                    type="primary"
+                    icon={<CaretLeftOutlined />}
+                    onClick={() => router.back()}
+                  ></Button>
+                  <div className="flex items-center">
+                    <BreadcrumbComponent itemBreadcrumbs={itemBreadcrumbs} />
                   </div>
-                  {Boolean(appointmentDetail?.status === "Success" &&
+                </div>
+                {Boolean(
+                  appointmentDetail?.status === "Success" &&
                     !appointmentDetail.documentConfirm &&
                     areInArray(session?.user.roles!, ROLE_SALES, ROLE_TECH)
-                  ) && (
-                      <>
-                        <Button
-                          type="primary"
-                          className="mb-2"
-                          // icon={<CaretLeftOutlined />}
-                          onClick={() => setOpenUpdateDocument(true)}
-                        >
-                          Sửa biên bản
-                        </Button>
-                      </>
-                    )}
-                  <AppointmentDetail appointmentDetail={appointmentDetail!} />
-                  {Boolean(
-                    appointmentDetail?.status === "Success"
-                    && appointmentDetail.serverAllocation.status === "Working"
-                    // && !appointmentDetail.documentConfirm
-                  ) && (
-                      <>
-                        <div className="w-full md:m-5 md:flex">
-                          <div className="md:w-1/2 md:pr-5">
-                            <UploadComponent
-                              fileList={fileInspectionReport}
-                              title="Inspection report (Signed)"
-                              setFileList={setFileInspectionReport}
-                              multiple={false}
-                              maxCount={1}
-                              disabled={setDisabledInspectionReport}
-                            />
-                          </div>
-                          <div className="md:w-1/2 md:pl-5 h-28">
-                            <UploadComponent
-                              fileList={fileReceiptOfRecipient}
-                              title="Receipt of recipient (Signed)"
-                              setFileList={setFileReceiptOfRecipient}
-                              multiple={false}
-                              maxCount={1}
-                              disabled={setDisabledReceiptOfRecipient}
-                            />
-                          </div>
-                        </div>
-                        <Button
-                          icon={<UploadOutlined />}
-                          loading={loadingUploadDocument}
-                          className="w-full m-5"
-                          type="primary"
-                          disabled={
-                            !Boolean(
-                              fileInspectionReport.length > 0 &&
-                              fileReceiptOfRecipient.length > 0
-                            ) ||
-                            disabledInspectionReport ||
-                            disabledReceiptOfRecipient
-                          }
-                          onClick={() => {
-                            uploadDocument();
-                          }}
-                        >
-                          Upload
-                        </Button>
-                      </>
-                    )}
-                </div>
+                ) && (
+                  <>
+                    <Button
+                      type="primary"
+                      className="mb-2"
+                      // icon={<CaretLeftOutlined />}
+                      onClick={() => setOpenUpdateDocument(true)}
+                    >
+                      Update Report
+                    </Button>
+                  </>
+                )}
+                <AppointmentDetail appointmentDetail={appointmentDetail!} />
+                {Boolean(
+                  appointmentDetail?.status === "Success" &&
+                    appointmentDetail.serverAllocation.status === "Working"
+                  // && !appointmentDetail.documentConfirm
+                ) && (
+                  <>
+                    <div className="w-full md:m-5 md:flex">
+                      <div className="md:w-1/2 md:pr-5">
+                        <UploadComponent
+                          fileList={fileInspectionReport}
+                          title="Inspection report (Signed)"
+                          setFileList={setFileInspectionReport}
+                          multiple={false}
+                          maxCount={1}
+                          disabled={setDisabledInspectionReport}
+                        />
+                      </div>
+                      <div className="md:w-1/2 md:pl-5 h-28">
+                        <UploadComponent
+                          fileList={fileReceiptOfRecipient}
+                          title="Receipt of recipient (Signed)"
+                          setFileList={setFileReceiptOfRecipient}
+                          multiple={false}
+                          maxCount={1}
+                          disabled={setDisabledReceiptOfRecipient}
+                        />
+                      </div>
+                    </div>
+                    <Button
+                      icon={<UploadOutlined />}
+                      loading={loadingUploadDocument}
+                      className="w-full m-5"
+                      type="primary"
+                      disabled={
+                        !Boolean(
+                          fileInspectionReport.length > 0 &&
+                            fileReceiptOfRecipient.length > 0
+                        ) ||
+                        disabledInspectionReport ||
+                        disabledReceiptOfRecipient
+                      }
+                      onClick={() => {
+                        uploadDocument();
+                      }}
+                    >
+                      Upload
+                    </Button>
+                  </>
+                )}
+              </div>
 
               {Boolean(
                 appointmentDetail?.status === "Waiting" &&
-                areInArray(session?.user.roles!, ROLE_SALES)
+                  areInArray(session?.user.roles!, ROLE_SALES)
               ) && (
-                  <>
-                    <FloatButton.Group
-                      trigger="hover"
-                      type="primary"
-                      style={{ right: 60, bottom: 500 }}
-                      icon={<AiOutlineFileDone />}
-                    >
-                      <FloatButton
-                        icon={<MdCancel color="red" />}
-                        tooltip="Deny"
-                        onClick={() => setOpenModalDeny(true)}
-                      />
-                      <FloatButton
-                        onClick={() => setOpenModalAccept(true)}
-                        icon={<AiOutlineFileDone color="green" />}
-                        tooltip="Accept"
-                      />
-                    </FloatButton.Group>
-                    <ModalAccept
-                      open={openModalAccept}
-                      onClose={() => setOpenModalAccept(false)}
-                      appointmentId={appointmentDetail?.id!}
-                      getData={() => getData()}
+                <>
+                  <FloatButton.Group
+                    trigger="hover"
+                    type="primary"
+                    style={{ right: 60, bottom: 500 }}
+                    icon={<AiOutlineFileDone />}
+                  >
+                    <FloatButton
+                      icon={<MdCancel color="red" />}
+                      tooltip="Deny"
+                      onClick={() => setOpenModalDeny(true)}
                     />
-                  </>
-                )}
+                    <FloatButton
+                      onClick={() => setOpenModalAccept(true)}
+                      icon={<AiOutlineFileDone color="green" />}
+                      tooltip="Accept"
+                    />
+                  </FloatButton.Group>
+                  <ModalAccept
+                    open={openModalAccept}
+                    onClose={() => setOpenModalAccept(false)}
+                    appointmentId={appointmentDetail?.id!}
+                    getData={() => getData()}
+                  />
+                </>
+              )}
 
               <Tabs className="m-5" defaultActiveKey="1" items={items} />
               <ModalComplete
@@ -445,28 +442,28 @@ const Appoinment: React.FC = () => {
 
               {Boolean(
                 appointmentDetail?.status === "Accepted" &&
-                areInArray(session?.user.roles!, ROLE_TECH)
+                  areInArray(session?.user.roles!, ROLE_TECH)
               ) && (
-                    <FloatButton.Group
-                      trigger="hover"
-                      type="primary"
-                      style={{ right: 60, bottom: 500 }}
-                      icon={<AiOutlineFileDone />}
-                    >
-                      <FloatButton
-                        icon={<MdCancel color="red" />}
-                        tooltip="Fail"
-                        onClick={() => setOpenFail(true)}
-                      />
-                      <FloatButton
-                        onClick={() => setOpenComplete(true)}
-                        icon={<AiOutlineFileDone color="green" />}
-                        tooltip="Complete"
-                      />
-                    </FloatButton.Group>
-                  )}
-              </>
-            )}
+                <FloatButton.Group
+                  trigger="hover"
+                  type="primary"
+                  style={{ right: 60, bottom: 500 }}
+                  icon={<AiOutlineFileDone />}
+                >
+                  <FloatButton
+                    icon={<MdCancel color="red" />}
+                    tooltip="Fail"
+                    onClick={() => setOpenFail(true)}
+                  />
+                  <FloatButton
+                    onClick={() => setOpenComplete(true)}
+                    icon={<AiOutlineFileDone color="green" />}
+                    tooltip="Complete"
+                  />
+                </FloatButton.Group>
+              )}
+            </>
+          )}
         </>
       }
     />
