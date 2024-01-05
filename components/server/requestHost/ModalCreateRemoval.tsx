@@ -9,6 +9,7 @@ import requestHostService from "@services/requestHost";
 import { ServerAllocation } from "@models/serverAllocation";
 import { IpAddress, IpAddressParamGet } from "@models/ipAddress";
 import ipAddress from "@services/ipAddress";
+import { useRouter } from "next/router";
 const { Option } = Select;
 const { confirm } = Modal;
 
@@ -23,15 +24,16 @@ const ModalCreate: React.FC<Props> = (props) => {
   const formRef = useRef(null);
   const { data: session } = useSession();
   const [form] = Form.useForm();
-  const { onSubmit, open, onClose, serverId } = props;
+  const router = useRouter();
+  const { onSubmit, open, onClose } = props;
 
   const [loadingSubmit, setLoadingSubmit] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
   const { componentOptions } = useSelector((state) => state.component);
   const [selectedCapacities, setSelectedCapacities] = useState<number[]>([]);
   const [pageSize, setPageSize] = useState<number>(6);
-  const [totalPage, setTotalPage] = useState<number>(2);
-  const [pageIndex, setPageIndex] = useState<number>(0);
+  const [totalPageCus, setTotalPageCus] = useState<number>(2);
+  const [pageIndexCus, setPageIndexCus] = useState<number>(0);
   const [maxQuantity, setMaxQuantity] = useState<number>(1);
   // const [server, setServer] = useState<ServerAllocation[]>([]);
   const [openModal, setOpenModal] = useState<boolean | undefined>(undefined);
@@ -50,21 +52,19 @@ const ModalCreate: React.FC<Props> = (props) => {
     return result;
   };
 
-  const getMoreIp = async (pageIndexInp?: number, ip?: IpAddress[]) => {
+  const getMoreIp = async () => {
     await ipAddress
       .getData(session?.user.access_token!, {
-        PageIndex: pageIndexInp === 0 ? pageIndexInp : pageIndex + 1,
+        PageIndex: pageIndexCus + 1,
         PageSize: pageSize,
-        ServerAllocationId: serverId,
+        ServerAllocationId: parseInt(router.query.serverAllocationId+""),
         AssignmentTypes: requestType,
         IsAssigned: true,
       } as IpAddressParamGet)
       .then(async (data) => {
-        setTotalPage(data.totalPage);
-        setPageIndex(data.pageIndex);
-        ip
-          ? setIpAddresses([...ip, ...data.data])
-          : setIpAddresses([...ipAddresses, ...data.data]);
+        setTotalPageCus(data.totalPage);
+        setPageIndexCus(data.pageIndex);
+        setIpAddresses([...ipAddresses, ...data.data]);
         setMaxQuantity(ipAddresses.length);
       });
   };
@@ -80,7 +80,7 @@ const ModalCreate: React.FC<Props> = (props) => {
   }, [requestType]);
 
   useEffect(() => {
-    session && getMoreIp(0, []);
+    session && getMoreIp();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session]);
@@ -117,7 +117,7 @@ const ModalCreate: React.FC<Props> = (props) => {
                       type: form.getFieldValue("type"),
                       quantity: form.getFieldValue("ipAddressIds")?.length || 0,
                       note: form.getFieldValue("note"),
-                      serverAllocationId: serverId,
+                      serverAllocationId: parseInt(router.query.serverAllocationId+""),
                     } as RequestHostCreateModel;
 
                     ipData = form
@@ -206,16 +206,13 @@ const ModalCreate: React.FC<Props> = (props) => {
                       placeholder="Please select IPs to remove"
                       allowClear
                       listHeight={160}
-                      onChange={(res) => {}}
                       onPopupScroll={async (e: any) => {
                         const { target } = e;
                         if (
-                          (target as any).scrollTop +
-                            (target as any).offsetHeight ===
-                          (target as any).scrollHeight
+                          (target as any).scrollTop + (target as any).offsetHeight === (target as any).scrollHeight
                         ) {
-                          if (pageIndex < totalPage) {
-                            getMoreIp(serverId!);
+                          if (pageIndexCus < totalPageCus) {
+                            getMoreIp();
                           }
                         }
                       }}

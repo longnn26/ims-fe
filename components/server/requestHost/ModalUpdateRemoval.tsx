@@ -37,10 +37,9 @@ const ModalUpdateRemoval: React.FC<Props> = (props) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [ipAddresses, setIpAddresses] = useState<IpAddress[]>([]);
   const [pageSize, setPageSize] = useState<number>(6);
-  const [totalPage, setTotalPage] = useState<number>(2);
-  const [pageIndex, setPageIndex] = useState<number>(0);
+  const [totalPageCus, setTotalPageCus] = useState<number>(2);
+  const [pageIndexCus, setPageIndexCus] = useState<number>(0);
   const [maxQuantity, setMaxQuantity] = useState<number>(1);
-  const serverId = parseInt(router.query.serverAllocationId + "");
   const [openModal, setOpenModal] = useState<boolean | undefined>(undefined);
   const [initialIp, setInitialIp] = useState<IpAddress[]>([]);
 
@@ -77,28 +76,26 @@ const ModalUpdateRemoval: React.FC<Props> = (props) => {
       setRequestType(requestHost.type);
     }
   };
-  const getMoreIp = async (pageIndexInp?: number, ip?: IpAddress[]) => {
+  const getMoreIp = async () => {
     await ipAddress
       .getData(session?.user.access_token!, {
-        PageIndex: pageIndexInp === 0 ? pageIndexInp : pageIndex + 1,
+        PageIndex: pageIndexCus + 1,
         PageSize: pageSize,
-        ServerAllocationId: serverId,
+        ServerAllocationId: parseInt(router.query.serverAllocationId+""),
         AssignmentTypes: requestType,
         IsAssigned: true,
       } as IpAddressParamGet)
       .then(async (data) => {
-        setTotalPage(data.totalPage);
-        setPageIndex(data.pageIndex);
-        ip
-          ? setIpAddresses([...ip, ...data.data])
-          : setIpAddresses([...ipAddresses, ...data.data]);
+        setTotalPageCus(data.totalPage);
+        setPageIndexCus(data.pageIndex);
+        setIpAddresses([...ipAddresses, ...data.data]);
         setMaxQuantity(ipAddresses.length);
       });
   };
 
   useEffect(() => {
     const fetchData = async () => {
-      session && (await getMoreIp(0, []));
+      session && (await getMoreIp());
       if (session) {
         setFieldsValueInitial();
       }
@@ -149,7 +146,7 @@ const ModalUpdateRemoval: React.FC<Props> = (props) => {
                       techNote: form.getFieldValue("techNote"),
                       quantity: submittedCapacities
                         ? submittedCapacities.length
-                        : ipData.length,
+                        : form.getFieldValue("ipAddressIds").length,
                       note: form.getFieldValue("note"),
                       type: requestHost?.type,
                       capacities: submittedCapacities,
@@ -233,8 +230,8 @@ const ModalUpdateRemoval: React.FC<Props> = (props) => {
                             (target as any).offsetHeight ===
                           (target as any).scrollHeight
                         ) {
-                          if (pageIndex < totalPage) {
-                            getMoreIp(serverId!);
+                          if (pageIndexCus < totalPageCus) {
+                            getMoreIp();
                           }
                         }
                       }}
