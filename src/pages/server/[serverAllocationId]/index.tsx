@@ -231,7 +231,7 @@ const Customer: React.FC = () => {
                   </Button>
                 )}
                 {Boolean(
-                  serverAllocationDetail?.status !== "Waiting" &&
+                  serverAllocationDetail?.status === "Waiting" &&
                     areInArray(session?.user.roles!, ROLE_TECH) &&
                     hardware?.data.length !== 0
                 ) && (
