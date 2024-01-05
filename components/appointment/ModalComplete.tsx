@@ -55,6 +55,27 @@ const ModalComplete: React.FC<Props> = (props) => {
       });
   };
 
+  const complete = async (model: AppointmentComplete) => {    
+    setLoading(true);
+    await appointmentService
+      .completeAppointment(
+        session?.user.access_token!,
+        appointment?.id!,
+        model
+      )
+      .then((res) => {
+        message.success("Complete appointment successfully!", 1.5);
+        onSubmit();
+        form.resetFields();
+      })
+      .catch((errors) => {
+        message.error(errors.response.data, 1.5);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
+
   useEffect(() => {
     // refresh after submit for fileList
     if (appointment) {
@@ -119,25 +140,7 @@ const ModalComplete: React.FC<Props> = (props) => {
                         ?.format(dateAdvFormat),
                       //isCorrectPerson: form.getFieldValue("isCorrectPerson"),
                     } as AppointmentComplete;
-                    setLoading(true);
-
-                    await appointmentService
-                      .completeAppointment(
-                        session?.user.access_token!,
-                        appointment?.id!,
-                        model
-                      )
-                      .then((res) => {
-                        message.success("Complete appointment successfully!", 1.5);
-                        onSubmit();
-                        form.resetFields();
-                      })
-                      .catch((errors) => {
-                        message.error(errors.response.data, 1.5);
-                      })
-                      .finally(() => {
-                        setLoading(false);
-                      });
+                    complete(model);
                   },
                   onCancel() { },
                 });
