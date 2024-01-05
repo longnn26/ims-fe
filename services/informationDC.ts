@@ -6,7 +6,7 @@ import httpClient from "@utils/http-client";
 const getData = async (token: string): Promise<any> => {
   const response = await httpClient.get({
     token: token,
-    url: `${apiLinks.informationDC.get}`,
+    url: apiLinks.informationDC.get,
   });
   return response.data;
 };

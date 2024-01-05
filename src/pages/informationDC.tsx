@@ -18,11 +18,8 @@ const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
 
 const InformationDCPage: React.FC = () => {
   const { data: session } = useSession();
-  const [openModalUpdate, setOpenModalUpdate] = useState<boolean>(false);
-
-  const [informationDCDetail, setInformationDCDetail] = useState<
-    InformationDC | undefined
-  >();
+  const [informationDCDetail, setInformationDCDetail] = useState<InformationDC>();
+  const [informationUpdate, setInformationUpdate] = useState<InformationDC | undefined>(undefined);
 
   const getData = async () => {
     await informationDCService
@@ -43,18 +40,18 @@ const InformationDCPage: React.FC = () => {
         message.error(errors.response.data, 1.5);
       })
       .finally(() => {
-        setOpenModalUpdate(false);
+        setInformationUpdate(undefined);
       });
   };
 
   useEffect(() => {
     session && getData();
   }, [session]);
+
   useEffect(() => {
-    if (informationDCDetail) {
-      // logic here
-    }
-  }, [informationDCDetail]);
+    getData();
+  }, [informationUpdate])
+  
   return (
     <AntdLayoutNoSSR
       content={
@@ -66,7 +63,7 @@ const InformationDCPage: React.FC = () => {
                   type="primary"
                   htmlType="submit"
                   onClick={() => {
-                    setOpenModalUpdate(true);
+                    setInformationUpdate(informationDCDetail);
                   }}
                 >
                   Update Information DC
@@ -74,10 +71,8 @@ const InformationDCPage: React.FC = () => {
               </div>
 
               <ModalUpdateInformationDC
-                key={Math.random()} // Thêm key ngẫu nhiên để kích thích render lại
-                open={openModalUpdate}
-                onClose={() => setOpenModalUpdate(false)}
-                data={informationDCDetail}
+                onClose={() => setInformationUpdate(undefined)}
+                data={informationUpdate!}
                 onSubmit={(data: InformationDC) => {
                   updateData(data);
                 }}

@@ -60,7 +60,7 @@ const ModalCreate: React.FC<Props> = (props) => {
     if (formRef.current)
       form.setFieldsValue({
         id: appointment.id,
-        appointedCustomer: appointment.appointedCustomer?.split('|'),
+        appointedCustomer: appointment.appointedCustomer?.split(','),
         dateAppointed: convertDatePicker(appointment.dateAppointed),
         note: appointment.note,
         techNote: appointment.techNote,
@@ -108,7 +108,7 @@ const ModalCreate: React.FC<Props> = (props) => {
                   async onOk() {
                     const dataUpdate = {
                       id: appointment.id,
-                      appointedCustomer: form.getFieldValue("appointedCustomer")?.join('|'),
+                      appointedCustomer: form.getFieldValue("appointedCustomer")?.join(','),
                       dateAppointed: form.getFieldValue("dateAppointed").format(dateAdvFormat),
                       note: form.getFieldValue("note")
                         ? form.getFieldValue("note")
@@ -120,7 +120,6 @@ const ModalCreate: React.FC<Props> = (props) => {
                         ? form.getFieldValue("saleNote")
                         : appointment.saleNote,
                     } as AppointmentUpdateModel;
-                    console.log(dataUpdate.appointedCustomer)
                     setLoading(true);
                     await appointmentService
                       .update(session?.user.access_token!, dataUpdate)
