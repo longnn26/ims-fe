@@ -95,6 +95,11 @@ const ServerAllocationTable: React.FC<Props> = (props) => {
       key: "operation",
       render: (record: ServerAllocation) => (
         <Space wrap>
+          <Tooltip title="View detail" color={"black"}>
+            <Button onClick={() => router.push(`/server/${record.id}`)}>
+              <BiSolidCommentDetail />
+            </Button>
+          </Tooltip>
           {Boolean(
             record.status === "Working" &&
             areInArray(session?.user.roles!, ROLE_TECH)
@@ -107,11 +112,6 @@ const ServerAllocationTable: React.FC<Props> = (props) => {
                 </Tooltip>
               </>
             )}
-          <Tooltip title="View detail" color={"black"}>
-            <Button onClick={() => router.push(`/server/${record.id}`)}>
-              <BiSolidCommentDetail />
-            </Button>
-          </Tooltip>
           {Boolean(
             record.status === "Waiting" &&
             areInArray(session?.user.roles!, ROLE_TECH)
