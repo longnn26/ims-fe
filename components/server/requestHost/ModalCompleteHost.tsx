@@ -119,7 +119,7 @@ const ModalCompletetHost: React.FC<Props> = (props) => {
             >
               <Input placeholder="Customer position" allowClear />
             </Form.Item> */}
-            <Form.Item
+            {/* <Form.Item
               name="qtName"
               label="QTSC Representor"
               rules={[{ required: true, min: 6, max: 255 }]}
@@ -141,7 +141,7 @@ const ModalCompletetHost: React.FC<Props> = (props) => {
               rules={[{ required: true, min: 6, max: 2000 }]}
             >
               <Input placeholder="Location" allowClear />
-            </Form.Item>
+            </Form.Item> */}
             <Form.Item name="good" label="Good">
               <Switch
                 onChange={(value) =>

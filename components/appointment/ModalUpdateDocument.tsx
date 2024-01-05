@@ -164,7 +164,7 @@ const ModalComplete: React.FC<Props> = (props) => {
             >
               <Input placeholder="Customer Position" allowClear />
             </Form.Item> */}
-            <Form.Item
+            {/* <Form.Item
               name="qtName"
               label="QTSC Representor"
               rules={[{ required: true, min: 6, max: 255 }]}
@@ -184,7 +184,7 @@ const ModalComplete: React.FC<Props> = (props) => {
               rules={[{ required: true, min: 6, max: 2000 }]}
             >
               <Input placeholder="Installation/ Delivery location" allowClear />
-            </Form.Item>
+            </Form.Item> */}
             {appointment &&
               appointment?.reason &&
               appointment?.reason === "Install" && (
