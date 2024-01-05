@@ -38,7 +38,10 @@ import { CaretLeftOutlined, UploadOutlined } from "@ant-design/icons";
 import { ROLE_CUSTOMER, ROLE_SALES, ROLE_TECH } from "@utils/constants";
 import { areInArray } from "@utils/helpers";
 import serverHardwareConfig from "@services/serverHardwareConfig";
-import { ServerHardwareConfigData, SHCParamGet } from "@models/serverHardwareConfig";
+import {
+  ServerHardwareConfigData,
+  SHCParamGet,
+} from "@models/serverHardwareConfig";
 
 const { confirm } = Modal;
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
@@ -72,10 +75,10 @@ const RequestDetail: React.FC = () => {
       PageSize: 10,
       RequestHostId: router.query.requestHostId ?? -1,
     } as unknown as RUIpAdressParamGet);
-    const [paramGet, setParamGet] = useState<SHCParamGet>({
-        PageIndex: 1,
-        PageSize: 10,
-      } as unknown as SHCParamGet);
+  const [paramGet, setParamGet] = useState<SHCParamGet>({
+    PageIndex: 1,
+    PageSize: 10,
+  } as unknown as SHCParamGet);
 
   const [provideIpsParamGet, setProvideIpsParamGet] =
     useState<ParamGetSuggestAdditional>({
@@ -89,7 +92,7 @@ const RequestDetail: React.FC = () => {
     useState<boolean>(false);
   const [disabledInspectionReport, setDisabledInspectionReport] =
     useState<boolean>(false);
-    const [hardware, setHardware] = useState<ServerHardwareConfigData>();
+  const [hardware, setHardware] = useState<ServerHardwareConfigData>();
 
   const getData = async () => {
     await requestHostService
@@ -105,12 +108,14 @@ const RequestDetail: React.FC = () => {
           });
         setRequestHostDetail(res);
       });
-    await serverHardwareConfig.getServerHardwareConfigData(
-      session?.user.access_token!,
-      { ...paramGet, ServerAllocationId: serverAllocationDetail?.id! } as SHCParamGet
-    ).then((res) => {
-      setHardware(res);
-    });
+    await serverHardwareConfig
+      .getServerHardwareConfigData(session?.user.access_token!, {
+        ...paramGet,
+        ServerAllocationId: serverAllocationDetail?.id!,
+      } as SHCParamGet)
+      .then((res) => {
+        setHardware(res);
+      });
   };
 
   const updateData = async (data: RequestHostUpdateModel) => {
@@ -218,31 +223,37 @@ const RequestDetail: React.FC = () => {
     <AntdLayoutNoSSR
       content={
         <>
-          {areInArray(session?.user.roles!, ROLE_TECH, ROLE_SALES, ROLE_CUSTOMER) && (
+          {areInArray(
+            session?.user.roles!,
+            ROLE_TECH,
+            ROLE_SALES,
+            ROLE_CUSTOMER
+          ) && (
             <>
               <div className="flex flex-wrap items-center justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
                 <BreadcrumbComponent itemBreadcrumbs={itemBreadcrumbs} />
                 <div>
-                {(ipAdressData.data.length === 0 || ipAdressData === undefined) &&
-                  Boolean(
-                    requestHostDetail?.isRemoval != true &&
-                      Boolean(
-                        requestHostDetail?.status !== "Success" &&
-                          requestHostDetail?.status !== "Failed" &&
-                          requestHostDetail?.status !== "Waiting" &&
-                          areInArray(session?.user.roles!, ROLE_TECH)
-                      )
-                  ) && (
-                    <Button
-                      type="primary"
-                      className="mb-2 mr-3"
-                      onClick={async () => {
-                        getProvideIps();
-                      }}
-                    >
-                      Provide Ips
-                    </Button>
-                  )}
+                  {(ipAdressData.data.length === 0 ||
+                    ipAdressData === undefined) &&
+                    Boolean(
+                      requestHostDetail?.isRemoval != true &&
+                        Boolean(
+                          requestHostDetail?.status !== "Success" &&
+                            requestHostDetail?.status !== "Failed" &&
+                            requestHostDetail?.status !== "Waiting" &&
+                            areInArray(session?.user.roles!, ROLE_TECH)
+                        )
+                    ) && (
+                      <Button
+                        type="primary"
+                        className="mb-2 mr-3"
+                        onClick={async () => {
+                          getProvideIps();
+                        }}
+                      >
+                        Provide Ips
+                      </Button>
+                    )}
                 </div>
               </div>
 
@@ -256,8 +267,9 @@ const RequestDetail: React.FC = () => {
                 />
               </div>
               {Boolean(
-                requestHostDetail?.status === "Success"
-                && serverAllocationDetail?.status === "Working"
+                requestHostDetail?.status === "Success" &&
+                  serverAllocationDetail?.status === "Working" &&
+                  areInArray(session?.user.roles!, ROLE_TECH, ROLE_SALES)
                 //  && !requestHostDetail.documentConfirm
               ) && (
                 <div className="p-5">
