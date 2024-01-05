@@ -1,6 +1,6 @@
 import { RequestHostCompleteModel } from "@models/requestHost";
 import requestHost from "@services/requestHost";
-import { Button, Form, Input, Modal, Select, Switch, message } from "antd";
+import { Button, Form, Input, Modal, Select, Spin, Switch, message } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import { useSession } from "next-auth/react";
 import React, { useRef, useState } from "react";
@@ -35,7 +35,6 @@ const ModalCompletetHost: React.FC<Props> = (props) => {
 
   const completeRequestHost = async (data: RequestHostCompleteModel) => {
     setLoading(true);
-    //setConfirmLoading(true);
     await requestHost
       .completeRequestHost(session?.user.access_token!, requestHostId, data)
       .then((res) => {
@@ -49,7 +48,6 @@ const ModalCompletetHost: React.FC<Props> = (props) => {
       })
       .finally(() => {
         setLoading(false);
-        //setConfirmLoading(false);
       });
   };
 
@@ -81,7 +79,7 @@ const ModalCompletetHost: React.FC<Props> = (props) => {
                       note: form.getFieldValue("note"),
                     } as RequestHostCompleteModel);
                   },
-                  onCancel() {},
+                  onCancel() { },
                 });
             }}
           >
@@ -90,71 +88,51 @@ const ModalCompletetHost: React.FC<Props> = (props) => {
         ]}
       >
         <div className="flex max-w-md flex-col gap-4 m-auto">
-          <Form
-            ref={formRef}
-            form={form}
-            labelCol={{ span: 10 }}
-            wrapperCol={{ span: 14 }}
-            style={{ width: "100%" }}
-          >
-            {/* <Form.Item
-              name="number"
-              label="Contract number"
-              rules={[{ required: true, min: 6, max: 255 }]}
+          {loading === true ? (
+            <Spin size="large" tip="Completing...">
+              <Form
+                ref={formRef}
+                form={form}
+                labelCol={{ span: 10 }}
+                wrapperCol={{ span: 14 }}
+                style={{ width: "100%" }}
+              >
+                <Form.Item name="good" label="Good">
+                  <Switch
+                    onChange={(value) =>
+                      form.setFieldsValue({
+                        good: value,
+                      })
+                    }
+                  />{" "}
+                </Form.Item>
+                <Form.Item name="note" label="Note" rules={[{ max: 2000 }]}>
+                  <Input placeholder="Note" allowClear />
+                </Form.Item>
+              </Form>
+            </Spin>
+          ) : (
+            <Form
+              ref={formRef}
+              form={form}
+              labelCol={{ span: 10 }}
+              wrapperCol={{ span: 14 }}
+              style={{ width: "100%" }}
             >
-              <Input placeholder="Contract number" allowClear />
-            </Form.Item>
-            <Form.Item
-              name="customerName"
-              label="Customer name"
-              rules={[{ required: true, min: 6, max: 255 }]}
-            >
-              <Input placeholder="Customer name" allowClear />
-            </Form.Item>
-
-            <Form.Item
-              name="customerPosition"
-              label="Customer position"
-              rules={[{ required: true, min: 6, max: 255 }]}
-            >
-              <Input placeholder="Customer position" allowClear />
-            </Form.Item> */}
-            {/* <Form.Item
-              name="qtName"
-              label="QTSC Representor"
-              rules={[{ required: true, min: 6, max: 255 }]}
-            >
-              <Input placeholder="QTSC Representor" allowClear />
-            </Form.Item>
-
-            <Form.Item
-              name="position"
-              label="Representor position"
-              rules={[{ required: true, min: 6, max: 255 }]}
-            >
-              <Input placeholder="Representor position" allowClear />
-            </Form.Item>
-
-            <Form.Item
-              name="location"
-              label="Location"
-              rules={[{ required: true, min: 6, max: 2000 }]}
-            >
-              <Input placeholder="Location" allowClear />
-            </Form.Item> */}
-            <Form.Item name="good" label="Good">
-              <Switch
-                onChange={(value) =>
-                  form.setFieldsValue({
-                    good: value,
-                  })
-                }
-              />{" "}
-            </Form.Item>
-            <Form.Item name="note" label="Note" rules={[{ max: 2000 }]}>
-              <Input placeholder="Note" allowClear />
-            </Form.Item>
-          </Form>
+              <Form.Item name="good" label="Good">
+                <Switch
+                  onChange={(value) =>
+                    form.setFieldsValue({
+                      good: value,
+                    })
+                  }
+                />{" "}
+              </Form.Item>
+              <Form.Item name="note" label="Note" rules={[{ max: 2000 }]}>
+                <Input placeholder="Note" allowClear />
+              </Form.Item>
+            </Form>
+          )}
         </div>
       </Modal>
     </>
