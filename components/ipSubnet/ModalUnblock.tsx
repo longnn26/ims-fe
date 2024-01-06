@@ -17,7 +17,7 @@ interface Props {
     onSubmit: () => void;
 }
 
-const ModalBlock: React.FC<Props> = (props) => {
+const ModalUnblock: React.FC<Props> = (props) => {
     const formRef = useRef(null);
     const [form] = Form.useForm();
     const { subnetId, open, onClose, onSubmit } = props;
@@ -40,14 +40,14 @@ const ModalBlock: React.FC<Props> = (props) => {
         return result;
     };
 
-    const blockIp = async (reason: string, id: number[]) => {
+    const unblockIp = async (reason: string, id: number[]) => {
         setLoading(true);
-        await ipAddress.blockIp(
+        await ipAddress.unblockIp(
             session?.user.access_token!,
             reason,
             id
         ).then((res) => {
-            message.success("Block IPs successfully!", 1.5);
+            message.success("Unblock IPs successfully!", 1.5);
             onSubmit();
             form.resetFields();
         }).catch((errors) => {
@@ -75,9 +75,8 @@ const ModalBlock: React.FC<Props> = (props) => {
             .getData(session?.user.access_token!, {
                 PageIndex: pageIndexCus + 1,
                 PageSize: pageSize,
-                IsBlocked: false,
+                IsBlocked: true,
                 SubnetId: parseInt(subnetId),
-                Purpose: ["Host"]
             } as unknown as IpAddressParamGet)
             .then(async (data) => {
                 setTotalPageCus(data.totalPage);
@@ -121,7 +120,7 @@ const ModalBlock: React.FC<Props> = (props) => {
                                 confirm({
                                     title: "Do you want to block these IPs?",
                                     async onOk() {
-                                        blockIp(
+                                        unblockIp(
                                             form.getFieldValue("reason"),
                                             form.getFieldValue("ids")
                                         );
@@ -134,7 +133,7 @@ const ModalBlock: React.FC<Props> = (props) => {
                     </Button>,
                 ]}
             >
-                <Spin spinning={loading} tip="Blocking IPs..." size="large">
+                <Spin spinning={loading} tip="Unblocking IPs..." size="large">
                     <div className="flex max-w-md flex-col gap-4 m-auto">
                         <Form
                             ref={formRef}
@@ -188,4 +187,4 @@ const ModalBlock: React.FC<Props> = (props) => {
     );
 };
 
-export default ModalBlock;
+export default ModalUnblock;

@@ -26,4 +26,5 @@ export interface IpAddressParamGet extends ParamGet {
   AssignmentTypes?: string[];
   RequestHostId?: number;
   SubnetId?: number;
+  Purpose?: string;
 }

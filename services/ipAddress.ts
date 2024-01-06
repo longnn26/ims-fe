@@ -25,12 +25,25 @@ const getData = async (
 const blockIp = async (
   token: string,
   reason: string,
-  id: number,
+  id: number[],
 ): Promise<IpAddressData> => {
   const response = await httpClient.put({
     token: token,
     url: apiLinks.ipAddress.block,
-    data: {reason: reason, ipAddressIds: [id]}
+    data: {reason: reason, ipAddressIds: id}
+  });
+  return response.data;
+};
+
+const unblockIp = async (
+  token: string,
+  reason: string,
+  id: number[],
+): Promise<IpAddressData> => {
+  const response = await httpClient.put({
+    token: token,
+    url: apiLinks.ipAddress.unblock,
+    data: {reason: reason, ipAddressIds: id}
   });
   return response.data;
 };
@@ -39,6 +52,7 @@ const ipAddress = {
   getSuggestMaster,
   getData,
   blockIp,
+  unblockIp,
 };
 
 export default ipAddress;

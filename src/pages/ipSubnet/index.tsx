@@ -29,6 +29,7 @@ import { DownOutlined } from '@ant-design/icons';
 import { getIpAddressData } from "@slices/ipSubnet";
 import { IpAddress, IpAddressParamGet } from "@models/ipAddress";
 import ModalBlock from "@components/ipSubnet/ModalBlock";
+import ModalUnblock from "@components/ipSubnet/ModalUnblock";
 
 const { TreeNode } = Tree;
 
@@ -48,6 +49,8 @@ const IpSubnet: React.FC = () => {
   const router = useRouter();
 
   const [openModalCreate, setOpenModalCreate] = useState<boolean>(false);
+  const [openModalBlock, setOpenModalBlock] = useState<boolean>(false);
+  const [openModalUnblock, setOpenModalUnblock] = useState<boolean>(false);
   const [paramGet, setParamGet] = useState<ParamGet>({
     PageIndex: 1,
     PageSize: 7,
@@ -150,27 +153,56 @@ const IpSubnet: React.FC = () => {
         <>
           {areInArray(session?.user.roles!, ROLE_TECH) && (
             <>
-              <div className="flex justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
-                <Button
-                  type="primary"
-                  htmlType="submit"
-                  onClick={() => {
-                    setOpenModalCreate(true);
-                  }}
-                >
-                  Create
-                </Button>
-                <SearchComponent
-                  placeholder="Search IP Address: 192.0.0.115"
-                  setSearchValue={async (value) => {
-                    setIpAddressParamGet({
-                      SubnetId: undefined,
-                      Address: value,
-                      PageIndex: 1,
-                      PageSize: 4
-                    } as IpAddressParamGet);
-                  }}
-                />
+              <div className="flex flex-col mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
+                <div className="flex justify-between p-2">
+                  <Button
+                    type="primary"
+                    htmlType="submit"
+                    onClick={() => {
+                      setOpenModalCreate(true);
+                    }}
+                  >
+                    Create
+                  </Button>
+                  <div>
+                    {ipAddressData.data.filter((l) => l.purpose === "Host" && l.blocked === false).length > 0 && (
+                      <Button
+                        type="primary"
+                        className="mr-2"
+                        htmlType="submit"
+                        onClick={() => {
+                          setOpenModalBlock(true);
+                        }}
+                      >
+                        Block IPs
+                      </Button>
+                    )}
+                    {ipAddressData.data.filter((l) => l.blocked === true).length > 0 && (
+                      <Button
+                        type="primary"
+                        htmlType="submit"
+                        onClick={() => {
+                          setOpenModalUnblock(true);
+                        }}
+                      >
+                        Unblock IPs
+                      </Button>
+                    )}
+                  </div>
+                </div>
+                <div className="flex p-2">
+                  <SearchComponent
+                    placeholder="Search IP Address: 192.0.0.115"
+                    setSearchValue={async (value) => {
+                      setIpAddressParamGet({
+                        SubnetId: undefined,
+                        Address: value,
+                        PageIndex: 1,
+                        PageSize: 4
+                      } as IpAddressParamGet);
+                    }}
+                  />
+                </div>
               </div>
 
               <ModalCreate
@@ -193,7 +225,7 @@ const IpSubnet: React.FC = () => {
                 </div>
                 <div className="flex-grow">
                   <IpSubnetDetailInfor
-                    ipSubnetDetail={ipSubnetDetail ? ipSubnetDetail: getDetail("1")}
+                    ipSubnetDetail={ipSubnetDetail ? ipSubnetDetail : getDetail("1")}
                   ></IpSubnetDetailInfor>
                   <IpAddressTable
                     onEdit={(record) => { }}
@@ -223,10 +255,21 @@ const IpSubnet: React.FC = () => {
                 </div>
               </div>
               <ModalBlock
-                record={ipAddressBlock}
-                onClose={() => setIpAddressBlock(undefined)}
+                subnetId={ipSubnetSelected ? ipSubnetSelected : "1"}
+                open={openModalBlock}
+                onClose={() => setOpenModalBlock(false)}
                 onSubmit={() => {
-                  setIpAddressBlock(undefined);
+                  setOpenModalBlock(false);
+                  getDetail(ipSubnetSelected!);
+                }}
+              />
+
+              <ModalUnblock
+                subnetId={ipSubnetSelected ? ipSubnetSelected : "1"}
+                open={openModalUnblock}
+                onClose={() => setOpenModalUnblock(false)}
+                onSubmit={() => {
+                  setOpenModalUnblock(false);
                   getDetail(ipSubnetSelected!);
                 }}
               />

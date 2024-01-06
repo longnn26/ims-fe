@@ -56,7 +56,7 @@ const IpAddressable: React.FC<Props> = (props) => {
       ),
     },
     {
-      title: "Blocked Reason",
+      title: "(Un)Blocked Reason",
       key: "reason",
       dataIndex: "reason"
     },
