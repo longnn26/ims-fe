@@ -82,38 +82,38 @@ const IpAddressable: React.FC<Props> = (props) => {
     //   dataIndex: "dateUpdated",
     //   key: "dateUpdated",
     // },
-    {
-      title: "Action",
-      key: "operation",
-      render: (record: IpAddress) => (
-        <Space wrap>
-          <Tooltip title="Assign" color={"black"}>
-            <Button onClick={() => {}}>
-              <MdAssignmentAdd />
-            </Button>
-          </Tooltip>
-          {(record.blocked === false
-          // && record.purpose !== "Gateway"
-          // && record.purpose !== "Network"
-          // && record.purpose !== "Broadcast"
-          && record.purpose === "Host") && (
-            <Tooltip title="Block" color={"black"}>
-              <Button onClick={() => {onBlock(record)}}>
-                <TbBinaryOff />
-              </Button>
-            </Tooltip>
-          )}
-          {/* hỏi xem là có case unblock không?
-          {(record.blocked === true)&& (
-              <Tooltip title="Unblock" color={"black"}>
-                <Button onClick={() => {onBlock(record)}}>
-                  <TbBinary />
-                </Button>
-              </Tooltip>
-            )} */}
-        </Space>
-      ),
-    },
+    // {
+    //   title: "Action",
+    //   key: "operation",
+    //   render: (record: IpAddress) => (
+    //     <Space wrap>
+    //       <Tooltip title="Assign" color={"black"}>
+    //         <Button onClick={() => {}}>
+    //           <MdAssignmentAdd />
+    //         </Button>
+    //       </Tooltip>
+    //       {(record.blocked === false
+    //       // && record.purpose !== "Gateway"
+    //       // && record.purpose !== "Network"
+    //       // && record.purpose !== "Broadcast"
+    //       && record.purpose === "Host") && (
+    //         <Tooltip title="Block" color={"black"}>
+    //           <Button onClick={() => {onBlock(record)}}>
+    //             <TbBinaryOff />
+    //           </Button>
+    //         </Tooltip>
+    //       )}
+    //       {/* hỏi xem là có case unblock không?
+    //       {(record.blocked === true)&& (
+    //           <Tooltip title="Unblock" color={"black"}>
+    //             <Button onClick={() => {onBlock(record)}}>
+    //               <TbBinary />
+    //             </Button>
+    //           </Tooltip>
+    //         )} */}
+    //     </Space>
+    //   ),
+    // },
   ];
 
   const data: DataType[] = [];

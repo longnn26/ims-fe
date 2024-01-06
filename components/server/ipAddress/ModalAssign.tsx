@@ -21,6 +21,7 @@ const ModalAssign: React.FC<Props> = (props) => {
   const { onRefresh, onClose, ipSuggestMaster, id } = props;
   const { data: session } = useSession();
   const [confirmLoading, setConfirmLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const [ipAddressParamGet, setIpAddressParamGet] = useState<IpAddressParamGet>(
     { PageIndex: 0, PageSize: 6, IsAssigned: false, IsAvailable: true, } as IpAddressParamGet
@@ -35,7 +36,7 @@ const ModalAssign: React.FC<Props> = (props) => {
   // const [pageIndexIp, setPageIndexIp] = useState<number>(0);
 
   const assignMasterIp = async (ipAddressId: number) => {
-    setConfirmLoading(true);
+    setLoading(true);
     await serverAllocationService
       .assignMasterIp(session?.user.access_token!, id, {
         ipAddressId: ipAddressId,
@@ -49,7 +50,7 @@ const ModalAssign: React.FC<Props> = (props) => {
         message.error(errors.response.data, 1.5);
       })
       .finally(() => {
-        setConfirmLoading(false);
+        setLoading(false);
       });
   };
 
@@ -85,7 +86,7 @@ const ModalAssign: React.FC<Props> = (props) => {
         }}
         footer={[]}
       >
-        <Spin spinning={confirmLoading}>
+        <Spin spinning={loading}>
           <Space direction="vertical" style={{ width: "100%" }}>
             {Boolean(ipSuggestMaster) && (
               <Alert
@@ -144,7 +145,7 @@ const ModalAssign: React.FC<Props> = (props) => {
                     }
                   }
                 }}
-                onChange={(value, option) => {
+                onSelect={(value) => {
                   setIpAddressSelected(value.value);
                 }}
               >
@@ -154,7 +155,7 @@ const ModalAssign: React.FC<Props> = (props) => {
                   </Option>
                 ))}
               </Select>
-              {ipAddressSelected && (
+              {ipAddressSelected !== undefined && (
                 <Button
                   loading={confirmLoading}
                   type="primary"

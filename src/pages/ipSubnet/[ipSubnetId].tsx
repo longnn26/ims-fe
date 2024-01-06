@@ -104,6 +104,7 @@ const IpSubnetDetail: React.FC = () => {
               <IpAddressTable
                 onEdit={(record) => {}}
                 onDelete={async (record) => {}}
+                onBlock={(record) => {}}
               />
               {ipAddressData?.totalPage > 0 && (
                 <Pagination
