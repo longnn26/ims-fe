@@ -175,7 +175,7 @@ const IpSubnet: React.FC = () => {
                   </Button>
                   <div>
                     {ipAddressData.data.filter(
-                      (l) => l.purposes === "Host" && l.blocked === false
+                      (l) => l.purpose === "Host" && l.blocked === false
                     ).length > 0 && (
                       <Button
                         type="primary"

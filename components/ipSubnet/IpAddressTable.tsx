@@ -124,7 +124,7 @@ const IpAddressable: React.FC<Props> = (props) => {
       address: ipAddressData?.data[i].address,
       blocked: ipAddressData?.data[i].blocked,
       isReserved: ipAddressData?.data[i].isReserved,
-      purpose: ipAddressData?.data[i].purposes,
+      purpose: ipAddressData?.data[i].purpose,
       reason: ipAddressData.data[i].reason,
       ipSubnetId: ipAddressData?.data[i].ipSubnetId,
       ipSubnet: ipAddressData?.data[i].ipSubnet,

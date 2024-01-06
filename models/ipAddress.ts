@@ -6,7 +6,7 @@ export interface IpAddress extends BaseWithIdNumber {
   capacity?: number;
   blocked: boolean;
   isReserved: boolean;
-  purposes: string;
+  purpose: string;
   reason: string;
   ipSubnetId: number;
   ipSubnet: IpSubnet;
@@ -26,5 +26,5 @@ export interface IpAddressParamGet extends ParamGet {
   AssignmentTypes?: string[];
   RequestHostId?: number;
   SubnetId?: number;
-  Purpose?: string;
+  Purposes?: string;
 }
