@@ -5,7 +5,7 @@ import moment from "moment";
 import { IpSubnet } from "@models/ipSubnet";
 
 interface Props {
-  ipSubnetDetail: IpSubnet;
+  ipSubnetDetail: IpSubnet | any;
 }
 
 const IpSubnetDetail: React.FC<Props> = (props) => {
@@ -17,12 +17,11 @@ const IpSubnetDetail: React.FC<Props> = (props) => {
         <h3>Subnet detail</h3>
       </Divider>{" "}
       <Descriptions className="p-5">
-        <Descriptions.Item label="Id">{ipSubnetDetail?.id}</Descriptions.Item>
         <Descriptions.Item
           label="Subnet"
-          span={2}
+          span={4}
         >{`${ipSubnetDetail?.firstOctet}.${ipSubnetDetail?.secondOctet}.${ipSubnetDetail?.thirdOctet}.${ipSubnetDetail?.fourthOctet}/${ipSubnetDetail?.prefixLength}`}</Descriptions.Item>
-        <Descriptions.Item label="Note" span={4}>
+        <Descriptions.Item label="Note" span={2}>
           {ipSubnetDetail?.note}
         </Descriptions.Item>
         <Descriptions.Item label="Date Created" span={4}>

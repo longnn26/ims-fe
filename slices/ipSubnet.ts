@@ -2,7 +2,8 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import ipSubnetService from "@services/ipSubnet";
 import { ParamGet, ParamGetWithId } from "@models/base";
 import { IpSubnetData } from "@models/ipSubnet";
-import { IpAddressData } from "@models/ipAddress";
+import { IpAddressData, IpAddressParamGet } from "@models/ipAddress";
+import ipAddress from "@services/ipAddress";
 
 interface State {
   ipSubnetData: IpSubnetData;
@@ -30,8 +31,8 @@ const getIpSubnetData = createAsyncThunk(
 
 const getIpAddressData = createAsyncThunk(
   `${TYPE_PREFIX}/getIpAddressData`,
-  async (arg: { token: string; paramGet: ParamGetWithId }) => {
-    const result = await ipSubnetService.getIpAddresssById(
+  async (arg: { token: string; paramGet: IpAddressParamGet }) => {
+    const result = await ipAddress.getData(
       arg.token,
       arg.paramGet
     );
