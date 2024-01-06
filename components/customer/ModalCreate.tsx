@@ -1,5 +1,15 @@
 import React, { useRef, useState } from "react";
-import { Button, Col, Input, Modal, Row, Select, Card, message, Spin } from "antd";
+import {
+  Button,
+  Col,
+  Input,
+  Modal,
+  Row,
+  Select,
+  Card,
+  message,
+  Spin,
+} from "antd";
 import { CloseOutlined } from "@ant-design/icons";
 import { Form } from "antd";
 import { CustomerCreateModel } from "@models/customer";
@@ -22,7 +32,9 @@ const ModalCreate: React.FC<Props> = (props) => {
   const { data: session } = useSession();
   const [form] = Form.useForm();
   const { onSubmit, open, onClose } = props;
-  const [openModalCreate, setOpenModalCreate] = useState<boolean | undefined>(undefined);
+  const [openModalCreate, setOpenModalCreate] = useState<boolean | undefined>(
+    undefined
+  );
 
   const [confirmLoading, setConfirmLoading] = useState(false);
   //Loading: thêm biến này
@@ -69,6 +81,7 @@ const ModalCreate: React.FC<Props> = (props) => {
           setOpenModalCreate(undefined);
           form.resetFields();
         }}
+        width={600}
         footer={[
           <Button
             // loading={loadingSubmit}
@@ -87,22 +100,21 @@ const ModalCreate: React.FC<Props> = (props) => {
                       email: form.getFieldValue("email"),
                       phoneNumber: form.getFieldValue("phoneNumber"),
                       representator: form.getFieldValue("representator"),
-                      representatorPosition: form.getFieldValue("representatorPosition"),
+                      representatorPosition: form.getFieldValue(
+                        "representatorPosition"
+                      ),
                       contractNumber: form.getFieldValue("contractNumber"),
-                      contacts: form
-                        .getFieldValue("contacts") ?
-                        form
-                          .getFieldValue("contacts")
-                          .map((item, index) => ({
+                      contacts: form.getFieldValue("contacts")
+                        ? form.getFieldValue("contacts").map((item, index) => ({
                             forAppointment: form.getFieldValue([
                               "contacts",
                               index,
-                              "forAppointment"
+                              "forAppointment",
                             ]),
                             cccd: form.getFieldValue([
                               "contacts",
                               index,
-                              "cccd"
+                              "cccd",
                             ]),
                             name: form.getFieldValue([
                               "contacts",
@@ -124,7 +136,8 @@ const ModalCreate: React.FC<Props> = (props) => {
                               index,
                               "phoneNumber",
                             ]),
-                          })) : [],
+                          }))
+                        : [],
                     } as CustomerCreateModel;
                     setLoading(true);
                     await customerService
@@ -143,7 +156,7 @@ const ModalCreate: React.FC<Props> = (props) => {
                         setLoading(false);
                       });
                   },
-                  onCancel() { },
+                  onCancel() {},
                 });
             }}
           >
@@ -160,7 +173,6 @@ const ModalCreate: React.FC<Props> = (props) => {
                   form={form}
                   labelCol={{ span: 8 }}
                   wrapperCol={{ span: 16 }}
-                  style={{ width: "100%" }}
                 >
                   <Row gutter={8}>
                     <Col span={18}>
@@ -172,56 +184,40 @@ const ModalCreate: React.FC<Props> = (props) => {
                       </Form.Item>
                     </Col>
                     <Col span={6}>
-                      <Button>
-                        Save
-                      </Button>
+                      <Button>Save</Button>
                     </Col>
                   </Row>
-                  <Form.Item
-                    label="Company name"
-                  >
+                  <Form.Item label="Company name">
                     <Input.TextArea
                       placeholder="Company name"
                       autoSize={{ minRows: 1, maxRows: 6 }}
-                      allowClear />
+                      allowClear
+                    />
                   </Form.Item>
-                  <Form.Item
-                    label="Address"
-                  >
+                  <Form.Item label="Address">
                     <Input.TextArea
                       placeholder="Address"
                       autoSize={{ minRows: 1, maxRows: 6 }}
-                      allowClear />
+                      allowClear
+                    />
                   </Form.Item>
-                  <Form.Item
-                    label="Contract number"
-                  >
+                  <Form.Item label="Contract number">
                     <Input placeholder="Contract number" allowClear />
                   </Form.Item>
-                  <Form.Item
-                    label="Representator"
-                  >
+                  <Form.Item label="Representator">
                     <Input placeholder="Representator name" allowClear />
                   </Form.Item>
-                  <Form.Item
-                    label="Representator Position"
-                  >
+                  <Form.Item label="Representator Position">
                     <Input placeholder="Representator position" allowClear />
                   </Form.Item>
-                  <Form.Item
-                    label="Email"
-                  >
+                  <Form.Item label="Email">
                     <Input placeholder="Email" allowClear />
                   </Form.Item>
-                  <Form.Item
-                    label="Phone number"
-                  >
+                  <Form.Item label="Phone number">
                     <Input placeholder="Phone number" allowClear />
                   </Form.Item>
 
-                  <Button type="dashed">
-                    + Add Contact
-                  </Button>
+                  <Button type="dashed">+ Add Contact</Button>
                 </Form>
               </Spin>
             </>
@@ -232,8 +228,8 @@ const ModalCreate: React.FC<Props> = (props) => {
                 ref={formRef}
                 form={form}
                 labelCol={{ span: 8 }}
-                wrapperCol={{ span: 16 }}
-                style={{ width: "100%" }}
+                wrapperCol={{ span: 20 }}
+                style={{ width: "110%" }}
               >
                 <Row gutter={8}>
                   <Col span={18}>
@@ -246,10 +242,10 @@ const ModalCreate: React.FC<Props> = (props) => {
                         },
                         {
                           pattern: /^\d{10,13}$/,
-                          message: "Tax number is invalid!"
-                        }
+                          message: "Tax number is invalid!",
+                        },
                       ]}
-                      style={{ paddingLeft: "55px" }}
+                      style={{ paddingLeft: "60px" }}
                     >
                       <Input placeholder="Tax number" allowClear />
                     </Form.Item>
@@ -268,7 +264,8 @@ const ModalCreate: React.FC<Props> = (props) => {
                   <Input.TextArea
                     placeholder="Company name"
                     autoSize={{ minRows: 1, maxRows: 6 }}
-                    allowClear />
+                    allowClear
+                  />
                 </Form.Item>
                 <Form.Item
                   name="address"
@@ -278,7 +275,8 @@ const ModalCreate: React.FC<Props> = (props) => {
                   <Input.TextArea
                     placeholder="Address"
                     autoSize={{ minRows: 1, maxRows: 6 }}
-                    allowClear />
+                    allowClear
+                  />
                 </Form.Item>
                 <Form.Item
                   name="contractNumber"
@@ -287,8 +285,8 @@ const ModalCreate: React.FC<Props> = (props) => {
                     { required: true, min: 3, max: 4 },
                     {
                       pattern: /^\d{3,4}$/,
-                      message: "Contract number is invalid!"
-                    }
+                      message: "Contract number is invalid!",
+                    },
                   ]}
                 >
                   <Input placeholder="Contract number" allowClear />
@@ -311,27 +309,36 @@ const ModalCreate: React.FC<Props> = (props) => {
                   name="email"
                   label="Email"
                   rules={[
-                    { required: true, message: 'Please enter your email address' },
                     {
-                      pattern: /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/,
-                      message: 'Please enter a valid email address',
+                      required: true,
+                      message: "Please enter your email address",
+                    },
+                    {
+                      pattern:
+                        /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/,
+                      message: "Please enter a valid email address",
                     },
                     {
                       min: 6,
                       max: 255,
-                      message: 'Email must be between 6 and 255 characters',
+                      message: "Email must be between 6 and 255 characters",
                     },
-                  ]}>
+                  ]}
+                >
                   <Input placeholder="Email" allowClear />
                 </Form.Item>
                 <Form.Item
                   name="phoneNumber"
                   label="Phone number"
                   rules={[
-                    { required: true, message: 'Please enter staff phone number' },
                     {
-                      pattern: /^(0|84)(2(0[3-9]|1[0-689]|2[0-25-9]|3[2-9]|4[0-9]|5[124-9]|6[0369]|7[0-7]|8[0-9]|9[012346789])|3[2-9]|5[25689]|7[06-9]|8[0-9]|9[012346789])([0-9]{7})$/gm,
-                      message: 'Please enter a valid phone number',
+                      required: true,
+                      message: "Please enter staff phone number",
+                    },
+                    {
+                      pattern:
+                        /^(0|84)(2(0[3-9]|1[0-689]|2[0-25-9]|3[2-9]|4[0-9]|5[124-9]|6[0369]|7[0-7]|8[0-9]|9[012346789])|3[2-9]|5[25689]|7[06-9]|8[0-9]|9[012346789])([0-9]{7})$/gm,
+                      message: "Please enter a valid phone number",
                     },
                   ]}
                 >
@@ -378,16 +385,15 @@ const ModalCreate: React.FC<Props> = (props) => {
                               <Form.Item
                                 label="Citizen  Identification"
                                 name={[field.name, "cccd"]}
-                                rules={[{ required: true},
-                                {
-                                  pattern: /^\d{12}$/,
-                                  message: "Citizen ID must be 12 numbers!"
-                                }]}
+                                rules={[
+                                  { required: true },
+                                  {
+                                    pattern: /^\d{12}$/,
+                                    message: "Citizen ID must be 12 numbers!",
+                                  },
+                                ]}
                               >
-                                <Input
-                                  placeholder="Citizen ID"
-                                  allowClear
-                                />
+                                <Input placeholder="Citizen ID" allowClear />
                               </Form.Item>
                             </>
                           )}
@@ -417,27 +423,35 @@ const ModalCreate: React.FC<Props> = (props) => {
                             label="Email"
                             name={[field.name, "email"]}
                             rules={[
-                              { required: true, message: 'Please enter your email address' },
                               {
-                                pattern: /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/,
-                                message: 'Please enter a valid email address',
+                                required: true,
+                                message: "Please enter your email address",
+                              },
+                              {
+                                pattern:
+                                  /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/,
+                                message: "Please enter a valid email address",
                               },
                               {
                                 min: 6,
                                 max: 255,
-                                message: 'Email must be between 6 and 255 characters',
+                                message:
+                                  "Email must be between 6 and 255 characters",
                               },
-                            ]}>
+                            ]}
+                          >
                             <Input allowClear placeholder="Email" />
                           </Form.Item>
                           <Form.Item
                             label="Phone Number"
                             name={[field.name, "phoneNumber"]}
-                            rules={[{ required: true },
-                            {
-                              pattern: /^(0|84)(2(0[3-9]|1[0-689]|2[0-25-9]|3[2-9]|4[0-9]|5[124-9]|6[0369]|7[0-7]|8[0-9]|9[012346789])|3[2-9]|5[25689]|7[06-9]|8[0-9]|9[012346789])([0-9]{7})$/gm,
-                              message: 'Please enter a valid phone number',
-                            },
+                            rules={[
+                              { required: true },
+                              {
+                                pattern:
+                                  /^(0|84)(2(0[3-9]|1[0-689]|2[0-25-9]|3[2-9]|4[0-9]|5[124-9]|6[0369]|7[0-7]|8[0-9]|9[012346789])|3[2-9]|5[25689]|7[06-9]|8[0-9]|9[012346789])([0-9]{7})$/gm,
+                                message: "Please enter a valid phone number",
+                              },
                             ]}
                           >
                             <Input allowClear placeholder="Phone Number" />
@@ -451,7 +465,8 @@ const ModalCreate: React.FC<Props> = (props) => {
                           add();
                           setSelectedType(false);
                         }}
-                        block>
+                        block
+                      >
                         + Add Contact
                       </Button>
                     </div>
