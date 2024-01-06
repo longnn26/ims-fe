@@ -2,18 +2,21 @@
 
 import useSelector from "@hooks/use-selector";
 import { dateAdvFormat } from "@utils/constants";
-import { Divider, TableColumnsType } from "antd";
+import { Divider, TableColumnsType, message } from "antd";
 import { Button, Space, Table, Tooltip } from "antd";
 import moment from "moment";
 import { IpAddress } from "@models/ipAddress";
 import { useRouter } from "next/router";
 import { IpSubnet } from "@models/ipSubnet";
 import { MdAssignmentAdd } from "react-icons/md";
-import { TbLockOpenOff } from "react-icons/tb";
+import { TbBinary, TbBinaryOff, TbLockOpenOff } from "react-icons/tb";
+import ipAddress from "@services/ipAddress";
+import { useSession } from "next-auth/react";
 
 interface Props {
   onEdit: (data: IpAddress) => void;
   onDelete: (data: IpAddress) => void;
+  onBlock: (record: IpAddress) => void;
 }
 
 interface DataType {
@@ -21,6 +24,7 @@ interface DataType {
   id: number;
   address: string;
   blocked: boolean;
+  reason: string;
   isReserved: boolean;
   purpose: string;
   ipSubnetId: number;
@@ -30,26 +34,19 @@ interface DataType {
 }
 
 const IpAddressable: React.FC<Props> = (props) => {
-  const { onEdit, onDelete } = props;
+  const { onEdit, onDelete, onBlock } = props;
   const router = useRouter();
+  const { data: session } = useSession();
   const { ipAddressData, ipAddressDataLoading } = useSelector(
     (state) => state.ipSubnet
   );
 
   const columns: TableColumnsType<DataType> = [
     {
-      title: "Id",
-      dataIndex: "id",
-      key: "id",
-      fixed: "left",
-      render: (text) => (
-        <p className="text-[#b75c3c] hover:text-[#ee4623]">{text}</p>
-      ),
-    },
-    {
       title: "IP Address",
       key: "address",
       dataIndex: "address",
+      fixed: "left",
     },
     {
       title: "Blocked",
@@ -57,6 +54,11 @@ const IpAddressable: React.FC<Props> = (props) => {
       render: (_, record) => (
         <p className="">{record.blocked ? "Yes" : "No"}</p>
       ),
+    },
+    {
+      title: "Blocked Reason",
+      key: "reason",
+      dataIndex: "reason"
     },
     {
       title: "Reserved",
@@ -83,18 +85,32 @@ const IpAddressable: React.FC<Props> = (props) => {
     {
       title: "Action",
       key: "operation",
-      render: (record: IpSubnet) => (
+      render: (record: IpAddress) => (
         <Space wrap>
           <Tooltip title="Assign" color={"black"}>
             <Button onClick={() => {}}>
               <MdAssignmentAdd />
             </Button>
           </Tooltip>
-          <Tooltip title="Block" color={"black"}>
-            <Button onClick={() => {}}>
-              <TbLockOpenOff />
-            </Button>
-          </Tooltip>
+          {(record.blocked === false
+          // && record.purpose !== "Gateway"
+          // && record.purpose !== "Network"
+          // && record.purpose !== "Broadcast"
+          && record.purpose === "Host") && (
+            <Tooltip title="Block" color={"black"}>
+              <Button onClick={() => {onBlock(record)}}>
+                <TbBinaryOff />
+              </Button>
+            </Tooltip>
+          )}
+          {/* hỏi xem là có case unblock không?
+          {(record.blocked === true)&& (
+              <Tooltip title="Unblock" color={"black"}>
+                <Button onClick={() => {onBlock(record)}}>
+                  <TbBinary />
+                </Button>
+              </Tooltip>
+            )} */}
         </Space>
       ),
     },
@@ -109,6 +125,7 @@ const IpAddressable: React.FC<Props> = (props) => {
       blocked: ipAddressData?.data[i].blocked,
       isReserved: ipAddressData?.data[i].isReserved,
       purpose: ipAddressData?.data[i].purpose,
+      reason: ipAddressData.data[i].reason,
       ipSubnetId: ipAddressData?.data[i].ipSubnetId,
       ipSubnet: ipAddressData?.data[i].ipSubnet,
       dateCreated: moment(ipAddressData?.data[i].dateCreated).format(

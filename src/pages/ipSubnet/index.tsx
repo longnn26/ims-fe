@@ -1,10 +1,10 @@
 "use client";
 import dynamic from "next/dynamic";
-import { Tree } from "antd";
+import { Pagination, Tree } from "antd";
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import React from "react";
-import { ParamGet } from "@models/base";
+import { ParamGet, ParamGetWithId } from "@models/base";
 import useDispatch from "@hooks/use-dispatch";
 import useSelector from "@hooks/use-selector";
 // import { getIpSubnetData } from "@slices/ipSubnet";
@@ -23,6 +23,14 @@ import { useRouter } from "next/router";
 import { areInArray } from "@utils/helpers";
 import { ROLE_TECH } from "@utils/constants";
 import SearchComponent from "@components/SearchComponent";
+import IpSubnetDetailInfor from "@components/ipSubnet/IpSubnetDetail";
+import IpAddressTable from "@components/ipSubnet/IpAddressTable";
+import { DownOutlined } from '@ant-design/icons';
+import { getIpAddressData } from "@slices/ipSubnet";
+import { IpAddress, IpAddressParamGet } from "@models/ipAddress";
+import ModalBlock from "@components/ipSubnet/ModalBlock";
+
+const { TreeNode } = Tree;
 
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
@@ -44,71 +52,98 @@ const IpSubnet: React.FC = () => {
     PageIndex: 1,
     PageSize: 7,
   } as ParamGet);
-
+  const [ipAddressParamGet, setIpAddressParamGet] = useState<IpAddressParamGet>({
+    PageIndex: 1,
+    PageSize: 4,
+  } as unknown as IpAddressParamGet);
+  const { ipAddressData } = useSelector((state) => state.ipSubnet);
   const [treeData, setTreeData] = useState<DataNode[]>([]);
-  const [ipSubnetSelected, setIpSubnetSelected] = useState<
-    string | undefined
-  >();
+  const [ipSubnetSelected, setIpSubnetSelected] = useState<string | undefined>();
+  const [ipSubnetDetail, setIpSubnetDetail] = useState<IpSubnet>();
+  const [ipAddressBlock, setIpAddressBlock] = useState<IpAddress | undefined>(undefined);
 
-  const onSelect: DirectoryTreeProps["onSelect"] = (keys, info) => {
+  const onSelect: DirectoryTreeProps["onSelect"] = async (keys, info) => {
     var data = info.selectedNodes[0] as DataNode;
-    router.push(`ipSubnet/${data.id}`);
     setIpSubnetSelected(data.id);
+
+    getDetail(data.id + "");
   };
 
-  const recursiveChildrensTree = (children: IpSubnet[]) => {
-    var result = [] as DataNode[];
-    children.forEach((i) => {
-      result.push({
-        id: i.id.toString(),
-        title: `${i.firstOctet}.${i.secondOctet}.${i.thirdOctet}.${i.fourthOctet}/${i.prefixLength}`,
-        name: `${i.firstOctet}.${i.secondOctet}.${i.thirdOctet}.${i.fourthOctet}/${i.prefixLength}`,
-        key: i.id.toString(),
-        dateCreated: i.dateCreated,
-        dataUpdated: i.dateUpdated,
-        parentId: i.parentNetworkId.toString(),
-        children: recursiveChildrensTree(i.children),
+  const getDetail = async (ipSubnetId: string) => {
+    await ipSubnetService
+      .getDetail(session?.user.access_token!, ipSubnetId)
+      .then(async (res) => {
+        setIpSubnetDetail(res);
       });
-    });
-    return result;
+    ipAddressParamGet.SubnetId = parseInt(ipSubnetId);
+    ipAddressParamGet.Address = undefined;
+    dispatch(
+      getIpAddressData({
+        token: session?.user.access_token!,
+        paramGet: { ...ipAddressParamGet },
+      })
+    );
   };
 
   const getData = async () => {
-    // dispatch(
-    //   getIpSubnetData({
-    //     token: session?.user.access_token!,
-    //     paramGet: { ...paramGet },
-    //   })
-    // ).then(({ payload }) => {
-    //   var res = payload as IpSubnetData;
-    //   if (res.totalPage < paramGet.PageIndex && res.totalPage != 0) {
-    //     setParamGet({ ...paramGet, PageIndex: res.totalPage });
-    //   }
-    // });
     await ipSubnetService
       .getDataTree(session?.user.access_token!)
       .then((res) => {
-        var result = [] as DataNode[];
+        const treeMap = new Map<string, DataNode>();
         res?.forEach((i) => {
-          result.push({
+          const node: DataNode = {
             id: i.id.toString(),
             title: `${i.firstOctet}.${i.secondOctet}.${i.thirdOctet}.${i.fourthOctet}/${i.prefixLength}`,
             name: `${i.firstOctet}.${i.secondOctet}.${i.thirdOctet}.${i.fourthOctet}/${i.prefixLength}`,
             key: i.id.toString(),
-            dateCreated: i.dateCreated,
-            dataUpdated: i.dateUpdated,
             parentId: i?.parentNetworkId?.toString(),
-            children: recursiveChildrensTree(i.children),
-          });
+            children: [],
+          };
+
+          if (i.fourthOctet === 0) {
+            treeMap.set(node.title, node);
+          } else {
+            const parentKey = `${i.firstOctet}.${i.secondOctet}.${i.thirdOctet}.0/${i.prefixLength}`;
+            const parentNode = treeMap.get(parentKey);
+            if (parentNode) {
+              parentNode.children?.push(node);
+            }
+          }
         });
-        setTreeData([...result]);
+        // Convert the treeMap values to an array
+        const data = Array.from(treeMap.values());
+        setTreeData(data);
       });
   };
 
   useEffect(() => {
-    session && getData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    if (session) {
+      getData();
+    }
   }, [session, paramGet]);
+
+  useEffect(() => {
+    if (session) {
+      dispatch(
+        getIpAddressData({
+          token: session?.user.access_token!,
+          paramGet: { ...ipAddressParamGet },
+        })
+      );
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [session, ipAddressParamGet]);
+
+  useEffect(() => {
+    if (session) {
+      ipSubnetService
+        .getDetail(session?.user.access_token!, ipAddressData.data.at(0)?.ipSubnetId + "")
+        .then(async (res) => {
+          setIpSubnetDetail(res);
+        });
+    }
+  }, [session, ipAddressData]);
+
   return (
     <AntdLayoutNoSSR
       content={
@@ -126,10 +161,15 @@ const IpSubnet: React.FC = () => {
                   Create
                 </Button>
                 <SearchComponent
-                  placeholder="Search Name, Description..."
-                  setSearchValue={(value) =>
-                    setParamGet({ ...paramGet, SearchValue: value })
-                  }
+                  placeholder="Search IP Address: 192.0.0.115"
+                  setSearchValue={async (value) => {
+                    setIpAddressParamGet({
+                      SubnetId: undefined,
+                      Address: value,
+                      PageIndex: 1,
+                      PageSize: 4
+                    } as IpAddressParamGet);
+                  }}
                 />
               </div>
 
@@ -140,33 +180,56 @@ const IpSubnet: React.FC = () => {
                   getData();
                 }}
               />
-              {/* <IpSubnetTable
-            onEdit={(record) => {}}
-            onDelete={async (record) => {}}
-          /> */}
-              <div className="p-3">
-                <Tree
-                  showLine={true}
-                  onSelect={onSelect}
-                  treeData={treeData}
-                  selectedKeys={[ipSubnetSelected!]}
-                />
+              <div className="flex justify-between mb-4 p-2 bg-[#f8f9fa]/10">
+                <div className="mt-4">
+                  <Tree
+                    showLine={true}
+                    switcherIcon={<DownOutlined />}
+                    onSelect={onSelect}
+                    treeData={treeData}
+                    selectedKeys={[ipSubnetSelected!]}
+                    style={{ maxHeight: '70vh', overflowY: 'auto' }}
+                  />
+                </div>
+                <div className="flex-grow">
+                  <IpSubnetDetailInfor
+                    ipSubnetDetail={ipSubnetDetail ? ipSubnetDetail: getDetail("1")}
+                  ></IpSubnetDetailInfor>
+                  <IpAddressTable
+                    onEdit={(record) => { }}
+                    onDelete={async (record) => { }}
+                    onBlock={(record) => {
+                      setIpAddressBlock(record);
+                    }}
+                  />
+                  {ipAddressData?.totalPage > 0 && (
+                    <Pagination
+                      className="text-end m-4"
+                      current={ipAddressParamGet?.PageIndex}
+                      pageSize={ipAddressData?.pageSize ?? 10}
+                      total={ipAddressData?.totalSize}
+                      showTotal={(total) => `Total ${total} IP Addresses`}
+                      showSizeChanger={false}
+                      showQuickJumper
+                      onChange={(page, pageSize) => {
+                        setIpAddressParamGet({
+                          ...ipAddressParamGet,
+                          PageIndex: page,
+                          PageSize: pageSize,
+                        });
+                      }}
+                    />
+                  )}
+                </div>
               </div>
-              {/* {ipSubnetData.totalPage > 0 && (
-            <Pagination
-              className="text-end m-4"
-              current={paramGet.PageIndex}
-              pageSize={ipSubnetData.pageSize ?? 10}
-              total={ipSubnetData.totalSize}
-              onChange={(page, pageSize) => {
-                setParamGet({
-                  ...paramGet,
-                  PageIndex: page,
-                  PageSize: pageSize,
-                });
-              }}
-            />
-          )} */}
+              <ModalBlock
+                record={ipAddressBlock}
+                onClose={() => setIpAddressBlock(undefined)}
+                onSubmit={() => {
+                  setIpAddressBlock(undefined);
+                  getDetail(ipSubnetSelected!);
+                }}
+              />
             </>
           )}
         </>

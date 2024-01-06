@@ -21,6 +21,7 @@ const ModalCreate: React.FC<Props> = (props) => {
   const { data: session } = useSession();
 
   const [confirmLoading, setConfirmLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const disabled = async () => {
     var result = false;
@@ -33,7 +34,7 @@ const ModalCreate: React.FC<Props> = (props) => {
   };
 
   const createData = async (data: IpSubnetCreateModel) => {
-    setConfirmLoading(true);
+    setLoading(true);
     await ipSubnetService
       .createData(session?.user.access_token!, data)
       .then((res) => {
@@ -46,7 +47,7 @@ const ModalCreate: React.FC<Props> = (props) => {
         message.error(errors.response.data, 1.5);
       })
       .finally(() => {
-        setConfirmLoading(false);
+        setLoading(false);
       });
   };
 
@@ -63,6 +64,7 @@ const ModalCreate: React.FC<Props> = (props) => {
         footer={[
           <Button
             loading={confirmLoading}
+            disabled={loading}
             className="btn-submit"
             key="submit"
             onClick={async () => {
@@ -85,7 +87,7 @@ const ModalCreate: React.FC<Props> = (props) => {
           </Button>,
         ]}
       >
-        <Spin spinning={confirmLoading}>
+        <Spin spinning={loading}>
           <div className="flex max-w-md flex-col gap-4 m-auto">
             <Form
               ref={formRef}

@@ -54,10 +54,6 @@ const Signin: React.FC<Props> = (props) => {
     if (res.error) {
       return message.error("Wrong login account information!", 1.5);
     } else {
-      message.success("Login successfully!", 1.5);
-      if (values.password === "Password@123") {
-        return router.push(`/changePassword`)
-      }
       return router.push("/");
     }
   };

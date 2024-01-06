@@ -230,10 +230,10 @@ const ModalComplete: React.FC<Props> = (props) => {
 
             <Form.Item
               name="deviceCondition"
-              label="Device condition"
+              label="Server condition"
               rules={[{ max: 2000 }]}
             >
-              <Input placeholder="Device condition" allowClear />
+              <Input placeholder="Server condition" allowClear />
             </Form.Item>
             <Form.Item name="good" label="Good">
               <Switch

@@ -367,7 +367,7 @@ const ModalCreate: React.FC<Props> = (props) => {
                           }
                         >
                           <Form.Item
-                            label="Loại contacts"
+                            label="Registration type"
                             name={[field.name, "forAppointment"]}
                             rules={[{ required: true }]}
                           >
@@ -380,7 +380,7 @@ const ModalCreate: React.FC<Props> = (props) => {
                               <Option value={false}>Thông tin liên hệ</Option>
                             </Select>
                           </Form.Item>
-                          {selectedType === true && (
+                          {form.getFieldValue(["contacts", field.name, "forAppointment"]) === true && (
                             <>
                               <Form.Item
                                 label="Citizen  Identification"
@@ -398,25 +398,14 @@ const ModalCreate: React.FC<Props> = (props) => {
                             </>
                           )}
                           <Form.Item
-                            label="Name"
+                            label="Full Name"
                             name={[field.name, "name"]}
                             rules={[{ required: true, min: 8, max: 255 }]}
                           >
                             <Input.TextArea
                               autoSize={{ minRows: 1, maxRows: 6 }}
                               allowClear
-                              placeholder="Name"
-                            />
-                          </Form.Item>
-                          <Form.Item
-                            label="Position"
-                            name={[field.name, "position"]}
-                            rules={[{ required: true, min: 8, max: 255 }]}
-                          >
-                            <Input.TextArea
-                              autoSize={{ minRows: 1, maxRows: 6 }}
-                              allowClear
-                              placeholder="Position"
+                              placeholder="Full Name"
                             />
                           </Form.Item>
                           <Form.Item
@@ -455,6 +444,17 @@ const ModalCreate: React.FC<Props> = (props) => {
                             ]}
                           >
                             <Input allowClear placeholder="Phone Number" />
+                          </Form.Item>
+                          <Form.Item
+                            label="Position"
+                            name={[field.name, "position"]}
+                            rules={[{ min: 8, max: 255 }]}
+                          >
+                            <Input.TextArea
+                              autoSize={{ minRows: 1, maxRows: 6 }}
+                              allowClear
+                              placeholder="Position"
+                            />
                           </Form.Item>
                         </Card>
                       ))}

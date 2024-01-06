@@ -126,6 +126,7 @@ const apiLinks = {
   ipAddress: {
     get: `${url}/api/IpAddress`,
     getSuggestMaster: `${url}/api/IpAddress/SuggestMaster`,
+    block: `${url}/api/IpAddress/Block`,
   },
 
   requestHost: {

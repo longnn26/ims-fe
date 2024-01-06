@@ -41,18 +41,6 @@ const getDetail = async (token: string, id: string): Promise<IpSubnet> => {
   return response.data;
 };
 
-const getIpAddresssById = async (
-  token: string,
-  params: ParamGetWithId
-): Promise<IpAddressData> => {
-  const response = await httpClient.get({
-    url: apiLinks.ipSubnet.getIpAddresssById + `/${params.Id}/IpAddress`,
-    token: token,
-    params: params,
-  });
-  return response.data;
-};
-
 const createData = async (
   token: string,
   data: IpSubnetCreateModel
@@ -81,7 +69,6 @@ const ipSubnet = {
   getData,
   createData,
   getDetail,
-  getIpAddresssById,
   getDataTree,
   getSuggestAdditional,
 };
