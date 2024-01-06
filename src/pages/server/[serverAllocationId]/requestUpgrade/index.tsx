@@ -46,7 +46,10 @@ import BreadcrumbComponent from "@components/BreadcrumbComponent";
 import ServerDetail from "@components/server/ServerDetail";
 import { areInArray, parseJwt } from "@utils/helpers";
 import ModalRemove from "@components/server/requestUpgrade/ModalRemove";
-import { SHCParamGet, ServerHardwareConfigData } from "@models/serverHardwareConfig";
+import {
+  SHCParamGet,
+  ServerHardwareConfigData,
+} from "@models/serverHardwareConfig";
 import serverHardwareConfig from "@services/serverHardwareConfig";
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
@@ -72,7 +75,7 @@ const RequestUpgrade: React.FC = () => {
   const [openModalUpdate, setOpenModalUpdate] = useState<boolean>(false);
   const [serverAllocationDetail, setServerAllocationDetail] =
     useState<ServerAllocation>();
-    const [hardware, setHardware] = useState<ServerHardwareConfigData>();
+  const [hardware, setHardware] = useState<ServerHardwareConfigData>();
   const [itemBreadcrumbs, setItemBreadcrumbs] = useState<ItemType[]>([]);
 
   const getData = async () => {
@@ -91,11 +94,12 @@ const RequestUpgrade: React.FC = () => {
       .then((res) => {
         setServerAllocationDetail(res);
       });
-    await serverHardwareConfig.getServerHardwareConfigData(
-        session?.user.access_token!,
-        {...paramGet, 
-          ServerAllocationId: parseInt(router.query.serverAllocationId+"")} as SHCParamGet
-      ).then((res) => {
+    await serverHardwareConfig
+      .getServerHardwareConfigData(session?.user.access_token!, {
+        ...paramGet,
+        ServerAllocationId: parseInt(router.query.serverAllocationId + ""),
+      } as SHCParamGet)
+      .then((res) => {
         setHardware(res);
       });
     dispatch(
@@ -110,7 +114,7 @@ const RequestUpgrade: React.FC = () => {
       }
     });
   };
-  
+
   const removeData = async (data: RequestUpgradeRemoveModel) => {
     await requestUpgradeService
       .removeData(session?.user.access_token!, data)
@@ -146,7 +150,8 @@ const RequestUpgrade: React.FC = () => {
           })
           .catch((errors) => {
             message.error(
-              errors.response.data ?? "Delete request upgrade failed", 1.5
+              errors.response.data ?? "Delete request upgrade failed",
+              1.5
             );
             setLoadingSubmit(false);
           });
@@ -194,7 +199,7 @@ const RequestUpgrade: React.FC = () => {
             <div>
               {areInArray(session?.user.roles!, ROLE_CUSTOMER) && (
                 <>
-                  <Button
+                  {/* <Button
                     type="primary"
                     htmlType="submit"
                     className="mr-2"
@@ -204,7 +209,7 @@ const RequestUpgrade: React.FC = () => {
                     }}
                   >
                     Hardware Remove Request
-                  </Button>
+                  </Button> */}
                   <Button
                     type="primary"
                     htmlType="submit"
@@ -213,7 +218,7 @@ const RequestUpgrade: React.FC = () => {
                       setOpenModalCreate(true);
                     }}
                   >
-                    Request upgrade
+                    Create Hardware Upgrade Request
                   </Button>
                 </>
               )}

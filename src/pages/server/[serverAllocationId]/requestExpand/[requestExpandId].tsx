@@ -39,7 +39,10 @@ import { ROLE_CUSTOMER, ROLE_SALES, ROLE_TECH } from "@utils/constants";
 import ModalEmpty from "@components/ModalEmpty";
 import ModalDeny from "@components/server/requestExpand/ModalDeny";
 import serverHardwareConfig from "@services/serverHardwareConfig";
-import { ServerHardwareConfigData, SHCParamGet } from "@models/serverHardwareConfig";
+import {
+  ServerHardwareConfigData,
+  SHCParamGet,
+} from "@models/serverHardwareConfig";
 
 const { confirm } = Modal;
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
@@ -99,10 +102,12 @@ const RequestExpandDetail: React.FC = () => {
         setServerAllocationDetail(undefined);
         setContent(errors.response.data);
       });
-      await serverHardwareConfig.getServerHardwareConfigData(
-        session?.user.access_token!,
-        {...paramGet, ServerAllocationId: serverAllocationDetail?.id!} as SHCParamGet
-      ).then((res) => {
+    await serverHardwareConfig
+      .getServerHardwareConfigData(session?.user.access_token!, {
+        ...paramGet,
+        ServerAllocationId: serverAllocationDetail?.id!,
+      } as SHCParamGet)
+      .then((res) => {
         setHardware(res);
       });
   };
@@ -320,7 +325,8 @@ const RequestExpandDetail: React.FC = () => {
                 <BreadcrumbComponent itemBreadcrumbs={itemBreadcrumbs} />
 
                 {Boolean(
-                  requestExpandDetail?.status === "Accepted" &&
+                  requestExpandDetail?.requestType !== "RemoveLocation" &&
+                    requestExpandDetail?.status === "Accepted" &&
                     areInArray(
                       session?.user.roles!,
                       // ROLE_SALES,
@@ -359,12 +365,12 @@ const RequestExpandDetail: React.FC = () => {
                     </>
                   )}
               </div>
-            )}            
+            )}
             <ModalDeny
               open={openModalDeny}
               onClose={() => setOpenModalDeny(false)}
               getData={() => getData()}
-              requestExpandId={parseInt(router.query.requestExpandId+"")}
+              requestExpandId={parseInt(router.query.requestExpandId + "")}
             />
             {areInArray(
               session?.user.roles!,
