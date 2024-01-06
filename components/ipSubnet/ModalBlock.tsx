@@ -175,7 +175,7 @@ const ModalBlock: React.FC<Props> = (props) => {
                                     }}
                                 >
                                     {ipAddresses.map((l, index) => (
-                                        <Option value={l.id}>{`${l.address}`}</Option>
+                                        <Option key={l.id} value={l.id}>{`${l.address}`}</Option>
                                     ))}
 
                                 </Select>
