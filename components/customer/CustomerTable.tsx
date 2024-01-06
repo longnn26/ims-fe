@@ -65,6 +65,7 @@ const CustomerTable: React.FC<Props> = (props) => {
 
       const nestedData = data.contacts.map((des, index) => ({
         key: index,
+        //cccd
         name: data.contacts[index].name,
         position: data.contacts[index].position,
         email: data.contacts[index].email,
