@@ -6,7 +6,7 @@ export interface IpAddress extends BaseWithIdNumber {
   capacity?: number;
   blocked: boolean;
   isReserved: boolean;
-  purpose: string;
+  purposes: string;
   reason: string;
   ipSubnetId: number;
   ipSubnet: IpSubnet;

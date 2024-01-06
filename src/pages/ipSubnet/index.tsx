@@ -25,7 +25,7 @@ import { ROLE_TECH } from "@utils/constants";
 import SearchComponent from "@components/SearchComponent";
 import IpSubnetDetailInfor from "@components/ipSubnet/IpSubnetDetail";
 import IpAddressTable from "@components/ipSubnet/IpAddressTable";
-import { DownOutlined } from '@ant-design/icons';
+import { DownOutlined } from "@ant-design/icons";
 import { getIpAddressData } from "@slices/ipSubnet";
 import { IpAddress, IpAddressParamGet } from "@models/ipAddress";
 import ModalBlock from "@components/ipSubnet/ModalBlock";
@@ -55,15 +55,21 @@ const IpSubnet: React.FC = () => {
     PageIndex: 1,
     PageSize: 7,
   } as ParamGet);
-  const [ipAddressParamGet, setIpAddressParamGet] = useState<IpAddressParamGet>({
-    PageIndex: 1,
-    PageSize: 4,
-  } as unknown as IpAddressParamGet);
+  const [ipAddressParamGet, setIpAddressParamGet] = useState<IpAddressParamGet>(
+    {
+      PageIndex: 1,
+      PageSize: 4,
+    } as unknown as IpAddressParamGet
+  );
   const { ipAddressData } = useSelector((state) => state.ipSubnet);
   const [treeData, setTreeData] = useState<DataNode[]>([]);
-  const [ipSubnetSelected, setIpSubnetSelected] = useState<string | undefined>();
+  const [ipSubnetSelected, setIpSubnetSelected] = useState<
+    string | undefined
+  >();
   const [ipSubnetDetail, setIpSubnetDetail] = useState<IpSubnet>();
-  const [ipAddressBlock, setIpAddressBlock] = useState<IpAddress | undefined>(undefined);
+  const [ipAddressBlock, setIpAddressBlock] = useState<IpAddress | undefined>(
+    undefined
+  );
 
   const onSelect: DirectoryTreeProps["onSelect"] = async (keys, info) => {
     var data = info.selectedNodes[0] as DataNode;
@@ -140,7 +146,10 @@ const IpSubnet: React.FC = () => {
   useEffect(() => {
     if (session) {
       ipSubnetService
-        .getDetail(session?.user.access_token!, ipAddressData.data.at(0)?.ipSubnetId + "")
+        .getDetail(
+          session?.user.access_token!,
+          ipAddressData.data.at(0)?.ipSubnetId + ""
+        )
         .then(async (res) => {
           setIpSubnetDetail(res);
         });
@@ -165,7 +174,9 @@ const IpSubnet: React.FC = () => {
                     Create
                   </Button>
                   <div>
-                    {ipAddressData.data.filter((l) => l.purpose === "Host" && l.blocked === false).length > 0 && (
+                    {ipAddressData.data.filter(
+                      (l) => l.purposes === "Host" && l.blocked === false
+                    ).length > 0 && (
                       <Button
                         type="primary"
                         className="mr-2"
@@ -177,7 +188,8 @@ const IpSubnet: React.FC = () => {
                         Block IPs
                       </Button>
                     )}
-                    {ipAddressData.data.filter((l) => l.blocked === true).length > 0 && (
+                    {ipAddressData.data.filter((l) => l.blocked === true)
+                      .length > 0 && (
                       <Button
                         type="primary"
                         htmlType="submit"
@@ -198,7 +210,7 @@ const IpSubnet: React.FC = () => {
                         SubnetId: undefined,
                         Address: value,
                         PageIndex: 1,
-                        PageSize: 4
+                        PageSize: 4,
                       } as IpAddressParamGet);
                     }}
                   />
@@ -220,16 +232,18 @@ const IpSubnet: React.FC = () => {
                     onSelect={onSelect}
                     treeData={treeData}
                     selectedKeys={[ipSubnetSelected!]}
-                    style={{ maxHeight: '70vh', overflowY: 'auto' }}
+                    style={{ maxHeight: "70vh", overflowY: "auto" }}
                   />
                 </div>
                 <div className="flex-grow">
                   <IpSubnetDetailInfor
-                    ipSubnetDetail={ipSubnetDetail ? ipSubnetDetail : getDetail("1")}
+                    ipSubnetDetail={
+                      ipSubnetDetail ? ipSubnetDetail : getDetail("1")
+                    }
                   ></IpSubnetDetailInfor>
                   <IpAddressTable
-                    onEdit={(record) => { }}
-                    onDelete={async (record) => { }}
+                    onEdit={(record) => {}}
+                    onDelete={async (record) => {}}
                     onBlock={(record) => {
                       setIpAddressBlock(record);
                     }}
