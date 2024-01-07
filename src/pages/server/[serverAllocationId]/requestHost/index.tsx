@@ -100,18 +100,18 @@ const RequestHost: React.FC = () => {
     });
   };
 
-  const createData = async (data: RequestHostCreateModel) => {
-    await requestHostService
-      .createData(session?.user.access_token!, data)
-      .then((res) => {
-        message.success("Create successfully!", 1.5);
-        getData();
-        setOpenModalCreate(false);
-      })
-      .catch((errors) => {
-        message.error(errors.response.data, 1.5);
-      });
-  };
+  // const createData = async (data: RequestHostCreateModel) => {
+  //   await requestHostService
+  //     .createData(session?.user.access_token!, data)
+  //     .then((res) => {
+  //       message.success("Create successfully!", 1.5);
+  //       getData();
+  //       setOpenModalCreate(false);
+  //     })
+  //     .catch((errors) => {
+  //       message.error(errors.response.data, 1.5);
+  //     });
+  // };
 
   // const createRemoval = async (data: RequestHostCreateModel, ip: number[]) => {
   //   await requestHostService
@@ -211,11 +211,9 @@ const RequestHost: React.FC = () => {
           <ModalCreate
             open={openModalCreate}
             onClose={() => setOpenModalCreate(false)}
-            onSubmit={(data: RequestHostCreateModel) => {
-              data.serverAllocationId = parseInt(
-                router.query!.serverAllocationId!.toString()
-              );
-              createData(data);
+            onSubmit={() => {
+              setOpenModalCreate(false);
+              getData();
             }}
           />
           <ModalCreateRemoval

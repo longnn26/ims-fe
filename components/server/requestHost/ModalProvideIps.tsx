@@ -1,4 +1,5 @@
 import { SuggestAdditionalModel } from "@models/ipSubnet";
+import { ServerAllocation } from "@models/serverAllocation";
 import requestHost from "@services/requestHost";
 import { Button, Descriptions, Form, Modal, message } from "antd";
 import { useSession } from "next-auth/react";
@@ -19,6 +20,16 @@ const ModalProvideIps: React.FC<Props> = (props) => {
 
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [ipAddressId, setIpAddressId] = useState<number[]>([]);
+  const [server, setServer] = useState<ServerAllocation>();
+
+  const getServerMasterIp = async() => {
+    await requestHost.getDetail(
+      session?.user.access_token!,
+      requestHostId + ""
+    ).then((res) => {
+      setServer(res.serverAllocation);
+    })
+  };
 
   useEffect(() => {
     var idAdress = [] as number[];
@@ -26,6 +37,7 @@ const ModalProvideIps: React.FC<Props> = (props) => {
       idAdress.push(item.id);
     });
     setIpAddressId(idAdress);
+    getServerMasterIp();
   }, [provideIpsData]);
 
   return (
@@ -72,6 +84,12 @@ const ModalProvideIps: React.FC<Props> = (props) => {
       >
         <div>
           <Descriptions className="pl-5">
+            <Descriptions.Item label="Server" span={4}>
+              {server?.name + " - " + server?.serialNumber}
+            </Descriptions.Item>
+            <Descriptions.Item label="Server's master IP" span={4}>
+              {server?.masterIpAddress}
+            </Descriptions.Item>
             <Descriptions.Item label="Quantity" span={4}>
               {quantity}
             </Descriptions.Item>

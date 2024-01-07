@@ -25,6 +25,9 @@ export interface Appointment extends BaseWithIdNumber {
   purpose: string;
   evaluator: Evaluator;
   executor: Executor;
+  dateEvaluated: string;
+  dateExecuted: string;
+  dateConfirm: string;
 }
 
 export interface AppointmentData extends PagingModel {

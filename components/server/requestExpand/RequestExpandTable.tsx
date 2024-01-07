@@ -60,15 +60,6 @@ const RequestExpandTable: React.FC<Props> = (props) => {
       ? rEDataOfAppointment
       : requestExpandData;
   const columns: TableColumnsType<DataType> = [
-    {
-      title: "Id",
-      dataIndex: "id",
-      key: "id",
-      fixed: "left",
-      render: (text) => (
-        <p className="text-[#b75c3c] hover:text-[#ee4623]">{text}</p>
-      ),
-    },
     { title: "Expand size (U)", dataIndex: "size", key: "size" },
     { title: "Type", dataIndex: "requestType", key: "requestType" },
     {
@@ -144,7 +135,6 @@ const RequestExpandTable: React.FC<Props> = (props) => {
       <Table
         columns={columns}
         dataSource={data}
-        scroll={{ x: 1300 }}
         pagination={false}
         // className="cursor-pointer"
       />

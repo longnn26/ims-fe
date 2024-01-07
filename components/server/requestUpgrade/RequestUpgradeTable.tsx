@@ -68,15 +68,6 @@ const RequestUpgradeTable: React.FC<Props> = (props) => {
 
   const columns: TableColumnsType<DataType> = [
     {
-      title: "No",
-      dataIndex: "id",
-      key: "id",
-      fixed: "left",
-      render: (text) => (
-        <p className="text-[#b75c3c] hover:text-[#ee4623]">{text}</p>
-      ),
-    },
-    {
       title: "Component",
       key: "component",
       render: (record: RequestUpgrade) => <p>{`${record.component?.name}`}</p>,
@@ -166,7 +157,6 @@ const RequestUpgradeTable: React.FC<Props> = (props) => {
         loading={requestUpgradeDataLoading}
         columns={columns}
         dataSource={data}
-        scroll={{ x: 1300 }}
         pagination={false}
         className="cursor-pointer"
       />

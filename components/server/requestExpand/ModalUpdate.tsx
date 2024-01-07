@@ -46,6 +46,17 @@ const ModalUpdate: React.FC<Props> = (props) => {
       });
   };
 
+  // const getMoreLocation = async () => {
+  //   lo.PageIndex += 1;
+  //   await ipAddressService
+  //     .getData(session?.user.access_token!, {...ipAddressParamGet, IsAssigned: false, IsAvailable: true,})
+  //     .then(async (data) => {
+  //       setTotalPageIp(data.totalPage);
+  //       ipAddressParamGet.PageIndex = data.pageIndex;
+  //       setIpAddressList([...ipAddressList, ...data.data]);
+  //     });
+  // };
+
   useEffect(() => {
     // refresh after submit for fileList
     if (requestExpand) {
