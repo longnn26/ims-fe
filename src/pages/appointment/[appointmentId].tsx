@@ -179,7 +179,7 @@ const Appoinment: React.FC = () => {
             appointmentDetail?.id + ""
           )
           .then((res) => {
-            message.success("Accept request expand successfully!", 1.5);
+            message.success("Confirm Document successfully!", 1.5);
             getData();
           })
           .catch((errors) => {

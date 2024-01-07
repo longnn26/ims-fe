@@ -174,7 +174,7 @@ const updateDocument = async (
 const confirmDocument = async (token: string, id: string): Promise<any> => {
   const response = await httpClient.put({
     url:
-      apiLinks.appointment.updateDocument + `/${id}/DocumentConfirmation/True`,
+      apiLinks.appointment.confirmDocument + `/${id}/DocumentConfirmation/True`,
     token: token,
   });
   return response.data;
