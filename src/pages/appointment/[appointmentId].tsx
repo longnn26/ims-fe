@@ -163,6 +163,34 @@ const Appoinment: React.FC = () => {
       .finally(() => {});
   };
 
+  const confirmDocument = async () => {
+    confirm({
+      title: "Accept",
+      content: (
+        <Alert
+          message={`Do you want to confirm document of this Appointment?`}
+          type="warning"
+        />
+      ),
+      async onOk() {
+        await appointmentService
+          .confirmDocument(
+            session?.user.access_token!,
+            appointmentDetail?.id + ""
+          )
+          .then((res) => {
+            message.success("Accept request expand successfully!", 1.5);
+            getData();
+          })
+          .catch((errors) => {
+            message.error(errors.response.data, 1.5);
+          })
+          .finally(() => {});
+      },
+      onCancel() {},
+    });
+  };
+
   const handleBreadCumb = () => {
     var itemBrs = [] as ItemType[];
     var items = router.asPath.split("/").filter((_) => _ != "");
@@ -310,6 +338,21 @@ const Appoinment: React.FC = () => {
                     <BreadcrumbComponent itemBreadcrumbs={itemBreadcrumbs} />
                   </div>
                 </div>
+                {Boolean(
+                  appointmentDetail?.status === "Success" &&
+                    !appointmentDetail.documentConfirm &&
+                    areInArray(session?.user.roles!, ROLE_CUSTOMER)
+                ) && (
+                  <Button
+                    type="primary"
+                    className="mb-2"
+                    // icon={<CaretLeftOutlined />}
+                    onClick={() => confirmDocument()}
+                  >
+                    Confirm Report
+                  </Button>
+                )}
+
                 {Boolean(
                   appointmentDetail?.status === "Success" &&
                     !appointmentDetail.documentConfirm &&

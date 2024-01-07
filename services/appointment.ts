@@ -55,7 +55,7 @@ const getRequestExpandsById = async (
   const response = await httpClient.get({
     url: apiLinks.appointment.getRequestExpandById,
     token: token,
-    params: params
+    params: params,
   });
   return response.data;
 };
@@ -128,7 +128,7 @@ const uploadDocument = async (
 
 const create = async (
   token: string,
-  data: AppointmentCreateModel,
+  data: AppointmentCreateModel
 ): Promise<any> => {
   const response = await httpClient.post({
     token: token,
@@ -140,7 +140,7 @@ const create = async (
 
 const update = async (
   token: string,
-  data: AppointmentUpdateModel,
+  data: AppointmentUpdateModel
 ): Promise<any> => {
   const response = await httpClient.put({
     token: token,
@@ -150,10 +150,7 @@ const update = async (
   return response.data;
 };
 
-const deleteAppointment = async (
-  token: string,
-  id: number,
-): Promise<any> => {
+const deleteAppointment = async (token: string, id: number): Promise<any> => {
   const response = await httpClient.delete({
     token: token,
     url: apiLinks.appointment.delete + `/${id}`,
@@ -164,7 +161,7 @@ const deleteAppointment = async (
 const updateDocument = async (
   token: string,
   id: number,
-  data: DocumentModelAppointment,
+  data: DocumentModelAppointment
 ): Promise<any> => {
   const response = await httpClient.put({
     token: token,
@@ -174,10 +171,20 @@ const updateDocument = async (
   return response.data;
 };
 
+const confirmDocument = async (token: string, id: string): Promise<any> => {
+  const response = await httpClient.put({
+    url:
+      apiLinks.appointment.updateDocument + `/${id}/DocumentConfirmation/True`,
+    token: token,
+  });
+  return response.data;
+};
+
 const appointment = {
   getListAppointments,
   getDetail,
   uploadDocument,
+  confirmDocument,
   getRequestUpgradesById,
   getRequestExpandsById,
   acceptAppointment,

@@ -98,6 +98,7 @@ const apiLinks = {
     update: `${url}/api/Appointment`,
     delete: `${url}/api/Appointment`,
     updateDocument: `${url}/api/Appointment`,
+    confirmDocument: `${url}/api/Appointment`,
   },
 
   requestExpand: {
@@ -160,7 +161,7 @@ const apiLinks = {
     put: `${url}/api/Incident`,
     getById: `${url}/api/Incident`,
     resolve: `${url}/api/Incident`,
-  }
+  },
 };
 
 export default apiLinks;
