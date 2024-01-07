@@ -84,6 +84,14 @@ const assignMasterIp = async (
   return response.data;
 };
 
+const confirm = async (token: string, id: string): Promise<any> => {
+  const response = await httpClient.put({
+    url: apiLinks.serverAllocation.confirm + `/${id}/Confirm`,
+    token: token,
+  });
+  return response.data;
+};
+
 // const serverIpAddressData = async (
 //   token: string,
 //   params: RUIpAdressParamGet
@@ -103,6 +111,7 @@ const serverAllocation = {
   updateServerAllocation,
   getServerAllocationById,
   assignMasterIp,
+  confirm,
   // serverIpAddressData,
 };
 

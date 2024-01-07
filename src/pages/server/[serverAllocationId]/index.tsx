@@ -140,6 +140,31 @@ const Customer: React.FC = () => {
   //     });
   // };
 
+  const confirmServer = async () => {
+    confirm({
+      title: "Accept",
+      content: (
+        <Alert
+          message={`Do you want to confirm document of this Appointment?`}
+          type="warning"
+        />
+      ),
+      async onOk() {
+        await serverAllocationService
+          .confirm(session?.user.access_token!, serverAllocationDetail?.id + "")
+          .then((res) => {
+            message.success("Confirm Server successfully!", 1.5);
+            getData();
+          })
+          .catch((errors) => {
+            message.error(errors.response.data, 1.5);
+          })
+          .finally(() => {});
+      },
+      onCancel() {},
+    });
+  };
+
   const handleBreadCumb = () => {
     var itemBrs = [] as ItemType[];
     var items = router.asPath.split("/").filter((_) => _ != "");
@@ -197,6 +222,21 @@ const Customer: React.FC = () => {
             <div className="flex flex-wrap items-center justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
               <BreadcrumbComponent itemBreadcrumbs={itemBreadcrumbs} />
               <div>
+                {Boolean(
+                  serverAllocationDetail?.status === "Waiting" &&
+                    serverAllocationDetail.inspectionRecordFilePath &&
+                    serverAllocationDetail.receiptOfRecipientFilePath &&
+                    areInArray(session?.user.roles!, ROLE_CUSTOMER)
+                ) && (
+                  <Button
+                    type="primary"
+                    className="mb-2"
+                    // icon={<CaretLeftOutlined />}
+                    onClick={() => confirmServer()}
+                  >
+                    Confirm Server
+                  </Button>
+                )}
                 {Boolean(
                   !serverAllocationDetail?.masterIp?.address &&
                     serverAllocationDetail?.status !== "Removed" &&
