@@ -77,7 +77,7 @@ const ModalBlock: React.FC<Props> = (props) => {
         PageSize: pageSize,
         IsBlocked: false,
         SubnetId: parseInt(subnetId),
-        Purposes: ["Host"],
+        Purposes: "Host",
       } as unknown as IpAddressParamGet)
       .then(async (data) => {
         setTotalPageCus(data.totalPage);
