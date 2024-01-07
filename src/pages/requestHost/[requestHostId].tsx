@@ -185,7 +185,7 @@ const RequestDetail: React.FC = () => {
         data
       )
       .then((res) => {
-        message.success("Upload document successfully!", 1.5);
+        message.success("Upload Image successfully!", 1.5);
         getData();
       })
       .catch((errors) => {
@@ -234,7 +234,9 @@ const RequestDetail: React.FC = () => {
                 <BreadcrumbComponent itemBreadcrumbs={itemBreadcrumbs} />
                 <div>
                   {(ipAdressData === undefined ||
-                    (ipAdressData && ipAdressData.data && ipAdressData.data.length === 0)) &&
+                    (ipAdressData &&
+                      ipAdressData.data &&
+                      ipAdressData.data.length === 0)) &&
                     Boolean(
                       requestHostDetail?.isRemoval != true &&
                         Boolean(

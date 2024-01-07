@@ -114,7 +114,7 @@ const Appoinment: React.FC = () => {
         data
       )
       .then((res) => {
-        message.success("Upload document successfully!", 1.5);
+        message.success("Upload Image successfully!", 1.5);
         getData();
       })
       .catch((errors) => {
