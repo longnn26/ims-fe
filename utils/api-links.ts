@@ -164,6 +164,11 @@ const apiLinks = {
     getById: `${url}/api/Incident`,
     resolve: `${url}/api/Incident`,
   },
+
+  statistic: {
+    get: `${url}/api/Statistic`,
+    getByMonth: `${url}/api/Statistic/ByMonth`,
+  }
 };
 
 export default apiLinks;
