@@ -157,6 +157,7 @@ const ModalUpdate: React.FC<Props> = (props) => {
                               <Form.Item
                                 name={[field.name, "port"]}
                                 label={`Port ${index + 1}`}
+                                key={field.key}
                                 rules={[
                                   { required: true, message: "Missing capacity" },
                                 ]}
