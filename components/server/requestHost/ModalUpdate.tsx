@@ -81,6 +81,7 @@ const ModalUpdate: React.FC<Props> = (props) => {
           <Button
             className="btn-submit"
             key="submit"
+            disabled={loading}
             onClick={async () => {
               if (!(await disabled())) {
                 confirm({
@@ -95,7 +96,7 @@ const ModalUpdate: React.FC<Props> = (props) => {
                         : form.getFieldValue("quantity"), // Cập nhật quantity
                       note: form.getFieldValue("note"),
                       type: form.getFieldValue("type"),
-                      capacities:form.getFieldValue("capacities")?.map((value) => (value.port)) || [],
+                      capacities: form.getFieldValue("capacities")?.map((value) => (value.port)) || [],
                     } as RequestHostUpdateModel;
                     setLoading(true);
                     await requestHostService
@@ -123,134 +124,46 @@ const ModalUpdate: React.FC<Props> = (props) => {
         ]}
       >
         <div className="flex max-w-md flex-col gap-4 m-auto">
-          {loading === true ? (
-            <>
-              <Spin size="large" tip="Updating data...">
-                <Form
-                  ref={formRef}
-                  form={form}
-                  labelCol={{ span: 8 }}
-                  wrapperCol={{ span: 16 }}
-                  style={{ width: "100%" }}
+          <Spin size="large" tip="Updating data..." spinning={loading}>
+            <Form
+              ref={formRef}
+              form={form}
+              labelCol={{ span: 8 }}
+              wrapperCol={{ span: 16 }}
+              style={{ width: "100%" }}
+            >
+              {!hiddenQuantity && (
+                <Form.Item
+                  name="quantity"
+                  label="Quantity IP"
+                  rules={[
+                    {
+                      required: true,
+                    },
+                    {
+                      pattern: new RegExp(/^[0-9]+$/),
+                      message: "Quantity IP must be a number",
+                    },
+                  ]}
                 >
-                  {!hiddenQuantity && (
-                    <Form.Item
-                      label="Quantity IP"
-                    >
-                      <Input placeholder="Quantity IP" allowClear />
-                    </Form.Item>
-                  )}
-                  {form.getFieldValue("type") === "Port" && (
-                    <Form.Item
-                      label="Capacity"
-                    >
-                      <Form.List name="capacities">
-                        {(fields, { add, remove }) => (
-                          <div
-                            style={{
-                              display: "flex",
-                              rowGap: 16,
-                              flexDirection: "column",
-                            }}
-                          >
-                            {fields.map((field, index) => (
-                              <Form.Item
-                                name={[field.name, "port"]}
-                                label={`Port ${index + 1}`}
-                                key={field.key}
-                                rules={[
-                                  { required: true, message: "Missing capacity" },
-                                ]}
-                                extra={
-                                  <CloseOutlined
-                                    onClick={() => {
-                                      remove(field.name);
-                                    }}
-                                  />
-                                }
-                              >
-                                <Select
-                                  placeholder="Choose Capacity"
-                                  style={{ width: "250px" }}
-                                >
-                                  <Option value={0.1}>100 MB</Option>
-                                  <Option value={1}>1 GB</Option>
-                                </Select>
-                              </Form.Item>
-                            ))}
-                            <Button type="dashed" onClick={() => add()} block>
-                              + Add Capacity
-                            </Button>
-                          </div>
-                        )}
-                      </Form.List>
-                    </Form.Item>
-                  )}
-
-                  {areInArray(session?.user.roles!, ROLE_SALES) && (
-                    <Form.Item
-                      label="Sale Note"
-                    >
-                      <Input placeholder="Sale Note" allowClear />
-                    </Form.Item>
-                  )}
-                  {areInArray(session?.user.roles!, ROLE_TECH) && (
-                    <Form.Item
-                      label="Tech Note"
-                    >
-                      <Input placeholder="Tech Note" allowClear />
-                    </Form.Item>
-                  )}
-                  {areInArray(session?.user.roles!, ROLE_CUSTOMER) && (
-                    <Form.Item
-                      label="Note"
-                    >
-                      <Input placeholder="Note" allowClear />
-                    </Form.Item>
-                  )}
-                </Form></Spin>
-            </>
-          ) : (
-            <>
-              <Form
-                ref={formRef}
-                form={form}
-                labelCol={{ span: 8 }}
-                wrapperCol={{ span: 16 }}
-                style={{ width: "100%" }}
-              >
-                {!hiddenQuantity && (
-                  <Form.Item
-                    name="quantity"
-                    label="Quantity IP"
-                    rules={[
-                      {
-                        required: true,
-                      },
-                      {
-                        pattern: new RegExp(/^[0-9]+$/),
-                        message: "Quantity IP must be a number",
-                      },
-                    ]}
-                  >
-                    <Input placeholder="Quantity IP" allowClear />
-                  </Form.Item>
-                )}
-                {form.getFieldValue("type") === "Port" && (
-                  <Form.Item
-                    label="Capacity"
-                  >
-                    <Form.List name="capacities">
-                      {(fields, { add, remove }) => (
-                        <div
-                          style={{
-                            display: "flex",
-                            rowGap: 16,
-                            flexDirection: "column",
-                          }}
-                        >
-                          {fields.map((field, index) => (
-                            <div className="flex">
+                  <Input placeholder="Quantity IP" allowClear />
+                </Form.Item>
+              )}
+              {form.getFieldValue("type") === "Port" && (
+                <Form.Item
+                  label="Capacity"
+                >
+                  <Form.List name="capacities">
+                    {(fields, { add, remove }) => (
+                      <div
+                        style={{
+                          display: "flex",
+                          rowGap: 16,
+                          flexDirection: "column",
+                        }}
+                      >
+                        {fields.map((field, index) => (
+                          <div className="flex" key={field.key}>
                             <Form.Item
                               name={[field.name, "port"]}
                               rules={[
@@ -265,69 +178,68 @@ const ModalUpdate: React.FC<Props> = (props) => {
                                 <Option value={0.1}>100 MB</Option>
                                 <Option value={1}>1 GB</Option>
                               </Select>
-                            </Form.Item>                            
+                            </Form.Item>
                             <CloseOutlined
-                            className="mb-6"
-                                  onClick={() => {
-                                    remove(field.name);
-                                  }}
-                                />
-                            </div>
-                          ))}
-                          <Button type="dashed" onClick={() => add()} block>
-                            + Add Capacity
-                          </Button>
-                        </div>
-                      )}
-                    </Form.List>
-                  </Form.Item>
-                )}
+                              className="mb-6"
+                              onClick={() => {
+                                remove(field.name);
+                              }}
+                            />
+                          </div>
+                        ))}
+                        <Button type="dashed" onClick={() => add()} block>
+                          + Add Capacity
+                        </Button>
+                      </div>
+                    )}
+                  </Form.List>
+                </Form.Item>
+              )}
 
-                {areInArray(session?.user.roles!, ROLE_SALES) && (
-                  <Form.Item
-                    name="saleNote"
-                    label="Sale Note"
-                    rules={[
-                      {
-                        pattern: new RegExp(/^\b(\w+\W*){1,2000}\b/),
-                        message: "Sale note no more than 2000 words",
-                      },
-                    ]}
-                  >
-                    <Input placeholder="Sale Note" allowClear />
-                  </Form.Item>
-                )}
-                {areInArray(session?.user.roles!, ROLE_TECH) && (
-                  <Form.Item
-                    name="techNote"
-                    label="Tech Note"
-                    rules={[
-                      {
-                        pattern: new RegExp(/^\b(\w+\W*){1,2000}\b/),
-                        message: "Sale note no more than 2000 words",
-                      },
-                    ]}
-                  >
-                    <Input placeholder="Tech Note" allowClear />
-                  </Form.Item>
-                )}
-                {areInArray(session?.user.roles!, ROLE_CUSTOMER) && (
-                  <Form.Item
-                    name="note"
-                    label="Note"
-                    rules={[
-                      {
-                        pattern: new RegExp(/^\b(\w+\W*){1,2000}\b/),
-                        message: "Sale note no more than 2000 words",
-                      },
-                    ]}
-                  >
-                    <Input placeholder="Note" allowClear />
-                  </Form.Item>
-                )}
-              </Form>
-            </>
-          )}
+              {areInArray(session?.user.roles!, ROLE_SALES) && (
+                <Form.Item
+                  name="saleNote"
+                  label="Sale Note"
+                  rules={[
+                    {
+                      pattern: new RegExp(/^\b(\w+\W*){1,2000}\b/),
+                      message: "Sale note no more than 2000 words",
+                    },
+                  ]}
+                >
+                  <Input placeholder="Sale Note" allowClear />
+                </Form.Item>
+              )}
+              {areInArray(session?.user.roles!, ROLE_TECH) && (
+                <Form.Item
+                  name="techNote"
+                  label="Tech Note"
+                  rules={[
+                    {
+                      pattern: new RegExp(/^\b(\w+\W*){1,2000}\b/),
+                      message: "Sale note no more than 2000 words",
+                    },
+                  ]}
+                >
+                  <Input placeholder="Tech Note" allowClear />
+                </Form.Item>
+              )}
+              {areInArray(session?.user.roles!, ROLE_CUSTOMER) && (
+                <Form.Item
+                  name="note"
+                  label="Note"
+                  rules={[
+                    {
+                      pattern: new RegExp(/^\b(\w+\W*){1,2000}\b/),
+                      message: "Sale note no more than 2000 words",
+                    },
+                  ]}
+                >
+                  <Input placeholder="Note" allowClear />
+                </Form.Item>
+              )}
+            </Form>
+          </Spin>
         </div>
       </Modal>
     </>
