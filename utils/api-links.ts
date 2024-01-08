@@ -163,12 +163,13 @@ const apiLinks = {
     put: `${url}/api/Incident`,
     getById: `${url}/api/Incident`,
     resolve: `${url}/api/Incident`,
+    resolveAppointment: `${url}/api/Appointment`,
   },
 
   statistic: {
     get: `${url}/api/Statistic`,
     getByMonth: `${url}/api/Statistic/ByMonth`,
-  }
+  },
 };
 
 export default apiLinks;
