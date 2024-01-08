@@ -88,6 +88,16 @@ export async function middleware(req: NextRequest) {
       return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/signin`);
     }
   }
+  
+  if (req.url.includes(`/statistic`)) {
+    if (!token || !isExpiredTimeToken(token.loginDate, token.expiresIn)) {
+      return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/signin`);
+    } else {
+      if (!areInArray(token?.roles, ROLE_SALES)) {
+        return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/empty`);
+      }
+    }
+  }
   switch (pathname) {
     case "/signin":
       if (token && isExpiredTimeToken(token.loginDate, token.expiresIn))
@@ -137,6 +147,15 @@ export async function middleware(req: NextRequest) {
         return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/signin`);
       } else {
         if (!areInArray(token?.roles, ROLE_ADMIN)) {
+          return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/empty`);
+        }
+      }
+      break;
+    case "/statistic":
+      if (!token || !isExpiredTimeToken(token.loginDate, token.expiresIn)) {
+        return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/signin`);
+      } else {
+        if (!areInArray(token?.roles, ROLE_SALES)) {
           return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/empty`);
         }
       }
