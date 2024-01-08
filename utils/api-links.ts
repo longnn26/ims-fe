@@ -1,7 +1,7 @@
 export const url = "https://imsapi.hisoft.vn";
-export const urlServerSide = "http://192.168.40.83:8001";
+// export const urlServerSide = "http://192.168.40.83:8001";
 export const url3rdParty = "https://api.vietqr.io/v2/business";
-// export const urlServerSide = "https://imsapi.hisoft.vn";
+export const urlServerSide = "https://imsapi.hisoft.vn";
 
 const apiLinks = {
   user: {
@@ -164,6 +164,11 @@ const apiLinks = {
     getById: `${url}/api/Incident`,
     resolve: `${url}/api/Incident`,
   },
+
+  statistic: {
+    get: `${url}/api/Statistic`,
+    getByMonth: `${url}/api/Statistic/ByMonth`,
+  }
 };
 
 export default apiLinks;

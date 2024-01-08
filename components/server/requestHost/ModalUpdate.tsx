@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Button, Form, Input, Modal, Select, Space, Spin, message } from "antd";
+import { Button, Card, Form, Input, Modal, Select, Space, Spin, message } from "antd";
 import { CloseOutlined } from "@ant-design/icons";
 import { areInArray } from "@utils/helpers";
 import { RequestHostUpdateModel } from "@models/requestHost";
@@ -18,15 +18,12 @@ interface Props {
   onSubmit: () => void;
 }
 
-const ModalUpdateRemoval: React.FC<Props> = (props) => {
+const ModalUpdate: React.FC<Props> = (props) => {
   const formRef = useRef(null);
   const [form] = Form.useForm();
   const { onSubmit, requestHost, onClose, open } = props;
   const { data: session } = useSession();
   const [confirmLoading, setConfirmLoading] = useState(false);
-  const [selectedCapacities, setSelectedCapacities] = useState<number[]>(
-    (requestHost && requestHost.capacities) || []
-  );
   const [hiddenQuantity, setHiddenQuantity] = useState(false);
   const [requestType, setRequestType] = useState<string | undefined>(undefined);
   const [loading, setLoading] = useState<boolean>(false);
@@ -51,26 +48,23 @@ const ModalUpdateRemoval: React.FC<Props> = (props) => {
         quantity: requestHost.quantity,
         type: requestHost.type,
         // capacities: requestHost?.capacities || [],
-        capacities: requestHost?.capacities?.map((value) => ({ value })) || [],
+        capacities: requestHost?.capacities?.map((cap) => ({
+          port: cap,
+        })) || [],
       };
       form.setFieldsValue(initialValues);
+      console.log(initialValues.capacities)
     }
   };
 
   useEffect(() => {
     setFieldsValueInitial();
     setHiddenQuantity(form.getFieldValue("type") === "Port");
-    if (requestHost) {
-      setSelectedCapacities(requestHost?.capacities || []);
-    }
   }, [requestHost, requestType]);
 
   useEffect(() => {
     setFieldsValueInitial();
     setHiddenQuantity(form.getFieldValue("type") === "Port");
-    if (requestHost) {
-      setSelectedCapacities(requestHost?.capacities || []);
-    }
   }, [open]);
 
   return (
@@ -92,20 +86,16 @@ const ModalUpdateRemoval: React.FC<Props> = (props) => {
                 confirm({
                   title: "Do you want to save?",
                   async onOk() {
-                    const submittedCapacities =
-                      form.getFieldValue("type") === "Additional"
-                        ? null
-                        : selectedCapacities;
                     const data = {
                       id: form.getFieldValue("id"),
                       saleNote: form.getFieldValue("saleNote"),
                       techNote: form.getFieldValue("techNote"),
-                      quantity: submittedCapacities
-                        ? submittedCapacities.length
+                      quantity: form.getFieldValue("type") === "Port"
+                        ? form.getFieldValue("capacities").length
                         : form.getFieldValue("quantity"), // Cập nhật quantity
                       note: form.getFieldValue("note"),
                       type: form.getFieldValue("type"),
-                      capacities: submittedCapacities,
+                      capacities:form.getFieldValue("capacities")?.map((value) => (value.port)) || [],
                     } as RequestHostUpdateModel;
                     setLoading(true);
                     await requestHostService
@@ -153,44 +143,39 @@ const ModalUpdateRemoval: React.FC<Props> = (props) => {
                   {form.getFieldValue("type") === "Port" && (
                     <Form.Item
                       label="Capacity"
-                      initialValue={selectedCapacities}
                     >
-                      <Form.List name="">
+                      <Form.List name="capacities">
                         {(fields, { add, remove }) => (
-                          <div>
-                            {fields.map(({ key, name, fieldKey, ...restField }) => (
-                              <Space
-                                key={key}
-                                style={{ display: "flex", marginBottom: 8 }}
-                                align="baseline"
-                              >
-                                <Form.Item
-                                  {...restField}
-                                  rules={[
-                                    { required: true, message: "Missing capacity" },
-                                  ]}
-                                >
-                                  <Select
-                                    placeholder="Choose Capacity"
-                                    onChange={(value: number) => {
-                                      setSelectedCapacities((prevCapacities) => {
-                                        const updatedCapacities = [...prevCapacities];
-                                        updatedCapacities[
-                                          fields.findIndex(
-                                            (field) => field.key === key
-                                          )
-                                        ] = value;
-                                        return updatedCapacities;
-                                      });
+                          <div
+                            style={{
+                              display: "flex",
+                              rowGap: 16,
+                              flexDirection: "column",
+                            }}
+                          >
+                            {fields.map((field, index) => (
+                              <Form.Item
+                                name={[field.name, "port"]}
+                                label={`Port ${index + 1}`}
+                                rules={[
+                                  { required: true, message: "Missing capacity" },
+                                ]}
+                                extra={
+                                  <CloseOutlined
+                                    onClick={() => {
+                                      remove(field.name);
                                     }}
-                                    style={{ width: "250px" }}
-                                  >
-                                    <Option value={0.1}>100 MB</Option>
-                                    <Option value={1}>1 GB</Option>
-                                  </Select>
-                                </Form.Item>
-                                <CloseOutlined onClick={() => remove(name)} />
-                              </Space>
+                                  />
+                                }
+                              >
+                                <Select
+                                  placeholder="Choose Capacity"
+                                  style={{ width: "250px" }}
+                                >
+                                  <Option value={0.1}>100 MB</Option>
+                                  <Option value={1}>1 GB</Option>
+                                </Select>
+                              </Form.Item>
                             ))}
                             <Button type="dashed" onClick={() => add()} block>
                               + Add Capacity
@@ -253,46 +238,40 @@ const ModalUpdateRemoval: React.FC<Props> = (props) => {
                 {form.getFieldValue("type") === "Port" && (
                   <Form.Item
                     label="Capacity"
-                    name="capacities"
-                    initialValue={selectedCapacities}
                   >
                     <Form.List name="capacities">
                       {(fields, { add, remove }) => (
-                        <div>
-                          {fields.map(({ key, name, fieldKey, ...restField }) => (
-                            <Space
-                              key={key}
-                              style={{ display: "flex", marginBottom: 8 }}
-                              align="baseline"
+                        <div
+                          style={{
+                            display: "flex",
+                            rowGap: 16,
+                            flexDirection: "column",
+                          }}
+                        >
+                          {fields.map((field, index) => (
+                            <div className="flex">
+                            <Form.Item
+                              name={[field.name, "port"]}
+                              rules={[
+                                { required: true, message: "Missing capacity" },
+                              ]}
                             >
-                              <Form.Item
-                                {...restField}
-                                name={[name, "value"]}
-                                rules={[
-                                  { required: true, message: "Missing capacity" },
-                                ]}
+                              <Select
+                                placeholder="Choose Capacity"
+                                style={{ width: "250px" }}
+                                className="mr-2"
                               >
-                                <Select
-                                  placeholder="Choose Capacity"
-                                  onChange={(value: number) => {
-                                    setSelectedCapacities((prevCapacities) => {
-                                      const updatedCapacities = [...prevCapacities];
-                                      updatedCapacities[
-                                        fields.findIndex(
-                                          (field) => field.key === key
-                                        )
-                                      ] = value;
-                                      return updatedCapacities;
-                                    });
+                                <Option value={0.1}>100 MB</Option>
+                                <Option value={1}>1 GB</Option>
+                              </Select>
+                            </Form.Item>                            
+                            <CloseOutlined
+                            className="mb-6"
+                                  onClick={() => {
+                                    remove(field.name);
                                   }}
-                                  style={{ width: "250px" }}
-                                >
-                                  <Option value={0.1}>100 MB</Option>
-                                  <Option value={1}>1 GB</Option>
-                                </Select>
-                              </Form.Item>
-                              <CloseOutlined onClick={() => remove(name)} />
-                            </Space>
+                                />
+                            </div>
                           ))}
                           <Button type="dashed" onClick={() => add()} block>
                             + Add Capacity
@@ -354,4 +333,4 @@ const ModalUpdateRemoval: React.FC<Props> = (props) => {
   );
 };
 
-export default ModalUpdateRemoval;
+export default ModalUpdate;

@@ -5,6 +5,7 @@ import { BsFillHddNetworkFill } from "react-icons/bs";
 import { GrHost, GrSchedules } from "react-icons/gr";
 import { MdUpgrade } from "react-icons/md";
 import { IoInformationOutline } from "react-icons/io5";
+import { RiBarChartGroupedFill } from "react-icons/ri";
 import { ROLE_ADMIN, ROLE_CUSTOMER, ROLE_SALES, ROLE_TECH } from "./constants";
 
 export interface SliderMenuItem {
@@ -74,5 +75,11 @@ export const sliderMenu = [
     icon: <IoInformationOutline />,
     label: "Information DC",
     roles: [ROLE_ADMIN],
+  },  
+  {
+    key: "statistic",
+    icon: <RiBarChartGroupedFill />,
+    label: "Statistic",
+    roles: [ROLE_SALES],
   },
 ] as SliderMenuItem[];
