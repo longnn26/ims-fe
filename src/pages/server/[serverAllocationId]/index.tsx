@@ -38,6 +38,7 @@ import { areInArray } from "@utils/helpers";
 import ModalEmpty from "@components/ModalEmpty";
 import { error } from "console";
 import serverHardwareConfig from "@services/serverHardwareConfig";
+import { IoWarningOutline } from "react-icons/io5";
 
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
@@ -351,6 +352,18 @@ const Customer: React.FC = () => {
                   style={{ right: 60, bottom: 400 }}
                   icon={<SendOutlined />}
                 >
+                  {Boolean(serverAllocationDetail?.status === "Working") && (
+                    <FloatButton
+                      tooltip="Incident"
+                      icon={<IoWarningOutline />}
+                      onClick={() =>
+                        router.push(
+                          `/server/${serverAllocationDetail?.id}/incident`
+                        )
+                      }
+                    />
+                  )}
+
                   <FloatButton
                     tooltip="Request upgrade"
                     icon={<MdUpgrade />}
