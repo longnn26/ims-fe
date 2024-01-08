@@ -77,7 +77,7 @@ const ModalBlock: React.FC<Props> = (props) => {
         PageSize: pageSize,
         IsBlocked: false,
         SubnetId: parseInt(subnetId),
-        Purposes: "Host",
+        IsAssigned: true,
       } as unknown as IpAddressParamGet)
       .then(async (data) => {
         setTotalPageCus(data.totalPage);
@@ -187,7 +187,9 @@ const ModalBlock: React.FC<Props> = (props) => {
                   }}
                 >
                   {ipAddresses.map((l, index) => (
-                    <Option key={l.id} value={l.id}>{`${l.address}`}</Option>
+                    <Option key={l.id} value={l.id}>
+                      {`${l.address} ${l.serverAllocation !== null ? `- Server ${l.serverAllocation.serialNumber} ${l.assignmentType === "Master" ? `- Master IP` : ``}` : ``}`}
+                    </Option>
                   ))}
                 </Select>
               </Form.Item>
