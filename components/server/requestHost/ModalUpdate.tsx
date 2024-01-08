@@ -48,12 +48,12 @@ const ModalUpdate: React.FC<Props> = (props) => {
         quantity: requestHost.quantity,
         type: requestHost.type,
         // capacities: requestHost?.capacities || [],
-        capacities: requestHost?.capacities?.map((cap) => ({
+        capacities: requestHost?.capacities?.map((cap, index) => ({
           port: cap,
+          key: index,
         })) || [],
       };
       form.setFieldsValue(initialValues);
-      console.log(initialValues.capacities)
     }
   };
 
