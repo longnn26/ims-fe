@@ -147,6 +147,15 @@ const uploadDocument = async (
   return response.data;
 };
 
+const confirmDocument = async (token: string, id: string): Promise<any> => {
+  const response = await httpClient.put({
+    url:
+      apiLinks.requestHost.confirmDocument + `/${id}/DocumentConfirmation/True`,
+    token: token,
+  });
+  return response.data;
+};
+
 const requestHost = {
   getData,
   getDetail,
@@ -158,6 +167,7 @@ const requestHost = {
   updateData,
   saveProvideIps,
   uploadDocument,
+  confirmDocument,
   getDataAll,
 };
 

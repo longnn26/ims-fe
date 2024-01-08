@@ -144,6 +144,7 @@ const apiLinks = {
     update: `${url}/api/RequestHost`,
     getIpAdress: `${url}/api/RequestHost`,
     upload: `${url}/api/RequestHost`,
+    confirmDocument: `${url}/api/RequestHost`,
   },
 
   notification: {

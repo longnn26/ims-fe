@@ -232,6 +232,34 @@ const RequestHostDetail: React.FC = () => {
       });
   };
 
+  const confirmDocument = async () => {
+    confirm({
+      title: "Accept",
+      content: (
+        <Alert
+          message={`Do you want to confirm document of this Appointment?`}
+          type="warning"
+        />
+      ),
+      async onOk() {
+        await requestHost
+          .confirmDocument(
+            session?.user.access_token!,
+            requestHostDetail?.id + ""
+          )
+          .then((res) => {
+            message.success("Confirm Document successfully!", 1.5);
+            getData();
+          })
+          .catch((errors) => {
+            message.error(errors.response.data, 1.5);
+          })
+          .finally(() => {});
+      },
+      onCancel() {},
+    });
+  };
+
   useEffect(() => {
     if (router.query.serverAllocationId && session) {
       getData();
@@ -280,6 +308,20 @@ const RequestHostDetail: React.FC = () => {
               <div className="flex flex-wrap items-center justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
                 <BreadcrumbComponent itemBreadcrumbs={itemBreadcrumbs} />
                 <div>
+                  {Boolean(
+                    requestHostDetail?.status === "Success" &&
+                      !requestHostDetail.documentConfirm &&
+                      areInArray(session?.user.roles!, ROLE_CUSTOMER)
+                  ) && (
+                    <Button
+                      type="primary"
+                      className="mb-2"
+                      // icon={<CaretLeftOutlined />}
+                      onClick={() => confirmDocument()}
+                    >
+                      Confirm Report
+                    </Button>
+                  )}
                   {(ipAdressData.data.length === 0 ||
                     ipAdressData === undefined) &&
                     Boolean(
