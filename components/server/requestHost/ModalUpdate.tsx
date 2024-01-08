@@ -24,9 +24,6 @@ const ModalUpdate: React.FC<Props> = (props) => {
   const { onSubmit, requestHost, onClose, open } = props;
   const { data: session } = useSession();
   const [confirmLoading, setConfirmLoading] = useState(false);
-  const [selectedCapacities, setSelectedCapacities] = useState<number[]>(
-    (requestHost && requestHost.capacities) || []
-  );
   const [hiddenQuantity, setHiddenQuantity] = useState(false);
   const [requestType, setRequestType] = useState<string | undefined>(undefined);
   const [loading, setLoading] = useState<boolean>(false);
@@ -63,17 +60,11 @@ const ModalUpdate: React.FC<Props> = (props) => {
   useEffect(() => {
     setFieldsValueInitial();
     setHiddenQuantity(form.getFieldValue("type") === "Port");
-    if (requestHost) {
-      setSelectedCapacities(requestHost?.capacities || []);
-    }
   }, [requestHost, requestType]);
 
   useEffect(() => {
     setFieldsValueInitial();
     setHiddenQuantity(form.getFieldValue("type") === "Port");
-    if (requestHost) {
-      setSelectedCapacities(requestHost?.capacities || []);
-    }
   }, [open]);
 
   return (
