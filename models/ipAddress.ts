@@ -1,5 +1,6 @@
 import { BaseWithIdNumber, PagingModel, ParamGet } from "./base";
 import { IpSubnet } from "./ipSubnet";
+import { ServerAllocation } from "./serverAllocation";
 
 export interface IpAddress extends BaseWithIdNumber {
   address: string;
@@ -11,6 +12,7 @@ export interface IpAddress extends BaseWithIdNumber {
   ipSubnetId: number;
   ipSubnet: IpSubnet;
   assignmentType: string;
+  serverAllocation: ServerAllocation;
 }
 
 export interface IpAddressData extends PagingModel {

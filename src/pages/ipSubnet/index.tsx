@@ -225,7 +225,7 @@ const IpSubnet: React.FC = () => {
                 }}
               />
               <div className="flex justify-between mb-4 p-2 bg-[#f8f9fa]/10">
-                <div className="mt-4">
+                <div className="mt-4" style={{ flex: 1 }}>
                   <Tree
                     showLine={true}
                     switcherIcon={<DownOutlined />}
