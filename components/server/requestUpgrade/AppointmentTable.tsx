@@ -45,30 +45,18 @@ const AppointmentTable: React.FC<Props> = (props) => {
   const { onEdit, onDelete, typeGet, urlOncell } = props;
   const router = useRouter();
   const { appointmentData } = useSelector((state) => state.requestUpgrade);
-  const { appointmentData: appointmentDataRE } = useSelector(
-    (state) => state.requestExpand
-  );
+  const { appointmentData: appointmentDataRE } = useSelector((state) => state.requestExpand);
+  const { appointmentData: appointmentIncident } = useSelector((state) => state.incident);
   const { listAppointmentData } = useSelector((state) => state.appointment);
 
   var listData =
-    typeGet == "All"
-      ? listAppointmentData
-      : typeGet == "ByRequestUpgradeId"
-      ? appointmentData
-      : typeGet == "ByRequestExpandId"
-      ? appointmentDataRE
+    typeGet == "All" ? listAppointmentData
+      : typeGet == "ByRequestUpgradeId" ? appointmentData
+      : typeGet == "ByRequestExpandId" ? appointmentDataRE
+      : typeGet == "ByIncidentId" ? appointmentIncident
       : listAppointmentData;
 
   const columns: TableColumnsType<DataType> = [
-    // {
-    //   title: "Id",
-    //   dataIndex: "id",
-    //   key: "id",
-    //   fixed: "left",
-    //   render: (text) => (
-    //     <a className="text-[#b75c3c] hover:text-[#ee4623]">{text}</a>
-    //   ),
-    // },
     {
       title: "Date Appointed",
       dataIndex: "dateAppointed",

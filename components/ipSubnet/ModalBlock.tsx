@@ -70,35 +70,31 @@ const ModalBlock: React.FC<Props> = (props) => {
       });
   };
 
-  const getMoreIp = async () => {
+  const getMoreIp = async (page?: number, first?: boolean) => {
     await ipAddress
       .getData(session?.user.access_token!, {
-        PageIndex: pageIndexCus + 1,
+        PageIndex: page === 0 ? 1 : pageIndexCus + 1,
         PageSize: pageSize,
         IsBlocked: false,
         SubnetId: parseInt(subnetId),
         IsAssigned: true,
       } as unknown as IpAddressParamGet)
-      .then(async (data) => {
+      .then((data) => {
         setTotalPageCus(data.totalPage);
         setPageIndexCus(data.pageIndex);
+        first === true ?
+        setIpAddresses(data.data) :
         setIpAddresses([...ipAddresses, ...data.data]);
       });
   };
 
   useEffect(() => {
-    session && getMoreIp();
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [session]);
-
-  useEffect(() => {
-    // refresh after submit for fileList
-    if (subnetId && formRef.current) {
+    if (session) {
       setFieldsValueInitial();
+      getMoreIp(0, true);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open]);
+  }, [session, open]);
 
   return (
     <>
@@ -126,7 +122,7 @@ const ModalBlock: React.FC<Props> = (props) => {
                       form.getFieldValue("ids")
                     );
                   },
-                  onCancel() {},
+                  onCancel() { },
                 });
             }}
           >
@@ -177,7 +173,7 @@ const ModalBlock: React.FC<Props> = (props) => {
                     const { target } = e;
                     if (
                       (target as any).scrollTop +
-                        (target as any).offsetHeight ===
+                      (target as any).offsetHeight ===
                       (target as any).scrollHeight
                     ) {
                       if (pageIndexCus < totalPageCus) {
@@ -188,7 +184,7 @@ const ModalBlock: React.FC<Props> = (props) => {
                 >
                   {ipAddresses.map((l, index) => (
                     <Option key={l.id} value={l.id}>
-                      {`${l.address} ${l.serverAllocation !== null ? `- Server ${l.serverAllocation.serialNumber} ${l.assignmentType === "Master" ? `- Master IP` : ``}` : ``}`}
+                      {`${l.address} ${l.serverAllocation !== null ? `- Server ${l.serverAllocation.name} ${l.assignmentType === "Master" ? `- Master IP` : ``}` : ``}`}
                     </Option>
                   ))}
                 </Select>

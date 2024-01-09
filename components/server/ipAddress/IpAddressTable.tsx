@@ -30,16 +30,8 @@ const IpAddressTable: React.FC<Props> = (props) => {
       : typeGet == "ServerAllocation"
       ? serverIpAdressData
       : serverIpAdressData;
+
   const columns: TableColumnsType<DataType> = [
-    {
-      title: "No",
-      dataIndex: "id",
-      key: "id",
-      fixed: "left",
-      render: (text) => (
-        <p className="text-[#b75c3c] hover:text-[#ee4623]">{text}</p>
-      ),
-    },
     { title: "Address", dataIndex: "address", key: "address" },
     {
       title: "Assignment Type",

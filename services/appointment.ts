@@ -3,6 +3,7 @@ import {
   AppointmentComplete,
   AppointmentCreateModel,
   AppointmentData,
+  AppointmentFail,
   AppointmentUpdateModel,
   DocumentModelAppointment,
   ParamGetExtend,
@@ -103,12 +104,12 @@ const completeAppointment = async (
 const failAppointment = async (
   token: string,
   id: string,
-  techNote: string
+  data: AppointmentFail,
 ): Promise<any> => {
   const response = await httpClient.put({
     url: apiLinks.appointment.fail + `/${id}/Fail`,
     token: token,
-    data: { techNote: techNote },
+    data: data
   });
   return response.data;
 };
