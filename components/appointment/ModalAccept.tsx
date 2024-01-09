@@ -75,7 +75,7 @@ const ModalAccept: React.FC<Props> = (props) => {
                       .acceptAppointment(
                         session?.user.access_token!,
                         appointmentId + "",
-                        form.getFieldValue("saleNote").value
+                        form.getFieldValue("saleNote")
                       )
                       .then((res) => {
                         message.success(

@@ -426,12 +426,6 @@ const Appoinment: React.FC = () => {
                       tooltip="Accept"
                     />
                   </FloatButton.Group>
-                  <ModalAccept
-                    open={openModalAccept}
-                    onClose={() => setOpenModalAccept(false)}
-                    appointmentId={appointmentDetail?.id!}
-                    getData={() => getData()}
-                  />
                 </>
               )}
 
@@ -462,6 +456,12 @@ const Appoinment: React.FC = () => {
                   getData();
                 }}
                 onClose={() => setOpenFail(false)}
+              />
+              <ModalAccept
+                open={openModalAccept}
+                onClose={() => setOpenModalAccept(false)}
+                appointmentId={appointmentDetail?.id!}
+                getData={() => getData()}
               />
               <ModalDeny
                 open={openModalDeny}
