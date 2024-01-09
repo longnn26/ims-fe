@@ -1,7 +1,19 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Button, DatePicker, Input, Modal, Select, Switch, message } from "antd";
+import {
+  Button,
+  DatePicker,
+  Input,
+  Modal,
+  Select,
+  Switch,
+  message,
+} from "antd";
 import { Form } from "antd";
-import { Appointment, AppointmentFail, DocumentModelAppointment } from "@models/appointment";
+import {
+  Appointment,
+  AppointmentFail,
+  DocumentModelAppointment,
+} from "@models/appointment";
 import { convertDatePicker } from "@utils/helpers";
 import appointment from "@services/appointment";
 import { useSession } from "next-auth/react";
@@ -93,7 +105,7 @@ const ModalFail: React.FC<Props> = (props) => {
                     } as AppointmentFail;
                     failAppointment(data);
                   },
-                  onCancel() { },
+                  onCancel() {},
                 });
             }}
           >
@@ -109,7 +121,8 @@ const ModalFail: React.FC<Props> = (props) => {
             wrapperCol={{ span: 16 }}
             style={{ width: "100%" }}
           >
-            {(appointmentDetail.reason === "Install" || appointmentDetail.reason === "Uninstall") && (
+            {(appointmentDetail?.reason === "Install" ||
+              appointmentDetail?.reason === "Uninstall") && (
               <>
                 <Form.Item
                   name="username"
@@ -131,7 +144,8 @@ const ModalFail: React.FC<Props> = (props) => {
                   name="guid"
                   label={
                     <span style={{ width: "200px", display: "inline-block" }}>
-                      Instructed customers to change password after the 1st login
+                      Instructed customers to change password after the 1st
+                      login
                     </span>
                   }
                 >
