@@ -352,7 +352,9 @@ const Customer: React.FC = () => {
                   style={{ right: 60, bottom: 400 }}
                   icon={<SendOutlined />}
                 >
-                  {Boolean(serverAllocationDetail?.status === "Working") && (
+                  {Boolean(
+                    serverAllocationDetail?.status === "Working" || "Pausing"
+                  ) && (
                     <FloatButton
                       tooltip="Incident"
                       icon={<IoWarningOutline />}

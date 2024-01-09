@@ -1,21 +1,73 @@
+import { ParamGet } from "@models/base";
+import { Incident, IncidentData, IncindentResolve } from "@models/incident";
 import { IncidentCreateModel } from "@models/serverAllocation";
 import apiLinks from "@utils/api-links";
 import httpClient from "@utils/http-client";
 
+const getData = async (
+  token: string,
+  params: ParamGet
+): Promise<IncidentData> => {
+  const response = await httpClient.get({
+    token: token,
+    url: `${apiLinks.incident.get}`,
+    params: params,
+  });
+  return response.data;
+};
+
+const getDetail = async (token: string, id: string): Promise<Incident> => {
+  const response = await httpClient.get({
+    url: apiLinks.incident.getById + `/${id}`,
+    token: token,
+  });
+  return response.data;
+};
+
 const createIncident = async (
-    token: string,
-    data: IncidentCreateModel
+  token: string,
+  data: IncidentCreateModel
 ): Promise<any> => {
-    const response = await httpClient.post({
-        token: token,
-        url: apiLinks.incident.create,
-        data: data,
-    });
-    return response.data;
+  const response = await httpClient.post({
+    token: token,
+    url: apiLinks.incident.create,
+    data: data,
+  });
+  return response.data;
+};
+
+const resolveIncident = async (
+  token: string,
+  id: string,
+  solution: string
+): Promise<any> => {
+  const response = await httpClient.put({
+    url: apiLinks.incident.resolve + `/${id}/Resolve`,
+    token: token,
+    data: { solution: solution },
+  });
+  return response.data;
+};
+
+const resolveAppointment = async (
+  token: string,
+  id: number,
+  data: IncindentResolve
+): Promise<any> => {
+  const response = await httpClient.put({
+    url: apiLinks.incident.resolveAppointment + `/${id}/Resolv`,
+    token: token,
+    data: data,
+  });
+  return response.data;
 };
 
 const incident = {
-    createIncident,
+  getData,
+  getDetail,
+  createIncident,
+  resolveIncident,
+  resolveAppointment,
 };
 
 export default incident;
