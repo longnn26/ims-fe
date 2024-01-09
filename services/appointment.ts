@@ -65,12 +65,12 @@ const getRequestExpandsById = async (
 const acceptAppointment = async (
   token: string,
   id: string,
-  userId: string
+  saleNote: string
 ): Promise<any> => {
   const response = await httpClient.put({
     url: apiLinks.appointment.accept + `/${id}/Accept`,
     token: token,
-    data: { userId: userId },
+    data: { saleNote: saleNote },
   });
   return response.data;
 };

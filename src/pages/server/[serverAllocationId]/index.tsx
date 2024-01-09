@@ -353,7 +353,8 @@ const Customer: React.FC = () => {
                   icon={<SendOutlined />}
                 >
                   {Boolean(
-                    serverAllocationDetail?.status === "Working" || "Pausing"
+                    serverAllocationDetail?.status === "Working" ||
+                      serverAllocationDetail?.status === "Pausing"
                   ) && (
                     <FloatButton
                       tooltip="Incident"

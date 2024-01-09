@@ -2,7 +2,7 @@ import { ParamGet } from "@models/base";
 import { User } from "@models/user";
 import appointment from "@services/appointment";
 import authService from "@services/user";
-import { Button, Form, Modal, Select, message } from "antd";
+import { Button, Form, Input, Modal, Select, message } from "antd";
 import { useSession } from "next-auth/react";
 import React, { useEffect, useRef, useState } from "react";
 const { confirm } = Modal;
@@ -79,10 +79,13 @@ const ModalAccept: React.FC<Props> = (props) => {
                       .acceptAppointment(
                         session?.user.access_token!,
                         appointmentId + "",
-                        form.getFieldValue("userTechId").value
+                        form.getFieldValue("saleNote").value
                       )
                       .then((res) => {
-                        message.success("Accept Appointment successfully!", 1.5);
+                        message.success(
+                          "Accept Appointment successfully!",
+                          1.5
+                        );
                         getData();
                         onClose();
                       })
@@ -108,7 +111,7 @@ const ModalAccept: React.FC<Props> = (props) => {
             wrapperCol={{ span: 16 }}
             style={{ width: "100%" }}
           >
-            <Form.Item
+            {/* <Form.Item
               name="userTechId"
               label="Technical Staff"
               labelAlign="right"
@@ -136,6 +139,14 @@ const ModalAccept: React.FC<Props> = (props) => {
                   </Option>
                 ))}
               </Select>
+            </Form.Item> */}
+
+            <Form.Item
+              name="saleNote"
+              label="Sale Staff Note"
+              rules={[{ required: true }]}
+            >
+              <Input placeholder="Sale Staff Note" allowClear />
             </Form.Item>
           </Form>
         </div>
