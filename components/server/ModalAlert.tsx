@@ -1,11 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Button, Input, Modal, Select, Spin, Switch, message } from "antd";
 import { Form } from "antd";
-import { IncidentCreateModel, SAUpdateModel, ServerAllocation } from "@models/serverAllocation";
+import { SAUpdateModel, ServerAllocation } from "@models/serverAllocation";
 import { optionStatus, serverAllocationStatus } from "@utils/constants";
 import incident from "@services/incident";
 import { useSession } from "next-auth/react";
 import { error } from "console";
+import { IncidentCreateModel } from "@models/incident";
 const { confirm } = Modal;
 
 interface Props {
