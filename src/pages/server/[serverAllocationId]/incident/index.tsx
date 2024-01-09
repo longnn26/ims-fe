@@ -55,8 +55,6 @@ const Incident: React.FC = () => {
       userId = "";
     if (session?.user.roles.includes("Customer")) {
       customerId = parseJwt(session?.user.access_token!).UserId;
-    } else if (session?.user.roles.includes("Tech")) {
-      userId = parseJwt(session?.user.access_token!).UserId;
     }
     await serverAllocationService
       .getServerAllocationById(
@@ -80,7 +78,6 @@ const Incident: React.FC = () => {
         paramGet: {
           ...paramGet,
           CustomerId: customerId,
-          UserId: userId,
         },
       })
     ).then(({ payload }) => {

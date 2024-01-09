@@ -1,5 +1,5 @@
 import { Appointment } from "./appointment";
-import { BaseWithIdNumber, PagingModel } from "./base";
+import { BaseWithIdNumber, PagingModel, ParamGet } from "./base";
 import { Customer } from "./customer";
 import { Evaluator, Executor } from "./requestHost";
 import { ServerAllocation } from "./serverAllocation";
@@ -24,6 +24,12 @@ export interface IncidentData extends PagingModel {
   data: Incident[];
 }
 
+export interface IncidentParam extends ParamGet {
+  IsResolved?: string;
+  ServerAllocationId?: number;
+
+}
+
 export interface IncidentResolveModel {
   solution: string;
 }
@@ -32,4 +38,19 @@ export interface IncindentResolve {
   incidentResolvModel: IncidentResolveModel;
   dateCheckedIn: string;
   dateCheckedOut: string;
+}
+
+export interface IncidentCreateModel {
+  serverAllocationId: number;
+  description: string;
+  isResolvByClient: boolean;
+  pausingRequired: boolean;
+}
+
+export interface AppointmentIncidentCreateModel {
+  appointedCustomer: string;
+  serverAllocationId: number;
+  incidentId: number;
+  dateAppointed: string;
+  note: string;
 }

@@ -100,6 +100,7 @@ const apiLinks = {
     delete: `${url}/api/Appointment`,
     updateDocument: `${url}/api/Appointment`,
     confirmDocument: `${url}/api/Appointment`,
+    createIncident: `${url}/api/Appointment/Incident`,
   },
 
   requestExpand: {

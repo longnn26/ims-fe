@@ -52,10 +52,3 @@ export interface SAUpdateModel {
 export interface MasterIpCreateModel {
   ipAddressId: number;
 }
-
-export interface IncidentCreateModel {
-  serverAllocationId: number;
-  description: string;
-  isResolvByClient: boolean;
-  pausingRequired: boolean;
-}

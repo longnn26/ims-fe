@@ -1,6 +1,6 @@
 import { AppointmentData } from "@models/appointment";
 import { ParamGet } from "@models/base";
-import { IncidentData } from "@models/incident";
+import { IncidentData, IncidentParam } from "@models/incident";
 import { RUAppointmentParamGet, RUParamGet } from "@models/requestUpgrade";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import incident from "@services/incident";
@@ -22,7 +22,7 @@ const TYPE_PREFIX = "incident";
 
 const getIncidentData = createAsyncThunk(
   `${TYPE_PREFIX}/getIncidentData`,
-  async (arg: { token: string; paramGet: RUParamGet }) => {
+  async (arg: { token: string; paramGet: IncidentParam }) => {
     const result = await incident.getData(arg.token, arg.paramGet);
     return result;
   }
