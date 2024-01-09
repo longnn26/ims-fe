@@ -12,7 +12,6 @@ import {
   getServerAllocationData,
 } from "@slices/serverAllocation";
 import {
-  IncidentCreateModel,
   SACreateModel,
   SAUpdateModel,
   SParamGet,
