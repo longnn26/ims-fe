@@ -36,16 +36,14 @@ const Customer: React.FC = () => {
   } as unknown as RUParamGet);
 
   const getData = async () => {
-    var customerId = "", userId = "";
+    var customerId = "";
     if (session?.user.roles.includes("Customer")) {
       customerId = parseJwt(session?.user.access_token!).UserId;
-    } else if (session?.user.roles.includes("Tech")) {
-      userId = parseJwt(session?.user.access_token!).UserId;
     }
     dispatch(
       getRequestUpgradeData({
         token: session?.user.access_token!,
-        paramGet: { ...paramGet, CustomerId: customerId, UserId: userId },
+        paramGet: { ...paramGet, CustomerId: customerId },
       })
     ).then(({ payload }) => {
       var res = payload as RequestUpgradeData;

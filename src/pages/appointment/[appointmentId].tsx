@@ -146,23 +146,6 @@ const Appoinment: React.FC = () => {
       });
   };
 
-  const failAppointment = async (data: string) => {
-    await appointmentService
-      .failAppointment(
-        session?.user.access_token!,
-        appointmentDetail?.id + "",
-        data
-      )
-      .then((res) => {
-        message.success("Fail appointment successfully!", 1.5);
-        getData();
-      })
-      .catch((errors) => {
-        message.error(errors.response.data, 1.5);
-      })
-      .finally(() => {});
-  };
-
   const confirmDocument = async () => {
     confirm({
       title: "Accept",
@@ -473,7 +456,11 @@ const Appoinment: React.FC = () => {
               />
               <ModalFail
                 open={openFail}
-                onSubmit={(value) => failAppointment(value)}
+                appointmentDetail={appointmentDetail!}
+                onSubmit={() => {
+                  setOpenFail(false);
+                  getData();
+                }}
                 onClose={() => setOpenFail(false)}
               />
               <ModalDeny

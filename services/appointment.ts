@@ -3,11 +3,13 @@ import {
   AppointmentComplete,
   AppointmentCreateModel,
   AppointmentData,
+  AppointmentFail,
   AppointmentUpdateModel,
   DocumentModelAppointment,
   ParamGetExtend,
 } from "@models/appointment";
 import { ParamGet } from "@models/base";
+import { AppointmentIncidentCreateModel } from "@models/incident";
 import { RequestExpandData } from "@models/requestExpand";
 import {
   RUAppointmentParamGet,
@@ -102,12 +104,12 @@ const completeAppointment = async (
 const failAppointment = async (
   token: string,
   id: string,
-  techNote: string
+  data: AppointmentFail,
 ): Promise<any> => {
   const response = await httpClient.put({
     url: apiLinks.appointment.fail + `/${id}/Fail`,
     token: token,
-    data: { techNote: techNote },
+    data: data
   });
   return response.data;
 };
@@ -180,6 +182,18 @@ const confirmDocument = async (token: string, id: string): Promise<any> => {
   return response.data;
 };
 
+const createIncident = async (
+  token: string,
+  data: AppointmentIncidentCreateModel
+): Promise<any> => {
+  const response = await httpClient.post({
+    url: apiLinks.appointment.createIncident,
+    token: token,
+    data: data,
+  });
+  return response.data;
+}
+
 const appointment = {
   getListAppointments,
   getDetail,
@@ -195,6 +209,7 @@ const appointment = {
   update,
   deleteAppointment,
   updateDocument,
+  createIncident,
 };
 
 export default appointment;

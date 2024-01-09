@@ -100,11 +100,11 @@ const ModalProvideIps: React.FC<Props> = (props) => {
           <Descriptions className="pl-10">
             <Descriptions.Item label="Subnets" span={4}>
               <>
-                {provideIpsData?.ipSubnets.map((m) => {
+                {provideIpsData?.ipSubnets.map((m, index) => {
                   return (
                     <>
                       {`${m.firstOctet}.${m.secondOctet}.${m.thirdOctet}.${m.fourthOctet}/${m.prefixLength}`}
-                      <br />
+                      <br/>
                     </>
                   );
                 })}
@@ -112,11 +112,11 @@ const ModalProvideIps: React.FC<Props> = (props) => {
             </Descriptions.Item>
             <Descriptions.Item label="Ip Addresses" span={4}>
               <>
-                {provideIpsData?.ipAddresses.map((m) => {
+                {provideIpsData?.ipAddresses.map((m, index) => {
                   return (
                     <>
                       {m.address}
-                      <br />
+                      <br/>
                     </>
                   );
                 })}

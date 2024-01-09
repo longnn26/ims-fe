@@ -37,6 +37,7 @@ export interface AppointmentData extends PagingModel {
 export interface ParamGetExtend extends ParamGet {
   AppointmentId?: number;
   Statuses?: string;
+  IncidentId?: number;
 }
 
 export interface DocumentModelAppointment {
@@ -56,6 +57,11 @@ export interface AppointmentComplete {
   dateCheckedIn: string;
   dateCheckedOut: string;
   //isCorrectPerson: boolean;
+}
+
+export interface AppointmentFail {
+  documentModel: DocumentModelAppointment;
+  techNote: string;
 }
 
 export interface AppointmentParseJson {

@@ -75,7 +75,7 @@ const IpSubnet: React.FC = () => {
     var data = info.selectedNodes[0] as DataNode;
     setIpSubnetSelected(data.id);
 
-    getDetail(data.id + "");
+    getDetail(data.id!.toString());
   };
 
   const getDetail = async (ipSubnetId: string) => {
@@ -174,7 +174,7 @@ const IpSubnet: React.FC = () => {
                     Create
                   </Button>
                   <div>
-                    {ipAddressData.data.filter(
+                    {ipAddressData && ipAddressData.data.filter(
                       (l) => l.purpose === "Host" && l.blocked === false
                     ).length > 0 && (
                       <Button
@@ -188,7 +188,7 @@ const IpSubnet: React.FC = () => {
                         Block IPs
                       </Button>
                     )}
-                    {ipAddressData.data.filter((l) => l.blocked === true)
+                    {ipAddressData && ipAddressData.data.filter((l) => l.blocked === true)
                       .length > 0 && (
                       <Button
                         type="primary"
@@ -269,7 +269,7 @@ const IpSubnet: React.FC = () => {
                 </div>
               </div>
               <ModalBlock
-                subnetId={ipSubnetSelected ? ipSubnetSelected : "1"}
+                subnetId={ipSubnetSelected!}
                 open={openModalBlock}
                 onClose={() => setOpenModalBlock(false)}
                 onSubmit={() => {

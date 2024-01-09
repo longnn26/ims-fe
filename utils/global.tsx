@@ -29,12 +29,6 @@ export const sliderMenu = [
     roles: [ROLE_TECH, ROLE_SALES],
   },
   {
-    key: "component",
-    icon: <BiSolidComponent />,
-    label: "Component",
-    roles: [ROLE_TECH],
-  },
-  {
     key: "area",
     icon: <FaChartArea />,
     label: "Rack map",

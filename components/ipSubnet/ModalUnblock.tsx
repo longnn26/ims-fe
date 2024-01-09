@@ -70,10 +70,10 @@ const ModalUnblock: React.FC<Props> = (props) => {
             });
     };
 
-    const getMoreIp = async () => {
+    const getMoreIp = async (page?: number, first?: boolean) => {
         await ipAddress
             .getData(session?.user.access_token!, {
-                PageIndex: pageIndexCus + 1,
+                PageIndex: page === 0 ? 1 : pageIndexCus + 1,
                 PageSize: pageSize,
                 IsBlocked: true,
                 SubnetId: parseInt(subnetId),
@@ -81,23 +81,19 @@ const ModalUnblock: React.FC<Props> = (props) => {
             .then(async (data) => {
                 setTotalPageCus(data.totalPage);
                 setPageIndexCus(data.pageIndex);
-                setIpAddresses([...ipAddresses, ...data.data]);
+                first === true ?
+                    setIpAddresses(data.data) :
+                    setIpAddresses([...ipAddresses, ...data.data]);
             });
     };
 
     useEffect(() => {
-        session && getMoreIp();
-
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [session]);
-
-    useEffect(() => {
-        // refresh after submit for fileList
-        if (subnetId && formRef.current) {
+        if (session) {
             setFieldsValueInitial();
+            getMoreIp(0, true);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [open]);
+    }, [session, open]);
 
     return (
         <>
@@ -174,7 +170,9 @@ const ModalUnblock: React.FC<Props> = (props) => {
                                     }}
                                 >
                                     {ipAddresses.map((l, index) => (
-                                        <Option key={l.id} value={l.id}>{`${l.address}`}</Option>
+                                        <Option key={l.id} value={l.id}>
+                                        {`${l.address} ${l.serverAllocation !== null ? `- Server ${l.serverAllocation.name} ${l.assignmentType === "Master" ? `- Master IP` : ``}` : ``}`}
+                                      </Option>
                                     ))}
 
                                 </Select>

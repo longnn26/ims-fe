@@ -118,12 +118,12 @@ const ModalComplete: React.FC<Props> = (props) => {
                       isSendMS: form.getFieldValue("isSendMS")
                         ? form.getFieldValue("isSendMS")
                         : false,
-                      good: form.getFieldValue("good"),
+                      good: true,
                       guid: form.getFieldValue("guid")
                         ? form.getFieldValue("guid")
                         : false,
                       note: form.getFieldValue("note")
-                        ? form.getFieldValue("guid")
+                        ? form.getFieldValue("note")
                         : "Không có note",
                       deviceCondition: form.getFieldValue("deviceCondition")
                         ? form.getFieldValue("deviceCondition")
@@ -194,10 +194,6 @@ const ModalComplete: React.FC<Props> = (props) => {
                       </Form.Item>
                     </>
                   )}
-
-                <Form.Item label="Good">
-                  <Switch />{" "}
-                </Form.Item>
 
                 <Form.Item label="Note">
                   <Input placeholder="Note" allowClear />

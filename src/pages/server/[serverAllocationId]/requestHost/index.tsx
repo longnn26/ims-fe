@@ -64,12 +64,9 @@ const RequestHost: React.FC = () => {
   const [itemBreadcrumbs, setItemBreadcrumbs] = useState<ItemType[]>([]);
 
   const getData = async () => {
-    var customerId = "",
-      userId = "";
+    var customerId = "";
     if (session?.user.roles.includes("Customer")) {
       customerId = parseJwt(session?.user.access_token!).UserId;
-    } else if (session?.user.roles.includes("Tech")) {
-      userId = parseJwt(session?.user.access_token!).UserId;
     }
     await serverAllocationService
       .getServerAllocationById(
@@ -90,7 +87,7 @@ const RequestHost: React.FC = () => {
     dispatch(
       getRequestHostData({
         token: session?.user.access_token!,
-        paramGet: { ...paramGet, CustomerId: customerId, UserId: userId },
+        paramGet: { ...paramGet, CustomerId: customerId },
       })
     ).then(({ payload }) => {
       var res = payload as RequestUpgradeData;

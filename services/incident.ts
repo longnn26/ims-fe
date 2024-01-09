@@ -1,12 +1,10 @@
-import { ParamGet } from "@models/base";
-import { Incident, IncidentData, IncindentResolve } from "@models/incident";
-import { IncidentCreateModel } from "@models/serverAllocation";
+import { Incident, IncidentData, IncindentResolve, IncidentCreateModel, IncidentParam } from "@models/incident";
 import apiLinks from "@utils/api-links";
 import httpClient from "@utils/http-client";
 
 const getData = async (
   token: string,
-  params: ParamGet
+  params: IncidentParam
 ): Promise<IncidentData> => {
   const response = await httpClient.get({
     token: token,
@@ -25,26 +23,26 @@ const getDetail = async (token: string, id: string): Promise<Incident> => {
 };
 
 const createIncident = async (
-  token: string,
-  data: IncidentCreateModel
+    token: string,
+    data: IncidentCreateModel
 ): Promise<any> => {
-  const response = await httpClient.post({
-    token: token,
-    url: apiLinks.incident.create,
-    data: data,
-  });
-  return response.data;
+    const response = await httpClient.post({
+        token: token,
+        url: apiLinks.incident.create,
+        data: data,
+    });
+    return response.data;
 };
 
 const resolveIncident = async (
-  token: string,
-  id: string,
+    token: string,
+    id: string,
   solution: string
 ): Promise<any> => {
-  const response = await httpClient.put({
-    url: apiLinks.incident.resolve + `/${id}/Resolve`,
-    token: token,
-    data: { solution: solution },
+    const response = await httpClient.put({
+url: apiLinks.incident.resolve + `/${id}/Resolve`,
+        token: token,
+        data: { solution: solution },
   });
   return response.data;
 };
@@ -57,16 +55,16 @@ const resolveAppointment = async (
   const response = await httpClient.put({
     url: apiLinks.incident.resolveAppointment + `/${id}/Resolv`,
     token: token,
-    data: data,
-  });
-  return response.data;
+        data: data,
+    });
+    return response.data;
 };
 
 const incident = {
-  getData,
+getData,
   getDetail,
-  createIncident,
-  resolveIncident,
+    createIncident,
+resolveIncident,
   resolveAppointment,
 };
 
