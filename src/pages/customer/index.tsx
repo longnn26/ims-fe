@@ -12,6 +12,7 @@ import {
   CustomerUpdateModel,
   Customer,
   CustomerData,
+  CusParam,
 } from "@models/customer";
 import { Button, Pagination, message, Modal, Alert, Spin } from "antd";
 import ModalCreate from "@components/customer/ModalCreate";
@@ -32,10 +33,10 @@ const Customer: React.FC = () => {
   const { data: session } = useSession();
   const { customerData } = useSelector((state) => state.customer);
 
-  const [paramGet, setParamGet] = useState<ParamGet>({
+  const [paramGet, setParamGet] = useState<CusParam>({
     PageIndex: 1,
     PageSize: 10,
-  } as ParamGet);
+  } as CusParam);
   const [loadingSubmit, setLoadingSubmit] = useState<boolean>(false);
   const [customerUpdate, setCustomerUpdate] = useState<Customer | undefined>(
     undefined
@@ -151,7 +152,7 @@ const Customer: React.FC = () => {
             <SearchComponent
               placeholder="Search Name, Description..."
               setSearchValue={(value) =>
-                setParamGet({ ...paramGet, SearchValue: value })
+                setParamGet({ ...paramGet, CompanyName: value })
               }
             />
           </div>

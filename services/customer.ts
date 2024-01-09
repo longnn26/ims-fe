@@ -3,6 +3,7 @@ import {
   CustomerCreateModel,
   CustomerUpdateModel,
   CustomerData,
+  CusParam,
 } from "@models/customer";
 import {LoginResponse} from "@models/user"
 import apiLinks from "@utils/api-links";
@@ -10,7 +11,7 @@ import httpClient from "@utils/http-client";
 
 const getData = async (
   token: string,
-  params: ParamGet
+  params: CusParam
 ): Promise<CustomerData> => {
   const response = await httpClient.get({
     token: token,

@@ -83,8 +83,6 @@ const RequestUpgrade: React.FC = () => {
       userId = "";
     if (session?.user.roles.includes("Customer")) {
       customerId = parseJwt(session?.user.access_token!).UserId;
-    } else if (session?.user.roles.includes("Tech")) {
-      userId = parseJwt(session?.user.access_token!).UserId;
     }
     await serverAllocationService
       .getServerAllocationById(
@@ -105,7 +103,7 @@ const RequestUpgrade: React.FC = () => {
     dispatch(
       getRequestUpgradeData({
         token: session?.user.access_token!,
-        paramGet: { ...paramGet, CustomerId: customerId, UserId: userId },
+        paramGet: { ...paramGet, CustomerId: customerId, },
       })
     ).then(({ payload }) => {
       var res = payload as RequestUpgradeData;
