@@ -2,7 +2,7 @@ import { ParamGet } from "@models/base";
 import { User } from "@models/user";
 import requestHost from "@services/requestHost";
 import authService from "@services/user";
-import { Button, Form, Modal, Select, message } from "antd";
+import { Button, Form, Input, Modal, Select, message } from "antd";
 import { useSession } from "next-auth/react";
 import React, { useEffect, useRef, useState } from "react";
 const { confirm } = Modal;
@@ -79,7 +79,7 @@ const ModalAcceptRequestHost: React.FC<Props> = (props) => {
                       .acceptRequestHost(
                         session?.user.access_token!,
                         requestHostId + "",
-                        form.getFieldValue("userTechId").value
+                        form.getFieldValue("saleNote")
                       )
                       .then((res) => {
                         message.success("Accept IP Request successfully!", 1.5);
@@ -108,7 +108,7 @@ const ModalAcceptRequestHost: React.FC<Props> = (props) => {
             wrapperCol={{ span: 16 }}
             style={{ width: "100%" }}
           >
-            <Form.Item
+            {/* <Form.Item
               name="userTechId"
               label="Technical Staff"
               labelAlign="right"
@@ -136,6 +136,14 @@ const ModalAcceptRequestHost: React.FC<Props> = (props) => {
                   </Option>
                 ))}
               </Select>
+            </Form.Item> */}
+
+            <Form.Item
+              name="saleNote"
+              label="Sale Staff Note"
+              rules={[{ required: true }]}
+            >
+              <Input placeholder="Sale Staff Note" allowClear />
             </Form.Item>
           </Form>
         </div>
