@@ -2,7 +2,7 @@
 
 import useSelector from "@hooks/use-selector";
 import { ROLE_SALES, dateAdvFormat } from "@utils/constants";
-import { TableColumnsType } from "antd";
+import { Badge, TableColumnsType } from "antd";
 import { Button, Space, Table, Tooltip } from "antd";
 import { BiEdit, BiSolidCommentDetail } from "react-icons/bi";
 import { CiSquareMinus, CiSquarePlus } from "react-icons/ci";
@@ -30,7 +30,6 @@ interface DataType {
   representatorPosition: string;
   contractNumber: string;
   isDeleted: boolean;
-  dateCreated: string;
   dateUpdated: string;
   contacts: Contacts[];
 }
@@ -52,10 +51,13 @@ const CustomerTable: React.FC<Props> = (props) => {
     } else {
       const nestedColumns = [
         { title: "Contacts" },
-        { title: "Thông tin loại",
+        {
+          title: "Thông tin loại",
           key: "forAppointment",
           render: (record: Contacts) =>
-        `${record.forAppointment === true ? "Đăng kí ra vào DC" : "Liên lạc"}`,  
+            `${
+              record.forAppointment === true ? "Đăng kí ra vào DC" : "Liên lạc"
+            }`,
         },
         { title: "Name", dataIndex: "name", key: "name" },
         { title: "Position", dataIndex: "position", key: "position" },
@@ -96,8 +98,15 @@ const CustomerTable: React.FC<Props> = (props) => {
       title: "Contract Number",
       dataIndex: "contractNumber",
       key: "contractNumber",
+      render(contractNumber: string) {
+        return <div>{`${contractNumber}/HĐ - QTSC`} </div>;
+      },
     },
-    { title: "Representator", dataIndex: "representator", key: "representator" },
+    {
+      title: "Representator",
+      dataIndex: "representator",
+      key: "representator",
+    },
     {
       title: "Position",
       dataIndex: "representatorPosition",
@@ -108,10 +117,18 @@ const CustomerTable: React.FC<Props> = (props) => {
     {
       title: "Status",
       key: "isDeleted",
-      render: (record: Customer) =>
-        `${record.isDeleted != true ? "Active" : "Removed"}`,
+      render: (record: Customer) => (
+        <>
+          {record.isDeleted != true ? (
+            <Badge status="success" text="Actice" />
+          ) : (
+            <Badge status="error" text="Removed" />
+          )}
+          `
+        </>
+      ),
     },
-    { title: "Date Created", dataIndex: "dateCreated", key: "dateCreated" },
+    // { title: "Date Created", dataIndex: "dateCreated", key: "dateCreated" },
     {
       title: "Action",
       key: "operation",
@@ -156,9 +173,9 @@ const CustomerTable: React.FC<Props> = (props) => {
       contacts: customerData.data[i].contacts,
       contractNumber: customerData.data[i].contractNumber,
       isDeleted: customerData?.data[i].isDeleted,
-      dateCreated: moment(customerData?.data[i].dateCreated).format(
-        dateAdvFormat
-      ),
+      // dateCreated: moment(customerData?.data[i].dateCreated).format(
+      //   dateAdvFormat
+      // ),
       dateUpdated: moment(customerData?.data[i].dateUpdated).format(
         dateAdvFormat
       ),
@@ -175,7 +192,12 @@ const CustomerTable: React.FC<Props> = (props) => {
         pagination={false}
         expandable={{
           expandedRowRender: nestedRowRender,
-          rowExpandable: (record) => ((record.contacts === null || record.contacts === undefined || record.contacts.length === 0 ) ? false : true),
+          rowExpandable: (record) =>
+            record.contacts === null ||
+            record.contacts === undefined ||
+            record.contacts.length === 0
+              ? false
+              : true,
         }}
       />
     </>
