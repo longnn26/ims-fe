@@ -22,10 +22,6 @@ const ModalAccept: React.FC<Props> = (props) => {
   const { data: session, update: sessionUpdate } = useSession();
 
   const [confirmLoading, setConfirmLoading] = useState(false);
-  const [userTech, setUserTech] = useState<User[]>([]);
-  const [pageSizeCus, setPageSizeCus] = useState<number>(6);
-  const [totalPageCus, setTotalPageCus] = useState<number>(2);
-  const [pageIndexCus, setPageIndexCus] = useState<number>(0);
 
   const disabled = async () => {
     var result = false;
@@ -37,21 +33,21 @@ const ModalAccept: React.FC<Props> = (props) => {
     return result;
   };
 
-  const getMoreUserTech = async () => {
-    await authService
-      .getUserTechData(session?.user.access_token!, {
-        PageIndex: pageIndexCus + 1,
-        PageSize: pageSizeCus,
-      } as ParamGet)
-      .then(async (data) => {
-        setTotalPageCus(data.totalPage);
-        setPageIndexCus(data.pageIndex);
-        setUserTech([...userTech, ...data.data]);
-      });
-  };
+  // const getMoreUserTech = async () => {
+  //   await authService
+  //     .getUserTechData(session?.user.access_token!, {
+  //       PageIndex: pageIndexCus + 1,
+  //       PageSize: pageSizeCus,
+  //     } as ParamGet)
+  //     .then(async (data) => {
+  //       setTotalPageCus(data.totalPage);
+  //       setPageIndexCus(data.pageIndex);
+  //       setUserTech([...userTech, ...data.data]);
+  //     });
+  // };
 
   useEffect(() => {
-    session && getMoreUserTech();
+    session;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session]);
 
