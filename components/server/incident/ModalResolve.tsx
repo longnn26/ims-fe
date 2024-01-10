@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Button, DatePicker, Input, Modal, Select, Switch, message } from "antd";
+import { Button, DatePicker, Input, Modal, Select, Spin, Switch, message } from "antd";
 import { Form } from "antd";
 import { Incident, IncidentResolve, IncidentResolveModel } from "@models/incident";
 import incidentService from "@services/incident";
@@ -31,7 +31,7 @@ const ModalResolve: React.FC<Props> = (props) => {
       result = true;
     }
     return result;
-  };  
+  };
 
   const resolveIncident = async (data: IncidentResolveModel) => {
     setLoading(true);
@@ -69,6 +69,7 @@ const ModalResolve: React.FC<Props> = (props) => {
             // loading={loadingSubmit}
             className="btn-submit"
             key="submit"
+            disabled={loading}
             onClick={async () => {
               if (!(await disabled()))
                 confirm({
@@ -79,7 +80,7 @@ const ModalResolve: React.FC<Props> = (props) => {
                     } as IncidentResolveModel;
                     resolveIncident(data);
                   },
-                  onCancel() {},
+                  onCancel() { },
                 });
             }}
           >
@@ -88,21 +89,23 @@ const ModalResolve: React.FC<Props> = (props) => {
         ]}
       >
         <div className="flex max-w-md flex-col gap-4 m-auto">
-          <Form
-            ref={formRef}
-            form={form}
-            labelCol={{ span: 8 }}
-            wrapperCol={{ span: 16 }}
-            style={{ width: "100%" }}
-          >
-            <Form.Item
-              name="solution"
-              label="Solution"
-              rules={[{ required: true }]}
+          <Spin spinning={loading} tip="Denying request..." size="large">
+            <Form
+              ref={formRef}
+              form={form}
+              labelCol={{ span: 8 }}
+              wrapperCol={{ span: 16 }}
+              style={{ width: "100%" }}
             >
-              <Input placeholder="Solution" allowClear />
-            </Form.Item>
-          </Form>
+              <Form.Item
+                name="solution"
+                label="Solution"
+                rules={[{ required: true }]}
+              >
+                <Input placeholder="Solution" allowClear />
+              </Form.Item>
+            </Form>
+          </Spin>
         </div>
       </Modal>
     </>
