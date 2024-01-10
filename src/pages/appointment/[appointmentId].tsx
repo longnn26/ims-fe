@@ -475,13 +475,19 @@ const Appoinment: React.FC = () => {
                 open={openModalAccept}
                 onClose={() => setOpenModalAccept(false)}
                 appointmentId={appointmentDetail?.id!}
-                getData={() => getData()}
+                onSubmit={() => {
+                  getData();
+                  setOpenModalAccept(false);
+                }}
               />
               <ModalDeny
                 open={openModalDeny}
                 onClose={() => setOpenModalDeny(false)}
                 appointmentId={appointmentDetail?.id!}
-                getData={() => getData()}
+                onSubmit={() => {
+                  getData();
+                  setOpenModalDeny(false);
+                }}
               />
 
               {Boolean(

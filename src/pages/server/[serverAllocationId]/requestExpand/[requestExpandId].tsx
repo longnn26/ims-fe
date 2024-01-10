@@ -369,7 +369,10 @@ const RequestExpandDetail: React.FC = () => {
             <ModalDeny
               open={openModalDeny}
               onClose={() => setOpenModalDeny(false)}
-              getData={() => getData()}
+              onSubmit={() => {
+                getData();
+                setOpenModalDeny(false);
+              }}
               requestExpandId={parseInt(router.query.requestExpandId + "")}
             />
             {areInArray(

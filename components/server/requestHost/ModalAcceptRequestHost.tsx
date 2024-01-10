@@ -2,7 +2,7 @@ import { ParamGet } from "@models/base";
 import { User } from "@models/user";
 import requestHost from "@services/requestHost";
 import authService from "@services/user";
-import { Button, Form, Input, Modal, Select, message } from "antd";
+import { Button, Form, Input, Modal, Select, Spin, message } from "antd";
 import { useSession } from "next-auth/react";
 import React, { useEffect, useRef, useState } from "react";
 const { confirm } = Modal;
@@ -11,14 +11,14 @@ const { Option } = Select;
 interface Props {
   open: boolean;
   onClose: () => void;
-  getData: () => void;
+  onSubmit: () => void;
   requestHostId: number;
 }
 
 const ModalAcceptRequestHost: React.FC<Props> = (props) => {
   const formRef = useRef(null);
   const [form] = Form.useForm();
-  const { open, onClose, requestHostId, getData } = props;
+  const { open, onClose, requestHostId, onSubmit } = props;
   const { data: session, update: sessionUpdate } = useSession();
 
   const [confirmLoading, setConfirmLoading] = useState(false);
@@ -26,6 +26,7 @@ const ModalAcceptRequestHost: React.FC<Props> = (props) => {
   const [pageSizeCus, setPageSizeCus] = useState<number>(6);
   const [totalPageCus, setTotalPageCus] = useState<number>(2);
   const [pageIndexCus, setPageIndexCus] = useState<number>(0);
+  const [loading, setLoading] = useState(false);
 
   const disabled = async () => {
     var result = false;
@@ -50,6 +51,27 @@ const ModalAcceptRequestHost: React.FC<Props> = (props) => {
       });
   };
 
+  const accept = async (data: string) => {
+    setLoading(true);
+    await requestHost
+      .acceptRequestHost(
+        session?.user.access_token!,
+        requestHostId + "",
+        data
+      )
+      .then((res) => {
+        message.success("Accept IP request successfully!", 1.5);
+        form.resetFields();
+        onSubmit();
+      })
+      .catch((errors) => {
+        message.error(errors.response.data, 1.5);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
+
   useEffect(() => {
     session && getMoreUserTech();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -68,6 +90,7 @@ const ModalAcceptRequestHost: React.FC<Props> = (props) => {
         footer={[
           <Button
             // loading={loadingSubmit}
+            disabled={loading}
             className="btn-submit"
             key="submit"
             onClick={async () => {
@@ -75,24 +98,9 @@ const ModalAcceptRequestHost: React.FC<Props> = (props) => {
                 confirm({
                   title: "Do you want to accept?",
                   async onOk() {
-                    await requestHost
-                      .acceptRequestHost(
-                        session?.user.access_token!,
-                        requestHostId + "",
-                        form.getFieldValue("saleNote")
-                      )
-                      .then((res) => {
-                        message.success("Accept IP Request successfully!", 1.5);
-                        getData();
-                        onClose();
-                      })
-                      .catch((errors) => {
-                        message.error(errors.response.data, 1.5);
-                      })
-                      .finally(() => {});
-                    form.resetFields();
+                    accept(form.getFieldValue("saleNote"));
                   },
-                  onCancel() {},
+                  onCancel() { },
                 });
             }}
           >
@@ -101,51 +109,23 @@ const ModalAcceptRequestHost: React.FC<Props> = (props) => {
         ]}
       >
         <div className="flex max-w-md flex-col gap-4 m-auto">
-          <Form
-            ref={formRef}
-            form={form}
-            labelCol={{ span: 8 }}
-            wrapperCol={{ span: 16 }}
-            style={{ width: "100%" }}
-          >
-            {/* <Form.Item
-              name="userTechId"
-              label="Technical Staff"
-              labelAlign="right"
-              rules={[{ required: true, message: "Technical staff not empty" }]}
+          <Spin spinning={loading} tip="Accepting IP request..." size="large">
+            <Form
+              ref={formRef}
+              form={form}
+              labelCol={{ span: 8 }}
+              wrapperCol={{ span: 16 }}
+              style={{ width: "100%" }}
             >
-              <Select
-                labelInValue
-                allowClear
-                listHeight={160}
-                onPopupScroll={async (e: any) => {
-                  const { target } = e;
-                  if (
-                    (target as any).scrollTop + (target as any).offsetHeight ===
-                    (target as any).scrollHeight
-                  ) {
-                    if (pageIndexCus < totalPageCus) {
-                      getMoreUserTech();
-                    }
-                  }
-                }}
+              <Form.Item
+                name="saleNote"
+                label="Sales Staff Note"
+                rules={[{ max: 2000 }]}
               >
-                {userTech.map((l, index) => (
-                  <Option value={l.id} label={l?.fullname} key={index}>
-                    {l.fullname}
-                  </Option>
-                ))}
-              </Select>
-            </Form.Item> */}
-
-            <Form.Item
-              name="saleNote"
-              label="Sale Staff Note"
-              rules={[{ required: true }]}
-            >
-              <Input placeholder="Sale Staff Note" allowClear />
-            </Form.Item>
-          </Form>
+                <Input.TextArea autoSize={{ minRows: 1, maxRows: 6 }} placeholder="Note" allowClear />
+              </Form.Item>
+            </Form>
+          </Spin>
         </div>
       </Modal>
     </>

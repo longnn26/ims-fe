@@ -2,7 +2,7 @@ import { ParamGet } from "@models/base";
 import { User } from "@models/user";
 import appointment from "@services/appointment";
 import authService from "@services/user";
-import { Button, Form, Input, Modal, Select, message } from "antd";
+import { Button, Form, Input, Modal, Select, Spin, message } from "antd";
 import { useSession } from "next-auth/react";
 import React, { useEffect, useRef, useState } from "react";
 const { confirm } = Modal;
@@ -11,17 +11,18 @@ const { Option } = Select;
 interface Props {
   open: boolean;
   onClose: () => void;
-  getData: () => void;
+  onSubmit: () => void;
   appointmentId: number;
 }
 
 const ModalAccept: React.FC<Props> = (props) => {
   const formRef = useRef(null);
   const [form] = Form.useForm();
-  const { open, onClose, appointmentId, getData } = props;
+  const { open, onClose, appointmentId, onSubmit } = props;
   const { data: session, update: sessionUpdate } = useSession();
 
   const [confirmLoading, setConfirmLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const disabled = async () => {
     var result = false;
@@ -33,18 +34,26 @@ const ModalAccept: React.FC<Props> = (props) => {
     return result;
   };
 
-  // const getMoreUserTech = async () => {
-  //   await authService
-  //     .getUserTechData(session?.user.access_token!, {
-  //       PageIndex: pageIndexCus + 1,
-  //       PageSize: pageSizeCus,
-  //     } as ParamGet)
-  //     .then(async (data) => {
-  //       setTotalPageCus(data.totalPage);
-  //       setPageIndexCus(data.pageIndex);
-  //       setUserTech([...userTech, ...data.data]);
-  //     });
-  // };
+  const accept = async (data: string) => {
+    setLoading(true);
+    await appointment
+      .acceptAppointment(
+        session?.user.access_token!,
+        appointmentId + "",
+        data
+      )
+      .then((res) => {
+        message.success("Accept Appointment successfully!",1.5);
+        form.resetFields();
+        onSubmit();
+      })
+      .catch((errors) => {
+        message.error(errors.response.data, 1.5);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
 
   useEffect(() => {
     session;
@@ -64,6 +73,7 @@ const ModalAccept: React.FC<Props> = (props) => {
         footer={[
           <Button
             // loading={loadingSubmit}
+            disabled={loading}
             className="btn-submit"
             key="submit"
             onClick={async () => {
@@ -71,27 +81,9 @@ const ModalAccept: React.FC<Props> = (props) => {
                 confirm({
                   title: "Do you want to accept?",
                   async onOk() {
-                    await appointment
-                      .acceptAppointment(
-                        session?.user.access_token!,
-                        appointmentId + "",
-                        form.getFieldValue("saleNote")
-                      )
-                      .then((res) => {
-                        message.success(
-                          "Accept Appointment successfully!",
-                          1.5
-                        );
-                        getData();
-                        onClose();
-                      })
-                      .catch((errors) => {
-                        message.error(errors.response.data, 1.5);
-                      })
-                      .finally(() => {});
-                    form.resetFields();
+                    accept(form.getFieldValue("saleNote"));
                   },
-                  onCancel() {},
+                  onCancel() { },
                 });
             }}
           >
@@ -100,6 +92,7 @@ const ModalAccept: React.FC<Props> = (props) => {
         ]}
       >
         <div className="flex max-w-md flex-col gap-4 m-auto">
+          <Spin spinning={loading} tip="Accepting appointment..." size="large">
           <Form
             ref={formRef}
             form={form}
@@ -107,44 +100,15 @@ const ModalAccept: React.FC<Props> = (props) => {
             wrapperCol={{ span: 16 }}
             style={{ width: "100%" }}
           >
-            {/* <Form.Item
-              name="userTechId"
-              label="Technical Staff"
-              labelAlign="right"
-              rules={[{ required: true, message: "Technical staff not empty" }]}
-            >
-              <Select
-                labelInValue
-                allowClear
-                listHeight={160}
-                onPopupScroll={async (e: any) => {
-                  const { target } = e;
-                  if (
-                    (target as any).scrollTop + (target as any).offsetHeight ===
-                    (target as any).scrollHeight
-                  ) {
-                    if (pageIndexCus < totalPageCus) {
-                      getMoreUserTech();
-                    }
-                  }
-                }}
-              >
-                {userTech.map((l, index) => (
-                  <Option value={l.id} label={l?.fullname} key={index}>
-                    {l.fullname}
-                  </Option>
-                ))}
-              </Select>
-            </Form.Item> */}
-
             <Form.Item
               name="saleNote"
-              label="Sale Staff Note"
-              rules={[{ required: true }]}
+              label="Sales Staff Note"
+              rules={[{ max: 2000 }]}
             >
-              <Input placeholder="Sale Staff Note" allowClear />
+              <Input.TextArea autoSize={{ minRows: 1, maxRows: 6 }} placeholder="Note" allowClear />
             </Form.Item>
           </Form>
+          </Spin>
         </div>
       </Modal>
     </>

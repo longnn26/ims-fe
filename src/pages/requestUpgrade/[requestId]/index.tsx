@@ -206,7 +206,10 @@ const RequestDetail: React.FC = () => {
           <ModalDeny
             open={openModalDeny}
             onClose={() => setOpenModalDeny(false)}
-            getData={() => getData()}
+            onSubmit={() => {
+              getData();
+              setOpenModalDeny(false);
+            }}
             requestUpgradeId={parseInt(router.query.requestId + "")}
           />
           {areInArray(

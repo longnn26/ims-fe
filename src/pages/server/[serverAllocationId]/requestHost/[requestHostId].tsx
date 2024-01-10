@@ -491,13 +491,19 @@ const RequestHostDetail: React.FC = () => {
                         open={openModalAcceptHost}
                         onClose={() => setOpenModalAcceptHost(false)}
                         requestHostId={requestHostDetail?.id!}
-                        getData={() => getData()}
+                        onSubmit={() => {
+                          getData();
+                          setOpenModalAcceptHost(false);
+                        }}
                       />
                       <ModalDenyHost
                         open={openModalDenyHost}
                         onClose={() => setOpenModalDenyHost(false)}
                         requestHostId={requestHostDetail?.id!}
-                        getData={() => getData()}
+                        onSubmit={() => {
+                          getData();
+                          setOpenModalDenyHost(false);
+                        }}
                       />
                     </>
                   )}
