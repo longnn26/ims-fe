@@ -1,7 +1,8 @@
 "use client";
 
 import useSelector from "@hooks/use-selector";
-import { Appointment } from "@models/appointment";
+import useDispatch from "@hooks/use-dispatch";
+import { Appointment, AppointmentData, ParamGetExtend } from "@models/appointment";
 import { dateAdvFormat, requestUpgradeStatus } from "@utils/constants";
 import {
   Button,
@@ -15,6 +16,10 @@ import {
 import moment from "moment";
 import { useRouter } from "next/router";
 import { BiSolidCommentDetail, BiEdit } from "react-icons/bi";
+import { getAppointmentData } from "@slices/incident";
+import { useSession } from "next-auth/react";
+import { useState } from "react";
+import { getListAppointment } from "@slices/appointment";
 
 interface Props {
   typeGet?: string;
@@ -43,18 +48,27 @@ interface DataType {
 
 const AppointmentTable: React.FC<Props> = (props) => {
   const { onEdit, onDelete, typeGet, urlOncell } = props;
+  const { data: session } = useSession();
   const router = useRouter();
+  const dispatch = useDispatch();
   const { appointmentData } = useSelector((state) => state.requestUpgrade);
   const { appointmentData: appointmentDataRE } = useSelector((state) => state.requestExpand);
+
   const { appointmentData: appointmentIncident } = useSelector((state) => state.incident);
   const { listAppointmentData } = useSelector((state) => state.appointment);
 
-  var listData =
-    typeGet == "All" ? listAppointmentData
-      : typeGet == "ByRequestUpgradeId" ? appointmentData
-      : typeGet == "ByRequestExpandId" ? appointmentDataRE
-      : typeGet == "ByIncidentId" ? appointmentIncident
-      : listAppointmentData;
+  dispatch(getAppointmentData({
+    token: session?.user.access_token!,
+    paramGet: {
+      IncidentId: parseInt(router.query.incidentId + ""),
+    } as ParamGetExtend
+  }));
+
+  var listData = typeGet === "All" ? listAppointmentData
+    : typeGet === "ByRequestUpgradeId" ? appointmentData
+      : typeGet === "ByRequestExpandId" ? appointmentDataRE
+        : typeGet === "ByIncidentId" ? appointmentIncident
+          : listAppointmentData;
 
   const columns: TableColumnsType<DataType> = [
     {
