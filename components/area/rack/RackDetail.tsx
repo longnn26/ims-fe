@@ -27,7 +27,7 @@ const RackDetail: React.FC<Props> = (props) => {
           {rackDetail?.currentPower}
         </Descriptions.Item>
         <Descriptions.Item label="Size" span={4}>
-          {rackDetail?.size}
+          {rackDetail?.size} U
         </Descriptions.Item>
         {/* <Descriptions.Item label="Customer" span={4}>
           {rackDetail?.customer.customerName}

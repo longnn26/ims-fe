@@ -13,6 +13,7 @@ import { ROLE_SALES, ROLE_TECH, dateAdvFormat } from "@utils/constants";
 import { areInArray, convertDatePicker } from "@utils/helpers";
 import { Avatar, Button, DatePicker, List } from "antd";
 import { ItemType } from "antd/es/breadcrumb/Breadcrumb";
+import dayjs from "dayjs";
 import { useSession } from "next-auth/react";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
@@ -28,37 +29,27 @@ const Statistic: React.FC = () => {
     const router = useRouter();
     //   const [statistic, setStatistic] = useState<Statistic | undefined>(undefined);
     const [barData, setBarData] = useState<any>();
+    const [barDataMonth, setBarDataMonth] = useState<any>();
     const [start, setStart] = useState<string>();
     const [end, setEnd] = useState<string>();
 
     const getData = async () => {
         await statisticService
-            .getData(
+            .getDataByMonth(
                 session?.user.access_token!,
                 {
                     StartDate: start,
                     EndDate: end
                 } as unknown as StatisticParamGet)
             .then((res) => {
-                setBarData(Object.keys(res).map((status) => ({
-                    name: status==="requestHosts" ? "IP Requests" : 
-                        (status === "requestUpgrades" ? "Hardware Change Requests" : 
-                        (status === "requestExpands" ? "Add Server Requests" : status.charAt(0).toUpperCase() + status.slice(1))),
-                    waiting: res[status].waiting,
-                    accepted: res[status].accepted,
-                    success: res[status].success,
-                    denied: res[status].denied,
-                    failed: res[status].failed,
-                    resolved: res[status].resolved,
-                    unresolved: res[status].unresolved,
-                })));
+                setBarData(res);
             });
-
     };
 
     useEffect(() => {
         if (session) {
-            getData();
+            setStart(dayjs().toString());
+            setEnd(dayjs().toString());
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [session]);
@@ -87,7 +78,7 @@ const Statistic: React.FC = () => {
                             </div>
                             <div className="flex justify-center">
                                 <BarChartComponent
-                                    data={barData!}
+                                    barData={barData!}
                                 />
                             </div>
                         </>

@@ -98,7 +98,7 @@ const ModalUnblock: React.FC<Props> = (props) => {
     return (
         <>
             <Modal
-                title={<span className="inline-block m-auto">Block IPs</span>}
+                title={<span className="inline-block m-auto">Unblock IPs</span>}
                 open={open}
                 confirmLoading={confirmLoading}
                 onCancel={() => {
@@ -155,7 +155,7 @@ const ModalUnblock: React.FC<Props> = (props) => {
                             >
                                 <Select
                                     mode="multiple"
-                                    placeholder="Please select IPs to blocks"
+                                    placeholder="Choose IPs to unblock"
                                     allowClear
                                     listHeight={160}
                                     onPopupScroll={async (e: any) => {

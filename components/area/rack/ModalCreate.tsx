@@ -99,8 +99,8 @@ const ModalCreate: React.FC<Props> = (props) => {
             <Form.Item name="row" label="Row" rules={[{ required: true }]}>
               <Input placeholder="RÏow" allowClear />
             </Form.Item>
-            <Form.Item name="size" label="Size" rules={[{ required: true }]}>
-              <Input placeholder="SÏize" allowClear />
+            <Form.Item name="size" label="Size (U)" rules={[{ required: true }]}>
+              <Input placeholder="Size" allowClear />
             </Form.Item>
           </Form>
         </div>
