@@ -62,19 +62,19 @@ const RequestUpgradeDetail: React.FC = () => {
         session?.user.access_token!,
         router.query.serverAllocationId + ""
       )
-      .then((res) => {
+      .then(async (res) => {
         setServerAllocationDetail(res);
+        await serverHardwareConfig.getServerHardwareConfigData(
+          session?.user.access_token!,
+          { ...paramGet, ServerAllocationId: res.id } as SHCParamGet
+        ).then((res) => {
+          setHardware(res);
+        });
       })
       .catch((errors) => {
         setServerAllocationDetail(undefined);
         setContent(errors.response.data);
       });
-    await serverHardwareConfig.getServerHardwareConfigData(
-      session?.user.access_token!,
-      { ...paramGet, ServerAllocationId: serverAllocationDetail?.id! } as SHCParamGet
-    ).then((res) => {
-      setHardware(res);
-    });
     await requestUpgradeService
       .getDetail(
         session?.user.access_token!,

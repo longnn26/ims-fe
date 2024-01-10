@@ -64,17 +64,17 @@ const RequestDetail: React.FC = () => {
             session?.user.access_token!,
             res.serverAllocationId + ""
           )
-          .then((res) => {
+          .then(async (res) => {
             setServerAllocationDetail(res);
+            await serverHardwareConfig.getServerHardwareConfigData(
+              session?.user.access_token!,
+              { ...paramGet, ServerAllocationId: res.id } as SHCParamGet
+            ).then((res) => {
+              setHardware(res);
+            });
           });
         setRequestUpgradeDetail(res);
       });
-    await serverHardwareConfig.getServerHardwareConfigData(
-      session?.user.access_token!,
-      { ...paramGet, ServerAllocationId: serverAllocationDetail?.id! } as SHCParamGet
-    ).then((res) => {
-      setHardware(res);
-    });
   };
 
   const acceptRequestUpgrade = async () => {

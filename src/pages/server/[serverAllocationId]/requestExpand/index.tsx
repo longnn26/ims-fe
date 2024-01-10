@@ -77,15 +77,15 @@ const RequestExpand: React.FC = () => {
         session?.user.access_token!,
         router.query.serverAllocationId + ""
       )
-      .then((res) => {
+      .then(async (res) => {
         setServerAllocationDetail(res);
-      });
-    await serverHardwareConfig.getServerHardwareConfigData(
-        session?.user.access_token!,
-        {...param, 
-          ServerAllocationId: parseInt(router.query.serverAllocationId+""),} as SHCParamGet
-      ).then((res) => {
-        setHardware(res);
+        await serverHardwareConfig.getServerHardwareConfigData(
+            session?.user.access_token!,
+            {...param, 
+              ServerAllocationId: res.id,} as SHCParamGet
+          ).then((res) => {
+            setHardware(res);
+          });
       });
     dispatch(
       getRequestExpandData({

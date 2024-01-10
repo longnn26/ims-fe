@@ -31,6 +31,7 @@ import { ROLE_CUSTOMER, ROLE_SALES, ROLE_TECH } from "@utils/constants";
 import ModalDeny from "@components/server/requestExpand/ModalDeny";
 import serverHardwareConfig from "@services/serverHardwareConfig";
 import { ServerHardwareConfigData, SHCParamGet } from "@models/serverHardwareConfig";
+import { error } from "console";
 const { confirm } = Modal;
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
@@ -73,17 +74,17 @@ const RequestExpandDetail: React.FC = () => {
             session?.user.access_token!,
             res.serverAllocationId + ""
           )
-          .then((res) => {
+          .then(async (res) => {
             setServerAllocationDetail(res);
+            await serverHardwareConfig.getServerHardwareConfigData(
+              session?.user.access_token!,
+              {...paramGet, ServerAllocationId: res.id} as SHCParamGet
+            ).then((res) => {
+              setHardware(res);
+            });
           });
         setRequestExpandDetail(res);
       });
-    await serverHardwareConfig.getServerHardwareConfigData(
-      session?.user.access_token!,
-      {...paramGet, ServerAllocationId: serverAllocationDetail?.id!} as SHCParamGet
-    ).then((res) => {
-      setHardware(res);
-    });
   };
 
   const rejectRequestExpand = async () => {

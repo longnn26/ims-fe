@@ -103,18 +103,18 @@ const RequestDetail: React.FC = () => {
             session?.user.access_token!,
             res.serverAllocationId + ""
           )
-          .then((result) => {
+          .then(async (result) => {
             setServerAllocationDetail(result);
+            await serverHardwareConfig
+              .getServerHardwareConfigData(session?.user.access_token!, {
+                ...paramGet,
+                ServerAllocationId: result.id,
+              } as SHCParamGet)
+              .then((res) => {
+                setHardware(res);
+              });
           });
         setRequestHostDetail(res);
-      });
-    await serverHardwareConfig
-      .getServerHardwareConfigData(session?.user.access_token!, {
-        ...paramGet,
-        ServerAllocationId: serverAllocationDetail?.id!,
-      } as SHCParamGet)
-      .then((res) => {
-        setHardware(res);
       });
   };
 
