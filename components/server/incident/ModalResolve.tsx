@@ -1,21 +1,27 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Button, DatePicker, Input, Modal, Select, Switch } from "antd";
+import { Button, DatePicker, Input, Modal, Select, Switch, message } from "antd";
 import { Form } from "antd";
+import { Incident, IncidentResolve, IncidentResolveModel } from "@models/incident";
+import incidentService from "@services/incident";
+import { useSession } from "next-auth/react";
 
 const { confirm } = Modal;
 
 interface Props {
+  incidentDetail: Incident;
   open: boolean;
   onClose: () => void;
-  onSubmit: (data: string) => void;
+  onSubmit: () => void;
 }
 
 const ModalResolve: React.FC<Props> = (props) => {
   const formRef = useRef(null);
   const [form] = Form.useForm();
-  const { onSubmit, onClose, open } = props;
+  const { data: session } = useSession();
+  const { onSubmit, onClose, open, incidentDetail } = props;
 
   const [confirmLoading, setConfirmLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const disabled = async () => {
     var result = false;
@@ -25,6 +31,27 @@ const ModalResolve: React.FC<Props> = (props) => {
       result = true;
     }
     return result;
+  };  
+
+  const resolveIncident = async (data: IncidentResolveModel) => {
+    setLoading(true);
+    await incidentService
+      .resolveIncident(
+        session?.user.access_token!,
+        parseInt(incidentDetail?.id + ""),
+        data
+      )
+      .then((res) => {
+        message.success("Fail appointment successfully!", 1.5);
+        onSubmit();
+        form.resetFields();
+      })
+      .catch((errors) => {
+        message.error(errors.response.data, 1.5);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   return (
@@ -47,9 +74,10 @@ const ModalResolve: React.FC<Props> = (props) => {
                 confirm({
                   title: "Do you want to resolve incident?",
                   async onOk() {
-                    onSubmit(form.getFieldValue("solution"));
-                    form.resetFields();
-                    onClose();
+                    const data = {
+                      solution: form.getFieldValue("solution")
+                    } as IncidentResolveModel;
+                    resolveIncident(data);
                   },
                   onCancel() {},
                 });

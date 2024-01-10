@@ -43,7 +43,7 @@ import {
   ServerHardwareConfigData,
   SHCParamGet,
 } from "@models/serverHardwareConfig";
-import { Incident } from "@models/incident";
+import { Incident, IncidentResolve } from "@models/incident";
 import IncidentDetailInfo from "@components/server/incident/IncidentDetail";
 import ModalResolve from "@components/server/incident/ModalResolve";
 
@@ -125,23 +125,6 @@ const IncidentDetail: React.FC = () => {
     }
   };
 
-  const resolveIncident = async (data: string) => {
-    await incidentService
-      .resolveIncident(
-        session?.user.access_token!,
-        incidentDetail?.id + "",
-        data
-      )
-      .then((res) => {
-        message.success("Fail appointment successfully!", 1.5);
-        getData();
-      })
-      .catch((errors) => {
-        message.error(errors.response.data, 1.5);
-      })
-      .finally(() => {});
-  };
-
   const handleBreadCumb = () => {
     var itemBrs = [] as ItemType[];
     var items = router.asPath.split("/").filter((_) => _ != "");
@@ -216,10 +199,12 @@ const IncidentDetail: React.FC = () => {
               </div>
             )}
             <ModalResolve
+              incidentDetail={incidentDetail}
               open={openModalResolve}
               onClose={() => setOpenModalResolve(false)}
-              onSubmit={(value) => {
-                resolveIncident(value);
+              onSubmit={() => {
+                setOpenModalResolve(false);
+                getData();
               }}
             />
 

@@ -4,6 +4,7 @@ import {
   IncidentCreateModel,
   IncidentParam,
   IncidentResolve,
+  IncidentResolveModel,
 } from "@models/incident";
 import apiLinks from "@utils/api-links";
 import httpClient from "@utils/http-client";
@@ -43,7 +44,7 @@ const createIncident = async (
 const resolveIncident = async (
   token: string,
   id: number,
-  data: IncidentResolve
+  data: IncidentResolveModel
 ): Promise<any> => {
   const response = await httpClient.put({
     url: apiLinks.incident.resolve + `/${id}/Resolve`,
