@@ -27,14 +27,13 @@ export interface IncidentData extends PagingModel {
 export interface IncidentParam extends ParamGet {
   IsResolved?: string;
   ServerAllocationId?: number;
-
 }
 
 export interface IncidentResolveModel {
   solution: string;
 }
 
-export interface IncindentResolve {
+export interface IncidentResolve extends BaseWithIdNumber {
   incidentResolvModel: IncidentResolveModel;
   dateCheckedIn: string;
   dateCheckedOut: string;
