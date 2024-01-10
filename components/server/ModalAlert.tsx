@@ -55,7 +55,7 @@ const ModalAlert: React.FC<Props> = (props) => {
       <Modal
         title={
           <span className="inline-block m-auto">
-            {"Thông báo lỗi Server"}
+            {"Create Incident Notification"}
           </span>
         }
         open={Boolean(serverAllocation)}

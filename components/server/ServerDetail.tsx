@@ -52,13 +52,13 @@ const ServerDetail: React.FC<Props> = (props) => {
         <Descriptions.Item label="Part Number" span={2}>
           {serverAllocationDetail?.partNumber}
         </Descriptions.Item>
-        <Descriptions.Item label="CPU" span={0}>
+        <Descriptions.Item label="CPU" span={3}>
           {hardware?.data.find(i => i.componentId===1)?.description}
         </Descriptions.Item>
-        <Descriptions.Item label="Memory" span={0}>
+        <Descriptions.Item label="Memory" span={3}>
           {hardware?.data.find(i => i.componentId===2)?.description}
         </Descriptions.Item>
-        <Descriptions.Item label="Storage" span={0}>
+        <Descriptions.Item label="Storage" span={3}>
           {hardware?.data.find(i => i.componentId===3)?.description}
         </Descriptions.Item>
         <Descriptions.Item label="Additional IPs" span={0}>

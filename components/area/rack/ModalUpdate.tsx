@@ -124,7 +124,7 @@ const ModalUpdate: React.FC<Props> = (props) => {
             </Form.Item>
             <Form.Item
               name="size"
-              label="Size"
+              label="Size (U)"
               rules={[{ required: true }]}
             >
               <Input placeholder="SÏize" allowClear />
