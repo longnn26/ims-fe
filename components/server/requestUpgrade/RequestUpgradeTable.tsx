@@ -45,6 +45,8 @@ interface DataType {
   status: string;
   dateCreated: string;
   dateUpdated: string;
+  companyName: string;
+  name: string;
 }
 
 const RequestUpgradeTable: React.FC<Props> = (props) => {
@@ -67,6 +69,9 @@ const RequestUpgradeTable: React.FC<Props> = (props) => {
       : requestUpgradeData;
 
   const columns: TableColumnsType<DataType> = [
+    { title: "Server Name", dataIndex: "name", key: "name" },
+    { title: "Customer", dataIndex: "companyName", key: "companyName" },
+
     {
       title: "Component",
       key: "component",
@@ -93,7 +98,7 @@ const RequestUpgradeTable: React.FC<Props> = (props) => {
       },
     },
     { title: "Date Created", dataIndex: "dateCreated", key: "dateCreated" },
-    { title: "Date Updated", dataIndex: "dateUpdated", key: "dateUpdated" },
+    // { title: "Date Updated", dataIndex: "dateUpdated", key: "dateUpdated" },
     {
       title: "Action",
       key: "operation",
@@ -145,6 +150,8 @@ const RequestUpgradeTable: React.FC<Props> = (props) => {
       description: listData?.data[i].description,
       dateCreated: moment(listData?.data[i].dateCreated).format(dateAdvFormat),
       dateUpdated: moment(listData?.data[i].dateUpdated).format(dateAdvFormat),
+      companyName: listData?.data[i].customer.companyName,
+      name: listData?.data[i].serverAllocation.name,
     });
   }
 

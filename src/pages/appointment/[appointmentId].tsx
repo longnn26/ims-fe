@@ -49,6 +49,8 @@ import ModalDeny from "@components/appointment/ModalDeny";
 import { areInArray } from "@utils/helpers";
 import { ROLE_CUSTOMER, ROLE_SALES, ROLE_TECH } from "@utils/constants";
 import ModalUpdateDocument from "@components/appointment/ModalUpdateDocument";
+import ModalResolveIncident from "@components/appointment/ModalResolveIncident";
+import { IncidentResolve } from "@models/incident";
 const { confirm } = Modal;
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
@@ -60,6 +62,8 @@ const Appoinment: React.FC = () => {
   const { data: session } = useSession();
   const [itemBreadcrumbs, setItemBreadcrumbs] = useState<ItemType[]>([]);
   const [appointmentDetail, setAppointmentDetail] = useState<Appointment>();
+  const [incidentDetail, setIncidentDetail] = useState<IncidentResolve>();
+
   const [fileInspectionReport, setFileInspectionReport] = useState<
     UploadFile[]
   >([]);
@@ -82,10 +86,10 @@ const Appoinment: React.FC = () => {
     RequestUpgrade | undefined
   >(undefined);
 
-  const [openModalUpdate, setOpenModalUpdate] = useState<boolean>(false);
   const [openModalDeny, setOpenModalDeny] = useState<boolean>(false);
   const [openModalAccept, setOpenModalAccept] = useState<boolean>(false);
   const [openComplete, setOpenComplete] = useState<boolean>(false);
+  const [openResolve, setOpenResolve] = useState<boolean>(false);
   const [openUpdateDocument, setOpenUpdateDocument] = useState<boolean>(false);
   const [openFail, setOpenFail] = useState<boolean>(false);
   const { requestUpgradeData, requestExpandData } = useSelector(
@@ -439,6 +443,16 @@ const Appoinment: React.FC = () => {
                 }}
                 onClose={() => setOpenComplete(false)}
               />
+              <ModalResolveIncident
+                open={openResolve}
+                resolve={incidentDetail!}
+                appointment={appointmentDetail!}
+                onSubmit={() => {
+                  setOpenResolve(false);
+                  getData();
+                }}
+                onClose={() => setOpenResolve(false)}
+              />
               <ModalUpdateDocument
                 open={openUpdateDocument}
                 appointment={appointmentDetail!}
@@ -485,11 +499,21 @@ const Appoinment: React.FC = () => {
                     tooltip="Fail"
                     onClick={() => setOpenFail(true)}
                   />
-                  <FloatButton
-                    onClick={() => setOpenComplete(true)}
-                    icon={<AiOutlineFileDone color="green" />}
-                    tooltip="Complete"
-                  />
+                  {appointmentDetail?.reason !== "Incident" && (
+                    <FloatButton
+                      onClick={() => setOpenComplete(true)}
+                      icon={<AiOutlineFileDone color="green" />}
+                      tooltip="Complete"
+                    />
+                  )}
+
+                  {appointmentDetail?.reason === "Incident" && (
+                    <FloatButton
+                      onClick={() => setOpenResolve(true)}
+                      icon={<AiOutlineFileDone color="green" />}
+                      tooltip="Complete Incident"
+                    />
+                  )}
                 </FloatButton.Group>
               )}
             </>

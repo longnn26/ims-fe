@@ -3,6 +3,7 @@ import { BaseWithIdNumber, PagingModel, ParamGet } from "./base";
 import { ComponentObj } from "./component";
 import { Customer } from "./customer";
 import { Evaluator, Executor } from "./requestHost";
+import { ServerAllocation } from "./serverAllocation";
 
 export interface RequestUpgrade extends BaseWithIdNumber {
   status: string;
@@ -18,6 +19,7 @@ export interface RequestUpgrade extends BaseWithIdNumber {
   techNote: string;
   evaluator: Evaluator;
   executor: Executor;
+  serverAllocation: ServerAllocation;
 }
 
 export interface RUParamGet extends ParamGet {
