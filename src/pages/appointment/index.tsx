@@ -64,34 +64,6 @@ const Appoinment: React.FC = () => {
     });
   };
 
-  // const createData = async (data: AppointmentCreateModel) => {
-  //   await appointmentService
-  //     .create(session?.user.access_token!, data)
-  //     .then((res) => {
-  //       message.success("Create successfully!");
-  //       getData();
-  //       setOpenModalCreate(false);
-  //     })
-  //     .catch((errors) => {
-  //       message.error(errors.response.data);
-  //     })
-  // };
-
-  // const updateData = async (data: AppointmentUpdateModel) => {
-  //   await appointmentService
-  //     .update(session?.user.access_token!, data)
-  //     .then((res) => {
-  //       message.success("Update successfully!", 1.5);
-  //       getData();
-  //     })
-  //     .catch((errors) => {
-  //       message.error(errors.response.data, 1.5);
-  //     })
-  //     .finally(() => {
-  //       setAppointmentUpdate(undefined);
-  //     });
-  // };
-
   const deleteAppointment = (appointment: Appointment) => {
     confirm({
       title: "Delete",

@@ -14,7 +14,7 @@ import {
   CustomerData,
   CusParam,
 } from "@models/customer";
-import { Button, Pagination, message, Modal, Alert, Spin } from "antd";
+import { Button, Pagination, message, Modal, Alert, Spin, TabsProps, Tabs } from "antd";
 import ModalCreate from "@components/customer/ModalCreate";
 import customerService from "@services/customer";
 import ModalUpdate from "@components/customer/ModalUpdate";
@@ -42,6 +42,7 @@ const Customer: React.FC = () => {
     undefined
   );
   const [openModalCreate, setOpenModalCreate] = useState<boolean>(false);
+  const [status, setStatus] = useState<boolean>();
 
   const getData = async () => {
     var userId="";
@@ -51,7 +52,7 @@ const Customer: React.FC = () => {
     dispatch(
       getCustomerData({
         token: session?.user.access_token!,
-        paramGet: { ...paramGet, SortKey: "DateCreated", SortOrder: "DESC", SaleId: userId },
+        paramGet: { ...paramGet, SortKey: "DateCreated", SortOrder: "DESC", SaleId: userId, IncludeDeleted: status },
       })
     ).then(({ payload }) => {
       var res = payload as CustomerData;
@@ -94,6 +95,42 @@ const Customer: React.FC = () => {
     session && getData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session, paramGet, openModalCreate]); //Loading: thêm openModalCreate
+
+  useEffect(() => {
+    session && getData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [status]);
+
+  const handleChange = (value) => {
+    switch (value) {
+      case "0":
+        setStatus(undefined);
+        break;
+      case "1":
+        setStatus(false);
+        break;
+      case "2":
+        setStatus(true);
+        break;
+    };
+  };
+
+
+  const items: TabsProps["items"] = [
+    {
+      key: "0",
+      label: "All",
+    },
+    {
+      key: "1",
+      label: "Active",
+    },
+    {
+      key: "2",
+      label: "Removed",
+    }
+  ];
+
   return (
     <AntdLayoutNoSSR
       content={
@@ -120,6 +157,9 @@ const Customer: React.FC = () => {
               }
             />
           </div>
+          <Tabs className="m-5" defaultActiveKey="0" items={items} centered
+            onTabClick={(value) => handleChange(value)}
+          />
           {areInArray(session?.user.roles!, ROLE_SALES, ROLE_TECH) && (
             <>
               <CustomerTable

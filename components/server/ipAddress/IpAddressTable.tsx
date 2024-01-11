@@ -80,7 +80,6 @@ const IpAddressTable: React.FC<Props> = (props) => {
       <Table
         columns={columns}
         dataSource={data}
-        scroll={{ x: 1300 }}
         pagination={false}
         // className="cursor-pointer"
       />

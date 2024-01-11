@@ -1,6 +1,6 @@
 "use client";
 import dynamic from "next/dynamic";
-import { Pagination, Tree } from "antd";
+import { Pagination, Tabs, TabsProps, Tree } from "antd";
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import React from "react";
@@ -70,6 +70,7 @@ const IpSubnet: React.FC = () => {
   const [ipAddressBlock, setIpAddressBlock] = useState<IpAddress | undefined>(
     undefined
   );
+  const [status, setStatus] = useState<boolean>();
 
   const onSelect: DirectoryTreeProps["onSelect"] = async (keys, info) => {
     var data = info.selectedNodes[0] as DataNode;
@@ -89,7 +90,7 @@ const IpSubnet: React.FC = () => {
     dispatch(
       getIpAddressData({
         token: session?.user.access_token!,
-        paramGet: { ...ipAddressParamGet },
+        paramGet: { ...ipAddressParamGet, IsAvailable: status },
       })
     );
   };
@@ -136,7 +137,7 @@ const IpSubnet: React.FC = () => {
       dispatch(
         getIpAddressData({
           token: session?.user.access_token!,
-          paramGet: { ...ipAddressParamGet },
+          paramGet: { ...ipAddressParamGet, IsAvailable: status },
         })
       );
     }
@@ -155,6 +156,45 @@ const IpSubnet: React.FC = () => {
         });
     }
   }, [session, ipAddressData]);
+
+  useEffect(() => {
+    dispatch(
+      getIpAddressData({
+        token: session?.user.access_token!,
+        paramGet: { ...ipAddressParamGet, IsAvailable: status },
+      })
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [status]);
+
+  const handleChange = (value) => {
+    switch (value) {
+      case "0":
+        setStatus(undefined);
+        break;
+      case "1":
+        setStatus(true);
+        break;
+      case "2":
+        setStatus(false);
+        break;
+    };
+  };
+
+  const items: TabsProps["items"] = [
+    {
+      key: "0",
+      label: "All",
+    },
+    {
+      key: "1",
+      label: "Available",
+    },
+    {
+      key: "2",
+      label: "Unavailable",
+    }
+  ];
 
   return (
     <AntdLayoutNoSSR
@@ -177,29 +217,29 @@ const IpSubnet: React.FC = () => {
                     {ipAddressData && ipAddressData.data.filter(
                       (l) => l.purpose === "Host" && l.blocked === false
                     ).length > 0 && (
-                      <Button
-                        type="primary"
-                        className="mr-2"
-                        htmlType="submit"
-                        onClick={() => {
-                          setOpenModalBlock(true);
-                        }}
-                      >
-                        Block IPs
-                      </Button>
-                    )}
+                        <Button
+                          type="primary"
+                          className="mr-2"
+                          htmlType="submit"
+                          onClick={() => {
+                            setOpenModalBlock(true);
+                          }}
+                        >
+                          Block IPs
+                        </Button>
+                      )}
                     {ipAddressData && ipAddressData.data.filter((l) => l.blocked === true)
                       .length > 0 && (
-                      <Button
-                        type="primary"
-                        htmlType="submit"
-                        onClick={() => {
-                          setOpenModalUnblock(true);
-                        }}
-                      >
-                        Unblock IPs
-                      </Button>
-                    )}
+                        <Button
+                          type="primary"
+                          htmlType="submit"
+                          onClick={() => {
+                            setOpenModalUnblock(true);
+                          }}
+                        >
+                          Unblock IPs
+                        </Button>
+                      )}
                   </div>
                 </div>
                 <div className="flex p-2">
@@ -240,10 +280,13 @@ const IpSubnet: React.FC = () => {
                     ipSubnetDetail={
                       ipSubnetDetail ? ipSubnetDetail : getDetail("1")
                     }
-                  ></IpSubnetDetailInfor>
+                  />
+                  <Tabs className="m-5" defaultActiveKey="0" items={items} centered
+                    onTabClick={(value) => handleChange(value)}
+                  />
                   <IpAddressTable
-                    onEdit={(record) => {}}
-                    onDelete={async (record) => {}}
+                    onEdit={(record) => { }}
+                    onDelete={async (record) => { }}
                     onBlock={(record) => {
                       setIpAddressBlock(record);
                     }}

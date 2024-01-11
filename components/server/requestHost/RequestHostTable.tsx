@@ -57,15 +57,6 @@ const RequestHostTable: React.FC<Props> = (props) => {
       ? requestHostData
       : requestHostData;
   const columns: TableColumnsType<DataType> = [
-    {
-      title: "Id",
-      dataIndex: "id",
-      key: "id",
-      fixed: "left",
-      render: (text) => (
-        <p className="text-[#b75c3c] hover:text-[#ee4623]">{text}</p>
-      ),
-    },
     { title: "Date Created", dataIndex: "dateCreated", key: "dateCreated" },
     {
       title: "Customer",
@@ -73,22 +64,11 @@ const RequestHostTable: React.FC<Props> = (props) => {
       render: (_, record) => <p className="">{record.customer.companyName}</p>,
     },
     {
-      title: "Server IP",
+      title: "Server Name",
       key: "serverIP",
       render: (_, record) => (
-        <p className="">{record.serverIP.masterIpAddress}</p>
+        <p className="">{record.serverIP.name}</p>
       ),
-    },
-    {
-      title: "Type",
-      dataIndex: "type",
-      render: (_, record) => {
-        return (
-          <>
-            <p>{record.type}</p>
-          </>
-        );
-      },
     },
     {
       title: "Purpose",
@@ -97,11 +77,9 @@ const RequestHostTable: React.FC<Props> = (props) => {
         return (
           <>
             {Boolean(record.isRemoval) ? (
-              <p>Remove</p>
-            ) : record.isUpgrade ? (
-              <p>Upgrade</p>
+              <p>Remove {record.type === "Additional" ? "IP" : record.type}</p>
             ) : (
-              <p>Add</p>
+              <p>Add {record.type === "Additional" ? "IP" : record.type} </p>
             )}
           </>
         );
@@ -116,7 +94,7 @@ const RequestHostTable: React.FC<Props> = (props) => {
           (_) => _.value === record.status
         );
         return (
-          <Tag className=" w-2/3 text-center" color={statusData?.color}>
+          <Tag className="text-center" color={statusData?.color}>
             {statusData?.value}
           </Tag>
         );
@@ -176,7 +154,6 @@ const RequestHostTable: React.FC<Props> = (props) => {
       <Table
         columns={columns}
         dataSource={data}
-        scroll={{ x: 1300 }}
         pagination={false}
         // className="cursor-pointer"
       />

@@ -23,6 +23,7 @@ export interface CustomerData extends PagingModel {
 export interface CusParam extends ParamGet {
   CompanyName?: string;
   SaleId?: string;
+  IncludeDeleted?: boolean;
 }
 
 export interface CustomerCreateModel {
