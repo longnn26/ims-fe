@@ -31,10 +31,10 @@ const BarChartComponent: React.FC<Props> = (props) => {
 
   return (
     <>
-      <BarChart width={1000} height={500} data={finalData.data}>
+      <BarChart width={1000} height={500} data={finalData.data} layout="vertical">
         <CartesianGrid strokeDasharray="3" vertical={false} />
-        <XAxis dataKey="name"/>
-        <YAxis />
+        <XAxis type="number" />
+        <YAxis dataKey="name" type="category"/>
         <Tooltip />
         <Legend />
         <Bar dataKey="waiting" fill="#19bcf1" />

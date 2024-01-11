@@ -12,6 +12,7 @@ export interface Customer extends Base {
   contractNumber: string;
   contacts: Contacts[];
   isDeleted: boolean;
+  saleStaff: string;
 }
 
 export interface CustomerData extends PagingModel {

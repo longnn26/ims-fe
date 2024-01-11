@@ -60,45 +60,6 @@ const Customer: React.FC = () => {
     });
   };
 
-  //Loading: Bỏ hàm này
-  // const createData = async (data: CustomerCreateModel) => {
-  //   confirm({
-  //     title: "Do you want to save?",
-  //     async onOk() {
-  //       setLoadingSubmit(true);
-  //       await customerService
-  //         .createData(session?.user.access_token!, data)
-  //         .then((res) => {
-  //           message.success("Create successfully!");
-  //           getData();
-  //           setOpenModalCreate(false);
-  //         })
-  //         .catch((errors) => {
-  //           message.error(errors.response.data);
-  //         })
-  //         .finally(() => {
-  //           setLoadingSubmit(false);
-  //         })
-  //     },
-  //     onCancel() { },
-  //   })
-  // };
-
-  // const updateData = async (data: CustomerUpdateModel) => {
-  //   await customerService
-  //     .updateData(session?.user.access_token!, data)
-  //     .then((res) => {
-  //       message.success("Update successfully!");
-  //       getData();
-  //     })
-  //     .catch((errors) => {
-  //       message.error(errors.response.data);
-  //     })
-  //     .finally(() => {
-  //       setCustomerUpdate(undefined);
-  //     });
-  // };
-
   const deleteComponent = (customer: Customer) => {
     confirm({
       title: "Delete",
