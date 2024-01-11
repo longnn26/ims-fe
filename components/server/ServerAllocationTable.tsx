@@ -163,7 +163,6 @@ const ServerAllocationTable: React.FC<Props> = (props) => {
         loading={serverAllocationDataLoading}
         columns={columns}
         dataSource={data}
-        scroll={{ x: 1300 }}
         pagination={false}
       />
     </div>
