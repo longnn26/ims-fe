@@ -47,15 +47,17 @@ const Appoinment: React.FC = () => {
     } as unknown as ParamGetExtend);
 
   const getData = async () => {
-    var customerId = "";
-    if (session?.user.roles.includes("Customer")) {
+    var customerId = "", userId="";
+    if (areInArray(session?.user.roles!, ROLE_SALES)) {
+      userId = parseJwt(session?.user.access_token!).UserId;
+    } else if (session?.user.roles.includes("Customer")) {
       customerId = parseJwt(session.user.access_token).UserId;
     }
     setLoading(true);
     await dispatch(
       getListAppointment({
         token: session?.user.access_token!,
-        paramGet: { ...paramGet, CustomerId: customerId, Statuses: status  },
+        paramGet: { ...paramGet, CustomerId: customerId, Statuses: status, UserId: userId  },
       })
     ).finally(() => {
       setLoading(false);

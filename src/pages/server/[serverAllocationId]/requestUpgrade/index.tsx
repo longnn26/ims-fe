@@ -79,10 +79,11 @@ const RequestUpgrade: React.FC = () => {
   const [itemBreadcrumbs, setItemBreadcrumbs] = useState<ItemType[]>([]);
 
   const getData = async () => {
-    var customerId = "",
-      userId = "";
-    if (session?.user.roles.includes("Customer")) {
-      customerId = parseJwt(session?.user.access_token!).UserId;
+    var customerId = "", userId="";
+    if (areInArray(session?.user.roles!, ROLE_SALES)) {
+      userId = parseJwt(session?.user.access_token!).UserId;
+    } else if (session?.user.roles.includes("Customer")) {
+      customerId = parseJwt(session.user.access_token).UserId;
     }
     await serverAllocationService
       .getServerAllocationById(
@@ -103,7 +104,7 @@ const RequestUpgrade: React.FC = () => {
     dispatch(
       getRequestUpgradeData({
         token: session?.user.access_token!,
-        paramGet: { ...paramGet, CustomerId: customerId, },
+        paramGet: { ...paramGet, CustomerId: customerId, UserId: userId },
       })
     ).then(({ payload }) => {
       var res = payload as RequestUpgradeData;

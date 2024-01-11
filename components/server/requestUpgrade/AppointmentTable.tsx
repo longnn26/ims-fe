@@ -88,17 +88,12 @@ const AppointmentTable: React.FC<Props> = (props) => {
       key: "name",
     },
     {
-      title: "Visiter",
+      title: "Visitor(s)",
       dataIndex: "appointedCustomer",
       key: "appointedCustomer",
       render: (appointedCustomer) => (
         <>
-          {appointedCustomer.split(',').map((visitor, index) => (
-            <>
-              {index > 0 && <br />}
-              {visitor}
-            </>
-          ))}
+          {appointedCustomer.split(',').length}
         </>
       ),
     },
@@ -112,23 +107,13 @@ const AppointmentTable: React.FC<Props> = (props) => {
           (_) => _.value === record.status
         );
         return (
-          <Tag className="w-3/4 text-center" color={statusData?.color}>
+          <Tag className="text-center" color={statusData?.color}>
             {statusData?.value}
           </Tag>
         );
       },
     },
     { title: "Note", dataIndex: "note", key: "note" },
-    {
-      title: "Date CheckedIn",
-      dataIndex: "dateCheckedIn",
-      key: "dateCheckedIn",
-    },
-    {
-      title: "Date CheckedOut",
-      dataIndex: "dateCheckedOut",
-      key: "dateCheckedOut",
-    },
     {
       title: "Action",
       key: "operation",
@@ -197,7 +182,6 @@ const AppointmentTable: React.FC<Props> = (props) => {
       <Table
         columns={columns}
         dataSource={data}
-        scroll={{ x: 1300 }}
         pagination={false}
         className="cursor-pointer"
       />

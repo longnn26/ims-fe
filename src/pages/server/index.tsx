@@ -58,14 +58,16 @@ const Customer: React.FC = () => {
   const [openModalCreate, setOpenModalCreate] = useState<boolean>(false);
 
   const getData = async () => {
-    var customerId = "";
-    if (session?.user.roles.includes("Customer")) {
+    var customerId = "", userId="";
+    if (areInArray(session?.user.roles!, ROLE_SALES)) {
+      userId = parseJwt(session?.user.access_token!).UserId;
+    } else if (session?.user.roles.includes("Customer")) {
       customerId = parseJwt(session.user.access_token).UserId;
     }
     dispatch(
       getServerAllocationData({
         token: session?.user.access_token!,
-        param: { ...paramGet, CustomerId: customerId, Status: status },
+        param: { ...paramGet, CustomerId: customerId, Status: status, UserId: userId },
       })
     ).then(({ payload }) => {
       var res = payload as ServerAllocationData;

@@ -43,57 +43,7 @@ const CustomerTable: React.FC<Props> = (props) => {
     (state) => state.customer
   );
 
-  const nestedRowRender = (data: DataType) => {
-    const contacts = data.contacts;
-
-    if (!contacts || contacts.length === 0) {
-      return null; // No contacts to display
-    } else {
-      const nestedColumns = [
-        { title: "Contacts" },
-        {
-          title: "Thông tin loại",
-          key: "forAppointment",
-          render: (record: Contacts) =>
-            `${
-              record.forAppointment === true ? "Đăng kí ra vào DC" : "Liên lạc"
-            }`,
-        },
-        { title: "Name", dataIndex: "name", key: "name" },
-        { title: "Position", dataIndex: "position", key: "position" },
-        { title: "Email", dataIndex: "email", key: "email" },
-        { title: "Phone Number", dataIndex: "phoneNumber", key: "phoneNumber" },
-      ];
-
-      const nestedData = data.contacts.map((des, index) => ({
-        key: index,
-        //cccd
-        name: data.contacts[index].name,
-        position: data.contacts[index].position,
-        email: data.contacts[index].email,
-        phoneNumber: data.contacts[index].phoneNumber,
-        forAppointment: data.contacts[index].forAppointment,
-      }));
-
-      return (
-        <Table
-          columns={nestedColumns}
-          dataSource={nestedData}
-          pagination={false}
-        />
-      );
-    }
-  };
-
-  const columns: TableColumnsType<DataType> = [
-    {
-      title: "Company Name",
-      dataIndex: "companyName",
-      key: "companyName",
-      fixed: "left",
-    },
-    { title: "Address", dataIndex: "address", key: "address" },
-    { title: "Tax number", dataIndex: "taxNumber", key: "taxNumber" },
+  const columns: TableColumnsType<DataType> = [    
     {
       title: "Contract Number",
       dataIndex: "contractNumber",
@@ -103,31 +53,27 @@ const CustomerTable: React.FC<Props> = (props) => {
       },
     },
     {
-      title: "Representator",
-      dataIndex: "representator",
-      key: "representator",
+      title: "Company Name",
+      dataIndex: "companyName",
+      key: "companyName",
+      fixed: "left",
     },
-    {
-      title: "Position",
-      dataIndex: "representatorPosition",
-      key: "representatorPosition",
-    },
-    { title: "Email", dataIndex: "email", key: "email" },
-    { title: "Phone number", dataIndex: "phoneNumber", key: "phoneNumber" },
-    {
-      title: "Status",
-      key: "isDeleted",
-      render: (record: Customer) => (
-        <>
-          {record.isDeleted != true ? (
-            <Badge status="success" text="Actice" />
-          ) : (
-            <Badge status="error" text="Removed" />
-          )}
-          `
-        </>
-      ),
-    },
+    { title: "Tax number", dataIndex: "taxNumber", key: "taxNumber" },
+    { title: "Address", dataIndex: "address", key: "address" },
+    // {
+    //   title: "Status",
+    //   key: "isDeleted",
+    //   render: (record: Customer) => (
+    //     <>
+    //       {record.isDeleted != true ? (
+    //         <Badge status="success" text="Actice" />
+    //       ) : (
+    //         <Badge status="error" text="Removed" />
+    //       )}
+    //       `
+    //     </>
+    //   ),
+    // },
     // { title: "Date Created", dataIndex: "dateCreated", key: "dateCreated" },
     {
       title: "Action",
@@ -190,15 +136,6 @@ const CustomerTable: React.FC<Props> = (props) => {
         dataSource={data}
         className="shadow m-5"
         pagination={false}
-        expandable={{
-          expandedRowRender: nestedRowRender,
-          rowExpandable: (record) =>
-            record.contacts === null ||
-            record.contacts === undefined ||
-            record.contacts.length === 0
-              ? false
-              : true,
-        }}
       />
     </>
   );
