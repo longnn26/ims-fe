@@ -188,7 +188,7 @@ const CustomerTable: React.FC<Props> = (props) => {
         loading={customerDataLoading}
         columns={columns}
         dataSource={data}
-        scroll={{ x: 1300 }}
+        className="shadow m-5"
         pagination={false}
         expandable={{
           expandedRowRender: nestedRowRender,
