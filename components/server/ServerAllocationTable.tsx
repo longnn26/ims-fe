@@ -2,6 +2,7 @@
 
 import useSelector from "@hooks/use-selector";
 import {
+  ROLE_CUSTOMER,
   ROLE_TECH,
   dateAdvFormat,
   serverAllocationStatus,
@@ -114,7 +115,7 @@ const ServerAllocationTable: React.FC<Props> = (props) => {
             )}
           {Boolean(
             record.status === "Waiting" &&
-            areInArray(session?.user.roles!, ROLE_TECH)
+            areInArray(session?.user.roles!, ROLE_TECH, ROLE_CUSTOMER)
           ) && (
               <>
                 <Tooltip title="Edit" color={"black"}>

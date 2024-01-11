@@ -19,7 +19,7 @@ import ModalCreate from "@components/customer/ModalCreate";
 import customerService from "@services/customer";
 import ModalUpdate from "@components/customer/ModalUpdate";
 import CustomerTable from "@components/customer/CustomerTable";
-import { areInArray } from "@utils/helpers";
+import { areInArray, parseJwt } from "@utils/helpers";
 import { ROLE_SALES, ROLE_TECH } from "@utils/constants";
 import SearchComponent from "@components/SearchComponent";
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
@@ -44,14 +44,17 @@ const Customer: React.FC = () => {
   const [openModalCreate, setOpenModalCreate] = useState<boolean>(false);
 
   const getData = async () => {
+    var userId="";
+    if (areInArray(session?.user.roles!, ROLE_SALES)) {
+      userId = parseJwt(session?.user.access_token!).UserId;
+    }
     dispatch(
       getCustomerData({
         token: session?.user.access_token!,
-        paramGet: { ...paramGet, SortKey: "DateCreated", SortOrder: "DESC" },
+        paramGet: { ...paramGet, SortKey: "DateCreated", SortOrder: "DESC", SaleId: userId },
       })
     ).then(({ payload }) => {
       var res = payload as CustomerData;
-      //muốn k lỗi res.totalPage
       if (res) {
         if (res.totalPage < paramGet.PageIndex && res.totalPage != 0) {
           setParamGet({ ...paramGet, PageIndex: res.totalPage });
