@@ -152,11 +152,6 @@ const ModalUpdate: React.FC<Props> = (props) => {
                           index,
                           "position",
                         ]),
-                        email: form.getFieldValue([
-                          "contacts",
-                          index,
-                          "email",
-                        ]),
                         phoneNumber: form.getFieldValue([
                           "contacts",
                           index,
@@ -243,11 +238,6 @@ const ModalUpdate: React.FC<Props> = (props) => {
                     label="Representator Position"
                   >
                     <Input placeholder="Representator position" allowClear />
-                  </Form.Item>
-                  <Form.Item
-                    label="Email"
-                  >
-                    <Input placeholder="Email" allowClear />
                   </Form.Item>
                   <Form.Item
                     label="Phone number"
