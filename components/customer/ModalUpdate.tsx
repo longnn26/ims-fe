@@ -334,23 +334,6 @@ const ModalUpdate: React.FC<Props> = (props) => {
                   <Input placeholder="Representator position" allowClear />
                 </Form.Item>
                 <Form.Item
-                  name="email"
-                  label="Email"
-                  rules={[
-                    { required: true, message: 'Please enter your email address' },
-                    {
-                      pattern: /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/,
-                      message: 'Please enter a valid email address',
-                    },
-                    {
-                      min: 6,
-                      max: 255,
-                      message: 'Email must be between 6 and 255 characters',
-                    },
-                  ]}>
-                  <Input placeholder="Email" allowClear />
-                </Form.Item>
-                <Form.Item
                   name="phoneNumber"
                   label="Phone number"
                   rules={[
@@ -418,25 +401,14 @@ const ModalUpdate: React.FC<Props> = (props) => {
                             </>
                           )}
                           <Form.Item
-                            label="Name"
+                            label="Full Name"
                             name={[field.name, "name"]}
                             rules={[{ required: true, min: 8, max: 255 }]}
                           >
                             <Input.TextArea
                               autoSize={{ minRows: 1, maxRows: 6 }}
                               allowClear
-                              placeholder="Name"
-                            />
-                          </Form.Item>
-                          <Form.Item
-                            label="Position"
-                            name={[field.name, "position"]}
-                            rules={[{ required: true, min: 8, max: 255 }]}
-                          >
-                            <Input.TextArea
-                              autoSize={{ minRows: 1, maxRows: 6 }}
-                              allowClear
-                              placeholder="Position"
+                              placeholder="Full Name"
                             />
                           </Form.Item>
                           <Form.Item
@@ -467,6 +439,17 @@ const ModalUpdate: React.FC<Props> = (props) => {
                             ]}
                           >
                             <Input allowClear placeholder="Phone Number" />
+                          </Form.Item>
+                          <Form.Item
+                            label="Position"
+                            name={[field.name, "position"]}
+                            rules={[{ min: 8, max: 255 }]}
+                          >
+                            <Input.TextArea
+                              autoSize={{ minRows: 1, maxRows: 6 }}
+                              allowClear
+                              placeholder="Position"
+                            />
                           </Form.Item>
                         </Card>
                       ))}
