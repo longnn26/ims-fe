@@ -3,7 +3,7 @@
 import useSelector from "@hooks/use-selector";
 import useDispatch from "@hooks/use-dispatch";
 import { Appointment, AppointmentData, ParamGetExtend } from "@models/appointment";
-import { dateAdvFormat, requestUpgradeStatus } from "@utils/constants";
+import { ROLE_CUSTOMER, dateAdvFormat, requestUpgradeStatus } from "@utils/constants";
 import {
   Button,
   Divider,
@@ -20,6 +20,7 @@ import { getAppointmentData } from "@slices/incident";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
 import { getListAppointment } from "@slices/appointment";
+import { areInArray } from "@utils/helpers";
 
 interface Props {
   typeGet?: string;
@@ -142,7 +143,8 @@ const AppointmentTable: React.FC<Props> = (props) => {
               <BiSolidCommentDetail />
             </Button>
           </Tooltip>
-          {(record.status === "Waiting" || record.status === "Accepted") && (
+          {(record.status === "Waiting" || record.status === "Accepted") &&
+            areInArray(session?.user.roles!, ROLE_CUSTOMER) && (
             <Tooltip title="Edit" color={"black"}>
               <Button onClick={() => onEdit(record)}>
                 <BiEdit />

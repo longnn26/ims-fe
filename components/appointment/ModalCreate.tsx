@@ -103,7 +103,7 @@ const ModalCreate: React.FC<Props> = (props) => {
       .then(async (data) => {
         const contacts = data.contacts
           .filter((l) => l.forAppointment === true)
-          .map((contact, index) => `${contact.name} - ${contact.cccd}`);
+          .map((contact, index) => `${contact.name} - SĐT: ${contact.phoneNumber} - CCCD: ${contact.cccd}`);
         setContactList(contacts);
       });
   };
