@@ -2,7 +2,6 @@
 import BreadcrumbComponent from "@components/BreadcrumbComponent";
 import useDispatch from "@hooks/use-dispatch";
 import useSelector from "@hooks/use-selector";
-import { Customer } from "@models/customer";
 import { ServerAllocationData } from "@models/serverAllocation";
 
 import { Pagination } from "antd";
@@ -35,12 +34,11 @@ const Customer: React.FC = () => {
   } as ParamGet);
 
   const [historyDetail, setHistoryDetail] = useState<IpAddressHistory>();
-
   const [itemBreadcrumbs, setItemBreadcrumbs] = useState<ItemType[]>([]);
 
   const getData = async () => {
     await ipAddress
-      .getData(session?.user.access_token!, router.query.IpAddressId + "")
+      .getDetail(session?.user.access_token!, router.query.IpAddressId + "")
       .then(async (res) => {
         setHistoryDetail(res);
       })
@@ -50,7 +48,7 @@ const Customer: React.FC = () => {
     dispatch(
       getIpAddressHistoryData({
         token: session?.user.access_token!,
-        paramGet: { ...paramGet },
+        id: router.query.IpAddressId + "",
       })
     ).then(({ payload }) => {
       var res = payload as ServerAllocationData;
@@ -69,29 +67,14 @@ const Customer: React.FC = () => {
     var items = router.asPath.split("/").filter((_) => _ != "");
     var path = "";
     items.forEach((element) => {
-      if (element !== customerDetail?.id + "") {
-        path += `/${element}`;
-        itemBrs.push({
-          href: path,
-          title: element,
-        });
-      } else {
-        path += `/${element}`;
-        itemBrs.push({
-          href: path,
-          title: customerDetail?.companyName,
-        });
-      }
+      path += `/${element}`;
+      itemBrs.push({
+        href: path,
+        title: element,
+      });
     });
     setItemBreadcrumbs(itemBrs);
   };
-
-  useEffect(() => {
-    if (router.query.customerId && session) {
-      handleBreadCumb();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [customerDetail]);
 
   useEffect(() => {
     if (router.query.customerId && session) {
@@ -112,7 +95,11 @@ const Customer: React.FC = () => {
 
           {areInArray(session?.user.roles!, ROLE_TECH) && (
             <>
-              <HistoryIpAddressTable ipAddressHistory={ipAddressHistoryData} />
+              <HistoryIpAddressTable
+                onEdit={() => { }}
+                onBlock={() => { }}
+                onDelete={() => { }}
+              />
               {ipAddressHistoryData?.totalPage > 0 && (
                 <Pagination
                   className="text-end m-4"

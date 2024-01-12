@@ -83,7 +83,7 @@ const IpAddressable: React.FC<Props> = (props) => {
       render: (record: IpSubnet) => (
         <Space wrap>
           <Tooltip title="View History" color={"black"}>
-            <Button onClick={() => router.push(`/ipAddress/${record.id}`)}>
+            <Button onClick={() => router.push(`/ipSubnet/ipAddress/${record.id}`)}>
               <MdOutlineManageHistory />
             </Button>
           </Tooltip>

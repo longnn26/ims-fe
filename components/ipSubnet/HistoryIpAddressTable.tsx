@@ -22,7 +22,6 @@ interface Props {
   onEdit: (data: IpAddress) => void;
   onDelete: (data: IpAddress) => void;
   onBlock: (record: IpAddress) => void;
-  ipAddressHistory: (ipAddressHistoryData: IpAddressHistoryData) => void;
 }
 
 interface DataType {

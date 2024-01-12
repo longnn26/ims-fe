@@ -28,6 +28,17 @@ const getData = async (
   return response.data;
 };
 
+const getDetail = async (
+  token: string,
+  id: string
+): Promise<IpAddressHistory> => {
+  const response = await httpClient.get({
+    token: token,
+    url: apiLinks.ipAddress.getById + `/${id}`,
+  });
+  return response.data;
+};
+
 const blockIp = async (
   token: string,
   reason: string,
@@ -56,11 +67,11 @@ const unblockIp = async (
 
 const getHistory = async (
   token: string,
-  params: IpAddressHistory
+  id: string,
 ): Promise<IpAddressHistoryData> => {
   const response = await httpClient.get({
     token: token,
-    url: apiLinks.ipAddress.history + `/${params.id}/History`,
+    url: apiLinks.ipAddress.history + `/${id}/History`,
   });
   return response.data;
 };
@@ -68,6 +79,7 @@ const getHistory = async (
 const ipAddress = {
   getSuggestMaster,
   getData,
+  getDetail,
   blockIp,
   unblockIp,
   getHistory,

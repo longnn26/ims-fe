@@ -48,8 +48,8 @@ const getIpAddressData = createAsyncThunk(
 
 const getIpAddressHistoryData = createAsyncThunk(
   `${TYPE_PREFIX}/getIpAddressHistoryData`,
-  async (arg: { token: string; paramGet: IpAddressHistory }) => {
-    const result = await ipAddress.getHistory(arg.token, arg.paramGet);
+  async (arg: { token: string; id: string }) => {
+    const result = await ipAddress.getHistory(arg.token, arg.id);
     return result;
   }
 );

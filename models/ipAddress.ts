@@ -33,7 +33,7 @@ export interface IpAddressParamGet extends ParamGet {
   Purposes?: string;
 }
 
-export interface IpAddressHistory extends ParamGet {
+export interface IpAddressHistory extends BaseWithIdNumber {
   id: number;
   dateExecuted?: string;
   isBlock?: boolean;
