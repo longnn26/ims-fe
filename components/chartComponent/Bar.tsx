@@ -15,7 +15,7 @@ const BarChartComponent: React.FC<Props> = (props) => {
       <BarChart width={420} height={450} data={barData} layout="vertical" barSize={4}>
         <CartesianGrid strokeDasharray="3" vertical={false} />
         <XAxis type="number" />
-        <YAxis dataKey="name" type="category" width={130}/>
+        <YAxis dataKey="name" type="category" width={100}/>
         <Tooltip />
         <Legend />
         <Bar dataKey="waiting" fill="#19bcf1" />

@@ -183,37 +183,37 @@ const StatisticPage: React.FC = () => {
                                 </Select>
                                 {selectedYear && selectedYear > 0 && (
                                     <>
-                                    <span className="mt-1.5 mr-1 ml-2">Quarter:</span>
-                                    <Select
-                                        placeholder="Select quarter of year"
-                                        onChange={(value) => handleChange(value)}
-                                    >
-                                        <Option value={1}>{`First quarter (January - March)`}</Option>
-                                        <Option value={2}>{`Second quarter (April - June)`}</Option>
-                                        <Option value={3}>{`Third quarter (July - September)`}</Option>
-                                        <Option value={4}>{`Fourth quarter (October - December)`}</Option>
-                                    </Select>
+                                        <span className="mt-1.5 mr-1 ml-2">Quarter:</span>
+                                        <Select
+                                            placeholder="Select quarter of year"
+                                            onChange={(value) => handleChange(value)}
+                                        >
+                                            <Option value={1}>{`First quarter (January - March)`}</Option>
+                                            <Option value={2}>{`Second quarter (April - June)`}</Option>
+                                            <Option value={3}>{`Third quarter (July - September)`}</Option>
+                                            <Option value={4}>{`Fourth quarter (October - December)`}</Option>
+                                        </Select>
                                     </>
                                 )}
                             </div>
                             <div className="flex justify-center">
-                                <span style={{textAlign: "center"}}>
-                                <BarChartComponent
-                                    barData={barDataMonth1!}
-                                />
-                                <h3>{month1}</h3>
+                                <span className="m-2" style={{ textAlign: "center" }}>
+                                    <BarChartComponent
+                                        barData={barDataMonth1!}
+                                    />
+                                    <h3>{month1}</h3>
                                 </span>
-                                <span style={{textAlign: "center"}}>
-                                <BarChartComponent
-                                    barData={barDataMonth2!}
-                                />
-                                <h3>{month2}</h3>
+                                <span className="m-2" style={{ textAlign: "center" }}>
+                                    <BarChartComponent
+                                        barData={barDataMonth2!}
+                                    />
+                                    <h3>{month2}</h3>
                                 </span>
-                                <span style={{textAlign: "center"}}>
-                                <BarChartComponent
-                                    barData={barDataMonth3!}
-                                />
-                                <h3>{month3}</h3>
+                                <span className="m-2" style={{ textAlign: "center" }}>
+                                    <BarChartComponent
+                                        barData={barDataMonth3!}
+                                    />
+                                    <h3>{month3}</h3>
                                 </span>
                             </div>
                         </>
