@@ -9,6 +9,7 @@ import {
   Card,
   message,
   Spin,
+  DatePicker,
 } from "antd";
 import { CloseOutlined } from "@ant-design/icons";
 import { Form } from "antd";
@@ -16,6 +17,9 @@ import { CustomerCreateModel } from "@models/customer";
 import useSelector from "@hooks/use-selector";
 import customerService from "@services/customer";
 import { useSession } from "next-auth/react";
+import dayjs from "dayjs";
+import moment from "moment";
+import { dateAdvFormat } from "@utils/constants";
 const { Option } = Select;
 const { confirm } = Modal;
 
@@ -136,6 +140,9 @@ const ModalCreate: React.FC<Props> = (props) => {
                               index,
                               "phoneNumber",
                             ]),
+                            dateContract: form
+                              .getFieldValue("dateContract")
+                              ?.format(dateAdvFormat),
                           }))
                         : [],
                     } as CustomerCreateModel;
@@ -291,6 +298,29 @@ const ModalCreate: React.FC<Props> = (props) => {
                 >
                   <Input placeholder="Contract number" allowClear />
                 </Form.Item>
+
+                <Form.Item
+                  name="dateContact"
+                  label="Contract Signing Date"
+                  rules={[
+                    {
+                      required: true,
+                    },
+                  ]}
+                >
+                  <DatePicker
+                    style={{ width: "100%" }}
+                    placeholder="Contract date"
+                    showTime
+                    format={dateAdvFormat}
+                    onChange={(value) =>
+                      form.setFieldsValue({
+                        dateAppointed: value,
+                      })
+                    }
+                  />
+                </Form.Item>
+
                 <Form.Item
                   name="representator"
                   label="Representator"
@@ -380,7 +410,11 @@ const ModalCreate: React.FC<Props> = (props) => {
                               <Option value={false}>Thông tin liên hệ</Option>
                             </Select>
                           </Form.Item>
-                          {form.getFieldValue(["contacts", field.name, "forAppointment"]) === true && (
+                          {form.getFieldValue([
+                            "contacts",
+                            field.name,
+                            "forAppointment",
+                          ]) === true && (
                             <>
                               <Form.Item
                                 label="Citizen  Identification"
