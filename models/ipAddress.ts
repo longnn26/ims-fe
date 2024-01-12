@@ -1,8 +1,10 @@
+import { UserInfo } from "os";
 import { BaseWithIdNumber, PagingModel, ParamGet } from "./base";
 import { Customer } from "./customer";
 import { IpSubnet } from "./ipSubnet";
 import { IPAddresses } from "./requestHost";
 import { ServerAllocation } from "./serverAllocation";
+import { User } from "./user";
 
 export interface IpAddress extends BaseWithIdNumber {
   address: string;
@@ -33,18 +35,14 @@ export interface IpAddressParamGet extends ParamGet {
   Purposes?: string;
 }
 
-export interface IpAddressHistory extends BaseWithIdNumber {
-  id: number;
-  dateExecuted?: string;
-  isBlock?: boolean;
-  currentServerId?: number;
-  reason?: string;
+export interface IpAddressHistory {
   currentServer: ServerAllocation;
-  masterIp: IpAddress;
-  dateCreated: string;
-  dateUpdated: string;
-  masterIpAddress: string;
-  customer: Customer;
+  currentServerId: number;
+  dateExecuted: string;
+  executor: User;
+  ipAddress: IpAddress;
+  isBlock: boolean;
+  reason: string;
 }
 
 export interface IpAddressHistoryData extends PagingModel {

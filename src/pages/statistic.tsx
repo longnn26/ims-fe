@@ -147,9 +147,6 @@ const StatisticPage: React.FC = () => {
             getStatisticOfMonth(start3!, end3!).then(res => setBarDataMonth3(res));
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-        console.log("1", start1, end1)
-        console.log("2", start2, end2)
-        console.log("3", start3, end3)
     }, [start1, start2, start3, end1, end2, end3]);
 
     const getPastYearsArray = () => {

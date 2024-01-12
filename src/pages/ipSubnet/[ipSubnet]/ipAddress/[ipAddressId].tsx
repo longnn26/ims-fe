@@ -3,7 +3,7 @@ import BreadcrumbComponent from "@components/BreadcrumbComponent";
 import useDispatch from "@hooks/use-dispatch";
 import useSelector from "@hooks/use-selector";
 import { ServerAllocationData } from "@models/serverAllocation";
-
+import ipSubnetService from "@services/ipSubnet";
 import { Pagination } from "antd";
 import { ItemType } from "antd/es/breadcrumb/Breadcrumb";
 import { useSession } from "next-auth/react";
@@ -16,8 +16,9 @@ import { ROLE_TECH } from "@utils/constants";
 import { ParamGet } from "@models/base";
 import HistoryIpAddressTable from "@components/ipSubnet/HistoryIpAddressTable";
 import ipAddress from "@services/ipAddress";
-import { IpAddressHistory } from "@models/ipAddress";
+import { IpAddress, IpAddressHistory } from "@models/ipAddress";
 import { getIpAddressData, getIpAddressHistoryData } from "@slices/ipSubnet";
+import { IpSubnet } from "@models/ipSubnet";
 
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
@@ -33,13 +34,19 @@ const Customer: React.FC = () => {
     PageSize: 10,
   } as ParamGet);
 
-  const [historyDetail, setHistoryDetail] = useState<IpAddressHistory>();
+  const [historyDetail, setHistoryDetail] = useState<IpAddress>();
   const [itemBreadcrumbs, setItemBreadcrumbs] = useState<ItemType[]>([]);
+  const [ipSubnetDetail, setIpSubnetDetail] = useState<IpSubnet>();
 
   const getData = async () => {
+    await ipSubnetService
+      .getDetail(session?.user.access_token!, router.query.ipSubnet+"")
+      .then((res) => {
+        setIpSubnetDetail(res);
+      });
     await ipAddress
-      .getDetail(session?.user.access_token!, router.query.IpAddressId + "")
-      .then(async (res) => {
+      .getDetail(session?.user.access_token!, router.query.ipAddressId + "")
+      .then((res) => {
         setHistoryDetail(res);
       })
       .catch((errors) => {
@@ -48,7 +55,7 @@ const Customer: React.FC = () => {
     dispatch(
       getIpAddressHistoryData({
         token: session?.user.access_token!,
-        id: router.query.IpAddressId + "",
+        id: router.query.ipAddressId + "",
       })
     ).then(({ payload }) => {
       var res = payload as ServerAllocationData;
@@ -67,18 +74,27 @@ const Customer: React.FC = () => {
     var items = router.asPath.split("/").filter((_) => _ != "");
     var path = "";
     items.forEach((element) => {
-      path += `/${element}`;
-      itemBrs.push({
-        href: path,
-        title: element,
-      });
+      if ((element !== ipSubnetDetail?.id + "") && (element !== router.query.ipAddressId +"")) {
+        path += `/${element}`;
+        itemBrs.push({
+          href: path,
+          title: element,
+        });
+      } else if (element === router.query.ipAddressId +"") {
+        itemBrs.push({
+          title: `${historyDetail?.address}`,
+        });
+      } else {
+        itemBrs.push({
+          title: `${ipSubnetDetail?.firstOctet}.${ipSubnetDetail?.secondOctet}.${ipSubnetDetail?.thirdOctet}.${ipSubnetDetail?.fourthOctet}/${ipSubnetDetail?.prefixLength}`,
+        });
+      }
     });
     setItemBreadcrumbs(itemBrs);
   };
 
   useEffect(() => {
-    if (router.query.customerId && session) {
-      paramGet.CustomerId = router.query.customerId!.toString();
+    if (router.query.ipAddressId && session) {
       getData();
       handleBreadCumb();
     }

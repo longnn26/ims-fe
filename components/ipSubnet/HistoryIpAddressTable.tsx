@@ -17,6 +17,8 @@ import { MdAssignmentAdd, MdOutlineManageHistory } from "react-icons/md";
 import { TbBinary, TbBinaryOff, TbLockOpenOff } from "react-icons/tb";
 import ipAddress from "@services/ipAddress";
 import { useSession } from "next-auth/react";
+import { User } from "@models/user";
+import { ServerAllocation } from "@models/serverAllocation";
 
 interface Props {
   onEdit: (data: IpAddress) => void;
@@ -26,15 +28,13 @@ interface Props {
 
 interface DataType {
   key: React.Key;
-  id: number;
-  dateExecuted?: string;
-  isBlock?: boolean;
-  reason?: string;
-  name: string;
-  address: string;
-  companyName: string;
-  dateCreated: string;
-  dateUpdated: string;
+  currentServer: ServerAllocation;
+  currentServerId: number;
+  dateExecuted: string;
+  executor: User;
+  ipAddress: IpAddress;
+  isBlock: boolean;
+  reason: string;
 }
 
 const HistoryIpAddressTable: React.FC<Props> = (props) => {
@@ -49,64 +49,58 @@ const HistoryIpAddressTable: React.FC<Props> = (props) => {
     {
       title: "Server Name",
       key: "name",
-      dataIndex: "name",
-      fixed: "left",
+      render: (record: DataType) => {
+        return record.currentServer.name;
+      },
     },
     {
       title: "IP Address",
       key: "address",
-      dataIndex: "address",
+      render: (record: DataType) => {
+        return record.ipAddress.address;
+      },
     },
     {
-      title: "(Un)Blocked Reason",
+      title: "Action",
+      key: "isBlock",
+      render: (record: DataType) => {
+        return record.isBlock.toString() === "true" ? "Blocked": "Unblocked";
+      },
+    },
+    {
+      title: "Reason",
       key: "reason",
       dataIndex: "reason",
     },
 
     {
-      title: "Purpose",
-      dataIndex: "purpose",
-      key: "purpose",
+      title: "Technical Staff",
+      key: "actor",
+      render: (record: DataType) => {
+        return record.executor.fullname;
+      },
     },
     {
-      title: "Date Created",
-      dataIndex: "dateCreated",
-      key: "dateCreated",
+      title: "Date Executed",
+      dataIndex: "dateExecuted",
+      key: "dateExecuted",
     },
-    // {
-    //   title: "Action",
-    //   key: "operation",
-    //   render: (record: IpSubnet) => (
-    //     <Space wrap>
-    //       <Tooltip title="View History" color={"black"}>
-    //         <Button onClick={() => router.push(`/ipAddress/${record.id}`)}>
-    //           <MdOutlineManageHistory />
-    //         </Button>
-    //       </Tooltip>
-    //     </Space>
-    //   ),
-    // },
   ];
 
   const data: DataType[] = [];
+  console.log(ipAddressHistoryData);
   for (let i = 0; i < ipAddressHistoryData?.data?.length; ++i) {
     data.push({
-      key: ipAddressHistoryData?.data[i].id,
-      id: ipAddressHistoryData?.data[i].id,
-      address: ipAddressHistoryData?.data[i].masterIp.address,
+      key: i,
+      currentServer: ipAddressHistoryData?.data[i].currentServer,
+      currentServerId: ipAddressHistoryData?.data[i].currentServerId,
+      executor: ipAddressHistoryData?.data[i].executor,
+      ipAddress: ipAddressHistoryData?.data[i].ipAddress,
       isBlock: ipAddressHistoryData?.data[i].isBlock,
       reason: ipAddressHistoryData?.data[i].reason,
-      name: ipAddressHistoryData?.data[i].currentServer.name,
       dateExecuted: moment(ipAddressHistoryData?.data[i].dateExecuted).format(
         dateAdvFormat
       ),
-      dateCreated: moment(ipAddressHistoryData?.data[i].dateCreated).format(
-        dateAdvFormat
-      ),
-      dateUpdated: moment(ipAddressHistoryData?.data[i].dateUpdated).format(
-        dateAdvFormat
-      ),
-      companyName: ipAddressHistoryData?.data[i].customer.companyName,
     });
   }
 
