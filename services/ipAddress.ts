@@ -31,7 +31,7 @@ const getData = async (
 const getDetail = async (
   token: string,
   id: string
-): Promise<IpAddressHistory> => {
+): Promise<IpAddress> => {
   const response = await httpClient.get({
     token: token,
     url: apiLinks.ipAddress.getById + `/${id}`,

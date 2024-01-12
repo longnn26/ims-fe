@@ -132,7 +132,7 @@ const apiLinks = {
     getSuggestMaster: `${url}/api/IpAddress/SuggestMaster`,
     block: `${url}/api/IpAddress/Block`,
     unblock: `${url}/api/IpAddress/Unblock`,
-    history: `${url}/api/IpAddress/`,
+    history: `${url}/api/IpAddress`,
   },
 
   requestHost: {

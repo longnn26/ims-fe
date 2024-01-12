@@ -285,6 +285,7 @@ const IpSubnet: React.FC = () => {
                     onTabClick={(value) => handleChange(value)}
                   />
                   <IpAddressTable
+                    ipSubnet={ipSubnetDetail!}
                     onEdit={(record) => { }}
                     onDelete={async (record) => { }}
                     onBlock={(record) => {

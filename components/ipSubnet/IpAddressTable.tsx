@@ -17,6 +17,7 @@ interface Props {
   onEdit: (data: IpAddress) => void;
   onDelete: (data: IpAddress) => void;
   onBlock: (record: IpAddress) => void;
+  ipSubnet: IpSubnet;
 }
 
 interface DataType {
@@ -34,7 +35,7 @@ interface DataType {
 }
 
 const IpAddressable: React.FC<Props> = (props) => {
-  const { onEdit, onDelete, onBlock } = props;
+  const { onEdit, onDelete, onBlock, ipSubnet } = props;
   const router = useRouter();
   const { data: session } = useSession();
   const { ipAddressData, ipAddressDataLoading } = useSelector(
@@ -83,7 +84,7 @@ const IpAddressable: React.FC<Props> = (props) => {
       render: (record: IpSubnet) => (
         <Space wrap>
           <Tooltip title="View History" color={"black"}>
-            <Button onClick={() => router.push(`/ipSubnet/ipAddress/${record.id}`)}>
+            <Button onClick={() => router.push(`/ipSubnet/${ipSubnet.id}/ipAddress/${record.id}`)}>
               <MdOutlineManageHistory />
             </Button>
           </Tooltip>
