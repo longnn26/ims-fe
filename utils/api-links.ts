@@ -171,7 +171,6 @@ const apiLinks = {
 
   statistic: {
     get: `${url}/api/Statistic`,
-    getByMonth: `${url}/api/Statistic/ByMonth`,
   },
 };
 
