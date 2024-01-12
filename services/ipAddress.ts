@@ -1,4 +1,10 @@
-import { IpAddress, IpAddressData, IpAddressParamGet } from "@models/ipAddress";
+import {
+  IpAddress,
+  IpAddressData,
+  IpAddressHistory,
+  IpAddressHistoryData,
+  IpAddressParamGet,
+} from "@models/ipAddress";
 import apiLinks from "@utils/api-links";
 import httpClient from "@utils/http-client";
 
@@ -25,12 +31,12 @@ const getData = async (
 const blockIp = async (
   token: string,
   reason: string,
-  id: number[],
+  id: number[]
 ): Promise<IpAddressData> => {
   const response = await httpClient.put({
     token: token,
     url: apiLinks.ipAddress.block,
-    data: {reason: reason, ipAddressIds: id}
+    data: { reason: reason, ipAddressIds: id },
   });
   return response.data;
 };
@@ -38,12 +44,23 @@ const blockIp = async (
 const unblockIp = async (
   token: string,
   reason: string,
-  id: number[],
+  id: number[]
 ): Promise<IpAddressData> => {
   const response = await httpClient.put({
     token: token,
     url: apiLinks.ipAddress.unblock,
-    data: {reason: reason, ipAddressIds: id}
+    data: { reason: reason, ipAddressIds: id },
+  });
+  return response.data;
+};
+
+const getHistory = async (
+  token: string,
+  params: IpAddressHistory
+): Promise<IpAddressHistoryData> => {
+  const response = await httpClient.get({
+    token: token,
+    url: apiLinks.ipAddress.history + `/${params.id}/History`,
   });
   return response.data;
 };
@@ -53,6 +70,7 @@ const ipAddress = {
   getData,
   blockIp,
   unblockIp,
+  getHistory,
 };
 
 export default ipAddress;

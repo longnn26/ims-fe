@@ -2,21 +2,30 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import ipSubnetService from "@services/ipSubnet";
 import { ParamGet, ParamGetWithId } from "@models/base";
 import { IpSubnetData } from "@models/ipSubnet";
-import { IpAddressData, IpAddressParamGet } from "@models/ipAddress";
+import {
+  IpAddressData,
+  IpAddressHistory,
+  IpAddressHistoryData,
+  IpAddressParamGet,
+} from "@models/ipAddress";
 import ipAddress from "@services/ipAddress";
 
 interface State {
   ipSubnetData: IpSubnetData;
   ipAddressData: IpAddressData;
+  ipAddressHistoryData: IpAddressHistoryData;
   ipSubnetDataLoading: boolean;
   ipAddressDataLoading: boolean;
+  ipAddressHistoryDataLoading: boolean;
 }
 
 const initialState: State = {
   ipSubnetData: {} as IpSubnetData,
   ipAddressData: {} as IpAddressData,
+  ipAddressHistoryData: {} as IpAddressHistoryData,
   ipSubnetDataLoading: false,
   ipAddressDataLoading: false,
+  ipAddressHistoryDataLoading: false,
 };
 
 const TYPE_PREFIX = "ipSubnet";
@@ -32,10 +41,15 @@ const getIpSubnetData = createAsyncThunk(
 const getIpAddressData = createAsyncThunk(
   `${TYPE_PREFIX}/getIpAddressData`,
   async (arg: { token: string; paramGet: IpAddressParamGet }) => {
-    const result = await ipAddress.getData(
-      arg.token,
-      arg.paramGet
-    );
+    const result = await ipAddress.getData(arg.token, arg.paramGet);
+    return result;
+  }
+);
+
+const getIpAddressHistoryData = createAsyncThunk(
+  `${TYPE_PREFIX}/getIpAddressHistoryData`,
+  async (arg: { token: string; paramGet: IpAddressHistory }) => {
+    const result = await ipAddress.getHistory(arg.token, arg.paramGet);
     return result;
   }
 );
@@ -72,9 +86,26 @@ const slice = createSlice({
       ...state,
       ipAddressDataLoading: false,
     }));
+
+    builder.addCase(getIpAddressHistoryData.pending, (state) => ({
+      ...state,
+      ipAddressHistoryDataLoading: true,
+    }));
+    builder.addCase(
+      getIpAddressHistoryData.fulfilled,
+      (state, { payload }) => ({
+        ...state,
+        ipAddressHistoryData: payload,
+        ipAddressHistoryDataLoading: false,
+      })
+    );
+    builder.addCase(getIpAddressHistoryData.rejected, (state) => ({
+      ...state,
+      ipAddressHistoryDataLoading: false,
+    }));
   },
 });
 
-export { getIpSubnetData, getIpAddressData };
+export { getIpSubnetData, getIpAddressData, getIpAddressHistoryData };
 
 export default slice.reducer;

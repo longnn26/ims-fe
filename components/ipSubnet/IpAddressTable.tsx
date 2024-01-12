@@ -8,7 +8,7 @@ import moment from "moment";
 import { IpAddress } from "@models/ipAddress";
 import { useRouter } from "next/router";
 import { IpSubnet } from "@models/ipSubnet";
-import { MdAssignmentAdd } from "react-icons/md";
+import { MdAssignmentAdd, MdOutlineManageHistory } from "react-icons/md";
 import { TbBinary, TbBinaryOff, TbLockOpenOff } from "react-icons/tb";
 import ipAddress from "@services/ipAddress";
 import { useSession } from "next-auth/react";
@@ -76,6 +76,24 @@ const IpAddressable: React.FC<Props> = (props) => {
       title: "Date Created",
       dataIndex: "dateCreated",
       key: "dateCreated",
+    },
+    {
+      title: "Action",
+      key: "operation",
+      render: (record: IpSubnet) => (
+        <Space wrap>
+          <Tooltip title="View History" color={"black"}>
+            <Button onClick={() => router.push(`/ipAddress/${record.id}`)}>
+              <MdOutlineManageHistory />
+            </Button>
+          </Tooltip>
+          {/* <Tooltip title="Delete" color={"black"}>
+            <Button onClick={() => onDelete(record)}>
+              <AiFillDelete />
+            </Button>
+          </Tooltip> */}
+        </Space>
+      ),
     },
     // {
     //   title: "Date Updated",
