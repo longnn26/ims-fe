@@ -9,32 +9,13 @@ interface Props {
 }
 const BarChartComponent: React.FC<Props> = (props) => {
   const { barData } = props;
-  const [finalData, setFinalData] = useState<any>(() => {
-    const month = barData[0].month;
-    const year = barData[0].year;
-    const data = Object.keys(barData[0]).map(key => {
-      if (typeof barData[0][key] === 'object') {
-        return {
-          name: key === "requestHosts" ? "IP Requests" :
-            (key === "requestUpgrades" ? "Hardware Change Requests" :
-                (key === "requestExpands" ? "Add Server Requests" : key.charAt(0).toUpperCase() + key.slice(1))),
-          ...barData[0][key]
-        };
-      }
-      return null;
-    }).filter(entry => entry !== null);
-  
-    return { month, year, data };
-  });
-
-  console.log(finalData)
 
   return (
     <>
-      <BarChart width={1000} height={500} data={finalData.data} layout="vertical">
+      <BarChart width={420} height={450} data={barData} layout="vertical" barSize={4}>
         <CartesianGrid strokeDasharray="3" vertical={false} />
         <XAxis type="number" />
-        <YAxis dataKey="name" type="category"/>
+        <YAxis dataKey="name" type="category" width={100}/>
         <Tooltip />
         <Legend />
         <Bar dataKey="waiting" fill="#19bcf1" />
