@@ -5,17 +5,9 @@ import { dateAdvFormat } from "@utils/constants";
 import { Divider, TableColumnsType, message } from "antd";
 import { Button, Space, Table, Tooltip } from "antd";
 import moment from "moment";
-import {
-  IpAddress,
-  IpAddressData,
-  IpAddressHistory,
-  IpAddressHistoryData,
-} from "@models/ipAddress";
+import { IpAddress } from "@models/ipAddress";
 import { useRouter } from "next/router";
-import { IpSubnet } from "@models/ipSubnet";
-import { MdAssignmentAdd, MdOutlineManageHistory } from "react-icons/md";
-import { TbBinary, TbBinaryOff, TbLockOpenOff } from "react-icons/tb";
-import ipAddress from "@services/ipAddress";
+
 import { useSession } from "next-auth/react";
 
 interface Props {
@@ -26,7 +18,6 @@ interface Props {
 
 interface DataType {
   key: React.Key;
-  id: number;
   dateExecuted?: string;
   isBlock?: boolean;
   reason?: string;
@@ -92,7 +83,6 @@ const HistoryIpAddressTable: React.FC<Props> = (props) => {
   for (let i = 0; i < ipAddressHistoryData?.data?.length; ++i) {
     data.push({
       key: ipAddressHistoryData?.data[i].id,
-      id: ipAddressHistoryData?.data[i].id,
       address: ipAddressHistoryData?.data[i].masterIp.address,
       isBlock: ipAddressHistoryData?.data[i].isBlock,
       reason: ipAddressHistoryData?.data[i].reason,

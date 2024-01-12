@@ -10,13 +10,12 @@ import { useSession } from "next-auth/react";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
-import { getServerAllocationData } from "@slices/serverAllocation";
 import { areInArray } from "@utils/helpers";
 import { ROLE_TECH } from "@utils/constants";
 import { ParamGet } from "@models/base";
 import HistoryIpAddressTable from "@components/ipSubnet/HistoryIpAddressTable";
 import ipAddress from "@services/ipAddress";
-import { IpAddressHistory } from "@models/ipAddress";
+import { IpAddressHistory, IpAddressHistoryData } from "@models/ipAddress";
 import { getIpAddressData, getIpAddressHistoryData } from "@slices/ipSubnet";
 
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
@@ -51,12 +50,11 @@ const Customer: React.FC = () => {
         id: router.query.IpAddressId + "",
       })
     ).then(({ payload }) => {
-      var res = payload as ServerAllocationData;
+      var res = payload as IpAddressHistoryData;
       if (res?.totalPage < paramGet.PageIndex && res.totalPage != 0) {
         setParamGet({
           ...paramGet,
           PageIndex: res.totalPage,
-          CustomerId: router.query.customerId + "",
         });
       }
     });
@@ -96,9 +94,9 @@ const Customer: React.FC = () => {
           {areInArray(session?.user.roles!, ROLE_TECH) && (
             <>
               <HistoryIpAddressTable
-                onEdit={() => { }}
-                onBlock={() => { }}
-                onDelete={() => { }}
+                onEdit={() => {}}
+                onBlock={() => {}}
+                onDelete={() => {}}
               />
               {ipAddressHistoryData?.totalPage > 0 && (
                 <Pagination

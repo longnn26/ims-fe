@@ -4,7 +4,6 @@ import { ParamGet, ParamGetWithId } from "@models/base";
 import { IpSubnetData } from "@models/ipSubnet";
 import {
   IpAddressData,
-  IpAddressHistory,
   IpAddressHistoryData,
   IpAddressParamGet,
 } from "@models/ipAddress";

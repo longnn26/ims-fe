@@ -34,7 +34,6 @@ export interface IpAddressParamGet extends ParamGet {
 }
 
 export interface IpAddressHistory extends BaseWithIdNumber {
-  id: number;
   dateExecuted?: string;
   isBlock?: boolean;
   currentServerId?: number;
