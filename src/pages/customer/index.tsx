@@ -52,7 +52,7 @@ const Customer: React.FC = () => {
     dispatch(
       getCustomerData({
         token: session?.user.access_token!,
-        paramGet: { ...paramGet, SortKey: "DateCreated", SortOrder: "DESC", SaleId: userId, IncludeDeleted: status },
+        paramGet: { ...paramGet, SortKey: "DateCreated", SortOrder: "DESC", SaleId: userId, IsDeleted: status },
       })
     ).then(({ payload }) => {
       var res = payload as CustomerData;

@@ -132,6 +132,7 @@ const Customer: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session, paramGet]);
 
+
   if (customerDetail === undefined) {
     return (<AntdLayoutNoSSR
       content={

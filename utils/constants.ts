@@ -168,12 +168,12 @@ export const requestHostStatus = [
 
 export const customerStatus = [
   {
-    value: true,
+    value: false,
     label: "Active",
     color: "#19bcf1",
   },
   {
-    value: false,
+    value: true,
     label: "Removed",
     color: "#ed1c24",
   },
