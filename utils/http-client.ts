@@ -13,6 +13,7 @@ interface Options {
   authorization?: string;
   routing?: string;
   token?: string;
+  contentDisposition?: string;
 }
 
 interface FullOptions extends Options {
@@ -24,6 +25,7 @@ const request = (arg: FullOptions): Promise<AxiosResponse> => {
   const {
     method,
     contentType = "application/json",
+    contentDisposition,
     url,
     data,
     params,

@@ -68,6 +68,8 @@ const acceptAppointment = async (
   saleNote: string
 ): Promise<any> => {
   const response = await httpClient.put({
+    contentType: "application/json",
+    contentDisposition: "form-data",
     url: apiLinks.appointment.accept + `/${id}/Accept`,
     token: token,
     data: { saleNote: saleNote },

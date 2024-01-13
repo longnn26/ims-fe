@@ -172,6 +172,10 @@ const apiLinks = {
   statistic: {
     get: `${url}/api/Statistic`,
   },
+
+  location: {
+    get: `${url}/api/Location/Available`,
+  }
 };
 
 export default apiLinks;

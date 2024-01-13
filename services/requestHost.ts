@@ -75,6 +75,8 @@ const acceptRequestHost = async (
   saleNote: string
 ): Promise<any> => {
   const response = await httpClient.put({
+    contentType: "application/json",
+    contentDisposition: "form-data",
     url: apiLinks.requestHost.accept + `/${id}/Accept`,
     token: token,
     data: { saleNote: saleNote },

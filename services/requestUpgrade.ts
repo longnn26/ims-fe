@@ -96,6 +96,8 @@ const acceptRequestUpgrade = async (
   id: string
 ): Promise<any> => {
   const response = await httpClient.put({
+    contentType: "application/json",
+    contentDisposition: "form-data",
     url: apiLinks.requestUpgrade.accept + `/${id}/Accept`,
     token: token,
   });

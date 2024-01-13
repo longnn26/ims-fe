@@ -47,8 +47,7 @@ const ModalUpdate: React.FC<Props> = (props) => {
   };
 
   // const getMoreLocation = async () => {
-  //   lo.PageIndex += 1;
-  //   await ipAddressService
+  //   await 
   //     .getData(session?.user.access_token!, {...ipAddressParamGet, IsAssigned: false, IsAvailable: true,})
   //     .then(async (data) => {
   //       setTotalPageIp(data.totalPage);
