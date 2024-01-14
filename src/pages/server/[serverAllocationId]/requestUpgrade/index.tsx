@@ -32,6 +32,7 @@ import { useRouter } from "next/router";
 import { ServerAllocation } from "@models/serverAllocation";
 import {
   ROLE_CUSTOMER,
+  ROLE_MANAGER,
   ROLE_SALES,
   ROLE_TECH,
   dateAdvFormat,
@@ -79,7 +80,8 @@ const RequestUpgrade: React.FC = () => {
   const [itemBreadcrumbs, setItemBreadcrumbs] = useState<ItemType[]>([]);
 
   const getData = async () => {
-    var customerId = "", userId="";
+    var customerId = "",
+      userId = "";
     if (areInArray(session?.user.roles!, ROLE_SALES)) {
       userId = parseJwt(session?.user.access_token!).UserId;
     } else if (session?.user.roles.includes("Customer")) {
@@ -193,7 +195,8 @@ const RequestUpgrade: React.FC = () => {
               session?.user.roles!,
               ROLE_SALES,
               ROLE_TECH,
-              ROLE_CUSTOMER
+              ROLE_CUSTOMER,
+              ROLE_MANAGER
             ) && <BreadcrumbComponent itemBreadcrumbs={itemBreadcrumbs} />}
             <div>
               {areInArray(session?.user.roles!, ROLE_CUSTOMER) && (
@@ -265,7 +268,8 @@ const RequestUpgrade: React.FC = () => {
             session?.user.roles!,
             ROLE_SALES,
             ROLE_TECH,
-            ROLE_CUSTOMER
+            ROLE_CUSTOMER,
+            ROLE_MANAGER
           ) && (
             <>
               <ServerDetail

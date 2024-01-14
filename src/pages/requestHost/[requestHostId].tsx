@@ -35,7 +35,12 @@ import { MdCancel } from "react-icons/md";
 import UploadComponent from "@components/UploadComponent";
 import type { UploadFile } from "antd/es/upload/interface";
 import { CaretLeftOutlined, UploadOutlined } from "@ant-design/icons";
-import { ROLE_CUSTOMER, ROLE_SALES, ROLE_TECH } from "@utils/constants";
+import {
+  ROLE_CUSTOMER,
+  ROLE_MANAGER,
+  ROLE_SALES,
+  ROLE_TECH,
+} from "@utils/constants";
 import { areInArray } from "@utils/helpers";
 import serverHardwareConfig from "@services/serverHardwareConfig";
 import {
@@ -227,7 +232,8 @@ const RequestDetail: React.FC = () => {
             session?.user.roles!,
             ROLE_TECH,
             ROLE_SALES,
-            ROLE_CUSTOMER
+            ROLE_CUSTOMER,
+            ROLE_MANAGER
           ) && (
             <>
               <div className="flex flex-wrap items-center justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">

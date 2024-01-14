@@ -14,13 +14,22 @@ import {
   CustomerData,
   CusParam,
 } from "@models/customer";
-import { Button, Pagination, message, Modal, Alert, Spin, TabsProps, Tabs } from "antd";
+import {
+  Button,
+  Pagination,
+  message,
+  Modal,
+  Alert,
+  Spin,
+  TabsProps,
+  Tabs,
+} from "antd";
 import ModalCreate from "@components/customer/ModalCreate";
 import customerService from "@services/customer";
 import ModalUpdate from "@components/customer/ModalUpdate";
 import CustomerTable from "@components/customer/CustomerTable";
 import { areInArray, parseJwt } from "@utils/helpers";
-import { ROLE_SALES, ROLE_TECH } from "@utils/constants";
+import { ROLE_MANAGER, ROLE_SALES, ROLE_TECH } from "@utils/constants";
 import SearchComponent from "@components/SearchComponent";
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
@@ -45,14 +54,20 @@ const Customer: React.FC = () => {
   const [status, setStatus] = useState<boolean>();
 
   const getData = async () => {
-    var userId="";
+    var userId = "";
     if (areInArray(session?.user.roles!, ROLE_SALES)) {
       userId = parseJwt(session?.user.access_token!).UserId;
     }
     dispatch(
       getCustomerData({
         token: session?.user.access_token!,
-        paramGet: { ...paramGet, SortKey: "DateCreated", SortOrder: "DESC", SaleId: userId, IsDeleted: status },
+        paramGet: {
+          ...paramGet,
+          SortKey: "DateCreated",
+          SortOrder: "DESC",
+          SaleId: userId,
+          IsDeleted: status,
+        },
       })
     ).then(({ payload }) => {
       var res = payload as CustomerData;
@@ -83,7 +98,10 @@ const Customer: React.FC = () => {
             message.success(`Delete customer successfully!`, 1.5);
           })
           .catch((errors) => {
-            message.error(errors.response.data ?? "Delete customer failed", 1.5);
+            message.error(
+              errors.response.data ?? "Delete customer failed",
+              1.5
+            );
             setLoadingSubmit(false);
           });
       },
@@ -112,9 +130,8 @@ const Customer: React.FC = () => {
       case "2":
         setStatus(true);
         break;
-    };
+    }
   };
-
 
   const items: TabsProps["items"] = [
     {
@@ -128,7 +145,7 @@ const Customer: React.FC = () => {
     {
       key: "2",
       label: "Removed",
-    }
+    },
   ];
 
   return (
@@ -157,10 +174,19 @@ const Customer: React.FC = () => {
               }
             />
           </div>
-          <Tabs className="m-5" defaultActiveKey="0" items={items} centered
+          <Tabs
+            className="m-5"
+            defaultActiveKey="0"
+            items={items}
+            centered
             onTabClick={(value) => handleChange(value)}
           />
-          {areInArray(session?.user.roles!, ROLE_SALES, ROLE_TECH) && (
+          {areInArray(
+            session?.user.roles!,
+            ROLE_SALES,
+            ROLE_TECH,
+            ROLE_MANAGER
+          ) && (
             <>
               <CustomerTable
                 onEdit={(record) => {

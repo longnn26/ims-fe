@@ -35,7 +35,12 @@ import UploadComponent from "@components/UploadComponent";
 import type { UploadFile } from "antd/es/upload/interface";
 import { CaretLeftOutlined, UploadOutlined } from "@ant-design/icons";
 import { areInArray } from "@utils/helpers";
-import { ROLE_CUSTOMER, ROLE_SALES, ROLE_TECH } from "@utils/constants";
+import {
+  ROLE_CUSTOMER,
+  ROLE_MANAGER,
+  ROLE_SALES,
+  ROLE_TECH,
+} from "@utils/constants";
 import ModalEmpty from "@components/ModalEmpty";
 import RequestHostIPAddressTable from "@components/server/requestHost/RequestHostIPAddressTable";
 import ModalCreateRemoval from "@components/server/requestHost/ModalCreateRemoval";
@@ -118,7 +123,7 @@ const RequestHostDetail: React.FC = () => {
         session?.user.access_token!,
         router.query.serverAllocationId + ""
       )
-      .then(async(res) => {
+      .then(async (res) => {
         setServerAllocationDetail(res);
         await serverHardwareConfig
           .getServerHardwareConfigData(session?.user.access_token!, {
@@ -399,7 +404,8 @@ const RequestHostDetail: React.FC = () => {
               session?.user.roles!,
               ROLE_SALES,
               ROLE_TECH,
-              ROLE_CUSTOMER
+              ROLE_CUSTOMER,
+              ROLE_MANAGER
             ) &&
               permission && (
                 <>

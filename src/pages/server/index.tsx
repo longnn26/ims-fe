@@ -18,13 +18,26 @@ import {
   ServerAllocation,
   ServerAllocationData,
 } from "@models/serverAllocation";
-import { Button, Pagination, message, Modal, Alert, Tabs, TabsProps } from "antd";
+import {
+  Button,
+  Pagination,
+  message,
+  Modal,
+  Alert,
+  Tabs,
+  TabsProps,
+} from "antd";
 import ServerAllocationTable from "@components/server/ServerAllocationTable";
 import ModalCreate from "@components/server/ModalCreate";
 import serverAllocationService from "@services/serverAllocation";
 import ModalUpdate from "@components/server/ModalUpdate";
 import { areInArray, parseJwt } from "@utils/helpers";
-import { ROLE_CUSTOMER, ROLE_SALES, ROLE_TECH } from "@utils/constants";
+import {
+  ROLE_CUSTOMER,
+  ROLE_MANAGER,
+  ROLE_SALES,
+  ROLE_TECH,
+} from "@utils/constants";
 import SearchComponent from "@components/SearchComponent";
 import ModalAlert from "@components/server/ModalAlert";
 
@@ -53,12 +66,17 @@ const Customer: React.FC = () => {
       PageSize: 6,
     } as ParamGet);
   const [loadingSubmit, setLoadingSubmit] = useState<boolean>(false);
-  const [serverAllocationUpdate, setServerAllocationUpdate] = useState<ServerAllocation | undefined>(undefined);
-  const [serverAllocationAlert, setServerAllocationAlert] = useState<ServerAllocation | undefined>(undefined);
+  const [serverAllocationUpdate, setServerAllocationUpdate] = useState<
+    ServerAllocation | undefined
+  >(undefined);
+  const [serverAllocationAlert, setServerAllocationAlert] = useState<
+    ServerAllocation | undefined
+  >(undefined);
   const [openModalCreate, setOpenModalCreate] = useState<boolean>(false);
 
   const getData = async () => {
-    var customerId = "", userId="";
+    var customerId = "",
+      userId = "";
     if (areInArray(session?.user.roles!, ROLE_SALES)) {
       userId = parseJwt(session?.user.access_token!).UserId;
     } else if (session?.user.roles.includes("Customer")) {
@@ -67,7 +85,12 @@ const Customer: React.FC = () => {
     dispatch(
       getServerAllocationData({
         token: session?.user.access_token!,
-        param: { ...paramGet, CustomerId: customerId, Status: status, UserId: userId },
+        param: {
+          ...paramGet,
+          CustomerId: customerId,
+          Status: status,
+          UserId: userId,
+        },
       })
     ).then(({ payload }) => {
       var res = payload as ServerAllocationData;
@@ -157,11 +180,14 @@ const Customer: React.FC = () => {
             message.success(`Delete server allocation successfully!`, 1.5);
           })
           .catch((errors) => {
-            message.error(errors.response.data ?? "Delete allocation failed", 1.5);
+            message.error(
+              errors.response.data ?? "Delete allocation failed",
+              1.5
+            );
             setLoadingSubmit(false);
           });
       },
-      onCancel() { },
+      onCancel() {},
     });
   };
 
@@ -182,7 +208,7 @@ const Customer: React.FC = () => {
       case "4":
         setStatus("Removed");
         break;
-    };
+    }
   };
 
   useEffect(() => {
@@ -256,70 +282,75 @@ const Customer: React.FC = () => {
               }
             />
           </div>
-          <Tabs className="m-5" defaultActiveKey="0" items={items} centered
+          <Tabs
+            className="m-5"
+            defaultActiveKey="0"
+            items={items}
+            centered
             onTabClick={(value) => handleChange(value)}
           />
           {areInArray(
             session?.user.roles!,
             ROLE_SALES,
             ROLE_TECH,
-            ROLE_CUSTOMER
+            ROLE_CUSTOMER,
+            ROLE_MANAGER
           ) && (
-              <>
-                <ServerAllocationTable
-                  onEdit={(record) => {
-                    setServerAllocationUpdate(record);
-                  }}
-                  onDelete={async (record) => {
-                    deleteServerAllocation(record);
-                  }}
-                  onAlert={(record) => {
-                    setServerAllocationAlert(record);
-                  }}
-                />
+            <>
+              <ServerAllocationTable
+                onEdit={(record) => {
+                  setServerAllocationUpdate(record);
+                }}
+                onDelete={async (record) => {
+                  deleteServerAllocation(record);
+                }}
+                onAlert={(record) => {
+                  setServerAllocationAlert(record);
+                }}
+              />
 
-                <ModalCreate
-                  open={openModalCreate}
-                  onClose={() => setOpenModalCreate(false)}
-                  onSubmit={() => {
-                    setOpenModalCreate(false);
-                    getData();
+              <ModalCreate
+                open={openModalCreate}
+                onClose={() => setOpenModalCreate(false)}
+                onSubmit={() => {
+                  setOpenModalCreate(false);
+                  getData();
+                }}
+                customerParamGet={customerSelectParamGet}
+                setCustomerParamGet={setCustomerSelectParamGet}
+              />
+              <ModalUpdate
+                serverAllocation={serverAllocationUpdate!}
+                onClose={() => setServerAllocationUpdate(undefined)}
+                onSubmit={(data: SAUpdateModel) => {
+                  updateData(data);
+                }}
+              />
+              <ModalAlert
+                serverAllocation={serverAllocationAlert!}
+                onClose={() => setServerAllocationAlert(undefined)}
+                onSubmit={() => {
+                  setServerAllocationAlert(undefined);
+                  getData();
+                }}
+              />
+              {serverAllocationData?.totalPage > 0 && (
+                <Pagination
+                  className="text-end m-4"
+                  current={paramGet.PageIndex}
+                  pageSize={serverAllocationData?.pageSize ?? 10}
+                  total={serverAllocationData?.totalSize}
+                  onChange={(page, pageSize) => {
+                    setParamGet({
+                      ...paramGet,
+                      PageIndex: page,
+                      PageSize: pageSize,
+                    });
                   }}
-                  customerParamGet={customerSelectParamGet}
-                  setCustomerParamGet={setCustomerSelectParamGet}
                 />
-                <ModalUpdate
-                  serverAllocation={serverAllocationUpdate!}
-                  onClose={() => setServerAllocationUpdate(undefined)}
-                  onSubmit={(data: SAUpdateModel) => {
-                    updateData(data);
-                  }}
-                />
-                <ModalAlert
-                  serverAllocation={serverAllocationAlert!}
-                  onClose={() => setServerAllocationAlert(undefined)}
-                  onSubmit={() => {
-                    setServerAllocationAlert(undefined);
-                    getData();
-                  }}
-                />
-                {serverAllocationData?.totalPage > 0 && (
-                  <Pagination
-                    className="text-end m-4"
-                    current={paramGet.PageIndex}
-                    pageSize={serverAllocationData?.pageSize ?? 10}
-                    total={serverAllocationData?.totalSize}
-                    onChange={(page, pageSize) => {
-                      setParamGet({
-                        ...paramGet,
-                        PageIndex: page,
-                        PageSize: pageSize,
-                      });
-                    }}
-                  />
-                )}
-              </>
-            )}
+              )}
+            </>
+          )}
         </>
       }
     />

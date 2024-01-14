@@ -35,7 +35,12 @@ import useDispatch from "@hooks/use-dispatch";
 import AppointmentTable from "@components/server/requestUpgrade/AppointmentTable";
 import ModalUpdate from "@components/server/requestExpand/ModalUpdate";
 import { areInArray } from "@utils/helpers";
-import { ROLE_CUSTOMER, ROLE_SALES, ROLE_TECH } from "@utils/constants";
+import {
+  ROLE_CUSTOMER,
+  ROLE_MANAGER,
+  ROLE_SALES,
+  ROLE_TECH,
+} from "@utils/constants";
 import ModalEmpty from "@components/ModalEmpty";
 import ModalDeny from "@components/server/requestExpand/ModalDeny";
 import serverHardwareConfig from "@services/serverHardwareConfig";
@@ -379,7 +384,8 @@ const RequestExpandDetail: React.FC = () => {
               session?.user.roles!,
               ROLE_SALES,
               ROLE_TECH,
-              ROLE_CUSTOMER
+              ROLE_CUSTOMER,
+              ROLE_MANAGER
             ) &&
               permission && (
                 <>

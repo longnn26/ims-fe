@@ -15,7 +15,12 @@ import requestUpgradeService from "@services/requestUpgrade";
 import ModalUpdate from "@components/server/requestUpgrade/ModalUpdate";
 import dynamic from "next/dynamic";
 import React, { useEffect, useState } from "react";
-import { ROLE_CUSTOMER, ROLE_SALES, ROLE_TECH } from "@utils/constants";
+import {
+  ROLE_CUSTOMER,
+  ROLE_MANAGER,
+  ROLE_SALES,
+  ROLE_TECH,
+} from "@utils/constants";
 import { areInArray, parseJwt } from "@utils/helpers";
 import SearchComponent from "@components/SearchComponent";
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
@@ -36,7 +41,8 @@ const Customer: React.FC = () => {
   } as unknown as RUParamGet);
 
   const getData = async () => {
-    var customerId = "", userId="";
+    var customerId = "",
+      userId = "";
     if (areInArray(session?.user.roles!, ROLE_SALES)) {
       userId = parseJwt(session?.user.access_token!).UserId;
     } else if (session?.user.roles.includes("Customer")) {
@@ -89,7 +95,8 @@ const Customer: React.FC = () => {
           })
           .catch((errors) => {
             message.error(
-              errors.response.data ?? "Delete request upgrade failed", 1.5
+              errors.response.data ?? "Delete request upgrade failed",
+              1.5
             );
           });
       },
@@ -105,7 +112,13 @@ const Customer: React.FC = () => {
     <AntdLayoutNoSSR
       content={
         <>
-          {areInArray(session?.user.roles!, ROLE_TECH, ROLE_SALES, ROLE_CUSTOMER) && (
+          {areInArray(
+            session?.user.roles!,
+            ROLE_TECH,
+            ROLE_SALES,
+            ROLE_CUSTOMER,
+            ROLE_MANAGER
+          ) && (
             <>
               <div className="flex justify-end mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
                 <SearchComponent

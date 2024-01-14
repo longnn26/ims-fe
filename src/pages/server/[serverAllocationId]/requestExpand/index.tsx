@@ -22,7 +22,12 @@ import requestUpgradeService from "@services/requestUpgrade";
 import requestExpandService from "@services/requestExpand";
 import serverAllocationService from "@services/serverAllocation";
 import { getRequestExpandData } from "@slices/requestExpand";
-import { ROLE_CUSTOMER, ROLE_SALES, ROLE_TECH } from "@utils/constants";
+import {
+  ROLE_CUSTOMER,
+  ROLE_MANAGER,
+  ROLE_SALES,
+  ROLE_TECH,
+} from "@utils/constants";
 import { areInArray, parseJwt } from "@utils/helpers";
 import { Alert, Button, FloatButton, Modal, Pagination, message } from "antd";
 import { ItemType } from "antd/es/breadcrumb/Breadcrumb";
@@ -33,7 +38,10 @@ import React, { useEffect, useState } from "react";
 import { AiOutlineFileDone } from "react-icons/ai";
 import { MdCancel } from "react-icons/md";
 import { IoIosSend } from "react-icons/io";
-import { SHCParamGet, ServerHardwareConfigData } from "@models/serverHardwareConfig";
+import {
+  SHCParamGet,
+  ServerHardwareConfigData,
+} from "@models/serverHardwareConfig";
 import serverHardwareConfig from "@services/serverHardwareConfig";
 
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
@@ -59,15 +67,16 @@ const RequestExpand: React.FC = () => {
   const [serverAllocationDetail, setServerAllocationDetail] =
     useState<ServerAllocation>();
   const [param, setParam] = useState<SHCParamGet>({
-      PageIndex: 1,
-      PageSize: 10,
-    } as unknown as SHCParamGet);
-    const [hardware, setHardware] = useState<ServerHardwareConfigData>();
+    PageIndex: 1,
+    PageSize: 10,
+  } as unknown as SHCParamGet);
+  const [hardware, setHardware] = useState<ServerHardwareConfigData>();
 
   const [itemBreadcrumbs, setItemBreadcrumbs] = useState<ItemType[]>([]);
 
   const getData = async () => {
-    var customerId = "", userId="";
+    var customerId = "",
+      userId = "";
     if (areInArray(session?.user.roles!, ROLE_SALES)) {
       userId = parseJwt(session?.user.access_token!).UserId;
     } else if (session?.user.roles.includes("Customer")) {
@@ -80,11 +89,12 @@ const RequestExpand: React.FC = () => {
       )
       .then(async (res) => {
         setServerAllocationDetail(res);
-        await serverHardwareConfig.getServerHardwareConfigData(
-            session?.user.access_token!,
-            {...param, 
-              ServerAllocationId: res.id,} as SHCParamGet
-          ).then((res) => {
+        await serverHardwareConfig
+          .getServerHardwareConfigData(session?.user.access_token!, {
+            ...param,
+            ServerAllocationId: res.id,
+          } as SHCParamGet)
+          .then((res) => {
             setHardware(res);
           });
       });
@@ -94,7 +104,7 @@ const RequestExpand: React.FC = () => {
         paramGet: {
           ...paramGet,
           CustomerId: customerId,
-          UserId: userId
+          UserId: userId,
         },
       })
     ).then(({ payload }) => {
@@ -153,7 +163,8 @@ const RequestExpand: React.FC = () => {
           })
           .catch((errors) => {
             message.error(
-              errors.response.data ?? "Delete request upgrade failed", 1.5
+              errors.response.data ?? "Delete request upgrade failed",
+              1.5
             );
             setLoadingSubmit(false);
           });
@@ -195,7 +206,8 @@ const RequestExpand: React.FC = () => {
             session?.user.roles!,
             ROLE_SALES,
             ROLE_TECH,
-            ROLE_CUSTOMER
+            ROLE_CUSTOMER,
+            ROLE_MANAGER
           ) && (
             <>
               <div className="flex flex-wrap items-center justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">

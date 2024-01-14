@@ -5,7 +5,7 @@ import RackMapRender from "@components/area/rack/RackMapRender";
 import PieChartComponent from "@components/chartComponent/Pie";
 import { Rack, RackMap } from "@models/rack";
 import area from "@services/rack";
-import { ROLE_TECH } from "@utils/constants";
+import { ROLE_MANAGER, ROLE_TECH } from "@utils/constants";
 import { areInArray } from "@utils/helpers";
 import { Avatar, Button, List } from "antd";
 import { useSession } from "next-auth/react";
@@ -52,7 +52,7 @@ const AreaDetail: React.FC = () => {
     <AntdLayoutNoSSR
       content={
         <>
-          {areInArray(session?.user.roles!, ROLE_TECH) && (
+          {areInArray(session?.user.roles!, ROLE_TECH, ROLE_MANAGER) && (
             <>
               <div className="flex justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
                 {/* <BreadcrumbComponent itemBreadcrumbs={itemBreadcrumbs} /> */}

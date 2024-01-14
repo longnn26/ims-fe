@@ -47,7 +47,12 @@ import RequestExpandTable from "@components/server/requestExpand/RequestExpandTa
 import ModalAccept from "@components/appointment/ModalAccept";
 import ModalDeny from "@components/appointment/ModalDeny";
 import { areInArray } from "@utils/helpers";
-import { ROLE_CUSTOMER, ROLE_SALES, ROLE_TECH } from "@utils/constants";
+import {
+  ROLE_CUSTOMER,
+  ROLE_MANAGER,
+  ROLE_SALES,
+  ROLE_TECH,
+} from "@utils/constants";
 import ModalUpdateDocument from "@components/appointment/ModalUpdateDocument";
 import ModalResolveIncident from "@components/appointment/ModalResolveIncident";
 import { IncidentResolve } from "@models/incident";
@@ -343,7 +348,12 @@ const Appoinment: React.FC = () => {
                 {Boolean(
                   appointmentDetail?.status === "Success" &&
                     !appointmentDetail.documentConfirm &&
-                    areInArray(session?.user.roles!, ROLE_SALES, ROLE_TECH)
+                    areInArray(
+                      session?.user.roles!,
+                      ROLE_SALES,
+                      ROLE_TECH,
+                      ROLE_MANAGER
+                    )
                 ) && (
                   <>
                     <Button
