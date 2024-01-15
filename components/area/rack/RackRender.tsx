@@ -33,7 +33,7 @@ const RackRender: React.FC<Props> = (props) => {
   const { getAllRackData } = useSelector((state) => state.area);
   var rowList = [] as RowInArea[];
   for (let index = 0; index < area?.rowCount; index++) {
-    rowList.push({ id: index + 1, data: [] } as RowInArea);
+    rowList.push({ id: index, data: [] } as RowInArea);
   }
   getAllRackData?.forEach((rack) => {
     rowList.forEach((row) => {
@@ -42,116 +42,6 @@ const RackRender: React.FC<Props> = (props) => {
       }
     });
   });
-
-  // const columns: TableColumnsType<DataType> = [
-  //   {
-  //     title: "Id",
-  //     dataIndex: "id",
-  //     key: "id",
-  //     fixed: "left",
-  //     render: (text) => (
-  //       <a className="text-[#b75c3c] hover:text-[#ee4623]">{text}</a>
-  //     ),
-  //     onCell: (record, rowIndex) => {
-  //       return {
-  //         onClick: (ev) => {
-  //           router.push(`/area/${record.id}`);
-  //         },
-  //       };
-  //     },
-  //   },
-  //   {
-  //     title: "Name",
-  //     dataIndex: "name",
-  //     key: "name",
-  //     onCell: (record, rowIndex) => {
-  //       return {
-  //         onClick: (ev) => {
-  //           router.push(`/area/${record.id}`);
-  //         },
-  //       };
-  //     },
-  //   },
-  //   {
-  //     title: "Row Count",
-  //     dataIndex: "rowCount",
-  //     key: "rowCount",
-  //     onCell: (record, rowIndex) => {
-  //       return {
-  //         onClick: (ev) => {
-  //           router.push(`/area/${record.id}`);
-  //         },
-  //       };
-  //     },
-  //   },
-  //   {
-  //     title: "Column Count",
-  //     dataIndex: "columnCount",
-  //     key: "columnCount",
-  //     onCell: (record, rowIndex) => {
-  //       return {
-  //         onClick: (ev) => {
-  //           router.push(`/area/${record.id}`);
-  //         },
-  //       };
-  //     },
-  //   },
-  //   {
-  //     title: "Date Created",
-  //     dataIndex: "dateCreated",
-  //     key: "dateCreated",
-  //     onCell: (record, rowIndex) => {
-  //       return {
-  //         onClick: (ev) => {
-  //           router.push(`/area/${record.id}`);
-  //         },
-  //       };
-  //     },
-  //   },
-  //   {
-  //     title: "Date Updated",
-  //     dataIndex: "dateUpdated",
-  //     key: "dateUpdated",
-  //     onCell: (record, rowIndex) => {
-  //       return {
-  //         onClick: (ev) => {
-  //           router.push(`/area/${record.id}`);
-  //         },
-  //       };
-  //     },
-  //   },
-  //   {
-  //     title: "Action",
-  //     key: "operation",
-  //     render: (record: Area) => (
-  //       <Space wrap>
-  //         <Tooltip title="Edit" color={"black"}>
-  //           <Button onClick={() => onEdit(record)}>
-  //             <BiEdit />
-  //           </Button>
-  //         </Tooltip>
-  //         <Tooltip title="Delete" color={"black"}>
-  //           <Button onClick={() => onDelete(record)}>
-  //             <AiFillDelete />
-  //           </Button>
-  //         </Tooltip>
-  //       </Space>
-  //     ),
-  //   },
-  // ];
-
-  // const data: DataType[] = [];
-  // for (let i = 0; i < areaData?.data?.length; ++i) {
-  //   data.push({
-  //     key: areaData?.data[i].id,
-  //     id: areaData?.data[i].id,
-  //     name: areaData?.data[i].name,
-  //     rowCount: areaData?.data[i].rowCount,
-  //     columnCount: areaData?.data[i].columnCount,
-  //     dateCreated: moment(areaData?.data[i].dateCreated).format(dateAdvFormat),
-  //     dateUpdated: moment(areaData?.data[i].dateUpdated).format(dateAdvFormat),
-  //   });
-  // }
 
   return (
     <>
@@ -180,7 +70,7 @@ const RackRender: React.FC<Props> = (props) => {
                   <p className="relative">
                     {" "}
                     {area.name}
-                    {item.row} - {item.column}
+                    {item.row + 1} - {item.column + 1}
                   </p>
                 </div>
               </Col>
