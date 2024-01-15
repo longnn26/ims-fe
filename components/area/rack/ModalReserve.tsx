@@ -66,36 +66,29 @@ const ModalReserve: React.FC<Props> = (props) => {
       });
   };
 
-  //   const setFieldsValueInitial = async () => {
-  //     var subnetDetail = "";
-  //     await ipSubnetService
-  //       .getDetail(session?.user.access_token!, subnetId)
-  //       .then(async (res) => {
-  //         subnetDetail = `${res?.firstOctet!}.${res?.secondOctet!}.${res?.thirdOctet!}.${res?.fourthOctet!}/${res?.prefixLength!}`;
-  //       });
-  //     if (formRef.current)
-  //       form.setFieldsValue({
-  //         subnet: subnetDetail,
-  //       });
-  //   };
-
-  const getMoreLocation = async (rackId: number) => {
+  const getMoreLocation = async (isFirst?: boolean) => {
+    if (isFirst === true) {
+      paramGet.PageIndex = 0;
+    }
     paramGet.PageIndex += 1;
     await locationService
-      .getAll(session?.user.access_token!, {
+      .getData(session?.user.access_token!, {
         ...paramGet,
+        RackId: parseInt(router.query.rackId+""),
+        Size: 1,
       })
       .then(async (data) => {
         setTotalPage(data.totalPage);
         paramGet.PageIndex = data.pageIndex;
-        setLocationList([...locationList, ...data.data]);
+        isFirst === true ?
+        setLocationList([...data.data])
+        : setLocationList([...locationList, ...data.data]);
       });
   };
 
   useEffect(() => {
     if (session) {
-      //   setFieldsValueInitial();
-      getMoreLocation(parseInt(router.query.rackId!.toString()));
+      getMoreLocation(true);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session, open]);
@@ -166,16 +159,14 @@ const ModalReserve: React.FC<Props> = (props) => {
                       (target as any).scrollHeight
                     ) {
                       if (pageIndexCus < totalPageCus) {
-                        getMoreLocation(
-                          parseInt(router.query.rackId!.toString())
-                        );
+                        getMoreLocation();
                       }
                     }
                   }}
                 >
-                  {location.map((l, index) => (
+                  {locationList.map((l, index) => (
                     <Option key={l.id} value={l.id}>
-                      {`${l?.rack.area.name}${l?.rack.column} - ${l?.rack.row}${
+                      {`${l?.rack.area.name}${l?.rack.row} - ${l?.rack.column} U${
                         l?.position !== undefined ? l.position + 1 : ""
                       }`}
                     </Option>
