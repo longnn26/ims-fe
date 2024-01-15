@@ -207,7 +207,7 @@ const StaffAccountPage: React.FC = () => {
               />
               <div className="flex justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
                 {/* Left side: StaffAccountTable */}
-                <div style={{ width: "calc(100% - 70%)" }}>
+                <div style={{ width: "calc(100% - 60%)" }}>
                   <StaffAccountTable
                     onRowClick={(record) => {
                       const selectedUser = userData?.data.find(
@@ -238,40 +238,6 @@ const StaffAccountPage: React.FC = () => {
                 {/* Right side */}
                 <div>
                   <StaffAccountDetail staffAccountDetail={staffAccountDetail} />
-                  <div className="flex justify-end mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
-                    {staffAccountDetail === undefined ||
-                      (staffAccountDetail.positions &&
-                        staffAccountDetail.positions.length < 3 && (
-                          <Button
-                            type="primary"
-                            className="ml-auto mr-2"
-                            htmlType="submit"
-                            onClick={() => {
-                              setOpenModalUpdateRole(true);
-                              setIsDelete(false);
-                            }}
-                          >
-                            (+) Add Position
-                          </Button>
-                        ))}
-
-                    {staffAccountDetail !== undefined &&
-                      staffAccountDetail.positions && // Check if positions is defined
-                      staffAccountDetail.positions.length > 1 &&
-                      staffAccountDetail.positions.length <= 3 && (
-                        <Button
-                          type="primary"
-                          htmlType="submit"
-                          onClick={() => {
-                            setOpenModalUpdateRole(true);
-                            setIsDelete(true);
-                          }}
-                        >
-                          (X) Delete Position
-                        </Button>
-                      )}
-                  </div>
-                  <StaffRole staffRole={staffAccountDetail?.positions} />
                 </div>
               </div>
             </>

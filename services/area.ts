@@ -23,11 +23,13 @@ const getDataById = async (token: string, id: string): Promise<Area> => {
 
 const getRackDataById = async (
   token: string,
-  id: string
+  id: string,
+  params: ParamGet
 ): Promise<RackData> => {
   const response = await httpClient.get({
     url: apiLinks.area.get + `/${id}/Rack`,
     token: token,
+    params: params,
   });
   return response.data;
 };

@@ -1,3 +1,4 @@
+import { Area } from "./area";
 import { BaseWithIdNumber, PagingModel } from "./base";
 import { ServerAllocation } from "./serverAllocation";
 
@@ -8,6 +9,7 @@ export interface Rack extends BaseWithIdNumber {
   row: number;
   size: number;
   areaId: number;
+  area: Area;
 }
 
 export interface RackData extends PagingModel {

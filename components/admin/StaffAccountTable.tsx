@@ -4,11 +4,13 @@ import useSelector from "@hooks/use-selector";
 import { TableColumnsType, Tag } from "antd";
 import { Button, Space, Table, Tooltip } from "antd";
 import { BiEdit } from "react-icons/bi";
-import { AiFillDelete } from "react-icons/ai";
+import { AiFillDelete, AiOutlineUser } from "react-icons/ai";
 import { BiSolidCommentDetail } from "react-icons/bi";
 import moment from "moment";
 import { useRouter } from "next/router";
 import { User } from "@models/user";
+import { FaDonate, FaUserCog, FaUserEdit, FaUserShield, FaUserTie } from "react-icons/fa";
+import { useState } from "react";
 
 interface Props {
   onRowClick: (data: DataType) => void;
@@ -33,51 +35,49 @@ const StaffAccountTable: React.FC<Props> = (props) => {
 
   const columns: TableColumnsType<DataType> = [
     {
-      title: "Username",
-      dataIndex: "userName",
-      key: "userName",
-      fixed: "left",
-    },
-    { title: "Staff Name", dataIndex: "fullname", key: "fullname" },
-    {
-      title: "Positions",
+      title: "Position",
       key: "positions",
       render: (record: DataType) => {
         const positions = record.positions;
         const positionElements = positions.map((position, index) => {
-          let positionName;
+          let positionName, positionTitle;
           switch (position) {
             case "Sale":
-              positionName = "Sales Staff";
+              positionName = <FaUserEdit />;
+              positionTitle = "Sales Staff";
               break;
             case "Tech":
-              positionName = "Technical Staff";
+              positionName = <FaUserCog />;
+              positionTitle = "Technical Staff";
               break;
             case "Admin":
-              positionName = "Administrator";
+              positionName = <FaUserShield />;
+              positionTitle = "Administrator";
               break;
             case "Manager":
-              positionName = "Manager";
+              positionName = <FaUserTie />;
+              positionTitle = "Manager";
               break;
             default:
               positionName = "No positions assigned.";
           }
 
-          // Use a unique key for each position element
-          const key = `${record.id}_${index}`;
-
-          // Use span and br to render each position
           return (
-            <span key={key}>
+            <div key={record.id} style={{textAlign: "center"}}>
               {positionName}
-              {index !== positions.length - 1 && <br />}
-            </span>
+            </div>
           );
         });
 
         return <>{positionElements}</>;
       },
     },
+    {
+      title: "Username",
+      dataIndex: "userName",
+      key: "userName",
+    },
+    { title: "Staff Name", dataIndex: "fullname", key: "fullname" },
   ];
 
   const data: DataType[] = [];
@@ -101,7 +101,7 @@ const StaffAccountTable: React.FC<Props> = (props) => {
         loading={userDataLoading}
         columns={columns}
         dataSource={data}
-        scroll={{ x: 500 }}
+        style={{ width: 350 }}
         pagination={false}
         onRow={(record, rowIndex) => {
           return {
