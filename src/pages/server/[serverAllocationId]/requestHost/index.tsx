@@ -105,41 +105,6 @@ const RequestHost: React.FC = () => {
     });
   };
 
-  // const createData = async (data: RequestHostCreateModel) => {
-  //   await requestHostService
-  //     .createData(session?.user.access_token!, data)
-  //     .then((res) => {
-  //       message.success("Create successfully!", 1.5);
-  //       getData();
-  //       setOpenModalCreate(false);
-  //     })
-  //     .catch((errors) => {
-  //       message.error(errors.response.data, 1.5);
-  //     });
-  // };
-
-  // const createRemoval = async (data: RequestHostCreateModel, ip: number[]) => {
-  //   await requestHostService
-  //     .createData(session?.user.access_token!, data)
-  //     .then(async (res) => {
-  //       await requestHostService
-  //         .saveProvideIps(session?.user.access_token!, res.id, ip)
-  //         .then((res) => {
-  //           message.success("Create successfully!");
-  //         })
-  //         .catch((errors) => {
-  //           message.error(errors.response.data);
-  //         });
-  //       getData();
-  //     })
-  //     .catch((errors) => {
-  //       message.error(errors.response.data);
-  //     })
-  //     .finally(() => {
-  //       setOpenModalRemoval(false);
-  //     });
-  // };
-
   const updateData = async (data: RequestUpgradeUpdateModel) => {
     await requestUpgradeService
       .updateData(session?.user.access_token!, data)

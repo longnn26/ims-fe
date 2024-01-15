@@ -114,7 +114,7 @@ const ModalUnblock: React.FC<Props> = (props) => {
                         onClick={async () => {
                             if (!(await disabled()))
                                 confirm({
-                                    title: "Do you want to block these IPs?",
+                                    title: "Do you want to unblock these IPs?",
                                     async onOk() {
                                         unblockIp(
                                             form.getFieldValue("reason"),
