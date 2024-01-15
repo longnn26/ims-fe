@@ -132,7 +132,9 @@ const Area: React.FC = () => {
                     Create
                   </Button>
                 )}
-
+                {!areInArray(session?.user.roles!, ROLE_TECH) && (
+                  <div className="flex-grow"></div>
+                )}
                 <SearchComponent
                   placeholder="Search Name, Description..."
                   setSearchValue={(value) =>
