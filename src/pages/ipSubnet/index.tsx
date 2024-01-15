@@ -149,7 +149,7 @@ const IpSubnet: React.FC = () => {
       ipSubnetService
         .getDetail(
           session?.user.access_token!,
-          ipAddressData.data.at(0)?.ipSubnetId + ""
+          ipAddressData.data?.at(0)?.ipSubnetId + ""
         )
         .then(async (res) => {
           setIpSubnetDetail(res);
@@ -215,7 +215,7 @@ const IpSubnet: React.FC = () => {
                   </Button>
                   <div>
                     {ipAddressData &&
-                      ipAddressData.data.filter(
+                      ipAddressData.data?.filter(
                         (l) => l.purpose === "Host" && l.blocked === false
                       ).length > 0 && (
                         <Button
@@ -230,8 +230,7 @@ const IpSubnet: React.FC = () => {
                         </Button>
                       )}
                     {ipAddressData &&
-                      ipAddressData.data.filter((l) => l.blocked === true)
-                        .length > 0 && (
+                      ipAddressData.data?.filter((l) => l.blocked === true).length > 0 && (
                         <Button
                           type="primary"
                           htmlType="submit"

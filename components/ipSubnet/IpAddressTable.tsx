@@ -12,6 +12,7 @@ import { MdAssignmentAdd, MdOutlineManageHistory } from "react-icons/md";
 import { TbBinary, TbBinaryOff, TbLockOpenOff } from "react-icons/tb";
 import ipAddress from "@services/ipAddress";
 import { useSession } from "next-auth/react";
+import { ServerAllocation } from "@models/serverAllocation";
 
 interface Props {
   onEdit: (data: IpAddress) => void;
@@ -32,6 +33,7 @@ interface DataType {
   ipSubnet: IpSubnet;
   dateCreated: string;
   dateUpdated: string;
+  serverAllocation: ServerAllocation;
 }
 
 const IpAddressable: React.FC<Props> = (props) => {
@@ -48,6 +50,13 @@ const IpAddressable: React.FC<Props> = (props) => {
       key: "address",
       dataIndex: "address",
       fixed: "left",
+    },
+    {
+      title: "Server",
+      key: "serverAllocation",
+      render: (_, record) => (
+        <p>{record.serverAllocation?.name}</p>
+      )
     },
     {
       title: "Blocked",
@@ -151,6 +160,7 @@ const IpAddressable: React.FC<Props> = (props) => {
       dateUpdated: moment(ipAddressData?.data[i].dateUpdated).format(
         dateAdvFormat
       ),
+      serverAllocation: ipAddressData.data[i].serverAllocation,
     });
   }
 
