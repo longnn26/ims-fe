@@ -14,6 +14,6 @@ export interface LocationData extends PagingModel {
 }
 
 export interface LocationParamGet extends ParamGet {
-    LocationId?: number;
-    Available?: boolean;
+    RackId?: number;
+    Size?: boolean;
 }

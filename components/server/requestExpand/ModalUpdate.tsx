@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Alert, Button, Input, Modal, Space, Tabs, TabsProps } from "antd";
+import { Alert, Button, Input, Modal, Select, Space, Spin, Tabs, TabsProps, message } from "antd";
 import { SaveOutlined } from "@ant-design/icons";
 import { Form } from "antd";
 import {
@@ -8,7 +8,19 @@ import {
   SuggestLocation,
   RequestedLocation,
 } from "@models/requestExpand";
+import { useSession } from "next-auth/react";
+import { Location, LocationParamGet } from "@models/location";
+import locationService from "@services/location";
+import areaService from "@services/area";
+import requestExpandService from "@services/requestExpand";
+import { Area, AreaData } from "@models/area";
+import { ParamGet } from "@models/base";
+import { Rack } from "@models/rack";
+import { BsFillHddNetworkFill } from "react-icons/bs";
+import { error } from "console";
+
 const { confirm } = Modal;
+const { Option } = Select;
 
 interface Props {
   requestExpand: RequestExpand;
@@ -20,11 +32,28 @@ interface Props {
 
 const ModalUpdate: React.FC<Props> = (props) => {
   const formRef = useRef(null);
+  const { data: session } = useSession();
   const [form] = Form.useForm();
   const { onSubmit, requestExpand, onClose, suggestLocation, onSaveLocation } =
     props;
 
   const [confirmLoading, setConfirmLoading] = useState(false);
+  const [paramGet, setParamGet] = useState<LocationParamGet>(
+    { PageIndex: 0, PageSize: 6, } as LocationParamGet
+  );
+  const [totalPage, setTotalPage] = useState<number>(2);
+  const [selectedLocation, setSelectedLocation] = useState<number>();
+  const [locationList, setLocationList] = useState<Location[]>([]);
+  const [rackParamGet, setRackParamGet] = useState<ParamGet>(
+    { PageIndex: 0, PageSize: 6, } as ParamGet
+  );
+  const [rackList, setRackList] = useState<Rack[]>([]);
+  const [rackTotalPage, setRackTotalPage] = useState<number>(2);
+  const [selectedRack, setSelectedRack] = useState<number>();
+  const [areaList, setAreaList] = useState<Area[]>([]);
+  const [selectedArea, setSelectedArea] = useState<number>();
+  const [loading, setLoading] = useState<boolean>(false);
+
 
   const disabled = async () => {
     var result = false;
@@ -42,28 +71,83 @@ const ModalUpdate: React.FC<Props> = (props) => {
         id: requestExpand.id,
         size: requestExpand.size,
         techNote: requestExpand.techNote,
-        // location: `${suggestLocation?.areaId} - ${suggestLocation?.rackId} - ${suggestLocation?.position}`,
       });
   };
 
-  // const getMoreLocation = async () => {
-  //   await 
-  //     .getData(session?.user.access_token!, {...ipAddressParamGet, IsAssigned: false, IsAvailable: true,})
-  //     .then(async (data) => {
-  //       setTotalPageIp(data.totalPage);
-  //       ipAddressParamGet.PageIndex = data.pageIndex;
-  //       setIpAddressList([...ipAddressList, ...data.data]);
-  //     });
-  // };
+  const getMoreArea = async () => {
+    await areaService
+      .getAllArea(session?.user.access_token!)
+      .then(async (data) => {
+        setAreaList(data);
+      });
+  };
+
+  const getMoreRack = async (areaId: number) => {
+    rackParamGet.PageIndex += 1;
+    await areaService
+      .getRackDataById(session?.user.access_token!, areaId.toString(), { ...rackParamGet })
+      .then(async (data) => {
+        setRackTotalPage(data.totalPage);
+        rackParamGet.PageIndex = data.pageIndex;
+        setRackList([...rackList, ...data.data]);
+      });
+  };
+
+  const getMoreLocation = async (rackId: number) => {
+    paramGet.PageIndex += 1;
+    await locationService
+      .getData(session?.user.access_token!, { ...paramGet, RackId: rackId, Size: form.getFieldValue("size"), })
+      .then(async (data) => {
+        console.log(data);
+        setTotalPage(data.totalPage);
+        paramGet.PageIndex = data.pageIndex;
+        setLocationList([...locationList, ...data.data]);
+      });
+  };
+
+  const assignLocation = async (locationId: number) => {
+    setLoading(true);
+    await requestExpandService.saveLocation(
+      session?.user.access_token!,
+      requestExpand.id,
+      {
+        rackId: selectedRack,
+        startPosition: locationId,
+      } as RequestedLocation
+    ).then((res) => {
+      message.success("Assign server to rack successfully!", 1.5);
+      form.resetFields();
+      onClose();
+    }).catch((errors) => {
+      message.error(errors.response.data, 1.5);
+    }).finally(() => {
+      setLoading(false);
+    })
+  }
+
+  console.log(loading)
 
   useEffect(() => {
-    // refresh after submit for fileList
-    if (requestExpand) {
+    if (session) {
       setFieldsValueInitial();
+      getMoreArea();
     }
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [requestExpand]);
+  }, [session]);
+
+  useEffect(() => {
+    if (selectedArea) {
+      getMoreRack(selectedArea);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedArea]);
+
+  useEffect(() => {
+    if (selectedRack) {
+      getMoreLocation(selectedRack);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedRack]);
 
   const items: TabsProps["items"] = [
     {
@@ -106,13 +190,13 @@ const ModalUpdate: React.FC<Props> = (props) => {
                         title: "Do you want to save?",
                         async onOk() {
                           onSubmit({
-                            id: form.getFieldValue("id"),
+                            id: requestExpand.id,
                             size: Number.parseInt(form.getFieldValue("size")),
                             techNote: form.getFieldValue("techNote"),
                           } as RequestExpandUpdateModel);
                           // form.resetFields();
                         },
-                        onCancel() {},
+                        onCancel() { },
                       });
                   }}
                 >
@@ -129,46 +213,161 @@ const ModalUpdate: React.FC<Props> = (props) => {
       label: "Location",
       children: (
         <>
-          <Space direction="vertical" style={{ width: "100%" }}>
-            {Boolean(suggestLocation) && (
-              <Alert
-                message="Suggest location"
-                description={`${suggestLocation?.area.name}${
-                  suggestLocation?.rack.column
-                } - ${suggestLocation?.rack.row} start from U${
-                  suggestLocation?.position !== undefined
-                    ? suggestLocation.position + 1
-                    : ""
-                }`}
-                type="success"
-                showIcon
-                action={
+          <Spin spinning={loading} tip="Assigning server to rack..." size="large">
+            <Space direction="vertical" style={{ width: "100%" }}>
+              {Boolean(suggestLocation) && (
+                <Alert
+                  message="Suggest location"
+                  description={`${suggestLocation?.area.name}${suggestLocation?.rack.column
+                    } - ${suggestLocation?.rack.row} start from U${suggestLocation?.position !== undefined
+                      ? suggestLocation.position + 1
+                      : ""
+                    }`}
+                  type="success"
+                  showIcon
+                  action={
+                    <Button
+                      size="small"
+                      type="text"
+                      icon={<SaveOutlined />}
+                      onClick={() => {
+                        onSaveLocation({
+                          rackId: suggestLocation?.rack.id!,
+                          startPosition: suggestLocation?.position!,
+                        });
+                      }}
+                    >
+                      Save
+                    </Button>
+                  }
+                />
+              )}
+
+              {Boolean(requestExpand?.requestedLocation) && (
+                <Alert
+                  message="Location"
+                  description={`${requestExpand.chosenLocation}`}
+                  type="info"
+                  showIcon
+                />
+              )}
+              <Space.Compact style={{ width: "100%" }}>
+                <div className="flex-grow" style={{ display: 'flex', flexDirection: 'column' }}>
+                  <span className="mt-4" style={{ fontWeight: 500 }}>Select another start location</span>
+                  <div className="flex flex-grow m-2">
+                    <span className="mt-1 mr-2">Area: </span>
+                    <Select
+                      placeholder="Please select a rack area"
+                      labelInValue
+                      listHeight={160}
+                      style={{ width: "100%" }}
+                      filterOption={(inputValue, option) => {
+                        return Boolean(
+                          option?.label?.toString().includes(inputValue)
+                        );
+                      }}
+                      onSelect={(value) => {
+                        rackParamGet.PageIndex = 0;
+                        setRackList([]);
+                        setSelectedArea(value.value);
+                      }}
+                    >
+                      {areaList.map((l, index) => (
+                        <Option value={l.id} label={`${l?.name}`} key={index}>
+                          {`${l?.name}`}
+                        </Option>
+                      ))}
+                    </Select>
+                  </div>
+                  <div className="flex flex-grow m-2">
+                    <span className="mt-1 mr-2">Rack: </span>
+                    <Select
+                      placeholder="Please select a rack area"
+                      labelInValue
+                      listHeight={160}
+                      style={{ width: "100%" }}
+                      filterOption={(inputValue, option) => {
+                        return Boolean(
+                          option?.label?.toString().includes(inputValue)
+                        );
+                      }}
+                      onPopupScroll={async (e: any) => {
+                        const { target } = e;
+                        if (
+                          (target as any).scrollTop + (target as any).offsetHeight ===
+                          (target as any).scrollHeight
+                        ) {
+                          if (rackParamGet.PageIndex < rackTotalPage) {
+                            getMoreRack(selectedArea!);
+                          }
+                        }
+                      }}
+                      onSelect={(value) => {
+                        paramGet.PageIndex = 0;
+                        setLocationList([]);
+                        setSelectedRack(value.value);
+                      }}
+                    >
+                      {rackList.map((l, index) => (
+                        <Option value={l.id} label={`${l?.area.name}${l.row + 1} - ${l.column + 1}`} key={index}>
+                          {`${l?.area.name}${l.row + 1} - ${l.column + 1}`}
+                        </Option>
+                      ))}
+                    </Select>
+                  </div>
+                  <div className="flex flex-grow m-2">
+                    <span className="mt-1 mr-2" style={{ width: "19%" }}>Start Position: </span>
+                    <Select
+                      labelInValue
+                      placeholder="Select a start position"
+                      listHeight={160}
+                      style={{ width: "80%" }}
+
+                      onPopupScroll={async (e: any) => {
+                        const { target } = e;
+                        if (
+                          (target as any).scrollTop + (target as any).offsetHeight ===
+                          (target as any).scrollHeight
+                        ) {
+                          if (paramGet.PageIndex < totalPage) {
+                            getMoreLocation(selectedRack!);
+                          }
+                        }
+                      }}
+                      onSelect={(value) => {
+                        setSelectedLocation(value.value);
+                      }}
+                    >
+                      {locationList.map((l, index) => (
+                        <Option value={l.position} label={`U${l?.position + 1}`} key={index}>
+                          {`U${l?.position + 1}`}
+                        </Option>
+                      ))}
+                    </Select>
+                  </div>
+                </div>
+                {selectedLocation !== undefined && (
                   <Button
-                    size="small"
-                    type="text"
-                    icon={<SaveOutlined />}
+                    loading={confirmLoading}
+                    type="primary"
+                    disabled={loading}
+                    icon={<BsFillHddNetworkFill />}
                     onClick={() => {
-                      onSaveLocation({
-                        rackId: suggestLocation?.rack.id!,
-                        startPosition: suggestLocation?.position!,
+                      confirm({
+                        title: "Do you want to save?",
+                        async onOk() {
+                          assignLocation(selectedLocation);
+                        },
+                        onCancel() { },
                       });
                     }}
                   >
-                    Save
+                    Assign
                   </Button>
-                }
-              />
-            )}
-
-            {Boolean(requestExpand?.requestedLocation) && (
-              <Alert
-                message="Location"
-                description={`${requestExpand.chosenLocation}`}
-                type="info"
-                showIcon
-              />
-            )}
-          </Space>
+                )}
+              </Space.Compact>{" "}
+            </Space>
+          </Spin>
         </>
       ),
     },
