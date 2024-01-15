@@ -1,5 +1,6 @@
 "use client";
 import { CaretLeftOutlined } from "@ant-design/icons";
+import ModalReserve from "@components/area/rack/ModalReserve";
 import RackDetail from "@components/area/rack/RackDetail";
 import RackMapRender from "@components/area/rack/RackMapRender";
 import PieChartComponent from "@components/chartComponent/Pie";
@@ -29,6 +30,8 @@ const AreaDetail: React.FC = () => {
   var booked =
     rackMapList.filter((_) => _.requestedServerAllocation).length /
     rackMapList.length;
+
+  const [openModalReserve, setOpenModalReserve] = useState<boolean>(false);
 
   const getData = async () => {
     await area
@@ -62,7 +65,27 @@ const AreaDetail: React.FC = () => {
                   icon={<CaretLeftOutlined />}
                   onClick={() => router.back()}
                 ></Button>
+
+                <Button
+                  type="primary"
+                  className="mr-2"
+                  htmlType="submit"
+                  onClick={() => {
+                    setOpenModalReserve(true);
+                  }}
+                >
+                  Reserve
+                </Button>
               </div>
+
+              <ModalReserve
+                open={openModalReserve}
+                onClose={() => setOpenModalReserve(false)}
+                onSubmit={() => {
+                  setOpenModalReserve(false);
+                  getData();
+                }}
+              />
 
               <RackDetail rackDetail={rackDetail!} />
               <div className="flex ">

@@ -175,6 +175,7 @@ const apiLinks = {
 
   location: {
     get: `${url}/api/Location/Available`,
+    getAll: `${url}/api/Location`,
     reserve: `${url}/api/Location/Reserve`,
     unReserve: `${url}/api/Location/unReserve`,
   },
