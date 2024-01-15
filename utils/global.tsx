@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import { FaUser, FaChartArea } from "react-icons/fa";
+import { FaUser, FaChartArea, FaExpand } from "react-icons/fa";
 import { BiServer, BiSolidComponent } from "react-icons/bi";
 import { BsFillHddNetworkFill } from "react-icons/bs";
 import { GrHost, GrSchedules } from "react-icons/gr";
@@ -59,9 +59,15 @@ export const sliderMenu = [
     roles: [ROLE_SALES, ROLE_TECH, ROLE_CUSTOMER, ROLE_MANAGER],
   },
   {
+    key: "requestExpand",
+    icon: <FaExpand />,
+    label: "Hardware Upgrade Request",
+    roles: [ROLE_SALES, ROLE_TECH, ROLE_CUSTOMER, ROLE_MANAGER],
+  },
+  {
     key: "requestUpgrade",
     icon: <MdUpgrade />,
-    label: "Hardware Upgrade Request",
+    label: "Rack Expansion Request",
     roles: [ROLE_SALES, ROLE_TECH, ROLE_CUSTOMER, ROLE_MANAGER],
   },
   {

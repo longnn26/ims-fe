@@ -76,9 +76,9 @@ const RequestExpandTable: React.FC<Props> = (props) => {
         );
       },
     },
-    { title: "Note", dataIndex: "note", key: "note" },
+    // { title: "Note", dataIndex: "note", key: "note" },
     { title: "Date Created", dataIndex: "dateCreated", key: "dateCreated" },
-    { title: "Date Updated", dataIndex: "dateUpdated", key: "dateUpdated" },
+    // { title: "Date Updated", dataIndex: "dateUpdated", key: "dateUpdated" },
     {
       title: "Action",
       key: "operation",
@@ -130,7 +130,7 @@ const RequestExpandTable: React.FC<Props> = (props) => {
   return (
     <div className="shadow m-5">
       <Divider orientation="left" plain>
-        <h3>Rack Expansion request</h3>
+        <h3>Rack Expansion Request</h3>
       </Divider>
       <Table
         columns={columns}
