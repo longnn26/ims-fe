@@ -57,7 +57,6 @@ const RequestHostTable: React.FC<Props> = (props) => {
       ? requestHostData
       : requestHostData;
   const columns: TableColumnsType<DataType> = [
-    { title: "Date Created", dataIndex: "dateCreated", key: "dateCreated" },
     {
       title: "Customer",
       key: "customer",
@@ -66,9 +65,7 @@ const RequestHostTable: React.FC<Props> = (props) => {
     {
       title: "Server Name",
       key: "serverIP",
-      render: (_, record) => (
-        <p className="">{record.serverIP.name}</p>
-      ),
+      render: (_, record) => <p className="">{record.serverIP.name}</p>,
     },
     {
       title: "Purpose",
@@ -100,6 +97,8 @@ const RequestHostTable: React.FC<Props> = (props) => {
         );
       },
     },
+    { title: "Date Created", dataIndex: "dateCreated", key: "dateCreated" },
+
     {
       title: "Action",
       key: "operation",

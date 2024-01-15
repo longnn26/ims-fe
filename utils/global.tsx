@@ -61,13 +61,14 @@ export const sliderMenu = [
   {
     key: "requestExpand",
     icon: <FaExpand />,
-    label: "Hardware Upgrade Request",
+    label: "Rack Expansion Request",
+
     roles: [ROLE_SALES, ROLE_TECH, ROLE_CUSTOMER, ROLE_MANAGER],
   },
   {
     key: "requestUpgrade",
     icon: <MdUpgrade />,
-    label: "Rack Expansion Request",
+    label: "Hardware Upgrade Request",
     roles: [ROLE_SALES, ROLE_TECH, ROLE_CUSTOMER, ROLE_MANAGER],
   },
   {
