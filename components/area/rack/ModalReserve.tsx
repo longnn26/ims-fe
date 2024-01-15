@@ -166,7 +166,7 @@ const ModalReserve: React.FC<Props> = (props) => {
                 >
                   {locationList.map((l, index) => (
                     <Option key={l.id} value={l.id}>
-                      {`${l?.rack.area.name}${l?.rack.row} - ${l?.rack.column} U${
+                      {`${l?.rack.area.name}${l?.rack.row + 1} - ${l?.rack.column + 1} U${
                         l?.position !== undefined ? l.position + 1 : ""
                       }`}
                     </Option>
