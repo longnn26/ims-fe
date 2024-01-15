@@ -86,6 +86,10 @@ export interface RUIpAdressParamGet extends ParamGet {
   IsAssigned?: boolean;
 }
 
+export interface SParamGet extends ParamGet {
+  Statuses?: string;
+}
+
 export interface RequestHostCompleteModel {
   qtName: string;
   position: number;

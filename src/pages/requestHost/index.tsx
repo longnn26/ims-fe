@@ -4,7 +4,16 @@ import RequestHostTable from "@components/server/requestHost/RequestHostTable";
 import useDispatch from "@hooks/use-dispatch";
 import useSelector from "@hooks/use-selector";
 import { getRequestHostData } from "@slices/requestHost";
-import { Alert, Button, FloatButton, Modal, Pagination, message } from "antd";
+import {
+  Alert,
+  Button,
+  FloatButton,
+  Modal,
+  Pagination,
+  Tabs,
+  TabsProps,
+  message,
+} from "antd";
 import { ItemType } from "antd/es/breadcrumb/Breadcrumb";
 import { useSession } from "next-auth/react";
 import dynamic from "next/dynamic";
@@ -15,6 +24,8 @@ import {
   RequestHost,
   RequestHostCreateModel,
   RequestHostIp,
+  RUIpAdressParamGet,
+  SParamGet,
 } from "@models/requestHost";
 import { ParamGet } from "@models/base";
 import requestHostService from "@services/requestHost";
@@ -38,11 +49,12 @@ const RequestHostList: React.FC = () => {
   const router = useRouter();
   const { data: session } = useSession();
   const { requestHostData } = useSelector((state) => state.requestHost);
+  const [status, setStatus] = useState<string | undefined>(undefined);
 
-  const [paramGet, setParamGet] = useState<ParamGet>({
+  const [paramGet, setParamGet] = useState<SParamGet>({
     PageIndex: 1,
     PageSize: 7,
-  } as ParamGet);
+  } as SParamGet);
 
   const [loadingSubmit, setLoadingSubmit] = useState<boolean>(false);
   const [requestHost, setRequestHost] = useState<RequestHostData>();
@@ -60,7 +72,12 @@ const RequestHostList: React.FC = () => {
     dispatch(
       getRequestHostDataAll({
         token: session?.user.access_token!,
-        paramGet: { ...paramGet, CustomerId: customerId, UserId: userId },
+        paramGet: {
+          ...paramGet,
+          CustomerId: customerId,
+          UserId: userId,
+          Statuses: status,
+        } as SParamGet,
       })
     ).then(({ payload }) => {
       var res = payload as RequestHostData;
@@ -69,6 +86,61 @@ const RequestHostList: React.FC = () => {
       }
     });
   };
+
+  const handleChange = (value) => {
+    switch (value) {
+      case "0":
+        setStatus(undefined);
+        break;
+      case "1":
+        setStatus("Waiting");
+        break;
+      case "2":
+        setStatus("Accepted");
+        break;
+      case "3":
+        setStatus("Denied");
+        break;
+      case "4":
+        setStatus("Success");
+        break;
+      case "5":
+        setStatus("Failed");
+        break;
+    }
+  };
+
+  const items: TabsProps["items"] = [
+    {
+      key: "0",
+      label: "All",
+    },
+    {
+      key: "1",
+      label: "Waiting",
+    },
+    {
+      key: "2",
+      label: "Accepted",
+    },
+    {
+      key: "3",
+      label: "Denied",
+    },
+    {
+      key: "4",
+      label: "Success",
+    },
+    {
+      key: "5",
+      label: "Failed",
+    },
+  ];
+
+  useEffect(() => {
+    session && getData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [status]);
 
   useEffect(() => {
     if (session) {
@@ -89,6 +161,13 @@ const RequestHostList: React.FC = () => {
               }
             />
           </div>
+          <Tabs
+            className="m-5"
+            defaultActiveKey="0"
+            items={items}
+            centered
+            onTabClick={(value) => handleChange(value)}
+          />
           {areInArray(
             session?.user.roles!,
             ROLE_CUSTOMER,
