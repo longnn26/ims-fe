@@ -24,6 +24,7 @@ export interface RequestUpgrade extends BaseWithIdNumber {
 
 export interface RUParamGet extends ParamGet {
   ServerAllocationId: number;
+  Statuses?: string;
 }
 
 export interface RequestUpgradeData extends PagingModel {

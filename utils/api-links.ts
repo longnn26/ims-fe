@@ -175,7 +175,9 @@ const apiLinks = {
 
   location: {
     get: `${url}/api/Location/Available`,
-  }
+    reserve: `${url}/api/Location/Reserve`,
+    unReserve: `${url}/api/Location/unReserve`,
+  },
 };
 
 export default apiLinks;

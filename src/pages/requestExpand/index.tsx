@@ -9,7 +9,7 @@ import {
   RequestUpgradeUpdateModel,
 } from "@models/requestUpgrade";
 import { getRequestUpgradeData } from "@slices/requestUpgrade";
-import { Alert, Modal, Pagination, message } from "antd";
+import { Alert, Modal, Pagination, Tabs, TabsProps, message } from "antd";
 import { useSession } from "next-auth/react";
 import requestExpandService from "@services/requestExpand";
 import ModalUpdate from "@components/server/requestUpgrade/ModalUpdate";
@@ -35,6 +35,7 @@ const Customer: React.FC = () => {
   const dispatch = useDispatch();
   const { data: session } = useSession();
   const { requestExpandData } = useSelector((state) => state.requestExpand);
+  const [status, setStatus] = useState<string | undefined>(undefined);
 
   const [paramGet, setParamGet] = useState<RUParamGet>({
     PageIndex: 1,
@@ -52,7 +53,12 @@ const Customer: React.FC = () => {
     dispatch(
       getRequestExpandData({
         token: session?.user.access_token!,
-        paramGet: { ...paramGet, CustomerId: customerId, UserId: userId },
+        paramGet: {
+          ...paramGet,
+          CustomerId: customerId,
+          UserId: userId,
+          Statuses: status,
+        },
       })
     ).then(({ payload }) => {
       var res = payload as RequestExpandData;
@@ -105,6 +111,61 @@ const Customer: React.FC = () => {
   //     });
   //   };
 
+  const handleChange = (value) => {
+    switch (value) {
+      case "0":
+        setStatus(undefined);
+        break;
+      case "1":
+        setStatus("Waiting");
+        break;
+      case "2":
+        setStatus("Accepted");
+        break;
+      case "3":
+        setStatus("Denied");
+        break;
+      case "4":
+        setStatus("Success");
+        break;
+      case "5":
+        setStatus("Failed");
+        break;
+    }
+  };
+
+  const items: TabsProps["items"] = [
+    {
+      key: "0",
+      label: "All",
+    },
+    {
+      key: "1",
+      label: "Waiting",
+    },
+    {
+      key: "2",
+      label: "Accepted",
+    },
+    {
+      key: "3",
+      label: "Denied",
+    },
+    {
+      key: "4",
+      label: "Success",
+    },
+    {
+      key: "5",
+      label: "Failed",
+    },
+  ];
+
+  useEffect(() => {
+    session && getData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [status]);
+
   useEffect(() => {
     session && getData();
   }, [session, paramGet]);
@@ -128,6 +189,13 @@ const Customer: React.FC = () => {
                   }
                 />
               </div>
+              <Tabs
+                className="m-5"
+                defaultActiveKey="0"
+                items={items}
+                centered
+                onTabClick={(value) => handleChange(value)}
+              />
 
               <RequestExpandTable
                 urlOncell=""
