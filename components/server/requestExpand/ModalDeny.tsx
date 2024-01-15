@@ -40,7 +40,7 @@ const ModalDenyHost: React.FC<Props> = (props) => {
         data
       )
       .then((res) => {
-        message.success("Deny Rack Expansion request successfully!", 1.5);
+        message.success("Deny Rack Expansion Request successfully!", 1.5);
         form.resetFields();
         onSubmit();
       })
@@ -55,7 +55,11 @@ const ModalDenyHost: React.FC<Props> = (props) => {
   return (
     <>
       <Modal
-        title={<span className="inline-block m-auto">Deny Rack Expansion request</span>}
+        title={
+          <span className="inline-block m-auto">
+            Deny Rack Expansion Request
+          </span>
+        }
         open={open}
         confirmLoading={confirmLoading}
         onCancel={() => {
@@ -74,7 +78,7 @@ const ModalDenyHost: React.FC<Props> = (props) => {
                   async onOk() {
                     deny(form.getFieldValue("saleNote"));
                   },
-                  onCancel() { },
+                  onCancel() {},
                 });
             }}
           >
@@ -96,7 +100,11 @@ const ModalDenyHost: React.FC<Props> = (props) => {
                 label="Sale note for failure"
                 rules={[{ required: true, max: 2000 }]}
               >
-                <Input.TextArea autoSize={{ minRows: 1, maxRows: 6 }} placeholder="Note" allowClear />
+                <Input.TextArea
+                  autoSize={{ minRows: 1, maxRows: 6 }}
+                  placeholder="Note"
+                  allowClear
+                />
               </Form.Item>
             </Form>
           </Spin>

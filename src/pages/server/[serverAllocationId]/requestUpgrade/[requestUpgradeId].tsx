@@ -9,12 +9,20 @@ import useDispatch from "@hooks/use-dispatch";
 import useSelector from "@hooks/use-selector";
 import { RUAppointmentParamGet, RequestUpgrade } from "@models/requestUpgrade";
 import { ServerAllocation } from "@models/serverAllocation";
-import { SHCParamGet, ServerHardwareConfigData } from "@models/serverHardwareConfig";
+import {
+  SHCParamGet,
+  ServerHardwareConfigData,
+} from "@models/serverHardwareConfig";
 import requestUpgradeService from "@services/requestUpgrade";
 import serverAllocationService from "@services/serverAllocation";
 import serverHardwareConfig from "@services/serverHardwareConfig";
 import { getAppointmentData } from "@slices/requestUpgrade";
-import { ROLE_CUSTOMER, ROLE_SALES, ROLE_TECH } from "@utils/constants";
+import {
+  ROLE_CUSTOMER,
+  ROLE_MANAGER,
+  ROLE_SALES,
+  ROLE_TECH,
+} from "@utils/constants";
 import { areInArray } from "@utils/helpers";
 import { Alert, FloatButton, Modal, Pagination, message } from "antd";
 import { ItemType } from "antd/es/breadcrumb/Breadcrumb";
@@ -64,12 +72,14 @@ const RequestUpgradeDetail: React.FC = () => {
       )
       .then(async (res) => {
         setServerAllocationDetail(res);
-        await serverHardwareConfig.getServerHardwareConfigData(
-          session?.user.access_token!,
-          { ...paramGet, ServerAllocationId: res.id } as SHCParamGet
-        ).then((res) => {
-          setHardware(res);
-        });
+        await serverHardwareConfig
+          .getServerHardwareConfigData(session?.user.access_token!, {
+            ...paramGet,
+            ServerAllocationId: res.id,
+          } as SHCParamGet)
+          .then((res) => {
+            setHardware(res);
+          });
       })
       .catch((errors) => {
         setServerAllocationDetail(undefined);
@@ -122,9 +132,9 @@ const RequestUpgradeDetail: React.FC = () => {
           .catch((errors) => {
             message.error(errors.response.data, 1.5);
           })
-          .finally(() => { });
+          .finally(() => {});
       },
-      onCancel() { },
+      onCancel() {},
     });
   };
 
@@ -150,9 +160,9 @@ const RequestUpgradeDetail: React.FC = () => {
           .catch((errors) => {
             message.error(errors.response.data, 1.5);
           })
-          .finally(() => { });
+          .finally(() => {});
       },
-      onCancel() { },
+      onCancel() {},
     });
   };
 
@@ -178,9 +188,9 @@ const RequestUpgradeDetail: React.FC = () => {
           .catch((errors) => {
             message.error(errors.response.data, 1.5);
           })
-          .finally(() => { });
+          .finally(() => {});
       },
-      onCancel() { },
+      onCancel() {},
     });
   };
 
@@ -230,25 +240,22 @@ const RequestUpgradeDetail: React.FC = () => {
   }, [requestUpgradeDetail]);
 
   if (requestUpgradeDetail === undefined) {
-    return (<AntdLayoutNoSSR
-      content={
-        <>
-          <ModalEmpty
-            isPermission={false}
-            content={content}
-          />
-        </>
-      } />)
+    return (
+      <AntdLayoutNoSSR
+        content={
+          <>
+            <ModalEmpty isPermission={false} content={content} />
+          </>
+        }
+      />
+    );
   } else
     return (
       <AntdLayoutNoSSR
         content={
           <>
             {!permission && (
-              <ModalEmpty
-                isPermission={true}
-                content={content}
-              />
+              <ModalEmpty isPermission={true} content={content} />
             )}
             <ModalDeny
               open={openModalDeny}
@@ -263,8 +270,10 @@ const RequestUpgradeDetail: React.FC = () => {
               session?.user.roles!,
               ROLE_SALES,
               ROLE_TECH,
-              ROLE_CUSTOMER
-            ) && (permission) && (
+              ROLE_CUSTOMER,
+              ROLE_MANAGER
+            ) &&
+              permission && (
                 <>
                   <div className="flex flex-wrap items-center justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
                     <BreadcrumbComponent itemBreadcrumbs={itemBreadcrumbs} />
@@ -281,8 +290,8 @@ const RequestUpgradeDetail: React.FC = () => {
                   <AppointmentTable
                     typeGet="ByRequestUpgradeId"
                     urlOncell=""
-                    onEdit={(record) => { }}
-                    onDelete={async (record) => { }}
+                    onEdit={(record) => {}}
+                    onDelete={async (record) => {}}
                   />
                   {appointmentData?.totalPage > 0 && (
                     <Pagination
@@ -299,8 +308,8 @@ const RequestUpgradeDetail: React.FC = () => {
                       }}
                     />
                   )}
-                  {(requestUpgradeDetail?.status === "Waiting" &&
-                    areInArray(session?.user.roles!, ROLE_SALES)) && (
+                  {requestUpgradeDetail?.status === "Waiting" &&
+                    areInArray(session?.user.roles!, ROLE_SALES) && (
                       <FloatButton.Group
                         trigger="hover"
                         type="primary"
@@ -321,28 +330,28 @@ const RequestUpgradeDetail: React.FC = () => {
                     )}
                   {Boolean(
                     areInArray(session?.user.roles!, ROLE_TECH) &&
-                    requestUpgradeDetail?.status === "Accepted" &&
-                    requestUpgradeDetail?.succeededAppointment?.status ===
-                    "Success"
+                      requestUpgradeDetail?.status === "Accepted" &&
+                      requestUpgradeDetail?.succeededAppointment?.status ===
+                        "Success"
                   ) && (
-                      <FloatButton.Group
-                        trigger="hover"
-                        type="primary"
-                        style={{ right: 60, bottom: 500 }}
-                        icon={<AiOutlineFileDone />}
-                      >
-                        <FloatButton
-                          icon={<MdCancel color="red" />}
-                          tooltip="Fail"
-                          onClick={() => rejectRequestUpgrade()}
-                        />
-                        <FloatButton
-                          onClick={() => completeRequestUpgrade()}
-                          icon={<AiOutlineFileDone color="green" />}
-                          tooltip="Complete"
-                        />
-                      </FloatButton.Group>
-                    )}
+                    <FloatButton.Group
+                      trigger="hover"
+                      type="primary"
+                      style={{ right: 60, bottom: 500 }}
+                      icon={<AiOutlineFileDone />}
+                    >
+                      <FloatButton
+                        icon={<MdCancel color="red" />}
+                        tooltip="Fail"
+                        onClick={() => rejectRequestUpgrade()}
+                      />
+                      <FloatButton
+                        onClick={() => completeRequestUpgrade()}
+                        icon={<AiOutlineFileDone color="green" />}
+                        tooltip="Complete"
+                      />
+                    </FloatButton.Group>
+                  )}
                 </>
               )}
           </>

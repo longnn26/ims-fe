@@ -11,7 +11,7 @@ import {
 import { getRequestUpgradeData } from "@slices/requestUpgrade";
 import { Alert, Modal, Pagination, message } from "antd";
 import { useSession } from "next-auth/react";
-import requestUpgradeService from "@services/requestUpgrade";
+import requestExpandService from "@services/requestExpand";
 import ModalUpdate from "@components/server/requestUpgrade/ModalUpdate";
 import dynamic from "next/dynamic";
 import React, { useEffect, useState } from "react";
@@ -23,6 +23,9 @@ import {
 } from "@utils/constants";
 import { areInArray, parseJwt } from "@utils/helpers";
 import SearchComponent from "@components/SearchComponent";
+import { getRequestExpandData } from "@slices/requestExpand";
+import { RequestExpand, RequestExpandData } from "@models/requestExpand";
+import RequestExpandTable from "@components/server/requestExpand/RequestExpandTable";
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
 });
@@ -31,10 +34,8 @@ const { confirm } = Modal;
 const Customer: React.FC = () => {
   const dispatch = useDispatch();
   const { data: session } = useSession();
-  const { requestUpgradeData } = useSelector((state) => state.requestUpgrade);
-  const [requestUpgradeUpdate, setRequestUpgradeUpdate] = useState<
-    RequestUpgrade | undefined
-  >(undefined);
+  const { requestExpandData } = useSelector((state) => state.requestExpand);
+
   const [paramGet, setParamGet] = useState<RUParamGet>({
     PageIndex: 1,
     PageSize: 10,
@@ -49,64 +50,63 @@ const Customer: React.FC = () => {
       customerId = parseJwt(session.user.access_token).UserId;
     }
     dispatch(
-      getRequestUpgradeData({
+      getRequestExpandData({
         token: session?.user.access_token!,
         paramGet: { ...paramGet, CustomerId: customerId, UserId: userId },
       })
     ).then(({ payload }) => {
-      var res = payload as RequestUpgradeData;
+      var res = payload as RequestExpandData;
       if (res?.totalPage < paramGet.PageIndex && res.totalPage != 0) {
         setParamGet({ ...paramGet, PageIndex: res.totalPage });
       }
     });
   };
 
-  const updateData = async (data: RequestUpgradeUpdateModel) => {
-    await requestUpgradeService
-      .updateData(session?.user.access_token!, data)
-      .then((res) => {
-        message.success("Update successfully!", 1.5);
-        getData();
-      })
-      .catch((errors) => {
-        message.error(errors.response.data, 1.5);
-      })
-      .finally(() => {
-        setRequestUpgradeUpdate(undefined);
-      });
-  };
+  //   const updateData = async (data: RequestUpgradeUpdateModel) => {
+  //     await requestUpgradeService
+  //       .updateData(session?.user.access_token!, data)
+  //       .then((res) => {
+  //         message.success("Update successfully!", 1.5);
+  //         getData();
+  //       })
+  //       .catch((errors) => {
+  //         message.error(errors.response.data, 1.5);
+  //       })
+  //       .finally(() => {
+  //         setRequestUpgradeUpdate(undefined);
+  //       });
+  //   };
 
-  const deleteData = (requestUpgrade: RequestUpgrade) => {
-    confirm({
-      title: "Delete",
-      content: (
-        <Alert
-          message={`Do you want to delete with Id ${requestUpgrade.id}?`}
-          // description={`${serverAllocation.id}`}
-          type="warning"
-        />
-      ),
-      async onOk() {
-        await requestUpgradeService
-          .deleteData(session?.user.access_token!, requestUpgrade.id.toString())
-          .then(() => {
-            getData();
-            message.success(`Delete request upgrade successfully`, 1.5);
-          })
-          .catch((errors) => {
-            message.error(
-              errors.response.data ?? "Delete request upgrade failed",
-              1.5
-            );
-          });
-      },
-      onCancel() {},
-    });
-  };
+  //   const deleteData = (requestExpand: RequestExpand) => {
+  //     confirm({
+  //       title: "Delete",
+  //       content: (
+  //         <Alert
+  //           message={`Do you want to delete with Id ${requestExpand.id}?`}
+  //           // description={`${serverAllocation.id}`}
+  //           type="warning"
+  //         />
+  //       ),
+  //       async onOk() {
+  //         await requestUpgradeService
+  //           .deleteData(session?.user.access_token!, requestExpand.id.toString())
+  //           .then(() => {
+  //             getData();
+  //             message.success(`Delete request upgrade successfully`, 1.5);
+  //           })
+  //           .catch((errors) => {
+  //             message.error(
+  //               errors.response.data ?? "Delete request upgrade failed",
+  //               1.5
+  //             );
+  //           });
+  //       },
+  //       onCancel() {},
+  //     });
+  //   };
 
   useEffect(() => {
     session && getData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session, paramGet]);
   return (
     <AntdLayoutNoSSR
@@ -129,22 +129,18 @@ const Customer: React.FC = () => {
                 />
               </div>
 
-              <RequestUpgradeTable
+              <RequestExpandTable
                 urlOncell=""
-                onEdit={(record) => {
-                  setRequestUpgradeUpdate(record);
-                }}
-                onDelete={async (record) => {
-                  deleteData(record);
-                }}
+                onEdit={() => {}}
+                onDelete={() => {}}
               />
 
-              {requestUpgradeData.totalPage > 0 && (
+              {requestExpandData.totalPage > 0 && (
                 <Pagination
                   className="text-end m-4"
                   current={paramGet?.PageIndex}
-                  pageSize={requestUpgradeData?.pageSize ?? 10}
-                  total={requestUpgradeData?.totalSize}
+                  pageSize={requestExpandData?.pageSize ?? 10}
+                  total={requestExpandData?.totalSize}
                   onChange={(page, pageSize) => {
                     setParamGet({
                       ...paramGet,

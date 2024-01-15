@@ -49,6 +49,7 @@ const createData = async (
   data: RequestHostCreateModel
 ): Promise<any> => {
   const response = await httpClient.post({
+    contentType: "multipart/form-data",
     token: token,
     url: apiLinks.requestHost.create,
     data: data,

@@ -31,7 +31,11 @@ import moment from "moment";
 import dayjs from "dayjs";
 import appointment from "@services/appointment";
 import incident from "@services/incident";
-import { AppointmentIncidentCreateModel, Incident, IncidentParam } from "@models/incident";
+import {
+  AppointmentIncidentCreateModel,
+  Incident,
+  IncidentParam,
+} from "@models/incident";
 const { Option } = Select;
 const { confirm } = Modal;
 
@@ -51,8 +55,12 @@ const ModalCreate: React.FC<Props> = (props) => {
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [server, setServer] = useState<ServerAllocation[]>([]);
   const [requestUpgrade, setRequestUpgrade] = useState<RequestUpgrade[]>([]);
-  const [requestExpand, setRequestExpand] = useState<RequestExpand | undefined>(undefined);
-  const [incidentData, setIncidentData] = useState<Incident | undefined>(undefined);
+  const [requestExpand, setRequestExpand] = useState<RequestExpand | undefined>(
+    undefined
+  );
+  const [incidentData, setIncidentData] = useState<Incident | undefined>(
+    undefined
+  );
   const [pageSizeCus, setPageSizeCus] = useState<number>(6);
   const [totalPageCus, setTotalPageCus] = useState<number>(2);
   const [pageIndexCus, setPageIndexCus] = useState<number>(0);
@@ -103,7 +111,10 @@ const ModalCreate: React.FC<Props> = (props) => {
       .then(async (data) => {
         const contacts = data.contacts
           .filter((l) => l.forAppointment === true)
-          .map((contact, index) => `${contact.name} - SĐT: ${contact.phoneNumber} - CCCD: ${contact.cccd}`);
+          .map(
+            (contact, index) =>
+              `${contact.name} - SĐT: ${contact.phoneNumber} - CCCD: ${contact.cccd}`
+          );
         setContactList(contacts);
       });
   };
@@ -154,7 +165,7 @@ const ModalCreate: React.FC<Props> = (props) => {
         IsResolved: false,
       } as unknown as IncidentParam)
       .then(async (data) => {
-        setIncidentData(data.data.at(0))
+        setIncidentData(data.data.at(0));
       });
   };
 
@@ -196,24 +207,25 @@ const ModalCreate: React.FC<Props> = (props) => {
     handleServerChange(undefined);
   };
 
-  const createIncidentAppointment = async (data: AppointmentIncidentCreateModel) => {
+  const createIncidentAppointment = async (
+    data: AppointmentIncidentCreateModel
+  ) => {
     setLoading(true);
-    await appointmentService.createIncident(
-      session?.user.access_token!,
-      data
-    ).then((res) => {
-      message.success("Create successfully!", 1.5);
-      form.resetFields();
-      setOpenModalCreate(undefined);
-      onSubmit();
-    })
+    await appointmentService
+      .createIncident(session?.user.access_token!, data)
+      .then((res) => {
+        message.success("Create successfully!", 1.5);
+        form.resetFields();
+        setOpenModalCreate(undefined);
+        onSubmit();
+      })
       .catch((errors) => {
         message.error(errors.response.data, 1.5);
       })
       .finally(() => {
         setLoading(false);
       });
-  }
+  };
 
   useEffect(() => {
     if (session) {
@@ -282,7 +294,7 @@ const ModalCreate: React.FC<Props> = (props) => {
                         serverAllocationId: selectedServer?.id,
                         requestExpandId:
                           selectedReason === "Install" ||
-                            selectedReason === "Uninstall"
+                          selectedReason === "Uninstall"
                             ? requestExpand?.id
                             : undefined,
                       } as AppointmentCreateModel;
@@ -316,7 +328,7 @@ const ModalCreate: React.FC<Props> = (props) => {
                       createIncidentAppointment(data);
                     }
                   },
-                  onCancel() { },
+                  onCancel() {},
                 });
             }}
           >
@@ -451,38 +463,40 @@ const ModalCreate: React.FC<Props> = (props) => {
               >
                 {selectedReason === "Upgrade" || selectedReason === "Uninstall"
                   ? server
-                    .filter((l) => l.status === "Working")
-                    .map((l, index) => (
-                      <Option
-                        value={l.id}
-                        title={`${l?.name} - ${l.masterIp.address}`}
-                        key={index}
-                      >
-                        {`${l?.name} - ${l?.status}`}
-                      </Option>
-                    ))
-                  : selectedReason === "Install"
-                    ? server
-                      .filter((l) => l.status === "Waiting")
+                      .filter((l) => l.status === "Working")
                       .map((l, index) => (
                         <Option
                           value={l.id}
-                          title={`${l?.name} - ${l?.masterIp === null
-                            ? "master IP has not assigned yet"
-                            : `${l.masterIp.address}`
-                            }`}
+                          title={`${l?.name} - ${l.masterIp.address}`}
                           key={index}
                         >
                           {`${l?.name} - ${l?.status}`}
                         </Option>
                       ))
-                    : server.map((l, index) => (
+                  : selectedReason === "Install"
+                  ? server
+                      .filter((l) => l.status === "Waiting")
+                      .map((l, index) => (
+                        <Option
+                          value={l.id}
+                          title={`${l?.name} - ${
+                            l?.masterIp === null
+                              ? "master IP has not assigned yet"
+                              : `${l.masterIp.address}`
+                          }`}
+                          key={index}
+                        >
+                          {`${l?.name} - ${l?.status}`}
+                        </Option>
+                      ))
+                  : server.map((l, index) => (
                       <Option
                         value={l.id}
-                        title={`${l?.name} - ${l?.masterIp === null
-                          ? "master IP has not assigned yet"
-                          : `${l.masterIp.address}`
-                          }`}
+                        title={`${l?.name} - ${
+                          l?.masterIp === null
+                            ? "master IP has not assigned yet"
+                            : `${l.masterIp.address}`
+                        }`}
                         key={index}
                       >
                         {`${l?.name} - ${l?.status}`}
@@ -508,7 +522,7 @@ const ModalCreate: React.FC<Props> = (props) => {
                       const { target } = e;
                       if (
                         (target as any).scrollTop +
-                        (target as any).offsetHeight ===
+                          (target as any).offsetHeight ===
                         (target as any).scrollHeight
                       ) {
                         if (pageIndexUp < totalPageUp) {
@@ -533,40 +547,40 @@ const ModalCreate: React.FC<Props> = (props) => {
             {Boolean(
               (selectedReason === "Install" ||
                 selectedReason === "Uninstall") &&
-              selectedServer !== undefined &&
-              requestExpand !== undefined
+                selectedServer !== undefined &&
+                requestExpand !== undefined
             ) && (
-                <>
-                  <Form.Item
-                    name="requestExpandId"
-                    label="Rack Expansion request"
-                    labelAlign="right"
-                    labelCol={{ span: 10 }}
-                    wrapperCol={{ span: 20 }}
-                  >
-                    <span>
-                      {selectedReason === "Install"
-                        ? `${selectedServer?.serialNumber} Installation`
-                        : `${selectedServer?.serialNumber} Removal Request`}
-                    </span>
-                  </Form.Item>
-                </>
-              )}
+              <>
+                <Form.Item
+                  name="requestExpandId"
+                  label="Rack Expansion Request"
+                  labelAlign="right"
+                  labelCol={{ span: 10 }}
+                  wrapperCol={{ span: 20 }}
+                >
+                  <span>
+                    {selectedReason === "Install"
+                      ? `${selectedServer?.serialNumber} Installation`
+                      : `${selectedServer?.serialNumber} Removal Request`}
+                  </span>
+                </Form.Item>
+              </>
+            )}
             {Boolean(
               selectedReason === "Incident" &&
-              selectedServer !== undefined &&
-              incidentData !== undefined
+                selectedServer !== undefined &&
+                incidentData !== undefined
             ) && (
-                <>
-                  <Form.Item
-                    name="incidentId"
-                    label="Incident"
-                    labelAlign="right"
-                  >
-                    <span>{`Incident ${incidentData?.description}`}</span>
-                  </Form.Item>
-                </>
-              )}
+              <>
+                <Form.Item
+                  name="incidentId"
+                  label="Incident"
+                  labelAlign="right"
+                >
+                  <span>{`Incident ${incidentData?.description}`}</span>
+                </Form.Item>
+              </>
+            )}
             <Form.Item name="note" label="Note" rules={[{ max: 2000 }]}>
               <Input.TextArea
                 placeholder="Note"

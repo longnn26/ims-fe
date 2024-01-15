@@ -42,6 +42,8 @@ interface DataType {
   size: number;
   customer: Customer;
   succeededAppointment: Appointment;
+  companyName: string;
+  name: string;
 }
 
 const RequestExpandTable: React.FC<Props> = (props) => {
@@ -60,6 +62,8 @@ const RequestExpandTable: React.FC<Props> = (props) => {
       ? rEDataOfAppointment
       : requestExpandData;
   const columns: TableColumnsType<DataType> = [
+    { title: "Server Name", dataIndex: "name", key: "name" },
+    { title: "Customer", dataIndex: "companyName", key: "companyName" },
     { title: "Expand size (U)", dataIndex: "size", key: "size" },
     { title: "Type", dataIndex: "requestType", key: "requestType" },
     {
@@ -76,9 +80,9 @@ const RequestExpandTable: React.FC<Props> = (props) => {
         );
       },
     },
-    { title: "Note", dataIndex: "note", key: "note" },
+    // { title: "Note", dataIndex: "note", key: "note" },
     { title: "Date Created", dataIndex: "dateCreated", key: "dateCreated" },
-    { title: "Date Updated", dataIndex: "dateUpdated", key: "dateUpdated" },
+    // { title: "Date Updated", dataIndex: "dateUpdated", key: "dateUpdated" },
     {
       title: "Action",
       key: "operation",
@@ -124,13 +128,15 @@ const RequestExpandTable: React.FC<Props> = (props) => {
       succeededAppointment: listData?.data[i].succeededAppointment,
       dateCreated: moment(listData?.data[i].dateCreated).format(dateAdvFormat),
       dateUpdated: moment(listData?.data[i].dateUpdated).format(dateAdvFormat),
+      companyName: listData?.data[i].customer.companyName,
+      name: listData?.data[i].serverAllocation.name,
     });
   }
 
   return (
     <div className="shadow m-5">
       <Divider orientation="left" plain>
-        <h3>Rack Expansion request</h3>
+        <h3>Rack Expansion Request</h3>
       </Divider>
       <Table
         columns={columns}

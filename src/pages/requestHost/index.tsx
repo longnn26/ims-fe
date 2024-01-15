@@ -10,11 +10,21 @@ import { useSession } from "next-auth/react";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
-import { RequestHostData, RequestHost, RequestHostCreateModel, RequestHostIp } from "@models/requestHost";
+import {
+  RequestHostData,
+  RequestHost,
+  RequestHostCreateModel,
+  RequestHostIp,
+} from "@models/requestHost";
 import { ParamGet } from "@models/base";
 import requestHostService from "@services/requestHost";
 import { getRequestHostDataAll } from "@slices/requestHost";
-import { ROLE_CUSTOMER, ROLE_SALES, ROLE_TECH } from "@utils/constants";
+import {
+  ROLE_CUSTOMER,
+  ROLE_MANAGER,
+  ROLE_SALES,
+  ROLE_TECH,
+} from "@utils/constants";
 import { areInArray, parseJwt } from "@utils/helpers";
 import ModalCreateRemoval from "@components/server/requestHost/ModalCreateRemoval";
 import SearchComponent from "@components/SearchComponent";
@@ -40,7 +50,8 @@ const RequestHostList: React.FC = () => {
   const [itemBreadcrumbs, setItemBreadcrumbs] = useState<ItemType[]>([]);
 
   const getData = async () => {
-    var customerId = "", userId="";
+    var customerId = "",
+      userId = "";
     if (areInArray(session?.user.roles!, ROLE_SALES)) {
       userId = parseJwt(session?.user.access_token!).UserId;
     } else if (session?.user.roles.includes("Customer")) {
@@ -60,8 +71,9 @@ const RequestHostList: React.FC = () => {
   };
 
   useEffect(() => {
-    if (session)
-      {getData(); }
+    if (session) {
+      getData();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session, paramGet]);
 
@@ -77,12 +89,18 @@ const RequestHostList: React.FC = () => {
               }
             />
           </div>
-          {areInArray(session?.user.roles!, ROLE_CUSTOMER, ROLE_TECH, ROLE_SALES) && (
+          {areInArray(
+            session?.user.roles!,
+            ROLE_CUSTOMER,
+            ROLE_TECH,
+            ROLE_SALES,
+            ROLE_MANAGER
+          ) && (
             <>
               <RequestHostTable
                 urlOncell=""
-                onEdit={(record) => { }}
-                onDelete={async (record) => { }}
+                onEdit={(record) => {}}
+                onDelete={async (record) => {}}
               />
               {requestHostData?.totalPage > 0 && (
                 <Pagination

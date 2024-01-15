@@ -18,7 +18,12 @@ import requestHostService from "@services/requestHost";
 import serverAllocationService from "@services/serverAllocation";
 import { getRequestExpandData } from "@slices/requestExpand";
 import { getRequestHostData } from "@slices/requestHost";
-import { ROLE_CUSTOMER, ROLE_SALES, ROLE_TECH } from "@utils/constants";
+import {
+  ROLE_CUSTOMER,
+  ROLE_MANAGER,
+  ROLE_SALES,
+  ROLE_TECH,
+} from "@utils/constants";
 import { areInArray, parseJwt } from "@utils/helpers";
 import { Alert, Button, FloatButton, Modal, Pagination, message } from "antd";
 import { ItemType } from "antd/es/breadcrumb/Breadcrumb";
@@ -64,7 +69,8 @@ const RequestHost: React.FC = () => {
   const [itemBreadcrumbs, setItemBreadcrumbs] = useState<ItemType[]>([]);
 
   const getData = async () => {
-    var customerId = "", userId="";
+    var customerId = "",
+      userId = "";
     if (areInArray(session?.user.roles!, ROLE_SALES)) {
       userId = parseJwt(session?.user.access_token!).UserId;
     } else if (session?.user.roles.includes("Customer")) {
@@ -81,7 +87,7 @@ const RequestHost: React.FC = () => {
     await serverHardwareConfig
       .getServerHardwareConfigData(session?.user.access_token!, {
         ...paramGet,
-        ServerAllocationId: parseInt(router.query.serverAllocationId+""),
+        ServerAllocationId: parseInt(router.query.serverAllocationId + ""),
       } as SHCParamGet)
       .then((res) => {
         setHardware(res);
@@ -98,41 +104,6 @@ const RequestHost: React.FC = () => {
       }
     });
   };
-
-  // const createData = async (data: RequestHostCreateModel) => {
-  //   await requestHostService
-  //     .createData(session?.user.access_token!, data)
-  //     .then((res) => {
-  //       message.success("Create successfully!", 1.5);
-  //       getData();
-  //       setOpenModalCreate(false);
-  //     })
-  //     .catch((errors) => {
-  //       message.error(errors.response.data, 1.5);
-  //     });
-  // };
-
-  // const createRemoval = async (data: RequestHostCreateModel, ip: number[]) => {
-  //   await requestHostService
-  //     .createData(session?.user.access_token!, data)
-  //     .then(async (res) => {
-  //       await requestHostService
-  //         .saveProvideIps(session?.user.access_token!, res.id, ip)
-  //         .then((res) => {
-  //           message.success("Create successfully!");
-  //         })
-  //         .catch((errors) => {
-  //           message.error(errors.response.data);
-  //         });
-  //       getData();
-  //     })
-  //     .catch((errors) => {
-  //       message.error(errors.response.data);
-  //     })
-  //     .finally(() => {
-  //       setOpenModalRemoval(false);
-  //     });
-  // };
 
   const updateData = async (data: RequestUpgradeUpdateModel) => {
     await requestUpgradeService
@@ -169,7 +140,8 @@ const RequestHost: React.FC = () => {
           })
           .catch((errors) => {
             message.error(
-              errors.response.data ?? "Delete request upgrade failed", 1.5
+              errors.response.data ?? "Delete request upgrade failed",
+              1.5
             );
             setLoadingSubmit(false);
           });
@@ -228,7 +200,8 @@ const RequestHost: React.FC = () => {
             session?.user.roles!,
             ROLE_SALES,
             ROLE_TECH,
-            ROLE_CUSTOMER
+            ROLE_CUSTOMER,
+            ROLE_MANAGER
           ) && (
             <>
               <div className="flex flex-wrap items-center justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">

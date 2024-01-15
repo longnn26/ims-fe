@@ -27,7 +27,7 @@ interface DataType {
 }
 
 const StaffAccountTable: React.FC<Props> = (props) => {
-  const {onRowClick} = props;
+  const { onRowClick } = props;
   const router = useRouter();
   const { userDataLoading, userData } = useSelector((state) => state.user);
 
@@ -39,7 +39,8 @@ const StaffAccountTable: React.FC<Props> = (props) => {
       fixed: "left",
     },
     { title: "Staff Name", dataIndex: "fullname", key: "fullname" },
-    { title: "Positions", 
+    {
+      title: "Positions",
       key: "positions",
       render: (record: DataType) => {
         const positions = record.positions;
@@ -55,13 +56,16 @@ const StaffAccountTable: React.FC<Props> = (props) => {
             case "Admin":
               positionName = "Administrator";
               break;
+            case "Manager":
+              positionName = "Manager";
+              break;
             default:
               positionName = "No positions assigned.";
           }
-      
+
           // Use a unique key for each position element
           const key = `${record.id}_${index}`;
-          
+
           // Use span and br to render each position
           return (
             <span key={key}>
@@ -70,9 +74,9 @@ const StaffAccountTable: React.FC<Props> = (props) => {
             </span>
           );
         });
-      
+
         return <>{positionElements}</>;
-      },    
+      },
     },
   ];
 

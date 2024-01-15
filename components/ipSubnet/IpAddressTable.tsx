@@ -69,14 +69,12 @@ const IpAddressable: React.FC<Props> = (props) => {
       ),
     },
     {
-      title: "Purpose",
+      title: "Type",
       dataIndex: "purpose",
       key: "purpose",
-    },
-    {
-      title: "Date Created",
-      dataIndex: "dateCreated",
-      key: "dateCreated",
+      render: (_, record) => (
+        <p className="">{record.purpose === "Host" ? "" : record.purpose}</p>
+      ),
     },
     {
       title: "Action",

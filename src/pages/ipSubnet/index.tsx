@@ -21,7 +21,7 @@ import ipSubnetService from "@services/ipSubnet";
 import type { DataNode, DirectoryTreeProps } from "antd/es/tree";
 import { useRouter } from "next/router";
 import { areInArray } from "@utils/helpers";
-import { ROLE_TECH } from "@utils/constants";
+import { ROLE_MANAGER, ROLE_TECH } from "@utils/constants";
 import SearchComponent from "@components/SearchComponent";
 import IpSubnetDetailInfor from "@components/ipSubnet/IpSubnetDetail";
 import IpAddressTable from "@components/ipSubnet/IpAddressTable";
@@ -178,7 +178,7 @@ const IpSubnet: React.FC = () => {
       case "2":
         setStatus(false);
         break;
-    };
+    }
   };
 
   const items: TabsProps["items"] = [
@@ -193,14 +193,14 @@ const IpSubnet: React.FC = () => {
     {
       key: "2",
       label: "Unavailable",
-    }
+    },
   ];
 
   return (
     <AntdLayoutNoSSR
       content={
         <>
-          {areInArray(session?.user.roles!, ROLE_TECH) && (
+          {areInArray(session?.user.roles!, ROLE_TECH, ROLE_MANAGER) && (
             <>
               <div className="flex flex-col mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
                 <div className="flex justify-between p-2">
@@ -214,9 +214,10 @@ const IpSubnet: React.FC = () => {
                     Create
                   </Button>
                   <div>
-                    {ipAddressData && ipAddressData.data.filter(
-                      (l) => l.purpose === "Host" && l.blocked === false
-                    ).length > 0 && (
+                    {ipAddressData &&
+                      ipAddressData.data.filter(
+                        (l) => l.purpose === "Host" && l.blocked === false
+                      ).length > 0 && (
                         <Button
                           type="primary"
                           className="mr-2"
@@ -228,8 +229,9 @@ const IpSubnet: React.FC = () => {
                           Block IPs
                         </Button>
                       )}
-                    {ipAddressData && ipAddressData.data.filter((l) => l.blocked === true)
-                      .length > 0 && (
+                    {ipAddressData &&
+                      ipAddressData.data.filter((l) => l.blocked === true)
+                        .length > 0 && (
                         <Button
                           type="primary"
                           htmlType="submit"
@@ -281,13 +283,17 @@ const IpSubnet: React.FC = () => {
                       ipSubnetDetail ? ipSubnetDetail : getDetail("1")
                     }
                   />
-                  <Tabs className="m-5" defaultActiveKey="0" items={items} centered
+                  <Tabs
+                    className="m-5"
+                    defaultActiveKey="0"
+                    items={items}
+                    centered
                     onTabClick={(value) => handleChange(value)}
                   />
                   <IpAddressTable
                     ipSubnet={ipSubnetDetail!}
-                    onEdit={(record) => { }}
-                    onDelete={async (record) => { }}
+                    onEdit={(record) => {}}
+                    onDelete={async (record) => {}}
                     onBlock={(record) => {
                       setIpAddressBlock(record);
                     }}

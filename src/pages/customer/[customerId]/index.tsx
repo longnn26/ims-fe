@@ -22,7 +22,12 @@ import ModalUpdate from "@components/server/ModalUpdate";
 import ServerAllocationTable from "@components/customer/ServerAllocationTable";
 import { getServerAllocationData } from "@slices/serverAllocation";
 import { areInArray } from "@utils/helpers";
-import { ROLE_CUSTOMER, ROLE_SALES, ROLE_TECH } from "@utils/constants";
+import {
+  ROLE_CUSTOMER,
+  ROLE_MANAGER,
+  ROLE_SALES,
+  ROLE_TECH,
+} from "@utils/constants";
 import ModalEmpty from "@components/ModalEmpty";
 import { ParamGet, ParamGetWithId } from "@models/base";
 
@@ -39,7 +44,7 @@ const Customer: React.FC = () => {
 
   const [paramGet, setParamGet] = useState<ParamGet>({
     PageIndex: 1,
-    PageSize: 10
+    PageSize: 10,
   } as ParamGet);
   const [serverUpdate, setUpdate] = useState<ServerAllocation | undefined>(
     undefined
@@ -62,21 +67,21 @@ const Customer: React.FC = () => {
         setCustomerDetail(undefined);
         setContent("Customer NOT EXISTED");
       });
-      dispatch(
-        getServerAllocationData({
-          token: session?.user.access_token!,
-          param: {...paramGet, CustomerId: router.query.customerId+""},
-        })
-      ).then(({ payload }) => {
-        var res = payload as ServerAllocationData;
-        if (res?.totalPage < paramGet.PageIndex && res.totalPage != 0) {
-          setParamGet({
-            ...paramGet,
-            PageIndex: res.totalPage,
-            CustomerId: router.query.customerId+"",
-          });
-        }
-      });
+    dispatch(
+      getServerAllocationData({
+        token: session?.user.access_token!,
+        param: { ...paramGet, CustomerId: router.query.customerId + "" },
+      })
+    ).then(({ payload }) => {
+      var res = payload as ServerAllocationData;
+      if (res?.totalPage < paramGet.PageIndex && res.totalPage != 0) {
+        setParamGet({
+          ...paramGet,
+          PageIndex: res.totalPage,
+          CustomerId: router.query.customerId + "",
+        });
+      }
+    });
   };
 
   const updateData = async (data: SAUpdateModel) => {
@@ -132,17 +137,16 @@ const Customer: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session, paramGet]);
 
-
   if (customerDetail === undefined) {
-    return (<AntdLayoutNoSSR
-      content={
-        <>
-          <ModalEmpty
-            isPermission={false}
-            content={content}
-          />
-        </>
-      } />)
+    return (
+      <AntdLayoutNoSSR
+        content={
+          <>
+            <ModalEmpty isPermission={false} content={content} />
+          </>
+        }
+      />
+    );
   } else
     return (
       <AntdLayoutNoSSR
@@ -168,10 +172,14 @@ const Customer: React.FC = () => {
               session?.user.roles!,
               ROLE_SALES,
               ROLE_TECH,
-              ROLE_CUSTOMER
-            ) && (customerDetail !== undefined) && (
+              ROLE_CUSTOMER,
+              ROLE_MANAGER
+            ) &&
+              customerDetail !== undefined && (
                 <>
-                  <CustomerDetail customerDetail={customerDetail!}></CustomerDetail>
+                  <CustomerDetail
+                    customerDetail={customerDetail!}
+                  ></CustomerDetail>
                   <ServerAllocationTable
                     urlOncell={`/customer/${customerDetail?.id}`}
                     data={serverAllocationData}
@@ -179,21 +187,21 @@ const Customer: React.FC = () => {
                       setUpdate(record);
                     }}
                   />
-                {serverAllocationData?.totalPage > 0 && (
-                  <Pagination
-                    className="text-end m-4"
-                    current={paramGet.PageIndex}
-                    pageSize={serverAllocationData?.pageSize ?? 10}
-                    total={serverAllocationData?.totalSize}
-                    onChange={(page, pageSize) => {
-                      setParamGet({
-                        ...paramGet,
-                        PageIndex: page,
-                        PageSize: pageSize,
-                      });
-                    }}
-                  />
-                )}
+                  {serverAllocationData?.totalPage > 0 && (
+                    <Pagination
+                      className="text-end m-4"
+                      current={paramGet.PageIndex}
+                      pageSize={serverAllocationData?.pageSize ?? 10}
+                      total={serverAllocationData?.totalSize}
+                      onChange={(page, pageSize) => {
+                        setParamGet({
+                          ...paramGet,
+                          PageIndex: page,
+                          PageSize: pageSize,
+                        });
+                      }}
+                    />
+                  )}
                 </>
               )}
           </>

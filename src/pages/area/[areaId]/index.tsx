@@ -21,7 +21,7 @@ import rackService from "@services/rack";
 import ModalUpdate from "@components/area/rack/ModalUpdate";
 import { useRouter } from "next/router";
 import moment from "moment";
-import { ROLE_TECH, dateAdvFormat } from "@utils/constants";
+import { ROLE_MANAGER, ROLE_TECH, dateAdvFormat } from "@utils/constants";
 import { ItemType } from "antd/es/breadcrumb/Breadcrumb";
 import BreadcrumbComponent from "@components/BreadcrumbComponent";
 import RackTable from "@components/area/rack/RackRender";
@@ -135,7 +135,7 @@ const AreaDetail: React.FC = () => {
     <AntdLayoutNoSSR
       content={
         <>
-          {areInArray(session?.user.roles!, ROLE_TECH) && (
+          {areInArray(session?.user.roles!, ROLE_TECH, ROLE_MANAGER) && (
             <>
               <div className="flex justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
                 <BreadcrumbComponent itemBreadcrumbs={itemBreadcrumbs} />

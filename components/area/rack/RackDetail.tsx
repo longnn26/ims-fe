@@ -18,12 +18,12 @@ const RackDetail: React.FC<Props> = (props) => {
         <h3>Rack </h3>
       </Divider>{" "}
       <Descriptions className="p-5">
-        <Descriptions.Item label="Id">{rackDetail?.id}</Descriptions.Item>
+        {/* <Descriptions.Item label="Id">{rackDetail?.id}</Descriptions.Item> */}
 
         <Descriptions.Item label="Max power">
           {rackDetail?.maxPower}
         </Descriptions.Item>
-        <Descriptions.Item label="Current power" span={4}>
+        <Descriptions.Item label="Current power">
           {rackDetail?.currentPower}
         </Descriptions.Item>
         <Descriptions.Item label="Size" span={4}>

@@ -20,10 +20,18 @@ import { AiOutlineFileDone } from "react-icons/ai";
 import { MdCancel } from "react-icons/md";
 import { CaretLeftOutlined } from "@ant-design/icons";
 import { areInArray } from "@utils/helpers";
-import { ROLE_CUSTOMER, ROLE_SALES, ROLE_TECH } from "@utils/constants";
+import {
+  ROLE_CUSTOMER,
+  ROLE_MANAGER,
+  ROLE_SALES,
+  ROLE_TECH,
+} from "@utils/constants";
 import ModalDeny from "@components/server/requestUpgrade/ModalDeny";
 import serverHardwareConfig from "@services/serverHardwareConfig";
-import { SHCParamGet, ServerHardwareConfigData } from "@models/serverHardwareConfig";
+import {
+  SHCParamGet,
+  ServerHardwareConfigData,
+} from "@models/serverHardwareConfig";
 const { confirm } = Modal;
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
@@ -66,12 +74,14 @@ const RequestDetail: React.FC = () => {
           )
           .then(async (res) => {
             setServerAllocationDetail(res);
-            await serverHardwareConfig.getServerHardwareConfigData(
-              session?.user.access_token!,
-              { ...paramGet, ServerAllocationId: res.id } as SHCParamGet
-            ).then((res) => {
-              setHardware(res);
-            });
+            await serverHardwareConfig
+              .getServerHardwareConfigData(session?.user.access_token!, {
+                ...paramGet,
+                ServerAllocationId: res.id,
+              } as SHCParamGet)
+              .then((res) => {
+                setHardware(res);
+              });
           });
         setRequestUpgradeDetail(res);
       });
@@ -99,9 +109,9 @@ const RequestDetail: React.FC = () => {
           .catch((errors) => {
             message.error(errors.response.data, 1.5);
           })
-          .finally(() => { });
+          .finally(() => {});
       },
-      onCancel() { },
+      onCancel() {},
     });
   };
 
@@ -127,9 +137,9 @@ const RequestDetail: React.FC = () => {
           .catch((errors) => {
             message.error(errors.response.data, 1.5);
           })
-          .finally(() => { });
+          .finally(() => {});
       },
-      onCancel() { },
+      onCancel() {},
     });
   };
 
@@ -155,9 +165,9 @@ const RequestDetail: React.FC = () => {
           .catch((errors) => {
             message.error(errors.response.data, 1.5);
           })
-          .finally(() => { });
+          .finally(() => {});
       },
-      onCancel() { },
+      onCancel() {},
     });
   };
 
@@ -216,97 +226,98 @@ const RequestDetail: React.FC = () => {
             session?.user.roles!,
             ROLE_TECH,
             ROLE_SALES,
-            ROLE_CUSTOMER
+            ROLE_CUSTOMER,
+            ROLE_MANAGER
           ) && (
-              <>
-                <div className="flex flex-wrap items-center justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
-                  <div>
-                    <Button
-                      type="primary"
-                      className="mb-2"
-                      icon={<CaretLeftOutlined />}
-                      onClick={() => router.back()}
-                    ></Button>
-                    <BreadcrumbComponent itemBreadcrumbs={itemBreadcrumbs} />
-                  </div>
+            <>
+              <div className="flex flex-wrap items-center justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
+                <div>
+                  <Button
+                    type="primary"
+                    className="mb-2"
+                    icon={<CaretLeftOutlined />}
+                    onClick={() => router.back()}
+                  ></Button>
+                  <BreadcrumbComponent itemBreadcrumbs={itemBreadcrumbs} />
                 </div>
-                <div className="md:flex">
-                  <ServerDetail
-                    serverAllocationDetail={serverAllocationDetail!}
-                    hardware={hardware!}
-                  ></ServerDetail>
-                  <RequestUpgradeDetailInfor
-                    requestUpgradeDetail={requestUpgradeDetail!}
-                  />
-                </div>
-                <AppointmentTable
-                  typeGet="ByRequestUpgradeId"
-                  urlOncell=""
-                  onEdit={(record) => { }}
-                  onDelete={async (record) => { }}
+              </div>
+              <div className="md:flex">
+                <ServerDetail
+                  serverAllocationDetail={serverAllocationDetail!}
+                  hardware={hardware!}
+                ></ServerDetail>
+                <RequestUpgradeDetailInfor
+                  requestUpgradeDetail={requestUpgradeDetail!}
                 />
-                {appointmentData?.totalPage > 0 && (
-                  <Pagination
-                    className="text-end m-4"
-                    current={rUAppointmentParamGet?.PageIndex}
-                    pageSize={appointmentData?.pageSize ?? 10}
-                    total={appointmentData?.totalSize}
-                    onChange={(page, pageSize) => {
-                      setRUAppointmentParamGet({
-                        ...rUAppointmentParamGet,
-                        PageIndex: page,
-                        PageSize: pageSize,
-                      });
-                    }}
-                  />
+              </div>
+              <AppointmentTable
+                typeGet="ByRequestUpgradeId"
+                urlOncell=""
+                onEdit={(record) => {}}
+                onDelete={async (record) => {}}
+              />
+              {appointmentData?.totalPage > 0 && (
+                <Pagination
+                  className="text-end m-4"
+                  current={rUAppointmentParamGet?.PageIndex}
+                  pageSize={appointmentData?.pageSize ?? 10}
+                  total={appointmentData?.totalSize}
+                  onChange={(page, pageSize) => {
+                    setRUAppointmentParamGet({
+                      ...rUAppointmentParamGet,
+                      PageIndex: page,
+                      PageSize: pageSize,
+                    });
+                  }}
+                />
+              )}
+              {requestUpgradeDetail?.status === "Waiting" &&
+                areInArray(session?.user.roles!, ROLE_SALES) && (
+                  <FloatButton.Group
+                    trigger="hover"
+                    type="primary"
+                    style={{ right: 60, bottom: 500 }}
+                    icon={<AiOutlineFileDone />}
+                  >
+                    <FloatButton
+                      icon={<MdCancel color="red" />}
+                      tooltip="Deny"
+                      onClick={() => setOpenModalDeny(true)}
+                    />
+                    <FloatButton
+                      onClick={() => acceptRequestUpgrade()}
+                      icon={<AiOutlineFileDone color="green" />}
+                      tooltip="Accept"
+                    />
+                  </FloatButton.Group>
                 )}
-                {(requestUpgradeDetail?.status === "Waiting" &&
-                  areInArray(session?.user.roles!, ROLE_SALES)) && (
-                    <FloatButton.Group
-                      trigger="hover"
-                      type="primary"
-                      style={{ right: 60, bottom: 500 }}
-                      icon={<AiOutlineFileDone />}
-                    >
-                      <FloatButton
-                        icon={<MdCancel color="red" />}
-                        tooltip="Deny"
-                        onClick={() => setOpenModalDeny(true)}
-                      />
-                      <FloatButton
-                        onClick={() => acceptRequestUpgrade()}
-                        icon={<AiOutlineFileDone color="green" />}
-                        tooltip="Accept"
-                      />
-                    </FloatButton.Group>
-                  )}
 
-                {Boolean(
-                  areInArray(session?.user.roles!, ROLE_TECH) &&
+              {Boolean(
+                areInArray(session?.user.roles!, ROLE_TECH) &&
                   requestUpgradeDetail?.status === "Accepted" &&
                   requestUpgradeDetail?.succeededAppointment?.status ===
-                  "Success"
-                ) && (
-                    <FloatButton.Group
-                      trigger="hover"
-                      type="primary"
-                      style={{ right: 60, bottom: 500 }}
-                      icon={<AiOutlineFileDone />}
-                    >
-                      <FloatButton
-                        icon={<MdCancel color="red" />}
-                        tooltip="Fail"
-                        onClick={() => rejectRequestUpgrade()}
-                      />
-                      <FloatButton
-                        onClick={() => completeRequestUpgrade()}
-                        icon={<AiOutlineFileDone color="green" />}
-                        tooltip="Complete"
-                      />
-                    </FloatButton.Group>
-                  )}
-              </>
-            )}
+                    "Success"
+              ) && (
+                <FloatButton.Group
+                  trigger="hover"
+                  type="primary"
+                  style={{ right: 60, bottom: 500 }}
+                  icon={<AiOutlineFileDone />}
+                >
+                  <FloatButton
+                    icon={<MdCancel color="red" />}
+                    tooltip="Fail"
+                    onClick={() => rejectRequestUpgrade()}
+                  />
+                  <FloatButton
+                    onClick={() => completeRequestUpgrade()}
+                    icon={<AiOutlineFileDone color="green" />}
+                    tooltip="Complete"
+                  />
+                </FloatButton.Group>
+              )}
+            </>
+          )}
         </>
       }
     />

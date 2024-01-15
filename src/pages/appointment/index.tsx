@@ -15,9 +15,23 @@ import { ParamGet } from "@models/base";
 import { RUAppointmentParamGet } from "@models/requestUpgrade";
 import appointmentService from "@services/appointment";
 import { getListAppointment } from "@slices/appointment";
-import { ROLE_CUSTOMER, ROLE_SALES, ROLE_TECH } from "@utils/constants";
+import {
+  ROLE_CUSTOMER,
+  ROLE_MANAGER,
+  ROLE_SALES,
+  ROLE_TECH,
+} from "@utils/constants";
 import { areInArray, parseJwt } from "@utils/helpers";
-import { Pagination, Button, message, Alert, Modal, Spin, TabsProps, Tabs } from "antd";
+import {
+  Pagination,
+  Button,
+  message,
+  Alert,
+  Modal,
+  Spin,
+  TabsProps,
+  Tabs,
+} from "antd";
 import { ItemType } from "antd/es/breadcrumb/Breadcrumb";
 import { useSession } from "next-auth/react";
 import dynamic from "next/dynamic";
@@ -34,20 +48,22 @@ const Appoinment: React.FC = () => {
   const router = useRouter();
   const { data: session } = useSession();
   const { listAppointmentData } = useSelector((state) => state.appointment);
-  const [appointmentUpdate, setAppointmentUpdate] = useState<Appointment | undefined>(undefined);
+  const [appointmentUpdate, setAppointmentUpdate] = useState<
+    Appointment | undefined
+  >(undefined);
   const [loadingSubmit, setLoadingSubmit] = useState<boolean>(false);
   const [itemBreadcrumbs, setItemBreadcrumbs] = useState<ItemType[]>([]);
   const [openModalCreate, setOpenModalCreate] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [status, setStatus] = useState<string | undefined>(undefined);
-  const [paramGet, setParamGet] =
-    useState<ParamGetExtend>({
-      PageIndex: 1,
-      PageSize: 10,
-    } as unknown as ParamGetExtend);
+  const [paramGet, setParamGet] = useState<ParamGetExtend>({
+    PageIndex: 1,
+    PageSize: 10,
+  } as unknown as ParamGetExtend);
 
   const getData = async () => {
-    var customerId = "", userId="";
+    var customerId = "",
+      userId = "";
     if (areInArray(session?.user.roles!, ROLE_SALES)) {
       userId = parseJwt(session?.user.access_token!).UserId;
     } else if (session?.user.roles.includes("Customer")) {
@@ -57,7 +73,12 @@ const Appoinment: React.FC = () => {
     await dispatch(
       getListAppointment({
         token: session?.user.access_token!,
-        paramGet: { ...paramGet, CustomerId: customerId, Statuses: status, UserId: userId  },
+        paramGet: {
+          ...paramGet,
+          CustomerId: customerId,
+          Statuses: status,
+          UserId: userId,
+        },
       })
     ).finally(() => {
       setLoading(false);
@@ -130,9 +151,8 @@ const Appoinment: React.FC = () => {
       case "5":
         setStatus("Failed");
         break;
-    };
+    }
   };
-
 
   const items: TabsProps["items"] = [
     {
@@ -198,26 +218,30 @@ const Appoinment: React.FC = () => {
               }
             />
           </div>
-          <Tabs className="m-5" defaultActiveKey="0" items={items} centered
+          <Tabs
+            className="m-5"
+            defaultActiveKey="0"
+            items={items}
+            centered
             onTabClick={(value) => handleChange(value)}
           />
           {areInArray(
             session?.user.roles!,
             ROLE_TECH,
             ROLE_SALES,
-            ROLE_CUSTOMER
+            ROLE_MANAGER
           ) && (
             <>
-            {appointmentUpdate && (
-              <ModalUpdate
-                appointment={appointmentUpdate!}
-                onClose={() => setAppointmentUpdate(undefined)}
-                onSubmit={() => {
-                  setAppointmentUpdate(undefined);
-                  getData();
-                }}
-              />
-            )}
+              {appointmentUpdate && (
+                <ModalUpdate
+                  appointment={appointmentUpdate!}
+                  onClose={() => setAppointmentUpdate(undefined)}
+                  onSubmit={() => {
+                    setAppointmentUpdate(undefined);
+                    getData();
+                  }}
+                />
+              )}
               {loading === true ? (
                 <>
                   <Spin size="large" tip="Loading data...">

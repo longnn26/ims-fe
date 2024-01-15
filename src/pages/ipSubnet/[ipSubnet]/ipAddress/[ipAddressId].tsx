@@ -12,7 +12,7 @@ import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { getServerAllocationData } from "@slices/serverAllocation";
 import { areInArray } from "@utils/helpers";
-import { ROLE_TECH } from "@utils/constants";
+import { ROLE_MANAGER, ROLE_TECH } from "@utils/constants";
 import { ParamGet } from "@models/base";
 import HistoryIpAddressTable from "@components/ipSubnet/HistoryIpAddressTable";
 import ipAddress from "@services/ipAddress";
@@ -40,7 +40,7 @@ const Customer: React.FC = () => {
 
   const getData = async () => {
     await ipSubnetService
-      .getDetail(session?.user.access_token!, router.query.ipSubnet+"")
+      .getDetail(session?.user.access_token!, router.query.ipSubnet + "")
       .then((res) => {
         setIpSubnetDetail(res);
       });
@@ -74,13 +74,16 @@ const Customer: React.FC = () => {
     var items = router.asPath.split("/").filter((_) => _ != "");
     var path = "";
     items.forEach((element) => {
-      if ((element !== ipSubnetDetail?.id + "") && (element !== router.query.ipAddressId +"")) {
+      if (
+        element !== ipSubnetDetail?.id + "" &&
+        element !== router.query.ipAddressId + ""
+      ) {
         path += `/${element}`;
         itemBrs.push({
           href: path,
           title: element,
         });
-      } else if (element === router.query.ipAddressId +"") {
+      } else if (element === router.query.ipAddressId + "") {
         itemBrs.push({
           title: `${historyDetail?.address}`,
         });
@@ -109,12 +112,12 @@ const Customer: React.FC = () => {
             <BreadcrumbComponent itemBreadcrumbs={itemBreadcrumbs} />
           </div>
 
-          {areInArray(session?.user.roles!, ROLE_TECH) && (
+          {areInArray(session?.user.roles!, ROLE_TECH, ROLE_MANAGER) && (
             <>
               <HistoryIpAddressTable
-                onEdit={() => { }}
-                onBlock={() => { }}
-                onDelete={() => { }}
+                onEdit={() => {}}
+                onBlock={() => {}}
+                onDelete={() => {}}
               />
               {ipAddressHistoryData?.totalPage > 0 && (
                 <Pagination

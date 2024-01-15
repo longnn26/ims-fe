@@ -33,7 +33,12 @@ import { GrHost } from "react-icons/gr";
 import { RUIpAdressParamGet } from "@models/requestHost";
 import { getServerIpAdressData } from "@slices/serverAllocation";
 import IpAddressTable from "@components/server/ipAddress/IpAddressTable";
-import { ROLE_CUSTOMER, ROLE_SALES, ROLE_TECH } from "@utils/constants";
+import {
+  ROLE_CUSTOMER,
+  ROLE_MANAGER,
+  ROLE_SALES,
+  ROLE_TECH,
+} from "@utils/constants";
 import { areInArray } from "@utils/helpers";
 import ModalEmpty from "@components/ModalEmpty";
 import { error } from "console";
@@ -315,7 +320,8 @@ const Customer: React.FC = () => {
               session?.user.roles!,
               ROLE_TECH,
               ROLE_SALES,
-              ROLE_CUSTOMER
+              ROLE_CUSTOMER,
+              ROLE_MANAGER
             ) && (
               <>
                 <ServerDetail
