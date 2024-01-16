@@ -17,7 +17,7 @@ const RequestHostDetailInfor: React.FC<Props> = (props) => {
       <Divider orientation="left" plain>
         <h3>IP Request information </h3>
       </Divider>{" "}
-      <Descriptions className="p-5">
+      <Descriptions className="p-5" column={2}>
         <Descriptions.Item label="Request's Status">
           <Tag
             className="text-center"
@@ -85,6 +85,13 @@ const RequestHostDetailInfor: React.FC<Props> = (props) => {
         </Descriptions.Item>
         <Descriptions.Item label="Customer's Note" span={4}>
           {requestHostDetail?.note}
+        </Descriptions.Item>
+        <Descriptions.Item label="Discontinued Service Letter" span={4}>
+          {requestHostDetail?.removalRequestDocument !== null && (
+            <a href={`${requestHostDetail?.removalRequestDocument}`}>
+              Công văn ngưng (dịch vụ IP)
+            </a>
+          )}
         </Descriptions.Item>
         <Descriptions.Item label="Acceptance Report" span={4}>
           {requestHostDetail?.inspectionReportFilePath !== null && (
