@@ -131,24 +131,53 @@ const Appoinment: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status]);
 
+  useEffect(() => {
+    session && getData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [paramGet]);
+
   const handleChange = (value) => {
     switch (value) {
       case "0":
+        setParamGet({
+          ...paramGet,
+          PageIndex: 1,
+        });
         setStatus(undefined);
         break;
       case "1":
+        setParamGet({
+          ...paramGet,
+          PageIndex: 1,
+        });
         setStatus("Waiting");
         break;
       case "2":
+        setParamGet({
+          ...paramGet,
+          PageIndex: 1,
+        });
         setStatus("Accepted");
         break;
       case "3":
+        setParamGet({
+          ...paramGet,
+          PageIndex: 1,
+        });
         setStatus("Denied");
         break;
       case "4":
+        setParamGet({
+          ...paramGet,
+          PageIndex: 1,
+        });
         setStatus("Success");
         break;
       case "5":
+        setParamGet({
+          ...paramGet,
+          PageIndex: 1,
+        });
         setStatus("Failed");
         break;
     }
