@@ -138,6 +138,7 @@ const ModalCreate: React.FC<Props> = (props) => {
             loading={loadingSubmit}
             className="btn-submit"
             key="submit"
+            disabled={loading}
             onClick={async () => {
               if (!(await disabled()))
                 confirm({

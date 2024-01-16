@@ -19,7 +19,6 @@ import {
 } from "@models/requestUpgrade";
 import { ServerAllocation } from "@models/serverAllocation";
 import requestUpgradeService from "@services/requestUpgrade";
-import requestExpandService from "@services/requestExpand";
 import serverAllocationService from "@services/serverAllocation";
 import { getRequestExpandData } from "@slices/requestExpand";
 import {
@@ -113,19 +112,6 @@ const RequestExpand: React.FC = () => {
         setParamGet({ ...paramGet, PageIndex: res.totalPage });
       }
     });
-  };
-
-  const createData = async (data: RequestExpandCreateModel) => {
-    await requestExpandService
-      .createData(session?.user.access_token!, data)
-      .then((res) => {
-        message.success("Create successfully!", 1.5);
-        getData();
-        setOpenModalCreate(false);
-      })
-      .catch((errors) => {
-        message.error(errors.response.data, 1.5);
-      });
   };
 
   const updateData = async (data: RequestUpgradeUpdateModel) => {
@@ -250,11 +236,9 @@ const RequestExpand: React.FC = () => {
               <ModalCreate
                 open={openModalCreate}
                 onClose={() => setOpenModalCreate(false)}
-                onSubmit={(data: RequestExpandCreateModel) => {
-                  data.serverAllocationId = parseInt(
-                    router.query!.serverAllocationId!.toString()
-                  );
-                  createData(data);
+                onSubmit={() => {
+                  setOpenModalCreate(false);
+                  getData();
                 }}
               />
               <ServerDetail
