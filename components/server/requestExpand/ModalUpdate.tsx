@@ -385,6 +385,8 @@ const ModalUpdate: React.FC<Props> = (props) => {
                     </Select>
                   </div>
                 </div>
+              </Space.Compact>{" "}
+              <div style={{ display: "flex", justifyContent: "flex-end" }}>
                 {selectedLocation !== undefined && (
                   <Button
                     loading={confirmLoading}
@@ -404,7 +406,7 @@ const ModalUpdate: React.FC<Props> = (props) => {
                     Assign
                   </Button>
                 )}
-              </Space.Compact>{" "}
+              </div>
             </Space>
           </Spin>
         </>
