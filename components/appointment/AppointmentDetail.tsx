@@ -66,16 +66,16 @@ const ServerDetail: React.FC<Props> = (props) => {
             </>
           )}
         </Descriptions.Item>
-        <Descriptions.Item label="Sale Staff">
+        <Descriptions.Item label="Sales Staff">
           {appointmentDetail?.evaluator?.fullname}
         </Descriptions.Item>
-        <Descriptions.Item label="Sale Staff's Note" span={1}>
+        <Descriptions.Item label="Sales Staff Note" span={1}>
           {appointmentDetail?.saleNote}
         </Descriptions.Item>
         <Descriptions.Item label="Technical Staff">
           {appointmentDetail?.executor?.fullname}
         </Descriptions.Item>
-        <Descriptions.Item label=" Techical Staff's Note" span={1}>
+        <Descriptions.Item label=" Techical Staff Note" span={1}>
           {appointmentDetail?.techNote}
         </Descriptions.Item>
 

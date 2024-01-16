@@ -56,7 +56,11 @@ const ModalDenyHost: React.FC<Props> = (props) => {
   return (
     <>
       <Modal
-        title={<span className="inline-block m-auto">Deny Hardware Upgrade request</span>}
+        title={
+          <span className="inline-block m-auto">
+            Deny Hardware Upgrade request
+          </span>
+        }
         open={open}
         confirmLoading={confirmLoading}
         onCancel={() => {
@@ -75,7 +79,7 @@ const ModalDenyHost: React.FC<Props> = (props) => {
                   async onOk() {
                     deny(form.getFieldValue("saleNote"));
                   },
-                  onCancel() { },
+                  onCancel() {},
                 });
             }}
           >
@@ -94,10 +98,14 @@ const ModalDenyHost: React.FC<Props> = (props) => {
             >
               <Form.Item
                 name="saleNote"
-                label="Sale note for failure"
+                label="Sales note for failure"
                 rules={[{ required: true, max: 2000 }]}
               >
-                <Input.TextArea autoSize={{ minRows: 1, maxRows: 6 }} placeholder="Note" allowClear />
+                <Input.TextArea
+                  autoSize={{ minRows: 1, maxRows: 6 }}
+                  placeholder="Note"
+                  allowClear
+                />
               </Form.Item>
             </Form>
           </Spin>

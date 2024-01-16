@@ -108,10 +108,10 @@ const ModalRejectHost: React.FC<Props> = (props) => {
             {areInArray(session?.user.roles!, ROLE_SALES) && (
               <Form.Item
                 name="saleNote"
-                label="Sale note"
+                label="Sales note"
                 rules={[{ required: true, min: 6, max: 255 }]}
               >
-                <Input placeholder="Sale note" allowClear />
+                <Input placeholder="Sales note" allowClear />
               </Form.Item>
             )}
           </Form>

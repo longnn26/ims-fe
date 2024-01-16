@@ -215,15 +215,15 @@ const ModalUpdate: React.FC<Props> = (props) => {
               {areInArray(session?.user.roles!, ROLE_SALES) && (
                 <Form.Item
                   name="saleNote"
-                  label="Sale Note"
+                  label="Sales Note"
                   rules={[
                     {
                       pattern: new RegExp(/^\b(\w+\W*){1,2000}\b/),
-                      message: "Sale note no more than 2000 words",
+                      message: "Sales note no more than 2000 words",
                     },
                   ]}
                 >
-                  <Input placeholder="Sale Note" allowClear />
+                  <Input placeholder="Sales Note" allowClear />
                 </Form.Item>
               )}
               {areInArray(session?.user.roles!, ROLE_TECH) && (
@@ -233,7 +233,7 @@ const ModalUpdate: React.FC<Props> = (props) => {
                   rules={[
                     {
                       pattern: new RegExp(/^\b(\w+\W*){1,2000}\b/),
-                      message: "Sale note no more than 2000 words",
+                      message: "Sales note no more than 2000 words",
                     },
                   ]}
                 >
@@ -247,7 +247,7 @@ const ModalUpdate: React.FC<Props> = (props) => {
                   rules={[
                     {
                       pattern: new RegExp(/^\b(\w+\W*){1,2000}\b/),
-                      message: "Sale note no more than 2000 words",
+                      message: "Sales note no more than 2000 words",
                     },
                   ]}
                 >

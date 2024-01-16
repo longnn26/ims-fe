@@ -33,11 +33,7 @@ const ModalDenyHost: React.FC<Props> = (props) => {
   const deny = async (data: string) => {
     setLoading(true);
     await requestHost
-      .denyRequestHost(
-        session?.user.access_token!,
-        requestHostId + "",
-        data
-      )
+      .denyRequestHost(session?.user.access_token!, requestHostId + "", data)
       .then((res) => {
         message.success("Deny IP Request successfully!", 1.5);
         form.resetFields();
@@ -73,7 +69,7 @@ const ModalDenyHost: React.FC<Props> = (props) => {
                   async onOk() {
                     deny(form.getFieldValue("saleNote"));
                   },
-                  onCancel() { },
+                  onCancel() {},
                 });
             }}
           >
@@ -92,10 +88,14 @@ const ModalDenyHost: React.FC<Props> = (props) => {
             >
               <Form.Item
                 name="saleNote"
-                label="Sale note for failure"
+                label="Sales note for failure"
                 rules={[{ required: true, max: 2000 }]}
               >
-                <Input.TextArea autoSize={{ minRows: 1, maxRows: 6 }} placeholder="Note" allowClear />
+                <Input.TextArea
+                  autoSize={{ minRows: 1, maxRows: 6 }}
+                  placeholder="Note"
+                  allowClear
+                />
               </Form.Item>
             </Form>
           </Spin>

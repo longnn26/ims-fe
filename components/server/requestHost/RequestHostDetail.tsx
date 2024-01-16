@@ -74,13 +74,13 @@ const RequestHostDetailInfor: React.FC<Props> = (props) => {
         <Descriptions.Item label="Sales Staff">
           {requestHostDetail?.evaluator?.fullname}
         </Descriptions.Item>
-        <Descriptions.Item label="Sale Staff's Note" span={2}>
+        <Descriptions.Item label="Sales Staff Note" span={2}>
           {requestHostDetail?.saleNote}
         </Descriptions.Item>
         <Descriptions.Item label="Technical Staff">
           {requestHostDetail?.executor?.fullname}
         </Descriptions.Item>
-        <Descriptions.Item label="Technical Staff's Note" span={2}>
+        <Descriptions.Item label="Technical Staff Note" span={2}>
           {requestHostDetail?.techNote}
         </Descriptions.Item>
         <Descriptions.Item label="Customer's Note" span={4}>

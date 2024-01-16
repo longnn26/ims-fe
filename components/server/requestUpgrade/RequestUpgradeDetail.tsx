@@ -45,16 +45,16 @@ const RequestUpgradeDetailInfor: React.FC<Props> = (props) => {
         <Descriptions.Item label="Customer Note" span={4}>
           {requestUpgradeDetail?.note}
         </Descriptions.Item>
-        <Descriptions.Item label="Sale Staff" span={4}>
+        <Descriptions.Item label="Sales Staff" span={4}>
           {requestUpgradeDetail?.evaluator?.fullname}
         </Descriptions.Item>
-        <Descriptions.Item label="Sale Staff's Note" span={4}>
+        <Descriptions.Item label="Sales Staff Note" span={4}>
           {requestUpgradeDetail?.saleNote}
         </Descriptions.Item>
         <Descriptions.Item label="Technical Staff" span={4}>
           {requestUpgradeDetail?.executor?.fullname}
         </Descriptions.Item>
-        <Descriptions.Item label="Technical Staff's Note" span={4}>
+        <Descriptions.Item label="Technical Staff Note" span={4}>
           {requestUpgradeDetail?.techNote}
         </Descriptions.Item>
         <Descriptions.Item label="Date Created" span={1}>
