@@ -98,11 +98,11 @@ const Customer: React.FC = () => {
           .deleteData(session?.user.access_token!, requestUpgrade.id.toString())
           .then(() => {
             getData();
-            message.success(`Delete request upgrade successfully`, 1.5);
+            message.success(`Delete Request successfully!`, 1.5);
           })
           .catch((errors) => {
             message.error(
-              errors.response.data ?? "Delete request upgrade failed",
+              errors.response.data ?? "Delete Request failed!",
               1.5
             );
           });

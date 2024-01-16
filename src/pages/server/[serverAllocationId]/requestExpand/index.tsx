@@ -159,13 +159,10 @@ const RequestExpand: React.FC = () => {
           .deleteData(session?.user.access_token!, requestUpgrade.id.toString())
           .then(() => {
             getData();
-            message.success(`Delete request upgrade successfully`, 1.5);
+            message.success(`Delete Request successfully`, 1.5);
           })
           .catch((errors) => {
-            message.error(
-              errors.response.data ?? "Delete request upgrade failed",
-              1.5
-            );
+            message.error(errors.response.data ?? "Delete Request failed", 1.5);
             setLoadingSubmit(false);
           });
       },
