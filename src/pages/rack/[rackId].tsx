@@ -47,6 +47,8 @@ const AreaDetail: React.FC = () => {
       .then((e) => setRackMapList([...e]));
   };
 
+  console.log(rackMapList)
+
   const handleBreadCumb = () => {
     var itemBrs = [] as ItemType[];
     var items = router.asPath.split("/").filter((_) => _ != "");
@@ -103,6 +105,7 @@ const AreaDetail: React.FC = () => {
                   ></Button>
                   <BreadcrumbComponent itemBreadcrumbs={itemBreadcrumbs} />
                 </div>
+                {/* {rackMapList.filter((l) => {l.position === 1})} */}
                 <Button
                   type="primary"
                   className="mr-2"
@@ -126,10 +129,10 @@ const AreaDetail: React.FC = () => {
 
               <RackDetail rackDetail={rackDetail!} />
               <div className="flex ">
-                <div className="w-2/3">
+                <div className="w-1/2">
                   <RackMapRender rackMapList={rackMapList} />
                 </div>
-                <div className="w-1/3">
+                <div className="w-1/2">
                   <PieChartComponent
                     data={[
                       { name: "Available", value: available, color: "#e1efd8" },

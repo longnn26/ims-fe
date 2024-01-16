@@ -68,14 +68,14 @@ const PieChartComponent: React.FC<Props> = (props) => {
             )
         )}
       </div>
-      <PieChart width={400} height={400}>
+      <PieChart width={600} height={800}>
         <Pie
           data={data}
-          cx={200}
+          cx={300}
           cy={200}
           labelLine={false}
           label={renderCustomizedLabel}
-          outerRadius={80}
+          outerRadius={200}
           fill="#8884d8"
           dataKey="value"
         >
