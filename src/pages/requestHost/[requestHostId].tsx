@@ -78,7 +78,6 @@ const RequestDetail: React.FC = () => {
     useState<RUIpAdressParamGet>({
       PageIndex: 1,
       PageSize: 10,
-      RequestHostId: router.query.requestHostId ?? -1,
     } as unknown as RUIpAdressParamGet);
   const [paramGet, setParamGet] = useState<SHCParamGet>({
     PageIndex: 1,
@@ -121,6 +120,12 @@ const RequestDetail: React.FC = () => {
           });
         setRequestHostDetail(res);
       });
+      dispatch(
+        getIpAdressData({
+          token: session?.user.access_token!,
+          paramGet: { ...rUIpAddressParamGet, RequestHostId: parseInt(router.query.requestHostId+"") },
+        })
+      );
   };
 
   const updateData = async (data: RequestHostUpdateModel) => {
@@ -215,10 +220,12 @@ const RequestDetail: React.FC = () => {
 
   useEffect(() => {
     if (router.query.requestHostId && session) {
+      rUIpAddressParamGet.RequestHostId = parseInt(router.query.requestHostId+"");
+      getData();
       handleBreadCumb();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [requestHostDetail]);
+  }, [requestHostDetail, rUIpAddressParamGet]);
 
   useEffect(() => {
     if (router.query.requestHostId && session) {
@@ -227,21 +234,6 @@ const RequestDetail: React.FC = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session]);
-
-  useEffect(() => {
-    if (router.query.requestHostId && session) {
-      getData();
-      handleBreadCumb();
-      rUIpAddressParamGet.Id = parseInt(router.query.requestHostId!.toString());
-      dispatch(
-        getIpAdressData({
-          token: session?.user.access_token!,
-          paramGet: { ...rUIpAddressParamGet },
-        })
-      );
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [session, rUIpAddressParamGet, router.query.requestHostId]);
 
   return (
     <AntdLayoutNoSSR
@@ -428,7 +420,9 @@ const RequestDetail: React.FC = () => {
                 provideIpsData={provideIpsData!}
                 quantity={requestHostDetail?.quantity!}
                 requestHostId={requestHostDetail?.id!}
-                onClose={() => setProvideIpsData(undefined)}
+                onClose={() => {
+                  setProvideIpsData(undefined);
+                }}
                 onRefresh={() => getData()}
               />
             </>
