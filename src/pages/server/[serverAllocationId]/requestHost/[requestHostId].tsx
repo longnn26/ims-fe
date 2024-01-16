@@ -228,7 +228,7 @@ const RequestHostDetail: React.FC = () => {
       title: "Accept",
       content: (
         <Alert
-          message={`Do you want to confirm document of this Appointment?`}
+          message={`Do you want to confirm document of this IP Request?`}
           type="warning"
         />
       ),
