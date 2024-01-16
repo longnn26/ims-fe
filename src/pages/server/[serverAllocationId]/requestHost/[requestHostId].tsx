@@ -186,20 +186,6 @@ const RequestHostDetail: React.FC = () => {
       });
   };
 
-  const handleBreadCumb = () => {
-    var itemBrs = [] as ItemType[];
-    var items = router.asPath.split("/").filter((_) => _ != "");
-    var path = "";
-    items.forEach((element) => {
-      path += `/${element}`;
-      itemBrs.push({
-        href: path,
-        title: element,
-      });
-    });
-    setItemBreadcrumbs(itemBrs);
-  };
-
   const getProvideIps = async () => {
     if (requestHostDetail?.quantity) {
       provideIpsParamGet.Quantity = requestHostDetail?.quantity!;
@@ -225,7 +211,7 @@ const RequestHostDetail: React.FC = () => {
         data
       )
       .then((res) => {
-        message.success("Upload Image successfully!", 1.5);
+        message.success("Upload file successfully!", 1.5);
         getData();
       })
       .catch((errors) => {
@@ -265,9 +251,42 @@ const RequestHostDetail: React.FC = () => {
     });
   };
 
+  const handleBreadCumb = () => {
+    var itemBrs = [] as ItemType[];
+    var items = router.asPath.split("/").filter((_) => _ != "");
+    var path = "";
+    items.forEach((element) => {
+      switch (element) {
+        case serverAllocationDetail?.id + "":
+          path += `/${element}`;
+          itemBrs.push({
+            href: path,
+            title: serverAllocationDetail?.name,
+          });
+          break;
+        case requestHostDetail?.id + "":
+          path += `/${element}`;
+          itemBrs.push({
+            href: path,
+            title: "Detail Information",
+          });
+          break;
+        default:
+          path += `/${element}`;
+          itemBrs.push({
+            href: path,
+            title: element,
+          });
+          break;
+      }
+    });
+    setItemBreadcrumbs(itemBrs);
+  };
+
   useEffect(() => {
     if (router.query.serverAllocationId && session) {
       getData();
+      handleBreadCumb();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session]);
@@ -290,7 +309,12 @@ const RequestHostDetail: React.FC = () => {
 
   useEffect(() => {
     checkPermission();
+    handleBreadCumb();
   }, [requestHostDetail]);
+
+  useEffect(() => {
+    handleBreadCumb();
+  }, [serverAllocationDetail]);
 
   if (requestHostDetail === undefined) {
     return (

@@ -17,10 +17,10 @@ const BreadcrumbComponent: React.FC<Props> = (props) => {
         element.title = "Customer";
         break;
       case "requestUpgrade":
-        element.title = "Request upgrade";
+        element.title = "Hardware Upgrade Request";
         break;
       case "requestExpand":
-        element.title = "Request expand";
+        element.title = "Server Allocation Request";
         break;
       case "area":
         element.title = "Area";
@@ -33,6 +33,9 @@ const BreadcrumbComponent: React.FC<Props> = (props) => {
         break;
       case "requestHost":
         element.title = "IP Request";
+        break;
+      case "incident":
+        element.title = "Incident";
         break;
     }
   });
