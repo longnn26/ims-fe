@@ -24,6 +24,7 @@ export interface RequestHost extends BaseWithIdNumber {
   evaluator: Evaluator;
   documentConfirm: boolean;
   capacities: number[];
+  removalRequestDocument: string;
   ipAddresses: IPAddresses[];
 }
 
@@ -48,6 +49,8 @@ export interface RequestHostCreateModel {
   type: string;
   isRemoval: boolean;
   serverAllocationId: number;
+  removalRequestDocument: string;
+  removalRequestDocumentFileName: string;
 }
 
 export interface RequestHostIp {

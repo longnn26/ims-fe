@@ -1,8 +1,9 @@
 import React, { useRef, useState, useEffect } from "react";
-import { Button, Input, Modal, Select, message } from "antd";
+import { Button, Input, Modal, Select, Spin, Upload, UploadFile, message } from "antd";
 import { Form } from "antd";
 import useSelector from "@hooks/use-selector";
 import { RequestHostCreateModel } from "@models/requestHost";
+import { UploadOutlined } from '@ant-design/icons';
 
 import { useSession } from "next-auth/react";
 import requestHostService from "@services/requestHost";
@@ -10,6 +11,7 @@ import { ServerAllocation } from "@models/serverAllocation";
 import { IpAddress, IpAddressParamGet } from "@models/ipAddress";
 import ipAddress from "@services/ipAddress";
 import { useRouter } from "next/router";
+import UploadComponent from "@components/UploadComponent";
 const { Option } = Select;
 const { confirm } = Modal;
 
@@ -41,6 +43,8 @@ const ModalCreate: React.FC<Props> = (props) => {
 
   const [ipAddresses, setIpAddresses] = useState<IpAddress[]>([]);
   const [requestType, setRequestType] = useState<string | undefined>(undefined);
+  const [fileUpload, setFileUpload] = useState<UploadFile[]>([]);
+  const [disabledFileUpload, setDisabledFileUpload] =  useState<boolean>(false);
 
   const disabled = async () => {
     var result = false;
@@ -57,7 +61,7 @@ const ModalCreate: React.FC<Props> = (props) => {
       .getData(session?.user.access_token!, {
         PageIndex: pageIndexCus + 1,
         PageSize: pageSize,
-        ServerAllocationId: parseInt(router.query.serverAllocationId+""),
+        ServerAllocationId: parseInt(router.query.serverAllocationId + ""),
         AssignmentTypes: requestType,
         IsAssigned: true,
       } as IpAddressParamGet)
@@ -68,6 +72,37 @@ const ModalCreate: React.FC<Props> = (props) => {
         setMaxQuantity(ipAddresses.length);
       });
   };
+
+  const createRequest = async (formData: RequestHostCreateModel, ipData: number[]) => {
+    setLoading(true);
+    await requestHostService
+      .createData(session?.user.access_token!, formData)
+      .then(async (res) => {
+        await requestHostService
+          .saveProvideIps(
+            session?.user.access_token!,
+            res.id,
+            ipData
+          )
+          .then((res) => {
+            message.success("Create successfully!", 1.5);
+            form.resetFields();
+            setOpenModal(undefined);
+            onSubmit();
+          })
+          .catch((errors) => {
+            setOpenModal(true);
+            message.error(errors.response.data, 1.5);
+          })
+      })
+      .catch((errors) => {
+        setOpenModal(true);
+        message.error(errors.response.data, 1.5);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }
 
   useEffect(() => {
     // Khi requestType thay đổi, reset selectedCapacities và hiển thị/ẩn quantity
@@ -117,43 +152,19 @@ const ModalCreate: React.FC<Props> = (props) => {
                       type: form.getFieldValue("type"),
                       quantity: form.getFieldValue("ipAddressIds")?.length || 0,
                       note: form.getFieldValue("note"),
-                      serverAllocationId: parseInt(router.query.serverAllocationId+""),
+                      serverAllocationId: parseInt(router.query.serverAllocationId + ""),
+                      removalRequestDocument: form.getFieldValue("upload").fileList[0].originFileObj,
+                      removalRequestDocumentFileName: "Công văn ngưng (dịch vụ IP)"
                     } as RequestHostCreateModel;
 
                     ipData = form
                       .getFieldValue("ipAddressIds")
                       ?.map((l) => l.value);
                     // Call the provided onSubmit function with the formData
-                    setLoading(true);
-                    await requestHostService
-                      .createData(session?.user.access_token!, formData)
-                      .then(async (res) => {
-                        await requestHostService
-                          .saveProvideIps(
-                            session?.user.access_token!,
-                            res.id,
-                            ipData
-                          )
-                          .then((res) => {
-                            message.success("Create successfully!", 1.5);
-                            form.resetFields();
-                            setOpenModal(undefined);
-                            onSubmit();
-                          })
-                          .catch((errors) => {
-                            setOpenModal(true);
-                            message.error(errors.response.data, 1.5);
-                          })
-                      })
-                      .catch((errors) => {
-                        setOpenModal(true);
-                        message.error(errors.response.data, 1.5);
-                      })
-                      .finally(() => {
-                        setLoading(false);
-                      });
+
+                    createRequest(formData, ipData);
                   },
-                  onCancel() {},
+                  onCancel() { },
                 });
             }}
           >
@@ -162,87 +173,94 @@ const ModalCreate: React.FC<Props> = (props) => {
         ]}
       >
         <div className="flex max-w-md flex-col gap-4 m-auto">
-          <Form
-            ref={formRef}
-            form={form}
-            labelCol={{ span: 8 }}
-            wrapperCol={{ span: 16 }}
-            style={{ width: "100%" }}
-            name="dynamic_form_complex"
-          >
-            <Form.Item
-              name="type"
-              label="Remove Type"
-              rules={[
-                { required: true, message: "Please select a component." },
-              ]}
+          <Spin spinning={loading} tip="Creating request..." size="large">
+            <Form
+              ref={formRef}
+              form={form}
+              labelCol={{ span: 6 }}
+              labelWrap={true}
+              wrapperCol={{ span: 20 }}
+              style={{ width: "100%" }}
+              name="dynamic_form_complex"
             >
-              <Select
-                placeholder="Choose Request Type"
-                allowClear
-                onChange={(value) => setRequestType(value)}
+              <Form.Item
+                name="type"
+                label="Remove Type"
+                rules={[
+                  { required: true, message: "Please select a component." },
+                ]}
               >
-                <Option value="Additional">IP</Option>
-                <Option value="Port">Port</Option>
-              </Select>
-            </Form.Item>
-            <>
-              {requestType && (
-                <>
-                  <Form.Item
-                    name="ipAddressIds"
-                    label="IP Addresses"
-                    labelAlign="right"
-                    rules={[
-                      {
-                        required: true,
-                        message: "IP Addresses must not empty!",
-                      },
-                    ]}
-                  >
-                    <Select
-                      mode="multiple"
-                      labelInValue
-                      placeholder="Please select IPs to remove"
-                      allowClear
-                      listHeight={160}
-                      onPopupScroll={async (e: any) => {
-                        const { target } = e;
-                        if (
-                          (target as any).scrollTop + (target as any).offsetHeight === (target as any).scrollHeight
-                        ) {
-                          if (pageIndexCus < totalPageCus) {
-                            getMoreIp();
-                          }
-                        }
-                      }}
+                <Select
+                  placeholder="Choose Request Type"
+                  allowClear
+                  onChange={(value) => setRequestType(value)}
+                >
+                  <Option value="Additional">IP</Option>
+                  <Option value="Port">Port</Option>
+                </Select>
+              </Form.Item>
+              <>
+                {requestType && (
+                  <>
+                    <Form.Item
+                      name="ipAddressIds"
+                      label="IP Addresses"
+                      labelAlign="right"
+                      rules={[
+                        {
+                          required: true,
+                          message: "IP Addresses must not empty!",
+                        },
+                      ]}
                     >
-                      {requestType === "Additional"
-                        ? ipAddresses
+                      <Select
+                        mode="multiple"
+                        labelInValue
+                        placeholder="Please select IPs to remove"
+                        allowClear
+                        listHeight={160}
+                        onPopupScroll={async (e: any) => {
+                          const { target } = e;
+                          if (
+                            (target as any).scrollTop + (target as any).offsetHeight === (target as any).scrollHeight
+                          ) {
+                            if (pageIndexCus < totalPageCus) {
+                              getMoreIp();
+                            }
+                          }
+                        }}
+                      >
+                        {requestType === "Additional"
+                          ? ipAddresses
                             .filter((l) => l.assignmentType === "Additional")
                             .map((l, index) => (
                               <Option value={l.id} key={index}>
                                 {`${l.address}`}
                               </Option>
                             ))
-                        : ipAddresses
+                          : ipAddresses
                             .filter((l) => l.assignmentType === "Port")
                             .map((l, index) => (
                               <Option value={l.id} key={index}>
-                                {`${l.address} - ${
-                                  l.capacity! === 0.1 ? "100 Mbps" : "1 GBps"
-                                }`}
+                                {`${l.address} - ${l.capacity! === 0.1 ? "100 Mbps" : "1 GBps"
+                                  }`}
                               </Option>
                             ))}
-                    </Select>
-                  </Form.Item>
-                </>
-              )}
-            </>
-            <Form.Item name="note" label="Note" rules={[{ max: 2000 }]}>
-              <Input placeholder="Note" allowClear />
-            </Form.Item>
-          </Form>
+                      </Select>
+                    </Form.Item>
+                  </>
+                )}
+              </>
+              <Form.Item name="upload" label="Discontinued service letter">
+                <Upload>
+                  <Button icon={<UploadOutlined />}>Click to Upload</Button>
+                </Upload>
+              </Form.Item>
+              <Form.Item name="note" label="Note" rules={[{ max: 2000 }]}>
+                <Input placeholder="Note" allowClear />
+              </Form.Item>
+            </Form>
+          </Spin>
         </div>
       </Modal>
     </>
