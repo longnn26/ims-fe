@@ -143,8 +143,6 @@ const ModalUpdate: React.FC<Props> = (props) => {
       });
   };
 
-  console.log(loading);
-
   useEffect(() => {
     if (session) {
       setFieldsValueInitial();
@@ -378,10 +376,10 @@ const ModalUpdate: React.FC<Props> = (props) => {
                       {locationList.map((l, index) => (
                         <Option
                           value={l.position}
-                          label={`U${l?.position + 1}`}
+                          label={`${l?.rack.area.name}${l?.rack.row + 1} - ${l?.rack.column + 1} U${l?.position + 1}`}
                           key={index}
                         >
-                          {`U${l?.position + 1}`}
+                          {`${l?.rack.area.name}${l?.rack.row + 1} - ${l?.rack.column + 1} U${l?.position + 1}`}
                         </Option>
                       ))}
                     </Select>
