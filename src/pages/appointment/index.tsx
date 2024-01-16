@@ -131,6 +131,11 @@ const Appoinment: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status]);
 
+  useEffect(() => {
+    session && getData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [paramGet]);
+
   const handleChange = (value) => {
     switch (value) {
       case "0":
