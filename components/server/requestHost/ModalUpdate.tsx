@@ -1,8 +1,18 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Button, Card, Form, Input, Modal, Select, Space, Spin, message } from "antd";
+import {
+  Button,
+  Card,
+  Form,
+  Input,
+  Modal,
+  Select,
+  Space,
+  Spin,
+  message,
+} from "antd";
 import { CloseOutlined } from "@ant-design/icons";
 import { areInArray } from "@utils/helpers";
-import { RequestHostUpdateModel } from "@models/requestHost";
+import { RequestHost, RequestHostUpdateModel } from "@models/requestHost";
 import { useSession } from "next-auth/react";
 import { ROLE_CUSTOMER, ROLE_SALES, ROLE_TECH } from "@utils/constants";
 import requestHostService from "@services/requestHost";
@@ -16,12 +26,13 @@ interface Props {
   requestHost: RequestHostUpdateModel | undefined;
   onClose: () => void;
   onSubmit: () => void;
+  requestHostDetail: RequestHost;
 }
 
 const ModalUpdate: React.FC<Props> = (props) => {
   const formRef = useRef(null);
   const [form] = Form.useForm();
-  const { onSubmit, requestHost, onClose, open } = props;
+  const { onSubmit, requestHost, onClose, open, requestHostDetail } = props;
   const { data: session } = useSession();
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [hiddenQuantity, setHiddenQuantity] = useState(false);
@@ -48,10 +59,11 @@ const ModalUpdate: React.FC<Props> = (props) => {
         quantity: requestHost.quantity,
         type: requestHost.type,
         // capacities: requestHost?.capacities || [],
-        capacities: requestHost?.capacities?.map((cap, index) => ({
-          port: cap,
-          key: index,
-        })) || [],
+        capacities:
+          requestHost?.capacities?.map((cap, index) => ({
+            port: cap,
+            key: index,
+          })) || [],
       };
       form.setFieldsValue(initialValues);
     }
@@ -91,12 +103,18 @@ const ModalUpdate: React.FC<Props> = (props) => {
                       id: form.getFieldValue("id"),
                       saleNote: form.getFieldValue("saleNote"),
                       techNote: form.getFieldValue("techNote"),
-                      quantity: form.getFieldValue("type") === "Port"
-                        ? form.getFieldValue("capacities").length
-                        : form.getFieldValue("quantity"), // Cập nhật quantity
+                      quantity:
+                        form.getFieldValue("type") === "Port"
+                          ? form.getFieldValue("capacities").length
+                          : form.getFieldValue("quantity"), // Cập nhật quantity
                       note: form.getFieldValue("note"),
                       type: form.getFieldValue("type"),
-                      capacities: form.getFieldValue("capacities")?.map((value) => (value.port)) || [],
+                      capacities:
+                        requestHostDetail.type === "Additional"
+                          ? null
+                          : form
+                              .getFieldValue("capacities")
+                              ?.map((value) => value.port) || null,
                     } as RequestHostUpdateModel;
                     setLoading(true);
                     await requestHostService
@@ -114,7 +132,7 @@ const ModalUpdate: React.FC<Props> = (props) => {
                         setLoading(false);
                       });
                   },
-                  onCancel() { },
+                  onCancel() {},
                 });
               }
             }}
@@ -150,9 +168,7 @@ const ModalUpdate: React.FC<Props> = (props) => {
                 </Form.Item>
               )}
               {form.getFieldValue("type") === "Port" && (
-                <Form.Item
-                  label="Capacity"
-                >
+                <Form.Item label="Capacity">
                   <Form.List name="capacities">
                     {(fields, { add, remove }) => (
                       <div

@@ -590,6 +590,7 @@ const RequestHostDetail: React.FC = () => {
                   )}
                   {requestHostDetail.isRemoval === false ? (
                     <ModalUpdate
+                      requestHostDetail={requestHostDetail!}
                       open={requestHostUpdate!}
                       requestHost={requestHostDetail}
                       onClose={() => {

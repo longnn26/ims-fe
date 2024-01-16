@@ -151,7 +151,7 @@ const Customer: React.FC = () => {
       title: "Accept",
       content: (
         <Alert
-          message={`Do you want to confirm document of this Appointment?`}
+          message={`Do you want to confirm that the Server can operate?`}
           type="warning"
         />
       ),
@@ -176,19 +176,19 @@ const Customer: React.FC = () => {
     var items = router.asPath.split("/").filter((_) => _ != "");
     var path = "";
     items.forEach((element) => {
-      if (element !== serverAllocationDetail?.id+"") {
-      path += `/${element}`;
-      itemBrs.push({
-        href: path,
-        title: element,
-      });
-    } else {
-      path += `/${element}`;
+      if (element !== serverAllocationDetail?.id + "") {
+        path += `/${element}`;
+        itemBrs.push({
+          href: path,
+          title: element,
+        });
+      } else {
+        path += `/${element}`;
         itemBrs.push({
           href: path,
           title: serverAllocationDetail?.name,
         });
-    }
+      }
     });
     setItemBreadcrumbs(itemBrs);
   };
