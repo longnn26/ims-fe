@@ -12,7 +12,7 @@ import {
 } from "@models/serverAllocation";
 import customerService from "@services/customer";
 import serverService from "@services/serverAllocation";
-import { Alert, Button, FloatButton, Modal, Pagination, message } from "antd";
+import { Alert, Button, FloatButton, Modal, Pagination, Tabs, TabsProps, message } from "antd";
 import { ItemType } from "antd/es/breadcrumb/Breadcrumb";
 import { useSession } from "next-auth/react";
 import dynamic from "next/dynamic";
@@ -30,6 +30,7 @@ import {
 } from "@utils/constants";
 import ModalEmpty from "@components/ModalEmpty";
 import { ParamGet, ParamGetWithId } from "@models/base";
+import ContactTable from "@components/customer/ContactTable";
 
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
@@ -137,6 +138,53 @@ const Customer: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session, paramGet]);
 
+  const items: TabsProps["items"] = [
+    {
+      key: "1",
+      label: "Servers",
+      children: (
+        <>
+        <ServerAllocationTable
+          urlOncell={`/customer/${customerDetail?.id}`}
+          data={serverAllocationData}
+          onEdit={(record) => {
+            setUpdate(record);
+          }}
+        />
+        {serverAllocationData?.totalPage > 0 && (
+          <Pagination
+            className="text-end m-4"
+            current={paramGet.PageIndex}
+            pageSize={serverAllocationData?.pageSize ?? 10}
+            total={serverAllocationData?.totalSize}
+            onChange={(page, pageSize) => {
+              setParamGet({
+                ...paramGet,
+                PageIndex: page,
+                PageSize: pageSize,
+              });
+            }}
+          />
+        )}
+        </>
+      ),
+    },
+    {
+      key: "2",
+      label: "Contacts",
+      children: (
+        <>
+          <ContactTable
+          contacts={customerDetail?.contacts!}
+            onEdit={(value) => {
+            }}
+            onDelete={(value) => {}}
+          />
+        </>
+      ),
+    },
+  ];
+
   if (customerDetail === undefined) {
     return (
       <AntdLayoutNoSSR
@@ -180,28 +228,7 @@ const Customer: React.FC = () => {
                   <CustomerDetail
                     customerDetail={customerDetail!}
                   ></CustomerDetail>
-                  <ServerAllocationTable
-                    urlOncell={`/customer/${customerDetail?.id}`}
-                    data={serverAllocationData}
-                    onEdit={(record) => {
-                      setUpdate(record);
-                    }}
-                  />
-                  {serverAllocationData?.totalPage > 0 && (
-                    <Pagination
-                      className="text-end m-4"
-                      current={paramGet.PageIndex}
-                      pageSize={serverAllocationData?.pageSize ?? 10}
-                      total={serverAllocationData?.totalSize}
-                      onChange={(page, pageSize) => {
-                        setParamGet({
-                          ...paramGet,
-                          PageIndex: page,
-                          PageSize: pageSize,
-                        });
-                      }}
-                    />
-                  )}
+                  <Tabs className="m-5" defaultActiveKey="1" items={items} />
                 </>
               )}
           </>

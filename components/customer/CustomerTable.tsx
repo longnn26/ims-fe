@@ -56,7 +56,6 @@ const CustomerTable: React.FC<Props> = (props) => {
       title: "Company Name",
       dataIndex: "companyName",
       key: "companyName",
-      fixed: "left",
     },
     { title: "Tax number", dataIndex: "taxNumber", key: "taxNumber" },
     { title: "Address", dataIndex: "address", key: "address" },
