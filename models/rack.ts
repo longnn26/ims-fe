@@ -46,4 +46,5 @@ export interface RackMap {
   rackId: number;
   serverAllocation: ServerAllocation;
   requestedServerAllocation: ServerAllocation;
+  isReserved: boolean;
 }

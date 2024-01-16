@@ -148,6 +148,7 @@ const ModalReserve: React.FC<Props> = (props) => {
                 ]}
               >
                 <Select
+                  mode="multiple"
                   placeholder="Please select Location"
                   allowClear
                   listHeight={160}
