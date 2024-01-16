@@ -218,17 +218,18 @@ const IncidentDetail: React.FC = () => {
                 <BreadcrumbComponent itemBreadcrumbs={itemBreadcrumbs} />
                 {Boolean(
                   incidentDetail?.isResolvByClient === false &&
-                  areInArray(session?.user.roles!, ROLE_TECH)
+                    areInArray(session?.user.roles!, ROLE_TECH) &&
+                    incidentDetail?.isResolved === false
                 ) && (
-                    <Button
-                      type="primary"
-                      className="mb-2"
-                      // icon={<CaretLeftOutlined />}
-                      onClick={() => setOpenModalResolve(true)}
-                    >
-                      Resolve Incident
-                    </Button>
-                  )}
+                  <Button
+                    type="primary"
+                    className="mb-2"
+                    // icon={<CaretLeftOutlined />}
+                    onClick={() => setOpenModalResolve(true)}
+                  >
+                    Resolve Incident
+                  </Button>
+                )}
               </div>
             )}
             <ModalResolve
@@ -260,8 +261,8 @@ const IncidentDetail: React.FC = () => {
                   <AppointmentTable
                     typeGet="ByIncidentId"
                     urlOncell=""
-                    onEdit={(record) => { }}
-                    onDelete={async (record) => { }}
+                    onEdit={(record) => {}}
+                    onDelete={async (record) => {}}
                   />
                   {appointmentData?.totalPage > 0 && (
                     <Pagination
