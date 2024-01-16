@@ -29,6 +29,7 @@ const createData = async (
   data: RequestExpandCreateModel
 ): Promise<any> => {
   const response = await httpClient.post({
+    contentType: "multipart/form-data",
     token: token,
     url: apiLinks.requestExpand.create,
     data: data,

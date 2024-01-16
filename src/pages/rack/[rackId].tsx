@@ -107,16 +107,20 @@ const AreaDetail: React.FC = () => {
                 </div>
                 {/* {rackMapList.filter((l) => {l.position === 1})} */}
                 <div>
-                  <Button
-                    type="primary"
-                    className="mr-2"
-                    htmlType="submit"
-                    onClick={() => {
-                      setOpenModalReserve(true);
-                    }}
-                  >
-                    Reserve
-                  </Button>
+                  {(rackMapList.filter(l => l.isReserved).length
+                  + rackMapList.filter(l => l.requestedServerAllocation).length
+                  + rackMapList.filter(l => l.serverAllocation).length) !== rackMapList.length && (
+                    <Button
+                      type="primary"
+                      className="mr-2"
+                      htmlType="submit"
+                      onClick={() => {
+                        setOpenModalReserve(true);
+                      }}
+                    >
+                      Reserve
+                    </Button>
+                  )}
                   {rackMapList.filter(l => l.isReserved).length > 0 && (
                     <Button
                       type="primary"

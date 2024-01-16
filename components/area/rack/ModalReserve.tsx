@@ -65,30 +65,25 @@ const ModalReserve: React.FC<Props> = (props) => {
   const getMoreLocation = async (isFirst?: boolean) => {
     if (isFirst === true) {
       paramGet.PageIndex = 0;
-      paramGet.PageIndex += 1;
-    } else {
-      paramGet.PageIndex += 1;
     }
+    paramGet.PageIndex += 1;
     await locationService
       .getData(session?.user.access_token!, {
         ...paramGet,
-        RackId: parseInt(router.query.rackId+""),
+        RackId: parseInt(router.query.rackId + ""),
         Size: 1,
       })
       .then(async (data) => {
         setTotalPage(data.totalPage);
         paramGet.PageIndex = data.pageIndex;
         isFirst === true ?
-        setLocationList([...data.data])
-        : setLocationList([...locationList, ...data.data]);
+          setLocationList([...data.data])
+          : setLocationList([...locationList, ...data.data]);
       });
   };
 
   useEffect(() => {
-    if (session) {
-      getMoreLocation(true);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    getMoreLocation(true);
   }, [open]);
 
   return (
@@ -114,7 +109,7 @@ const ModalReserve: React.FC<Props> = (props) => {
                   async onOk() {
                     reverse(form.getFieldValue("ids"));
                   },
-                  onCancel() {},
+                  onCancel() { },
                 });
             }}
           >
@@ -154,7 +149,7 @@ const ModalReserve: React.FC<Props> = (props) => {
                     const { target } = e;
                     if (
                       (target as any).scrollTop +
-                        (target as any).offsetHeight ===
+                      (target as any).offsetHeight ===
                       (target as any).scrollHeight
                     ) {
                       if (paramGet.PageIndex < totalPage) {
@@ -163,7 +158,7 @@ const ModalReserve: React.FC<Props> = (props) => {
                     }
                   }}
                 >
-                  {locationList.filter(l => l.isReserved === false).map((l, index) => (
+                  {locationList.map((l, index) => (
                     <Option key={l.id} value={l.id} label={l.id}>
                       {`${l?.rack.area.name}${l?.rack.row + 1} - ${l?.rack.column + 1} U${l.position + 1}`}
                     </Option>

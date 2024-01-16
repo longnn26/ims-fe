@@ -36,6 +36,8 @@ export interface RequestExpandCreateModel {
   saleNote: string;
   techNote: string;
   serverAllocationId: number;
+  removalRequestDocument?: string;
+  removalRequestDocumentFileName?: string;
 }
 
 export interface RequestExpandUpdateModel {

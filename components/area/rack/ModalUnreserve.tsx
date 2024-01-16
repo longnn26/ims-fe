@@ -65,13 +65,12 @@ const ModalUnreserve: React.FC<Props> = (props) => {
   const getMoreLocation = async (isFirst?: boolean) => {
     if (isFirst === true) {
       paramGet.PageIndex = 0;
-      paramGet.PageIndex += 1;
-    } else {
-      paramGet.PageIndex += 1;
     }
+    paramGet.PageIndex += 1;
     await locationService
       .getAll(session?.user.access_token!, {
         ...paramGet,
+        RackId: parseInt(router.query.rackId + ""),
         IsReserved: true,
       })
       .then(async (data) => {
