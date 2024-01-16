@@ -378,12 +378,7 @@ const RequestHostDetail: React.FC = () => {
                     requestHostDetail?.status !== "Success" &&
                       requestHostDetail?.status !== "Failed" &&
                       requestHostDetail?.isRemoval === false &&
-                      areInArray(
-                        session?.user.roles!,
-                        ROLE_SALES,
-                        ROLE_TECH,
-                        ROLE_CUSTOMER
-                      ) &&
+                      areInArray(session?.user.roles!, ROLE_CUSTOMER) &&
                       permission &&
                       !(requestHostDetail?.status === "Accepted")
                   ) && (
