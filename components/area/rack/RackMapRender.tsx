@@ -1,17 +1,10 @@
 "use client";
 
-import useSelector from "@hooks/use-selector";
-import { dateAdvFormat } from "@utils/constants";
 import { TableColumnsType } from "antd";
 import { Button, Space, Table, Tooltip } from "antd";
-import { BiEdit } from "react-icons/bi";
-import { AiFillDelete } from "react-icons/ai";
-import moment from "moment";
-import { Area } from "@models/area";
 import { useRouter } from "next/router";
 import { RackMap } from "@models/rack";
 import { ServerAllocation } from "@models/serverAllocation";
-import type { TableProps } from "antd";
 import React from "react";
 
 interface Props {
@@ -28,6 +21,7 @@ interface DataType {
   serverAllocation: ServerAllocation;
   requestedServerAllocation: ServerAllocation;
   rowSpanServer: number;
+  isReserved: boolean;
 }
 
 const RackMapRender: React.FC<Props> = (props) => {
@@ -46,51 +40,47 @@ const RackMapRender: React.FC<Props> = (props) => {
   const columns: TableColumnsType<DataType> = [
     {
       title: "Location",
-      dataIndex: "location",
-      key: "location",
+      dataIndex: "position",
+      key: "position",
       render: (_, record) => {
         return {
           props: {
             style: {
-              backgroundColor: record.serverAllocation
-                ? "#fde3cf"
-                : record.requestedServerAllocation
-                ? "#c2e4ea"
-                : "#e1efd8",
-              color: record.serverAllocation
+              backgroundColor: record.isReserved === false ? 
+              (record.serverAllocation ? "#fde3cf"
+                : record.requestedServerAllocation ? "#c2e4ea" : "#e1efd8") : "#fde3cf",
+              color: record.isReserved === false ? 
+              (record.serverAllocation
                 ? "#f56a00"
-                : record.requestedServerAllocation
-                ? "black"
-                : "",
+                : record.requestedServerAllocation ? "black" : ""): "#f56a00",
+              lineHeight:1,
             },
           },
-          children: `${record.position + 1}`,
+          children: `U${record.position + 1}`,
         };
       },
     },
     {
-      title: "Server",
+      title: "Reserved For",
       key: "serverAllocation",
-      render: (_, record) => {
+      render: (record: DataType) => {
         return {
           props: {
             style: {
-              backgroundColor: record.serverAllocation
-                ? "#fde3cf"
-                : record.requestedServerAllocation
-                ? "#c2e4ea"
-                : "#e1efd8",
-              color: record.serverAllocation
+              backgroundColor: record.isReserved === false ? 
+              (record.serverAllocation ? "#fde3cf"
+                : record.requestedServerAllocation ? "#c2e4ea" : "#e1efd8") : "#fde3cf",
+              color: record.isReserved === false ? 
+              (record.serverAllocation
                 ? "#f56a00"
-                : record.requestedServerAllocation
-                ? "black"
-                : "",
+                : record.requestedServerAllocation ? "black" : ""): "#f56a00",
+              lineHeight: 0,
             },
           },
-
           children: (
-            <p
-              className="cursor-pointer"
+            <div>
+              <p
+              className={record.serverAllocation ? "cursor-pointer" : record.requestedServerAllocation ? "cursor-pointer" : ""}
               onClick={(e) => {
                 record.serverAllocation &&
                   router.push(`/server/${record.serverAllocation.id}`);
@@ -98,23 +88,17 @@ const RackMapRender: React.FC<Props> = (props) => {
                   router.push(`/server/${record.requestedServerAllocation.id}`);
               }}
             >
-              {record.serverAllocation
-                ? `${record.serverAllocation?.masterIp?.address} - ${record.serverAllocation?.customer.companyName}`
-                : record.requestedServerAllocation
-                ? `${
-                    record.requestedServerAllocation?.masterIp
-                      ? record.requestedServerAllocation?.masterIp.address +
-                        " - "
-                      : ""
-                  }  ${record.requestedServerAllocation?.customer.companyName}`
-                : ``}
-            </p>
+                {record.serverAllocation ? `${record.serverAllocation?.masterIp?.address} - ${record.serverAllocation?.customer.companyName}`
+                : record.requestedServerAllocation ? `${record.requestedServerAllocation?.masterIp ? record.requestedServerAllocation?.masterIp.address + " - " : ""} ${record.requestedServerAllocation?.customer.companyName}`
+                : record.isReserved === true ? `Reserved for other device` : ``}
+              </p>
+            </div>
           ),
         };
       },
       onCell: (record) => {
         return {
-          rowSpan: record.rowSpanServer,
+          rowSpan: (record.serverAllocation?.id  || record.requestedServerAllocation?.id) ? record.rowSpanServer : 1,
         };
       },
     },
@@ -149,20 +133,20 @@ const RackMapRender: React.FC<Props> = (props) => {
       serverAllocation: rackMapList[i].serverAllocation,
       requestedServerAllocation: rackMapList[i].requestedServerAllocation,
       rowSpanServer: rowSpan,
+      isReserved: rackMapList[i].isReserved,
     });
   }
 
   return (
     <div className="shadow m-5">
       <Table
-        // className="!p-2"
         bordered
+        size="small"
         columns={columns}
-        dataSource={data}
-        scroll={{ x: 1300 }}
+        dataSource={data}        
         pagination={false}
         expandable={{
-          rowExpandable: (record) => record.serverAllocation != null,
+          rowExpandable: (record) => record.serverAllocation != null && record.isReserved,
         }}
       />
     </div>
