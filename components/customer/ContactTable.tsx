@@ -38,7 +38,7 @@ const ContactTable: React.FC<Props> = (props) => {
     (state) => state.customer
   );
 
-  console.log(customerData.data)
+  console.log(contacts)
 
   const columns: TableColumnsType<DataType> = [    
     {
