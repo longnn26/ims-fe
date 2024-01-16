@@ -1,5 +1,16 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Alert, Button, Input, Modal, Select, Space, Spin, Tabs, TabsProps, message } from "antd";
+import {
+  Alert,
+  Button,
+  Input,
+  Modal,
+  Select,
+  Space,
+  Spin,
+  Tabs,
+  TabsProps,
+  message,
+} from "antd";
 import { SaveOutlined } from "@ant-design/icons";
 import { Form } from "antd";
 import {
@@ -38,22 +49,23 @@ const ModalUpdate: React.FC<Props> = (props) => {
     props;
 
   const [confirmLoading, setConfirmLoading] = useState(false);
-  const [paramGet, setParamGet] = useState<LocationParamGet>(
-    { PageIndex: 0, PageSize: 6, } as LocationParamGet
-  );
+  const [paramGet, setParamGet] = useState<LocationParamGet>({
+    PageIndex: 0,
+    PageSize: 6,
+  } as LocationParamGet);
   const [totalPage, setTotalPage] = useState<number>(2);
   const [selectedLocation, setSelectedLocation] = useState<number>();
   const [locationList, setLocationList] = useState<Location[]>([]);
-  const [rackParamGet, setRackParamGet] = useState<ParamGet>(
-    { PageIndex: 0, PageSize: 6, } as ParamGet
-  );
+  const [rackParamGet, setRackParamGet] = useState<ParamGet>({
+    PageIndex: 0,
+    PageSize: 6,
+  } as ParamGet);
   const [rackList, setRackList] = useState<Rack[]>([]);
   const [rackTotalPage, setRackTotalPage] = useState<number>(2);
   const [selectedRack, setSelectedRack] = useState<number>();
   const [areaList, setAreaList] = useState<Area[]>([]);
   const [selectedArea, setSelectedArea] = useState<number>();
   const [loading, setLoading] = useState<boolean>(false);
-
 
   const disabled = async () => {
     var result = false;
@@ -85,7 +97,9 @@ const ModalUpdate: React.FC<Props> = (props) => {
   const getMoreRack = async (areaId: number) => {
     rackParamGet.PageIndex += 1;
     await areaService
-      .getRackDataById(session?.user.access_token!, areaId.toString(), { ...rackParamGet })
+      .getRackDataById(session?.user.access_token!, areaId.toString(), {
+        ...rackParamGet,
+      })
       .then(async (data) => {
         setRackTotalPage(data.totalPage);
         rackParamGet.PageIndex = data.pageIndex;
@@ -96,7 +110,11 @@ const ModalUpdate: React.FC<Props> = (props) => {
   const getMoreLocation = async (rackId: number) => {
     paramGet.PageIndex += 1;
     await locationService
-      .getData(session?.user.access_token!, { ...paramGet, RackId: rackId, Size: form.getFieldValue("size"), })
+      .getData(session?.user.access_token!, {
+        ...paramGet,
+        RackId: rackId,
+        Size: form.getFieldValue("size"),
+      })
       .then(async (data) => {
         console.log(data);
         setTotalPage(data.totalPage);
@@ -107,25 +125,25 @@ const ModalUpdate: React.FC<Props> = (props) => {
 
   const assignLocation = async (locationId: number) => {
     setLoading(true);
-    await requestExpandService.saveLocation(
-      session?.user.access_token!,
-      requestExpand.id,
-      {
+    await requestExpandService
+      .saveLocation(session?.user.access_token!, requestExpand.id, {
         rackId: selectedRack,
         startPosition: locationId,
-      } as RequestedLocation
-    ).then((res) => {
-      message.success("Assign server to rack successfully!", 1.5);
-      form.resetFields();
-      onClose();
-    }).catch((errors) => {
-      message.error(errors.response.data, 1.5);
-    }).finally(() => {
-      setLoading(false);
-    })
-  }
+      } as RequestedLocation)
+      .then((res) => {
+        message.success("Assign server to rack successfully!", 1.5);
+        form.resetFields();
+        onClose();
+      })
+      .catch((errors) => {
+        message.error(errors.response.data, 1.5);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
 
-  console.log(loading)
+  console.log(loading);
 
   useEffect(() => {
     if (session) {
@@ -196,7 +214,7 @@ const ModalUpdate: React.FC<Props> = (props) => {
                           } as RequestExpandUpdateModel);
                           // form.resetFields();
                         },
-                        onCancel() { },
+                        onCancel() {},
                       });
                   }}
                 >
@@ -213,16 +231,22 @@ const ModalUpdate: React.FC<Props> = (props) => {
       label: "Location",
       children: (
         <>
-          <Spin spinning={loading} tip="Assigning server to rack..." size="large">
+          <Spin
+            spinning={loading}
+            tip="Assigning server to rack..."
+            size="large"
+          >
             <Space direction="vertical" style={{ width: "100%" }}>
               {Boolean(suggestLocation) && (
                 <Alert
                   message="Suggest location"
-                  description={`${suggestLocation?.area.name}${suggestLocation?.rack.column
-                    } - ${suggestLocation?.rack.row} start from U${suggestLocation?.position !== undefined
+                  description={`${suggestLocation?.area.name}${
+                    suggestLocation?.rack.column
+                  } - ${suggestLocation?.rack.row} start from U${
+                    suggestLocation?.position !== undefined
                       ? suggestLocation.position + 1
                       : ""
-                    }`}
+                  }`}
                   type="success"
                   showIcon
                   action={
@@ -242,7 +266,6 @@ const ModalUpdate: React.FC<Props> = (props) => {
                   }
                 />
               )}
-
               {Boolean(requestExpand?.requestedLocation) && (
                 <Alert
                   message="Location"
@@ -252,8 +275,13 @@ const ModalUpdate: React.FC<Props> = (props) => {
                 />
               )}
               <Space.Compact style={{ width: "100%" }}>
-                <div className="flex-grow" style={{ display: 'flex', flexDirection: 'column' }}>
-                  <span className="mt-4" style={{ fontWeight: 500 }}>Select another start location</span>
+                <div
+                  className="flex-grow"
+                  style={{ display: "flex", flexDirection: "column" }}
+                >
+                  <span className="mt-4" style={{ fontWeight: 500 }}>
+                    Select another start location
+                  </span>
                   <div className="flex flex-grow m-2">
                     <span className="mt-1 mr-2">Area: </span>
                     <Select
@@ -294,7 +322,8 @@ const ModalUpdate: React.FC<Props> = (props) => {
                       onPopupScroll={async (e: any) => {
                         const { target } = e;
                         if (
-                          (target as any).scrollTop + (target as any).offsetHeight ===
+                          (target as any).scrollTop +
+                            (target as any).offsetHeight ===
                           (target as any).scrollHeight
                         ) {
                           if (rackParamGet.PageIndex < rackTotalPage) {
@@ -309,24 +338,32 @@ const ModalUpdate: React.FC<Props> = (props) => {
                       }}
                     >
                       {rackList.map((l, index) => (
-                        <Option value={l.id} label={`${l?.area.name}${l.row + 1} - ${l.column + 1}`} key={index}>
+                        <Option
+                          value={l.id}
+                          label={`${l?.area.name}${l.row + 1} - ${
+                            l.column + 1
+                          }`}
+                          key={index}
+                        >
                           {`${l?.area.name}${l.row + 1} - ${l.column + 1}`}
                         </Option>
                       ))}
                     </Select>
                   </div>
                   <div className="flex flex-grow m-2">
-                    <span className="mt-1 mr-2" style={{ width: "19%" }}>Start Position: </span>
+                    <span className="mt-1 mr-2" style={{ width: "19%" }}>
+                      Start Position:{" "}
+                    </span>
                     <Select
                       labelInValue
                       placeholder="Select a start position"
                       listHeight={160}
                       style={{ width: "80%" }}
-
                       onPopupScroll={async (e: any) => {
                         const { target } = e;
                         if (
-                          (target as any).scrollTop + (target as any).offsetHeight ===
+                          (target as any).scrollTop +
+                            (target as any).offsetHeight ===
                           (target as any).scrollHeight
                         ) {
                           if (paramGet.PageIndex < totalPage) {
@@ -339,7 +376,11 @@ const ModalUpdate: React.FC<Props> = (props) => {
                       }}
                     >
                       {locationList.map((l, index) => (
-                        <Option value={l.position} label={`U${l?.position + 1}`} key={index}>
+                        <Option
+                          value={l.position}
+                          label={`U${l?.position + 1}`}
+                          key={index}
+                        >
                           {`U${l?.position + 1}`}
                         </Option>
                       ))}
@@ -358,7 +399,7 @@ const ModalUpdate: React.FC<Props> = (props) => {
                         async onOk() {
                           assignLocation(selectedLocation);
                         },
-                        onCancel() { },
+                        onCancel() {},
                       });
                     }}
                   >
@@ -377,7 +418,9 @@ const ModalUpdate: React.FC<Props> = (props) => {
     <>
       <Modal
         title={
-          <span className="inline-block m-auto">Update request expand</span>
+          <span className="inline-block m-auto">
+            Update Server Allocation Request
+          </span>
         }
         open={Boolean(requestExpand)}
         confirmLoading={confirmLoading}

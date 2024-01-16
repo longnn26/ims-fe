@@ -278,7 +278,7 @@ const Appoinment: React.FC = () => {
     },
     {
       key: "2",
-      label: "Rack Expansion Request",
+      label: "Server Allocation Request",
       children: (
         <>
           <RequestExpandTable

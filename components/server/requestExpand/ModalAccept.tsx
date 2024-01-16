@@ -60,7 +60,7 @@ const ModalAcceptExpand: React.FC<Props> = (props) => {
       <Modal
         title={
           <span className="inline-block m-auto">
-            Accept Rack Expansion Request
+            Accept Server Allocation Request
           </span>
         }
         open={open}

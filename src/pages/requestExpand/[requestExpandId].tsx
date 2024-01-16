@@ -111,7 +111,10 @@ const RequestExpandDetail: React.FC = () => {
             requestExpandDetail?.id + ""
           )
           .then((res) => {
-            message.success("Reject request expand successfully!", 1.5);
+            message.success(
+              "Reject Server Allocation Request successfully!",
+              1.5
+            );
             getData();
           })
           .catch((errors) => {
@@ -139,7 +142,10 @@ const RequestExpandDetail: React.FC = () => {
             requestExpandDetail?.id + ""
           )
           .then((res) => {
-            message.success("Complete request expand successfully!", 1.5);
+            message.success(
+              "Complete Server Allocation Request successfully!",
+              1.5
+            );
             getData();
           })
           .catch((errors) => {

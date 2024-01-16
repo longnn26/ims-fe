@@ -40,7 +40,7 @@ const ModalDenyHost: React.FC<Props> = (props) => {
         data
       )
       .then((res) => {
-        message.success("Deny Rack Expansion Request successfully!", 1.5);
+        message.success("Deny Server Allocation Request successfully!", 1.5);
         form.resetFields();
         onSubmit();
       })
@@ -57,7 +57,7 @@ const ModalDenyHost: React.FC<Props> = (props) => {
       <Modal
         title={
           <span className="inline-block m-auto">
-            Deny Rack Expansion Request
+            Deny Server Allocation Request
           </span>
         }
         open={open}
