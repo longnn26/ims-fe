@@ -54,16 +54,17 @@ const AppointmentTable: React.FC<Props> = (props) => {
   const dispatch = useDispatch();
   const { appointmentData } = useSelector((state) => state.requestUpgrade);
   const { appointmentData: appointmentDataRE } = useSelector((state) => state.requestExpand);
-
   const { appointmentData: appointmentIncident } = useSelector((state) => state.incident);
   const { listAppointmentData } = useSelector((state) => state.appointment);
 
-  dispatch(getAppointmentData({
-    token: session?.user.access_token!,
-    paramGet: {
-      IncidentId: parseInt(router.query.incidentId + ""),
-    } as ParamGetExtend
-  }));
+  {typeGet === "ByIncidentId" && (
+    dispatch(getAppointmentData({
+      token: session?.user.access_token!,
+      paramGet: {
+        IncidentId: parseInt(router.query.incidentId + ""),
+      } as ParamGetExtend
+    }))
+  )}
 
   var listData = typeGet === "All" ? listAppointmentData
     : typeGet === "ByRequestUpgradeId" ? appointmentData
