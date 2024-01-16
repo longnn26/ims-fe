@@ -46,21 +46,23 @@ const ServerDetail: React.FC<Props> = (props) => {
         <Descriptions.Item label="Serial Number" span={1}>
           {appointmentDetail?.serverAllocation.serialNumber}
         </Descriptions.Item>
-        <Descriptions.Item label="Serial Name" span={1}>
+        <Descriptions.Item label="Server Name" span={1}>
           {appointmentDetail?.serverAllocation.name}
-        </Descriptions.Item>          
+        </Descriptions.Item>
         <Descriptions.Item label="Customer Note" span={1}>
           {appointmentDetail?.note}
         </Descriptions.Item>
         <Descriptions.Item label="Visitor" span={3}>
           {appointmentDetail?.appointedCustomer && (
             <>
-              {appointmentDetail.appointedCustomer.split(',').map((visitor, index) => (
-                <>
-                  {index > 0 && <br />}
-                  {visitor}
-                </>
-              ))}
+              {appointmentDetail.appointedCustomer
+                .split(",")
+                .map((visitor, index) => (
+                  <>
+                    {index > 0 && <br />}
+                    {visitor}
+                  </>
+                ))}
             </>
           )}
         </Descriptions.Item>
@@ -76,7 +78,7 @@ const ServerDetail: React.FC<Props> = (props) => {
         <Descriptions.Item label=" Techical Staff's Note" span={1}>
           {appointmentDetail?.techNote}
         </Descriptions.Item>
-        
+
         {/* Date Record */}
         <Descriptions.Item label="Date Created" span={1}>
           {moment(appointmentDetail?.dateCreated).format(dateAdvFormat)}
