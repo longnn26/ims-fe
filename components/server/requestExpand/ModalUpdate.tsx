@@ -239,8 +239,8 @@ const ModalUpdate: React.FC<Props> = (props) => {
                 <Alert
                   message="Suggest location"
                   description={`${suggestLocation?.area.name}${
-                    suggestLocation?.rack.column
-                  } - ${suggestLocation?.rack.row} start from U${
+                    suggestLocation?.rack.row! + 1
+                  } - ${suggestLocation?.rack.column! + 1} start from U${
                     suggestLocation?.position !== undefined
                       ? suggestLocation.position + 1
                       : ""

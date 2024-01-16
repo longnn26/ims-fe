@@ -286,25 +286,6 @@ const RequestExpand: React.FC = () => {
                   }}
                 />
               )}
-              {/* {Boolean(true) && (
-            <FloatButton.Group
-              trigger="hover"
-              type="primary"
-              style={{ right: 60, bottom: 500 }}
-              icon={<AiOutlineFileDone />}
-            >
-              <FloatButton
-                icon={<MdCancel color="red" />}
-                tooltip="Fail"
-                // onClick={() => setOpenFail(true)}
-              />
-              <FloatButton
-                // onClick={() => setOpenComplete(true)}
-                icon={<AiOutlineFileDone color="green" />}
-                tooltip="Complete"
-              />
-            </FloatButton.Group>
-          )} */}
             </>
           )}
         </>
