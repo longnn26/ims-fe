@@ -389,7 +389,7 @@ const Customer: React.FC = () => {
                       )
                     }
                     icon={<FaExpand />}
-                    tooltip="Request expand"
+                    tooltip="Server Allocation Request"
                   />
                   <FloatButton
                     tooltip="IP Request"

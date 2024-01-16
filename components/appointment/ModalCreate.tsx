@@ -553,7 +553,7 @@ const ModalCreate: React.FC<Props> = (props) => {
               <>
                 <Form.Item
                   name="requestExpandId"
-                  label="Rack Expansion Request"
+                  label="Server Allocation Request"
                   labelAlign="right"
                   labelCol={{ span: 10 }}
                   wrapperCol={{ span: 20 }}
