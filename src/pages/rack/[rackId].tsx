@@ -1,5 +1,6 @@
 "use client";
 import { CaretLeftOutlined } from "@ant-design/icons";
+import BreadcrumbComponent from "@components/BreadcrumbComponent";
 import ModalReserve from "@components/area/rack/ModalReserve";
 import RackDetail from "@components/area/rack/RackDetail";
 import RackMapRender from "@components/area/rack/RackMapRender";
@@ -9,6 +10,7 @@ import area from "@services/rack";
 import { ROLE_MANAGER, ROLE_TECH } from "@utils/constants";
 import { areInArray } from "@utils/helpers";
 import { Avatar, Button, List } from "antd";
+import { ItemType } from "antd/es/breadcrumb/Breadcrumb";
 import { useSession } from "next-auth/react";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
@@ -31,6 +33,7 @@ const AreaDetail: React.FC = () => {
     rackMapList.filter((_) => _.requestedServerAllocation).length /
     rackMapList.length;
 
+  const [itemBreadcrumbs, setItemBreadcrumbs] = useState<ItemType[]>([]);
   const [openModalReserve, setOpenModalReserve] = useState<boolean>(false);
 
   const getData = async () => {
@@ -44,9 +47,42 @@ const AreaDetail: React.FC = () => {
       .then((e) => setRackMapList([...e]));
   };
 
+  const handleBreadCumb = () => {
+    var itemBrs = [] as ItemType[];
+    var items = router.asPath.split("/").filter((_) => _ != "");
+    var path = "";
+    items.forEach((element) => {
+      switch (element) {
+        case rackDetail?.id + "":
+          path += `/${element}`;
+          itemBrs.push({
+            href: path,
+            title: "Detail Information",
+          });
+          break;
+        default:
+          path += `/${element}`;
+          itemBrs.push({
+            href: path,
+            title: element,
+          });
+          break;
+      }
+    });
+    setItemBreadcrumbs(itemBrs);
+  };
+
+  useEffect(() => {
+    if (router.query.rackId && session) {
+      handleBreadCumb();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [rackDetail]);
+
   useEffect(() => {
     if (router.query.rackId && session) {
       getData();
+      handleBreadCumb();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session, router.query.rackId]);
@@ -58,14 +94,15 @@ const AreaDetail: React.FC = () => {
           {areInArray(session?.user.roles!, ROLE_TECH, ROLE_MANAGER) && (
             <>
               <div className="flex justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
-                {/* <BreadcrumbComponent itemBreadcrumbs={itemBreadcrumbs} /> */}
-                <Button
-                  type="primary"
-                  className="mb-2"
-                  icon={<CaretLeftOutlined />}
-                  onClick={() => router.back()}
-                ></Button>
-
+                <div>
+                  <Button
+                    type="primary"
+                    className="mb-2"
+                    icon={<CaretLeftOutlined />}
+                    onClick={() => router.back()}
+                  ></Button>
+                  <BreadcrumbComponent itemBreadcrumbs={itemBreadcrumbs} />
+                </div>
                 <Button
                   type="primary"
                   className="mr-2"

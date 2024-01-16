@@ -152,20 +152,6 @@ const RequestDetail: React.FC = () => {
       });
   };
 
-  const handleBreadCumb = () => {
-    var itemBrs = [] as ItemType[];
-    var items = router.asPath.split("/").filter((_) => _ != "");
-    var path = "";
-    items.forEach((element) => {
-      path += `/${element}`;
-      itemBrs.push({
-        href: path,
-        title: element,
-      });
-    });
-    setItemBreadcrumbs(itemBrs);
-  };
-
   const getProvideIps = async () => {
     (provideIpsParamGet.ServerAllocationId = serverAllocationDetail?.id!),
       (provideIpsParamGet.Quantity = requestHostDetail?.quantity!),
@@ -202,9 +188,42 @@ const RequestDetail: React.FC = () => {
       });
   };
 
+  const handleBreadCumb = () => {
+    var itemBrs = [] as ItemType[];
+    var items = router.asPath.split("/").filter((_) => _ != "");
+    var path = "";
+    items.forEach((element) => {
+      switch (element) {
+        case requestHostDetail?.id + "":
+          path += `/${element}`;
+          itemBrs.push({
+            href: path,
+            title: "Detail Information",
+          });
+          break;
+        default:
+          path += `/${element}`;
+          itemBrs.push({
+            href: path,
+            title: element,
+          });
+          break;
+      }
+    });
+    setItemBreadcrumbs(itemBrs);
+  };
+
+  useEffect(() => {
+    if (router.query.requestHostId && session) {
+      handleBreadCumb();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [requestHostDetail]);
+
   useEffect(() => {
     if (router.query.requestHostId && session) {
       getData();
+      handleBreadCumb();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session]);

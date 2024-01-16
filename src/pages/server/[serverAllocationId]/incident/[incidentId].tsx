@@ -130,18 +130,51 @@ const IncidentDetail: React.FC = () => {
     var items = router.asPath.split("/").filter((_) => _ != "");
     var path = "";
     items.forEach((element) => {
-      path += `/${element}`;
-      itemBrs.push({
-        href: path,
-        title: element,
-      });
+      switch (element) {
+        case serverAllocationDetail?.id + "":
+          path += `/${element}`;
+          itemBrs.push({
+            href: path,
+            title: serverAllocationDetail?.name,
+          });
+          break;
+        case incidentDetail?.id + "":
+          path += `/${element}`;
+          itemBrs.push({
+            href: path,
+            title: "Detail Information",
+          });
+          break;
+        default:
+          path += `/${element}`;
+          itemBrs.push({
+            href: path,
+            title: element,
+          });
+          break;
+      }
     });
     setItemBreadcrumbs(itemBrs);
   };
 
   useEffect(() => {
     if (router.query.serverAllocationId && session) {
+      handleBreadCumb();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [serverAllocationDetail]);
+
+  useEffect(() => {
+    if (router.query.incidentId && session) {
+      handleBreadCumb();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [incidentDetail]);
+
+  useEffect(() => {
+    if (router.query.serverAllocationId && session) {
       getData();
+      handleBreadCumb();
     }
   }, [session]);
 
@@ -185,17 +218,17 @@ const IncidentDetail: React.FC = () => {
                 <BreadcrumbComponent itemBreadcrumbs={itemBreadcrumbs} />
                 {Boolean(
                   incidentDetail?.isResolvByClient === false &&
-                    areInArray(session?.user.roles!, ROLE_TECH)
+                  areInArray(session?.user.roles!, ROLE_TECH)
                 ) && (
-                  <Button
-                    type="primary"
-                    className="mb-2"
-                    // icon={<CaretLeftOutlined />}
-                    onClick={() => setOpenModalResolve(true)}
-                  >
-                    Resolve Incident
-                  </Button>
-                )}
+                    <Button
+                      type="primary"
+                      className="mb-2"
+                      // icon={<CaretLeftOutlined />}
+                      onClick={() => setOpenModalResolve(true)}
+                    >
+                      Resolve Incident
+                    </Button>
+                  )}
               </div>
             )}
             <ModalResolve
@@ -227,8 +260,8 @@ const IncidentDetail: React.FC = () => {
                   <AppointmentTable
                     typeGet="ByIncidentId"
                     urlOncell=""
-                    onEdit={(record) => {}}
-                    onDelete={async (record) => {}}
+                    onEdit={(record) => { }}
+                    onDelete={async (record) => { }}
                   />
                   {appointmentData?.totalPage > 0 && (
                     <Pagination

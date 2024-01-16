@@ -98,6 +98,13 @@ const Customer: React.FC = () => {
 
   useEffect(() => {
     if (router.query.ipAddressId && session) {
+      handleBreadCumb();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [historyDetail]);
+
+  useEffect(() => {
+    if (router.query.ipAddressId && session) {
       getData();
       handleBreadCumb();
     }

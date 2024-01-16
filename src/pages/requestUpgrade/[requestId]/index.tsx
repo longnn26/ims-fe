@@ -176,14 +176,32 @@ const RequestDetail: React.FC = () => {
     var items = router.asPath.split("/").filter((_) => _ != "");
     var path = "";
     items.forEach((element) => {
-      path += `/${element}`;
-      itemBrs.push({
-        href: path,
-        title: element,
-      });
+      switch (element) {
+        case requestUpgradeDetail?.id + "":
+          path += `/${element}`;
+          itemBrs.push({
+            href: path,
+            title: "Detail Information",
+          });
+          break;
+        default:
+          path += `/${element}`;
+          itemBrs.push({
+            href: path,
+            title: element,
+          });
+          break;
+      }
     });
     setItemBreadcrumbs(itemBrs);
   };
+
+  useEffect(() => {
+    if (router.query.requestId && session) {
+      handleBreadCumb();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [requestUpgradeDetail]);
 
   useEffect(() => {
     if (router.query.requestId && session) {

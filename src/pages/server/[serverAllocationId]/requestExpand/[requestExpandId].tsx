@@ -156,9 +156,9 @@ const RequestExpandDetail: React.FC = () => {
           .catch((errors) => {
             message.error(errors.response.data, 1.5);
           })
-          .finally(() => {});
+          .finally(() => { });
       },
-      onCancel() {},
+      onCancel() { },
     });
   };
 
@@ -187,9 +187,9 @@ const RequestExpandDetail: React.FC = () => {
           .catch((errors) => {
             message.error(errors.response.data, 1.5);
           })
-          .finally(() => {});
+          .finally(() => { });
       },
-      onCancel() {},
+      onCancel() { },
     });
   };
 
@@ -219,9 +219,9 @@ const RequestExpandDetail: React.FC = () => {
           .catch((errors) => {
             message.error(errors.response.data, 1.5);
           })
-          .finally(() => {});
+          .finally(() => { });
       },
-      onCancel() {},
+      onCancel() { },
     });
   };
 
@@ -256,7 +256,7 @@ const RequestExpandDetail: React.FC = () => {
                 .then((res) => {
                   setSuggestLocation(res);
                 })
-                .catch((e) => {});
+                .catch((e) => { });
             }
           });
         // getData();
@@ -264,20 +264,6 @@ const RequestExpandDetail: React.FC = () => {
       .catch((errors) => {
         message.error(errors.response.data, 1.5);
       });
-  };
-
-  const handleBreadCumb = () => {
-    var itemBrs = [] as ItemType[];
-    var items = router.asPath.split("/").filter((_) => _ != "");
-    var path = "";
-    items.forEach((element) => {
-      path += `/${element}`;
-      itemBrs.push({
-        href: path,
-        title: element,
-      });
-    });
-    setItemBreadcrumbs(itemBrs);
   };
 
   const saveLocation = async (data: RequestedLocation) => {
@@ -295,9 +281,49 @@ const RequestExpandDetail: React.FC = () => {
       });
   };
 
+  const handleBreadCumb = () => {
+    var itemBrs = [] as ItemType[];
+    var items = router.asPath.split("/").filter((_) => _ != "");
+    var path = "";
+    items.forEach((element) => {
+      switch (element) {
+        case serverAllocationDetail?.id + "":
+          path += `/${element}`;
+          itemBrs.push({
+            href: path,
+            title: serverAllocationDetail?.name,
+          });
+          break;
+        case requestExpandDetail?.id + "":
+          path += `/${element}`;
+          itemBrs.push({
+            href: path,
+            title: "Detail Information",
+          });
+          break;
+        default:
+          path += `/${element}`;
+          itemBrs.push({
+            href: path,
+            title: element,
+          });
+          break;
+      }
+    });
+    setItemBreadcrumbs(itemBrs);
+  };
+
+  useEffect(() => {
+    if (router.query.serverAllocationId && session) {
+      handleBreadCumb();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [serverAllocationDetail]);
+
   useEffect(() => {
     if (router.query.serverAllocationId && session) {
       getData();
+      handleBreadCumb();
     }
   }, [session]);
 
@@ -319,6 +345,7 @@ const RequestExpandDetail: React.FC = () => {
 
   useEffect(() => {
     checkPermission();
+    handleBreadCumb();
   }, [requestExpandDetail]);
 
   if (requestExpandDetail === undefined) {
@@ -344,13 +371,13 @@ const RequestExpandDetail: React.FC = () => {
 
                 {Boolean(
                   requestExpandDetail?.requestType !== "RemoveLocation" &&
-                    requestExpandDetail?.status === "Accepted" &&
-                    areInArray(
-                      session?.user.roles!,
-                      // ROLE_SALES,
-                      ROLE_TECH
-                      // ROLE_CUSTOMER
-                    )
+                  requestExpandDetail?.status === "Accepted" &&
+                  areInArray(
+                    session?.user.roles!,
+                    // ROLE_SALES,
+                    ROLE_TECH
+                    // ROLE_CUSTOMER
+                  )
                 ) &&
                   permission && (
                     <>
@@ -373,7 +400,7 @@ const RequestExpandDetail: React.FC = () => {
                                 .then((res) => {
                                   setSuggestLocation(res);
                                 })
-                                .catch((e) => {});
+                                .catch((e) => { });
                             }
                           }}
                         >
@@ -424,8 +451,8 @@ const RequestExpandDetail: React.FC = () => {
                   <AppointmentTable
                     typeGet="ByRequestExpandId"
                     urlOncell=""
-                    onEdit={(record) => {}}
-                    onDelete={async (record) => {}}
+                    onEdit={(record) => { }}
+                    onDelete={async (record) => { }}
                   />
                   {appointmentData?.totalPage > 0 && (
                     <Pagination
@@ -445,49 +472,49 @@ const RequestExpandDetail: React.FC = () => {
 
                   {Boolean(
                     requestExpandDetail?.status === "Waiting" &&
-                      areInArray(session?.user.roles!, ROLE_SALES)
+                    areInArray(session?.user.roles!, ROLE_SALES)
                   ) && (
-                    <FloatButton.Group
-                      trigger="hover"
-                      type="primary"
-                      style={{ right: 60, bottom: 500 }}
-                      icon={<AiOutlineFileDone />}
-                    >
-                      <FloatButton
-                        icon={<MdCancel color="red" />}
-                        tooltip="Deny"
-                        onClick={() => setOpenModalDeny(true)}
-                      />
-                      <FloatButton
-                        onClick={() => setOpenModalAccept(true)}
-                        icon={<AiOutlineFileDone color="green" />}
-                        tooltip="Accept"
-                      />
-                    </FloatButton.Group>
-                  )}
+                      <FloatButton.Group
+                        trigger="hover"
+                        type="primary"
+                        style={{ right: 60, bottom: 500 }}
+                        icon={<AiOutlineFileDone />}
+                      >
+                        <FloatButton
+                          icon={<MdCancel color="red" />}
+                          tooltip="Deny"
+                          onClick={() => setOpenModalDeny(true)}
+                        />
+                        <FloatButton
+                          onClick={() => setOpenModalAccept(true)}
+                          icon={<AiOutlineFileDone color="green" />}
+                          tooltip="Accept"
+                        />
+                      </FloatButton.Group>
+                    )}
                   {Boolean(
                     requestExpandDetail?.status === "Accepted" &&
-                      requestExpandDetail?.succeededAppointment?.status ===
-                        "Success"
+                    requestExpandDetail?.succeededAppointment?.status ===
+                    "Success"
                   ) && (
-                    <FloatButton.Group
-                      trigger="hover"
-                      type="primary"
-                      style={{ right: 60, bottom: 500 }}
-                      icon={<AiOutlineFileDone />}
-                    >
-                      <FloatButton
-                        icon={<MdCancel color="red" />}
-                        tooltip="Fail"
-                        onClick={() => rejectRequestExpand()}
-                      />
-                      <FloatButton
-                        onClick={() => completeRequestExpand()}
-                        icon={<AiOutlineFileDone color="green" />}
-                        tooltip="Complete"
-                      />
-                    </FloatButton.Group>
-                  )}
+                      <FloatButton.Group
+                        trigger="hover"
+                        type="primary"
+                        style={{ right: 60, bottom: 500 }}
+                        icon={<AiOutlineFileDone />}
+                      >
+                        <FloatButton
+                          icon={<MdCancel color="red" />}
+                          tooltip="Fail"
+                          onClick={() => rejectRequestExpand()}
+                        />
+                        <FloatButton
+                          onClick={() => completeRequestExpand()}
+                          icon={<AiOutlineFileDone color="green" />}
+                          tooltip="Complete"
+                        />
+                      </FloatButton.Group>
+                    )}
                   <ModalUpdate
                     onSaveLocation={(data) => saveLocation(data)}
                     suggestLocation={suggestLocation}

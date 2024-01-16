@@ -178,14 +178,32 @@ const RequestExpand: React.FC = () => {
     var items = router.asPath.split("/").filter((_) => _ != "");
     var path = "";
     items.forEach((element) => {
-      path += `/${element}`;
-      itemBrs.push({
-        href: path,
-        title: element,
-      });
+      switch (element) {
+        case serverAllocationDetail?.id + "":
+          path += `/${element}`;
+          itemBrs.push({
+            href: path,
+            title: serverAllocationDetail?.name,
+          });
+          break;
+        default:
+          path += `/${element}`;
+          itemBrs.push({
+            href: path,
+            title: element,
+          });
+          break;
+      }
     });
     setItemBreadcrumbs(itemBrs);
   };
+
+  useEffect(() => {
+    if (router.query.serverAllocationId && session) {
+      handleBreadCumb();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [serverAllocationDetail]);
 
   useEffect(() => {
     if (router.query.serverAllocationId && session) {
