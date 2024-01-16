@@ -48,6 +48,7 @@ import {
   ServerHardwareConfigData,
   SHCParamGet,
 } from "@models/serverHardwareConfig";
+import ModalAcceptExpand from "@components/server/requestExpand/ModalAccept";
 
 const { confirm } = Modal;
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
@@ -76,6 +77,8 @@ const RequestExpandDetail: React.FC = () => {
     useState<RequestExpand>();
   const { appointmentData } = useSelector((state) => state.requestExpand);
   const [openModalDeny, setOpenModalDeny] = useState<boolean>(false);
+  const [openModalAccept, setOpenModalAccept] = useState<boolean>(false);
+
   const [permission, setPermission] = useState<boolean>(true);
   const [content, setContent] = useState<string>("");
   const [paramGet, setParamGet] = useState<SHCParamGet>({
@@ -184,7 +187,7 @@ const RequestExpandDetail: React.FC = () => {
     });
   };
 
-  const acceptRequestExpand = async () => {
+  const acceptRequestExpand = async (data: string) => {
     confirm({
       title: "Accept",
       content: (
@@ -197,7 +200,8 @@ const RequestExpandDetail: React.FC = () => {
         await requestExpandService
           .acceptRequestExpand(
             session?.user.access_token!,
-            requestExpandDetail?.id + ""
+            requestExpandDetail?.id + "",
+            data
           )
           .then((res) => {
             message.success("Accept request expand successfully!", 1.5);
@@ -380,6 +384,15 @@ const RequestExpandDetail: React.FC = () => {
               }}
               requestExpandId={parseInt(router.query.requestExpandId + "")}
             />
+            <ModalAcceptExpand
+              open={openModalAccept}
+              onClose={() => setOpenModalAccept(false)}
+              onSubmit={() => {
+                getData();
+                setOpenModalAccept(false);
+              }}
+              requestExpandId={parseInt(router.query.requestExpandId + "")}
+            />
             {areInArray(
               session?.user.roles!,
               ROLE_SALES,
@@ -437,7 +450,7 @@ const RequestExpandDetail: React.FC = () => {
                         onClick={() => setOpenModalDeny(true)}
                       />
                       <FloatButton
-                        onClick={() => acceptRequestExpand()}
+                        onClick={() => setOpenModalAccept(true)}
                         icon={<AiOutlineFileDone color="green" />}
                         tooltip="Accept"
                       />

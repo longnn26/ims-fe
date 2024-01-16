@@ -67,12 +67,15 @@ const getSuggestLocation = async (
   return response.data;
 };
 
-const acceptRequestExpand = async (token: string, id: string): Promise<any> => {
+const acceptRequestExpand = async (
+  token: string,
+  id: string,
+  data: string
+): Promise<any> => {
   const response = await httpClient.put({
-    contentType: "application/json",
-    contentDisposition: "form-data",
     url: apiLinks.requestExpand.accept + `/${id}/Accept`,
     token: token,
+    data: { saleNote: data },
   });
   return response.data;
 };

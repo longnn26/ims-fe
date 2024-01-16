@@ -30,8 +30,12 @@ import { areInArray } from "@utils/helpers";
 import { ROLE_CUSTOMER, ROLE_SALES, ROLE_TECH } from "@utils/constants";
 import ModalDeny from "@components/server/requestExpand/ModalDeny";
 import serverHardwareConfig from "@services/serverHardwareConfig";
-import { ServerHardwareConfigData, SHCParamGet } from "@models/serverHardwareConfig";
+import {
+  ServerHardwareConfigData,
+  SHCParamGet,
+} from "@models/serverHardwareConfig";
 import { error } from "console";
+import ModalAcceptExpand from "@components/server/requestExpand/ModalAccept";
 const { confirm } = Modal;
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
@@ -54,14 +58,16 @@ const RequestExpandDetail: React.FC = () => {
       RequestUpgradeId: router.query.requestExpandId ?? -1,
     } as unknown as RUAppointmentParamGet);
   const [paramGet, setParamGet] = useState<SHCParamGet>({
-      PageIndex: 1,
-      PageSize: 10,
-    } as unknown as SHCParamGet);
+    PageIndex: 1,
+    PageSize: 10,
+  } as unknown as SHCParamGet);
   const [itemBreadcrumbs, setItemBreadcrumbs] = useState<ItemType[]>([]);
   const [requestExpandUpdate, setRequestExpandUpdate] =
     useState<RequestExpand>();
 
   const [openModalDeny, setOpenModalDeny] = useState<boolean>(false);
+  const [openModalAccept, setOpenModalAccept] = useState<boolean>(false);
+
   const { appointmentData } = useSelector((state) => state.requestExpand);
   const [hardware, setHardware] = useState<ServerHardwareConfigData>();
 
@@ -76,12 +82,14 @@ const RequestExpandDetail: React.FC = () => {
           )
           .then(async (res) => {
             setServerAllocationDetail(res);
-            await serverHardwareConfig.getServerHardwareConfigData(
-              session?.user.access_token!,
-              {...paramGet, ServerAllocationId: res.id} as SHCParamGet
-            ).then((res) => {
-              setHardware(res);
-            });
+            await serverHardwareConfig
+              .getServerHardwareConfigData(session?.user.access_token!, {
+                ...paramGet,
+                ServerAllocationId: res.id,
+              } as SHCParamGet)
+              .then((res) => {
+                setHardware(res);
+              });
           });
         setRequestExpandDetail(res);
       });
@@ -132,34 +140,6 @@ const RequestExpandDetail: React.FC = () => {
           )
           .then((res) => {
             message.success("Complete request expand successfully!", 1.5);
-            getData();
-          })
-          .catch((errors) => {
-            message.error(errors.response.data, 1.5);
-          })
-          .finally(() => {});
-      },
-      onCancel() {},
-    });
-  };
-
-  const acceptRequestExpand = async () => {
-    confirm({
-      title: "Accept",
-      content: (
-        <Alert
-          message={`Do you want to accept with Id ${requestExpandDetail?.id}?`}
-          type="warning"
-        />
-      ),
-      async onOk() {
-        await requestExpandService
-          .acceptRequestExpand(
-            session?.user.access_token!,
-            requestExpandDetail?.id + ""
-          )
-          .then((res) => {
-            message.success("Accept request expand successfully!", 1.5);
             getData();
           })
           .catch((errors) => {
@@ -260,7 +240,7 @@ const RequestExpandDetail: React.FC = () => {
   return (
     <AntdLayoutNoSSR
       content={
-        <>        
+        <>
           <ModalDeny
             open={openModalDeny}
             onClose={() => setOpenModalDeny(false)}
@@ -361,7 +341,7 @@ const RequestExpandDetail: React.FC = () => {
                     onClick={() => setOpenModalDeny(true)}
                   />
                   <FloatButton
-                    onClick={() => acceptRequestExpand()}
+                    onClick={() => setOpenModalAccept(true)}
                     icon={<AiOutlineFileDone color="green" />}
                     tooltip="Accept"
                   />
@@ -402,6 +382,15 @@ const RequestExpandDetail: React.FC = () => {
                 onSubmit={(value) => {
                   updateData(value);
                 }}
+              />
+              <ModalAcceptExpand
+                open={openModalAccept}
+                onClose={() => setOpenModalAccept(false)}
+                onSubmit={() => {
+                  getData();
+                  setOpenModalAccept(false);
+                }}
+                requestExpandId={parseInt(router.query.requestExpandId + "")}
               />
             </>
           )}

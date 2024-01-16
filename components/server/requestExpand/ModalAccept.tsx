@@ -1,8 +1,9 @@
-import requestExpand from "@services/requestExpand";
-import requestHost from "@services/requestHost";
-import { Button, Form, Input, Modal, Spin, message } from "antd";
+import { Alert, Button, Form, Input, Modal, Spin, message } from "antd";
+import requestExpandService from "@services/requestExpand";
+
 import { useSession } from "next-auth/react";
 import React, { useRef, useState } from "react";
+import { RequestExpand } from "@models/requestExpand";
 const { confirm } = Modal;
 
 interface Props {
@@ -12,12 +13,14 @@ interface Props {
   requestExpandId: number;
 }
 
-const ModalDenyHost: React.FC<Props> = (props) => {
+const ModalAcceptExpand: React.FC<Props> = (props) => {
   const formRef = useRef(null);
   const [form] = Form.useForm();
   const { open, onClose, requestExpandId, onSubmit } = props;
   const { data: session } = useSession();
 
+  const [requestExpandDetail, setRequestExpandDetail] =
+    useState<RequestExpand>();
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -31,16 +34,16 @@ const ModalDenyHost: React.FC<Props> = (props) => {
     return result;
   };
 
-  const deny = async (data: string) => {
+  const accept = async (data: string) => {
     setLoading(true);
-    await requestExpand
+    await requestExpandService
       .denyRequestExpand(
         session?.user.access_token!,
         requestExpandId + "",
         data
       )
       .then((res) => {
-        message.success("Deny Rack Expansion Request successfully!", 1.5);
+        message.success("Accept Rack Expansion Request successfully!", 1.5);
         form.resetFields();
         onSubmit();
       })
@@ -57,7 +60,7 @@ const ModalDenyHost: React.FC<Props> = (props) => {
       <Modal
         title={
           <span className="inline-block m-auto">
-            Deny Rack Expansion Request
+            Accept Rack Expansion Request
           </span>
         }
         open={open}
@@ -74,15 +77,15 @@ const ModalDenyHost: React.FC<Props> = (props) => {
             onClick={async () => {
               if (!(await disabled()))
                 confirm({
-                  title: "Do you want to deny?",
+                  title: "Do you want to Accept this Request?",
                   async onOk() {
-                    deny(form.getFieldValue("saleNote"));
+                    accept(form.getFieldValue("saleNote"));
                   },
                   onCancel() {},
                 });
             }}
           >
-            Deny
+            Accept
           </Button>,
         ]}
       >
@@ -97,7 +100,7 @@ const ModalDenyHost: React.FC<Props> = (props) => {
             >
               <Form.Item
                 name="saleNote"
-                label="Sales Staff Note"
+                label="Sales Staff Note "
                 rules={[{ required: true, max: 2000 }]}
               >
                 <Input.TextArea
@@ -114,4 +117,4 @@ const ModalDenyHost: React.FC<Props> = (props) => {
   );
 };
 
-export default ModalDenyHost;
+export default ModalAcceptExpand;

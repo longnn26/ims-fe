@@ -15,7 +15,7 @@ const ServerDetail: React.FC<Props> = (props) => {
   var statusData = serverAllocationStatus.find(
     (_) => _.value === serverAllocationDetail?.status
   );
-  
+
   return (
     <div className="shadow-[rgba(13,_38,_76,_0.19)_0px_9px_20px] m-5 rounded-md">
       <Divider orientation="left" plain>
@@ -34,9 +34,6 @@ const ServerDetail: React.FC<Props> = (props) => {
         <Descriptions.Item label="Nearest Updated">
           {moment(serverAllocationDetail?.dateUpdated).format(dateAdvFormat)}
         </Descriptions.Item>
-        {/* <Descriptions.Item label="Customer" span={4}>
-          {serverAllocationDetail?.customer?.companyName}
-        </Descriptions.Item> */}
         <Descriptions.Item label="Server's IP" span={0}>
           {serverAllocationDetail?.masterIp?.address}
         </Descriptions.Item>
@@ -52,14 +49,17 @@ const ServerDetail: React.FC<Props> = (props) => {
         <Descriptions.Item label="Part Number" span={2}>
           {serverAllocationDetail?.partNumber}
         </Descriptions.Item>
+        <Descriptions.Item label="Customer" span={4}>
+          {serverAllocationDetail?.customer?.companyName}
+        </Descriptions.Item>
         <Descriptions.Item label="CPU" span={3}>
-          {hardware?.data.find(i => i.componentId===1)?.description}
+          {hardware?.data.find((i) => i.componentId === 1)?.description}
         </Descriptions.Item>
         <Descriptions.Item label="Memory" span={3}>
-          {hardware?.data.find(i => i.componentId===2)?.description}
+          {hardware?.data.find((i) => i.componentId === 2)?.description}
         </Descriptions.Item>
         <Descriptions.Item label="Storage" span={3}>
-          {hardware?.data.find(i => i.componentId===3)?.description}
+          {hardware?.data.find((i) => i.componentId === 3)?.description}
         </Descriptions.Item>
         <Descriptions.Item label="Additional IPs" span={0}>
           {serverAllocationDetail?.ipCount}
