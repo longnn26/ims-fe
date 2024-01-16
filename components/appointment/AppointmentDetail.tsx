@@ -37,7 +37,7 @@ const ServerDetail: React.FC<Props> = (props) => {
         <Descriptions.Item label="Reason" span={3}>
           {appointmentDetail?.reason}
         </Descriptions.Item>
-        <Descriptions.Item label="Customer" span={1}>
+        <Descriptions.Item label="Customer" span={4}>
           {appointmentDetail?.customer.companyName}
         </Descriptions.Item>
         <Descriptions.Item label="Server IP's" span={1}>
@@ -46,7 +46,7 @@ const ServerDetail: React.FC<Props> = (props) => {
         <Descriptions.Item label="Serial Number" span={1}>
           {appointmentDetail?.serverAllocation.serialNumber}
         </Descriptions.Item>
-        <Descriptions.Item label="Server Name" span={1}>
+        <Descriptions.Item label="Server Name" span={2}>
           {appointmentDetail?.serverAllocation.name}
         </Descriptions.Item>
         <Descriptions.Item label="Customer Note" span={1}>

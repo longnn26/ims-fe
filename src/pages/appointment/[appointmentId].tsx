@@ -387,7 +387,8 @@ const Appoinment: React.FC = () => {
                 <AppointmentDetail appointmentDetail={appointmentDetail!} />
                 {Boolean(
                   appointmentDetail?.status === "Success" &&
-                    appointmentDetail.serverAllocation.status !== "Waiting"
+                    appointmentDetail.serverAllocation.status !== "Waiting" &&
+                    areInArray(session?.user.roles!, ROLE_SALES, ROLE_TECH)
                   // && !appointmentDetail.documentConfirm
                 ) && (
                   <>
