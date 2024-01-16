@@ -406,8 +406,8 @@ const ModalCreate: React.FC<Props> = (props) => {
                               allowClear
                               onChange={(res) => handleContactType(res)}
                             >
-                              <Option value={true}>Đăng kí ra vào DC</Option>
-                              <Option value={false}>Thông tin liên hệ</Option>
+                              <Option value={true}>Permission to visit DC</Option>
+                              <Option value={false}>Informative contact</Option>
                             </Select>
                           </Form.Item>
                           {form.getFieldValue([
