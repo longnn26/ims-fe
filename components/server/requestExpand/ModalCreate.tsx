@@ -102,8 +102,9 @@ const ModalCreate: React.FC<Props> = (props) => {
             <Form
               ref={formRef}
               form={form}
-              labelCol={{ span: 8 }}
-              wrapperCol={{ span: 16 }}
+              labelCol={{ span: 6 }}
+              labelWrap={true}
+              wrapperCol={{ span: 20 }}
               style={{ width: "100%" }}
               name="dynamic_form_complex"
             >
