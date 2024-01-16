@@ -82,7 +82,7 @@ const ModalCreate: React.FC<Props> = (props) => {
                       forRemoval: true,
                       note: form.getFieldValue("note"),
                       serverAllocationId: parseInt(router.query.serverAllocationId + ""),
-                      removalRequestDocument: form.getFieldValue("upload"),
+                      removalRequestDocument: form.getFieldValue("upload").fileList[0].originFileObj,
                       removalRequestDocumentFileName: "Công văn ngưng server",
                     } as RequestExpandCreateModel;
 
