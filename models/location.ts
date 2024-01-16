@@ -16,4 +16,5 @@ export interface LocationData extends PagingModel {
 export interface LocationParamGet extends ParamGet {
     RackId?: number;
     Size?: number;
+    IsReserved?: boolean;
 }

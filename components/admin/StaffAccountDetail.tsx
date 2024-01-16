@@ -11,7 +11,6 @@ interface Props {
 const StaffAccountDetail: React.FC<Props> = (props) => {
   const { staffAccountDetail } = props;
 
-  console.log(staffAccountDetail)
   return (
     <div className="shadow-[rgba(13,_38,_76,_0.19)_0px_9px_20px] m-5 rounded-md">
       <Divider orientation="left" plain>

@@ -2,6 +2,7 @@
 import { CaretLeftOutlined } from "@ant-design/icons";
 import BreadcrumbComponent from "@components/BreadcrumbComponent";
 import ModalReserve from "@components/area/rack/ModalReserve";
+import ModalUnreserve from "@components/area/rack/ModalUnreserve";
 import RackDetail from "@components/area/rack/RackDetail";
 import RackMapRender from "@components/area/rack/RackMapRender";
 import PieChartComponent from "@components/chartComponent/Pie";
@@ -35,6 +36,7 @@ const AreaDetail: React.FC = () => {
 
   const [itemBreadcrumbs, setItemBreadcrumbs] = useState<ItemType[]>([]);
   const [openModalReserve, setOpenModalReserve] = useState<boolean>(false);
+  const [openModalUnreserve, setOpenModalUnreserve] = useState<boolean>(false);
 
   const getData = async () => {
     await area
@@ -46,8 +48,6 @@ const AreaDetail: React.FC = () => {
       .getMapsById(session?.user.access_token!, router.query.rackId + "")
       .then((e) => setRackMapList([...e]));
   };
-
-  console.log(rackMapList)
 
   const handleBreadCumb = () => {
     var itemBrs = [] as ItemType[];
@@ -106,16 +106,30 @@ const AreaDetail: React.FC = () => {
                   <BreadcrumbComponent itemBreadcrumbs={itemBreadcrumbs} />
                 </div>
                 {/* {rackMapList.filter((l) => {l.position === 1})} */}
-                <Button
-                  type="primary"
-                  className="mr-2"
-                  htmlType="submit"
-                  onClick={() => {
-                    setOpenModalReserve(true);
-                  }}
-                >
-                  Reserve
-                </Button>
+                <div>
+                  <Button
+                    type="primary"
+                    className="mr-2"
+                    htmlType="submit"
+                    onClick={() => {
+                      setOpenModalReserve(true);
+                    }}
+                  >
+                    Reserve
+                  </Button>
+                  {rackMapList.filter(l => l.isReserved).length > 0 && (
+                    <Button
+                      type="primary"
+                      className="mr-2"
+                      htmlType="submit"
+                      onClick={() => {
+                        setOpenModalUnreserve(true);
+                      }}
+                    >
+                      Unreserve
+                    </Button>
+                  )}
+                </div>
               </div>
 
               <ModalReserve
@@ -123,6 +137,15 @@ const AreaDetail: React.FC = () => {
                 onClose={() => setOpenModalReserve(false)}
                 onSubmit={() => {
                   setOpenModalReserve(false);
+                  getData();
+                }}
+              />
+
+              <ModalUnreserve
+                open={openModalUnreserve}
+                onClose={() => setOpenModalUnreserve(false)}
+                onSubmit={() => {
+                  setOpenModalUnreserve(false);
                   getData();
                 }}
               />

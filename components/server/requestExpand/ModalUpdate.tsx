@@ -116,7 +116,6 @@ const ModalUpdate: React.FC<Props> = (props) => {
         Size: form.getFieldValue("size"),
       })
       .then(async (data) => {
-        console.log(data);
         setTotalPage(data.totalPage);
         paramGet.PageIndex = data.pageIndex;
         setLocationList([...locationList, ...data.data]);

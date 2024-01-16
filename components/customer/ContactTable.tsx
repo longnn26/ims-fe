@@ -38,8 +38,6 @@ const ContactTable: React.FC<Props> = (props) => {
     (state) => state.customer
   );
 
-  console.log(contacts)
-
   const columns: TableColumnsType<DataType> = [    
     {
       title: "Information Type",

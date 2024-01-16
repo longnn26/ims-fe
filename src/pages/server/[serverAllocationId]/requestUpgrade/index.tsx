@@ -165,7 +165,6 @@ const RequestUpgrade: React.FC = () => {
     var itemBrs = [] as ItemType[];
     var items = router.asPath.split("/").filter((_) => _ != "");
     var path = "";
-    console.log(items)
     items.forEach((element) => {
       if (element !== serverAllocationDetail?.id+"") {
       path += `/${element}`;
@@ -174,7 +173,6 @@ const RequestUpgrade: React.FC = () => {
         title: element,
       });
     } else {
-      console.log(element)
       path += `/${element}`;
         itemBrs.push({
           href: path,

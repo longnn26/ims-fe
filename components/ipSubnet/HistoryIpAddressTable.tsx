@@ -80,7 +80,6 @@ const HistoryIpAddressTable: React.FC<Props> = (props) => {
   ];
 
   const data: DataType[] = [];
-  console.log(ipAddressHistoryData);
   for (let i = 0; i < ipAddressHistoryData?.data?.length; ++i) {
     data.push({
       key: i,

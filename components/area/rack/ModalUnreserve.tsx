@@ -19,7 +19,7 @@ interface Props {
   onSubmit: () => void;
 }
 
-const ModalReserve: React.FC<Props> = (props) => {
+const ModalUnreserve: React.FC<Props> = (props) => {
   const formRef = useRef(null);
   const [form] = Form.useForm();
   const { open, onClose, onSubmit } = props;
@@ -45,12 +45,12 @@ const ModalReserve: React.FC<Props> = (props) => {
     return result;
   };
 
-  const reverse = async (id: number[]) => {
+  const unreserve = async (id: number[]) => {
     setLoading(true);
     await locationService
-      .reserve(session?.user.access_token!, id)
+      .unReserve(session?.user.access_token!, id)
       .then(() => {
-        message.success("Reserve successfully!", 1.5);
+        message.success("Unreserve successfully!", 1.5);
         onSubmit();
         form.resetFields();
       })
@@ -70,10 +70,9 @@ const ModalReserve: React.FC<Props> = (props) => {
       paramGet.PageIndex += 1;
     }
     await locationService
-      .getData(session?.user.access_token!, {
+      .getAll(session?.user.access_token!, {
         ...paramGet,
-        RackId: parseInt(router.query.rackId+""),
-        Size: 1,
+        IsReserved: true,
       })
       .then(async (data) => {
         setTotalPage(data.totalPage);
@@ -94,7 +93,7 @@ const ModalReserve: React.FC<Props> = (props) => {
   return (
     <>
       <Modal
-        title={<span className="inline-block m-auto">Reserve</span>}
+        title={<span className="inline-block m-auto">Unreserve</span>}
         open={open}
         confirmLoading={confirmLoading}
         onCancel={() => {
@@ -110,9 +109,9 @@ const ModalReserve: React.FC<Props> = (props) => {
             onClick={async () => {
               if (!(await disabled()))
                 confirm({
-                  title: "Do you want to reserve these locations?",
+                  title: "Do you want to unreserve these locations?",
                   async onOk() {
-                    reverse(form.getFieldValue("ids"));
+                    unreserve(form.getFieldValue("ids"));
                   },
                   onCancel() {},
                 });
@@ -141,7 +140,7 @@ const ModalReserve: React.FC<Props> = (props) => {
                 rules={[
                   {
                     required: true,
-                    message: "Please select at least an location",
+                    message: "Please select at least an Location",
                   },
                 ]}
               >
@@ -163,8 +162,8 @@ const ModalReserve: React.FC<Props> = (props) => {
                     }
                   }}
                 >
-                  {locationList.filter(l => l.isReserved === false).map((l, index) => (
-                    <Option key={l.id} value={l.id} label={l.id}>
+                  {locationList.map((l, index) => (
+                    <Option key={l.id} value={l.id}>
                       {`${l?.rack.area.name}${l?.rack.row + 1} - ${l?.rack.column + 1} U${l.position + 1}`}
                     </Option>
                   ))}
@@ -178,4 +177,4 @@ const ModalReserve: React.FC<Props> = (props) => {
   );
 };
 
-export default ModalReserve;
+export default ModalUnreserve;
