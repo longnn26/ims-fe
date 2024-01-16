@@ -37,7 +37,7 @@ const ModalAcceptExpand: React.FC<Props> = (props) => {
   const accept = async (data: string) => {
     setLoading(true);
     await requestExpandService
-      .denyRequestExpand(
+      .acceptRequestExpand(
         session?.user.access_token!,
         requestExpandId + "",
         data
