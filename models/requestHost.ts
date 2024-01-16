@@ -87,6 +87,7 @@ export interface Executor {
 export interface RUIpAdressParamGet extends ParamGet {
   Id: number;
   IsAssigned?: boolean;
+  RequestHostId?: number;
 }
 
 export interface SParamGet extends ParamGet {

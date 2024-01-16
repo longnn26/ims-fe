@@ -48,12 +48,6 @@ const ServerAllocationTable: React.FC<Props> = (props) => {
 
   const columns: TableColumnsType<DataType> = [
     {
-      title: "Id",
-      dataIndex: "id",
-      key: "id",
-      fixed: "left",
-    },
-    {
       title: "Server's IP",
       key: "masterIpAddress",
       render: (record: ServerAllocation) =>
@@ -140,15 +134,11 @@ const ServerAllocationTable: React.FC<Props> = (props) => {
     })) || [];
 
   return (
-    <div className="shadow m-5">
-      <Divider orientation="left" plain>
-        <h3>Server</h3>
-      </Divider>
+    <div className="shadow">
       <Table
         loading={serverAllocationDataLoading}
         columns={columns}
         dataSource={formattedData}
-        scroll={{ x: 1300 }}
         pagination={false}
       />
     </div>

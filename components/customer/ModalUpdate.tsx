@@ -157,6 +157,11 @@ const ModalUpdate: React.FC<Props> = (props) => {
                           index,
                           "phoneNumber",
                         ]),
+                        email: form.getFieldValue([
+                          "contacts",
+                          index,
+                          "email"
+                        ])
                       })),
                     } as CustomerUpdateModel;
                     setLoading(true);
@@ -271,10 +276,11 @@ const ModalUpdate: React.FC<Props> = (props) => {
                           required: true,
                         },
                         {
-                          pattern: /^\d{10,13}$/,
-                          message: "Tax number is invalid!"
-                        }
+                          pattern: /^(\d{10}|\d{10}-\d{3})$/,
+                          message: "Tax number is invalid!",
+                        },
                       ]}
+                      normalize={(value) => {return value.replace(/^(\d{10})(\d{1,3})$/, '$1-$2');}}
                       style={{ paddingLeft: "55px" }}
                     >
                       <Input placeholder="Tax number" allowClear />
@@ -378,8 +384,8 @@ const ModalUpdate: React.FC<Props> = (props) => {
                               allowClear
                               onChange={(res) => handleContactType(res)}
                             >
-                              <Option value={true}>Đăng kí ra vào DC</Option>
-                              <Option value={false}>Thông tin liên hệ</Option>
+                              <Option value={true}>Permission to visit DC</Option>
+                              <Option value={false}>Informative contact</Option>
                             </Select>
                           </Form.Item>
                           {form.getFieldValue(["contacts", field.name, "forAppointment"]) === true && (
