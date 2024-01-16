@@ -229,6 +229,7 @@ const Appoinment: React.FC = () => {
             session?.user.roles!,
             ROLE_TECH,
             ROLE_SALES,
+            ROLE_CUSTOMER,
             ROLE_MANAGER
           ) && (
             <>
