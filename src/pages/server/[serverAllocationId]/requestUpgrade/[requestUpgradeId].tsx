@@ -132,9 +132,9 @@ const RequestUpgradeDetail: React.FC = () => {
           .catch((errors) => {
             message.error(errors.response.data, 1.5);
           })
-          .finally(() => {});
+          .finally(() => { });
       },
-      onCancel() {},
+      onCancel() { },
     });
   };
 
@@ -160,9 +160,9 @@ const RequestUpgradeDetail: React.FC = () => {
           .catch((errors) => {
             message.error(errors.response.data, 1.5);
           })
-          .finally(() => {});
+          .finally(() => { });
       },
-      onCancel() {},
+      onCancel() { },
     });
   };
 
@@ -188,9 +188,9 @@ const RequestUpgradeDetail: React.FC = () => {
           .catch((errors) => {
             message.error(errors.response.data, 1.5);
           })
-          .finally(() => {});
+          .finally(() => { });
       },
-      onCancel() {},
+      onCancel() { },
     });
   };
 
@@ -199,14 +199,39 @@ const RequestUpgradeDetail: React.FC = () => {
     var items = router.asPath.split("/").filter((_) => _ != "");
     var path = "";
     items.forEach((element) => {
-      path += `/${element}`;
-      itemBrs.push({
-        href: path,
-        title: element,
-      });
+      switch (element) {
+        case serverAllocationDetail?.id + "":
+          path += `/${element}`;
+          itemBrs.push({
+            href: path,
+            title: serverAllocationDetail?.name,
+          });
+          break;
+        case requestUpgradeDetail?.id + "":
+          path += `/${element}`;
+          itemBrs.push({
+            href: path,
+            title: "Detail Information",
+          });
+          break;
+        default:
+          path += `/${element}`;
+          itemBrs.push({
+            href: path,
+            title: element,
+          });
+          break;
+      }
     });
     setItemBreadcrumbs(itemBrs);
   };
+
+  useEffect(() => {
+    if (router.query.requestUpgradeId && session) {
+      handleBreadCumb();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [requestUpgradeDetail]);
 
   useEffect(() => {
     if (
@@ -290,8 +315,8 @@ const RequestUpgradeDetail: React.FC = () => {
                   <AppointmentTable
                     typeGet="ByRequestUpgradeId"
                     urlOncell=""
-                    onEdit={(record) => {}}
-                    onDelete={async (record) => {}}
+                    onEdit={(record) => { }}
+                    onDelete={async (record) => { }}
                   />
                   {appointmentData?.totalPage > 0 && (
                     <Pagination
@@ -330,28 +355,28 @@ const RequestUpgradeDetail: React.FC = () => {
                     )}
                   {Boolean(
                     areInArray(session?.user.roles!, ROLE_TECH) &&
-                      requestUpgradeDetail?.status === "Accepted" &&
-                      requestUpgradeDetail?.succeededAppointment?.status ===
-                        "Success"
+                    requestUpgradeDetail?.status === "Accepted" &&
+                    requestUpgradeDetail?.succeededAppointment?.status ===
+                    "Success"
                   ) && (
-                    <FloatButton.Group
-                      trigger="hover"
-                      type="primary"
-                      style={{ right: 60, bottom: 500 }}
-                      icon={<AiOutlineFileDone />}
-                    >
-                      <FloatButton
-                        icon={<MdCancel color="red" />}
-                        tooltip="Fail"
-                        onClick={() => rejectRequestUpgrade()}
-                      />
-                      <FloatButton
-                        onClick={() => completeRequestUpgrade()}
-                        icon={<AiOutlineFileDone color="green" />}
-                        tooltip="Complete"
-                      />
-                    </FloatButton.Group>
-                  )}
+                      <FloatButton.Group
+                        trigger="hover"
+                        type="primary"
+                        style={{ right: 60, bottom: 500 }}
+                        icon={<AiOutlineFileDone />}
+                      >
+                        <FloatButton
+                          icon={<MdCancel color="red" />}
+                          tooltip="Fail"
+                          onClick={() => rejectRequestUpgrade()}
+                        />
+                        <FloatButton
+                          onClick={() => completeRequestUpgrade()}
+                          icon={<AiOutlineFileDone color="green" />}
+                          tooltip="Complete"
+                        />
+                      </FloatButton.Group>
+                    )}
                 </>
               )}
           </>

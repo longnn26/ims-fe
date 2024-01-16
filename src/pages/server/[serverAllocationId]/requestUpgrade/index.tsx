@@ -165,15 +165,32 @@ const RequestUpgrade: React.FC = () => {
     var itemBrs = [] as ItemType[];
     var items = router.asPath.split("/").filter((_) => _ != "");
     var path = "";
+    console.log(items)
     items.forEach((element) => {
+      if (element !== serverAllocationDetail?.id+"") {
       path += `/${element}`;
       itemBrs.push({
         href: path,
         title: element,
       });
+    } else {
+      console.log(element)
+      path += `/${element}`;
+        itemBrs.push({
+          href: path,
+          title: serverAllocationDetail?.name,
+        });
+    }
     });
     setItemBreadcrumbs(itemBrs);
   };
+
+  useEffect(() => {
+    if (router.query.serverAllocationId && session) {
+      handleBreadCumb();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [serverAllocationDetail]);
 
   useEffect(() => {
     if (router.query.serverAllocationId && session) {

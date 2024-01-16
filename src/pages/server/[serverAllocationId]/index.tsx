@@ -176,11 +176,19 @@ const Customer: React.FC = () => {
     var items = router.asPath.split("/").filter((_) => _ != "");
     var path = "";
     items.forEach((element) => {
+      if (element !== serverAllocationDetail?.id+"") {
       path += `/${element}`;
       itemBrs.push({
         href: path,
         title: element,
       });
+    } else {
+      path += `/${element}`;
+        itemBrs.push({
+          href: path,
+          title: serverAllocationDetail?.name,
+        });
+    }
     });
     setItemBreadcrumbs(itemBrs);
   };
@@ -196,6 +204,13 @@ const Customer: React.FC = () => {
       })
       .finally(() => {});
   };
+
+  useEffect(() => {
+    if (router.query.serverAllocationId && session) {
+      handleBreadCumb();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [serverAllocationDetail]);
 
   useEffect(() => {
     if (router.query.serverAllocationId && session) {
