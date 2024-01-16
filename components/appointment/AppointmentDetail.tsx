@@ -87,19 +87,19 @@ const ServerDetail: React.FC<Props> = (props) => {
           {moment(appointmentDetail?.dateAppointed).format(dateAdvFormat)}
         </Descriptions.Item>
         <Descriptions.Item label="Date Checked In">
-          {moment(appointmentDetail?.dateCheckedIn).format(dateAdvFormat)}
+          {appointmentDetail?.dateCheckedIn !== null ? moment(appointmentDetail?.dateCheckedIn).format(dateAdvFormat) : ""}
         </Descriptions.Item>
         <Descriptions.Item label="Date Checked Out" span={1}>
-          {moment(appointmentDetail?.dateCheckedOut).format(dateAdvFormat)}
+          {appointmentDetail?.dateCheckedOut !== null ? moment(appointmentDetail?.dateCheckedOut).format(dateAdvFormat) : ""}
         </Descriptions.Item>
         <Descriptions.Item label="Approval Date" span={1}>
-          {moment(appointmentDetail?.dateEvaluated).format(dateAdvFormat)}
+          {appointmentDetail?.dateEvaluated !== null ? moment(appointmentDetail?.dateEvaluated).format(dateAdvFormat) : ""}
         </Descriptions.Item>
         <Descriptions.Item label="Technical Recorded Date" span={1}>
-          {moment(appointmentDetail?.dateExecuted).format(dateAdvFormat)}
+          {appointmentDetail?.dateExecuted !== null ? moment(appointmentDetail?.dateExecuted).format(dateAdvFormat) : ""}
         </Descriptions.Item>
         <Descriptions.Item label="Customer Confirmed Date" span={2}>
-          {moment(appointmentDetail?.dateConfirm).format(dateAdvFormat)}
+          {appointmentDetail?.dateConfirm !== null ? moment(appointmentDetail?.dateConfirm).format(dateAdvFormat) : ""}
         </Descriptions.Item>
         {/* Không biết có cần hay khum;-;
         <Descriptions.Item label="Nearest Date Updated" span={1}>
