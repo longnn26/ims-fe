@@ -194,24 +194,6 @@ const ModalResolveIncident: React.FC<Props> = (props) => {
                   style={{ width: "100%" }}
                   placeholder="Date CheckedIn"
                   showTime
-                  disabledDate={(current) =>
-                    appointment.dateAppointed !== undefined &&
-                    current <
-                      convertDatePicker(appointment.dateAppointed).endOf(
-                        "minute"
-                      )
-                  }
-                  disabledTime={
-                    appointment?.reason !== "Incident"
-                      ? () => ({
-                          disabledHours: () => [
-                            0, 1, 2, 3, 4, 5, 6, 7, 18, 19, 20, 21, 22, 23, 24,
-                          ],
-                        })
-                      : () => ({
-                          disabledHours: () => [],
-                        })
-                  }
                   format={dateAdvFormat}
                   onChange={(value) =>
                     form.setFieldsValue({
