@@ -403,12 +403,7 @@ const Appoinment: React.FC = () => {
                     !appointmentDetail.documentConfirm &&
                     appointmentDetail.reason !== "Incident" &&
                     appointmentDetail.reason !== "Support" &&
-                    areInArray(
-                      session?.user.roles!,
-                      ROLE_SALES,
-                      ROLE_TECH,
-                      ROLE_MANAGER
-                    )
+                    areInArray(session?.user.roles!, ROLE_SALES, ROLE_TECH)
                 ) && (
                   <>
                     <Button

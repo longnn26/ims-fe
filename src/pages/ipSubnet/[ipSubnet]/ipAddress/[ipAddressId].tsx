@@ -119,7 +119,7 @@ const Customer: React.FC = () => {
             <BreadcrumbComponent itemBreadcrumbs={itemBreadcrumbs} />
           </div>
 
-          {areInArray(session?.user.roles!, ROLE_TECH, ROLE_MANAGER) && (
+          {areInArray(session?.user.roles!, ROLE_TECH) && (
             <>
               <HistoryIpAddressTable
                 onEdit={() => {}}

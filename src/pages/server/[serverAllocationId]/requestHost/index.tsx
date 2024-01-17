@@ -215,8 +215,7 @@ const RequestHost: React.FC = () => {
             session?.user.roles!,
             ROLE_SALES,
             ROLE_TECH,
-            ROLE_CUSTOMER,
-            ROLE_MANAGER
+            ROLE_CUSTOMER
           ) && (
             <>
               <div className="flex flex-wrap items-center justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">

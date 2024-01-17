@@ -27,9 +27,11 @@ const AreaDetail: React.FC = () => {
   const [rackDetail, setRackDetail] = useState<Rack | undefined>(undefined);
   const [rackMapList, setRackMapList] = useState<RackMap[]>([]);
   var available =
-    rackMapList.filter((_) => !_.serverAllocation && !_.isReserved === true).length / rackMapList.length;
+    rackMapList.filter((_) => !_.serverAllocation && !_.isReserved === true)
+      .length / rackMapList.length;
   var reserved =
-    rackMapList.filter((_) => _.serverAllocation || _.isReserved === true).length / rackMapList.length;
+    rackMapList.filter((_) => _.serverAllocation || _.isReserved === true)
+      .length / rackMapList.length;
   var booked =
     rackMapList.filter((_) => _.requestedServerAllocation).length /
     rackMapList.length;
@@ -93,7 +95,7 @@ const AreaDetail: React.FC = () => {
     <AntdLayoutNoSSR
       content={
         <>
-          {areInArray(session?.user.roles!, ROLE_TECH, ROLE_MANAGER) && (
+          {areInArray(session?.user.roles!, ROLE_TECH) && (
             <>
               <div className="flex justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
                 <div>
@@ -107,9 +109,11 @@ const AreaDetail: React.FC = () => {
                 </div>
                 {/* {rackMapList.filter((l) => {l.position === 1})} */}
                 <div>
-                  {(rackMapList.filter(l => l.isReserved).length
-                  + rackMapList.filter(l => l.requestedServerAllocation).length
-                  + rackMapList.filter(l => l.serverAllocation).length) !== rackMapList.length && (
+                  {rackMapList.filter((l) => l.isReserved).length +
+                    rackMapList.filter((l) => l.requestedServerAllocation)
+                      .length +
+                    rackMapList.filter((l) => l.serverAllocation).length !==
+                    rackMapList.length && (
                     <Button
                       type="primary"
                       className="mr-2"
@@ -121,7 +125,7 @@ const AreaDetail: React.FC = () => {
                       Reserve
                     </Button>
                   )}
-                  {rackMapList.filter(l => l.isReserved).length > 0 && (
+                  {rackMapList.filter((l) => l.isReserved).length > 0 && (
                     <Button
                       type="primary"
                       className="mr-2"

@@ -26,7 +26,7 @@ export const sliderMenu = [
     key: "server",
     icon: <BiServer />,
     label: "Server",
-    roles: [ROLE_SALES, ROLE_TECH, ROLE_CUSTOMER, ROLE_MANAGER],
+    roles: [ROLE_SALES, ROLE_TECH, ROLE_CUSTOMER],
   },
   {
     key: "customer",
@@ -38,38 +38,39 @@ export const sliderMenu = [
     key: "area",
     icon: <FaChartArea />,
     label: "Rack map",
-    roles: [ROLE_TECH, ROLE_MANAGER],
+    roles: [ROLE_TECH],
   },
   {
     key: "requestHost",
     icon: <GrHost />,
     label: "IP Request",
-    roles: [ROLE_CUSTOMER, ROLE_SALES, ROLE_TECH, ROLE_MANAGER],
+    roles: [ROLE_CUSTOMER, ROLE_SALES, ROLE_TECH],
   },
   {
     key: "ipSubnet",
     icon: <BsFillHddNetworkFill />,
     label: "IP Subnet",
-    roles: [ROLE_TECH, ROLE_MANAGER],
+    roles: [ROLE_TECH],
   },
-  {
-    key: "appointment",
-    icon: <GrSchedules />,
-    label: "Appointment",
-    roles: [ROLE_SALES, ROLE_TECH, ROLE_CUSTOMER, ROLE_MANAGER],
-  },
+
   {
     key: "requestExpand",
     icon: <FaExpand />,
     label: "Server Allocation Request",
 
-    roles: [ROLE_SALES, ROLE_TECH, ROLE_CUSTOMER, ROLE_MANAGER],
+    roles: [ROLE_SALES, ROLE_TECH, ROLE_CUSTOMER],
   },
   {
     key: "requestUpgrade",
     icon: <MdUpgrade />,
     label: "Hardware Upgrade Request",
-    roles: [ROLE_SALES, ROLE_TECH, ROLE_CUSTOMER, ROLE_MANAGER],
+    roles: [ROLE_SALES, ROLE_TECH, ROLE_CUSTOMER],
+  },
+  {
+    key: "appointment",
+    icon: <GrSchedules />,
+    label: "Appointment",
+    roles: [ROLE_SALES, ROLE_TECH, ROLE_CUSTOMER],
   },
   {
     key: "staffAccount",

@@ -172,8 +172,7 @@ const RequestHostList: React.FC = () => {
             session?.user.roles!,
             ROLE_CUSTOMER,
             ROLE_TECH,
-            ROLE_SALES,
-            ROLE_MANAGER
+            ROLE_SALES
           ) && (
             <>
               <RequestHostTable

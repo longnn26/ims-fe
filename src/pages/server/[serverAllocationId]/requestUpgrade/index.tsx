@@ -207,8 +207,7 @@ const RequestUpgrade: React.FC = () => {
               session?.user.roles!,
               ROLE_SALES,
               ROLE_TECH,
-              ROLE_CUSTOMER,
-              ROLE_MANAGER
+              ROLE_CUSTOMER
             ) && <BreadcrumbComponent itemBreadcrumbs={itemBreadcrumbs} />}
             <div>
               {areInArray(session?.user.roles!, ROLE_CUSTOMER) && (
@@ -280,8 +279,7 @@ const RequestUpgrade: React.FC = () => {
             session?.user.roles!,
             ROLE_SALES,
             ROLE_TECH,
-            ROLE_CUSTOMER,
-            ROLE_MANAGER
+            ROLE_CUSTOMER
           ) && (
             <>
               <ServerDetail

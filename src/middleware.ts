@@ -20,15 +20,7 @@ export async function middleware(req: NextRequest) {
     if (!token || !isExpiredTimeToken(token.loginDate, token.expiresIn)) {
       return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/signin`);
     } else {
-      if (
-        !areInArray(
-          token?.roles,
-          ROLE_TECH,
-          ROLE_SALES,
-          ROLE_CUSTOMER,
-          ROLE_MANAGER
-        )
-      ) {
+      if (!areInArray(token?.roles, ROLE_TECH, ROLE_SALES, ROLE_CUSTOMER)) {
         return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/empty`);
       }
     }
@@ -37,7 +29,7 @@ export async function middleware(req: NextRequest) {
     if (!token || !isExpiredTimeToken(token.loginDate, token.expiresIn)) {
       return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/signin`);
     } else {
-      if (!areInArray(token?.roles, ROLE_TECH, ROLE_MANAGER)) {
+      if (!areInArray(token?.roles, ROLE_TECH)) {
         return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/empty`);
       }
     }
@@ -46,15 +38,7 @@ export async function middleware(req: NextRequest) {
     if (!token || !isExpiredTimeToken(token.loginDate, token.expiresIn)) {
       return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/signin`);
     } else {
-      if (
-        !areInArray(
-          token?.roles,
-          ROLE_TECH,
-          ROLE_SALES,
-          ROLE_CUSTOMER,
-          ROLE_MANAGER
-        )
-      ) {
+      if (!areInArray(token?.roles, ROLE_TECH, ROLE_SALES, ROLE_CUSTOMER)) {
         return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/empty`);
       }
     }
@@ -63,15 +47,7 @@ export async function middleware(req: NextRequest) {
     if (!token || !isExpiredTimeToken(token.loginDate, token.expiresIn)) {
       return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/signin`);
     } else {
-      if (
-        !areInArray(
-          token?.roles,
-          ROLE_TECH,
-          ROLE_SALES,
-          ROLE_CUSTOMER,
-          ROLE_MANAGER
-        )
-      ) {
+      if (!areInArray(token?.roles, ROLE_TECH, ROLE_SALES, ROLE_CUSTOMER)) {
         return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/empty`);
       }
     }
@@ -80,7 +56,7 @@ export async function middleware(req: NextRequest) {
     if (!token || !isExpiredTimeToken(token.loginDate, token.expiresIn)) {
       return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/signin`);
     } else {
-      if (!areInArray(token?.roles, ROLE_TECH, ROLE_MANAGER)) {
+      if (!areInArray(token?.roles, ROLE_TECH)) {
         return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/empty`);
       }
     }
@@ -89,15 +65,7 @@ export async function middleware(req: NextRequest) {
     if (!token || !isExpiredTimeToken(token.loginDate, token.expiresIn)) {
       return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/signin`);
     } else {
-      if (
-        !areInArray(
-          token?.roles,
-          ROLE_TECH,
-          ROLE_SALES,
-          ROLE_CUSTOMER,
-          ROLE_MANAGER
-        )
-      ) {
+      if (!areInArray(token?.roles, ROLE_TECH, ROLE_SALES, ROLE_CUSTOMER)) {
         return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/empty`);
       }
     }
@@ -145,14 +113,20 @@ export async function middleware(req: NextRequest) {
             `${process.env.NEXTAUTH_URL}/staffAccount`
           );
         } else {
-          return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/server`);
+          if (areInArray(token?.roles, ROLE_MANAGER)) {
+            return NextResponse.redirect(
+              `${process.env.NEXTAUTH_URL}/customer`
+            );
+          } else {
+            return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/server`);
+          }
         }
       }
     case "/component":
       if (!token || !isExpiredTimeToken(token.loginDate, token.expiresIn)) {
         return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/signin`);
       } else {
-        if (!areInArray(token?.roles, ROLE_TECH, ROLE_MANAGER)) {
+        if (!areInArray(token?.roles, ROLE_TECH)) {
           return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/empty`);
         }
       }

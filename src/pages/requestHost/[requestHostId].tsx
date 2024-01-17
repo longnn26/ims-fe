@@ -120,12 +120,15 @@ const RequestDetail: React.FC = () => {
           });
         setRequestHostDetail(res);
       });
-      dispatch(
-        getIpAdressData({
-          token: session?.user.access_token!,
-          paramGet: { ...rUIpAddressParamGet, RequestHostId: parseInt(router.query.requestHostId+"") },
-        })
-      );
+    dispatch(
+      getIpAdressData({
+        token: session?.user.access_token!,
+        paramGet: {
+          ...rUIpAddressParamGet,
+          RequestHostId: parseInt(router.query.requestHostId + ""),
+        },
+      })
+    );
   };
 
   const updateData = async (data: RequestHostUpdateModel) => {
@@ -158,11 +161,11 @@ const RequestDetail: React.FC = () => {
   };
 
   const getProvideIps = async () => {
-      (provideIpsParamGet.Quantity = requestHostDetail?.quantity!),
+    (provideIpsParamGet.Quantity = requestHostDetail?.quantity!),
       await ipSubnet
         .getSuggestAdditional(session?.user.access_token!, {
           ...provideIpsParamGet,
-          ServerAllocationId : parseInt(router.query.serverAllocationId + ""),
+          ServerAllocationId: parseInt(router.query.serverAllocationId + ""),
         })
         .then((res) => {
           setProvideIpsData(res);
@@ -220,7 +223,9 @@ const RequestDetail: React.FC = () => {
 
   useEffect(() => {
     if (router.query.requestHostId && session) {
-      rUIpAddressParamGet.RequestHostId = parseInt(router.query.requestHostId+"");
+      rUIpAddressParamGet.RequestHostId = parseInt(
+        router.query.requestHostId + ""
+      );
       getData();
       handleBreadCumb();
     }
@@ -243,8 +248,7 @@ const RequestDetail: React.FC = () => {
             session?.user.roles!,
             ROLE_TECH,
             ROLE_SALES,
-            ROLE_CUSTOMER,
-            ROLE_MANAGER
+            ROLE_CUSTOMER
           ) && (
             <>
               <div className="flex flex-wrap items-center justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
