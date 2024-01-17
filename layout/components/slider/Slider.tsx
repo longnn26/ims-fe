@@ -26,7 +26,11 @@ const SliderComponent: React.FC = () => {
       trigger={null}
       collapsible
       collapsed={collapsed}
-      style={{ background: colorBgContainer, marginTop: 10 }}
+      width={245} // Set the width property
+      style={{
+        background: colorBgContainer,
+        marginTop: 10,
+      }}
     >
       <div className="demo-logo-vertical" />
       <Menu
