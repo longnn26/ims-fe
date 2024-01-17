@@ -394,6 +394,8 @@ const Appoinment: React.FC = () => {
                 {Boolean(
                   appointmentDetail?.status === "Success" &&
                     !appointmentDetail.documentConfirm &&
+                    appointmentDetail.reason !== "Incident" &&
+                    appointmentDetail.reason !== "Support" &&
                     areInArray(
                       session?.user.roles!,
                       ROLE_SALES,
@@ -416,6 +418,8 @@ const Appoinment: React.FC = () => {
                 {Boolean(
                   appointmentDetail?.status === "Success" &&
                     appointmentDetail.serverAllocation.status !== "Waiting" &&
+                    appointmentDetail.reason !== "Incident" &&
+                    appointmentDetail.reason !== "Support" &&
                     areInArray(session?.user.roles!, ROLE_SALES, ROLE_TECH)
                   // && !appointmentDetail.documentConfirm
                 ) && (

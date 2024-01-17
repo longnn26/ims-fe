@@ -158,7 +158,7 @@ const RequestUpgradeTable: React.FC<Props> = (props) => {
   return (
     <div className="shadow m-5">
       <Divider orientation="left" plain>
-        <h3>Hardware Upgrade request</h3>
+        <h3>Hardware Upgrade Request</h3>
       </Divider>
       <Table
         loading={requestUpgradeDataLoading}

@@ -41,7 +41,7 @@ const ModalDenyHost: React.FC<Props> = (props) => {
         data
       )
       .then((res) => {
-        message.success("Deny Hardware Upgrade request successfully!", 1.5);
+        message.success("Deny Hardware Upgrade Request successfully!", 1.5);
         form.resetFields();
         onSubmit();
       })
@@ -58,7 +58,7 @@ const ModalDenyHost: React.FC<Props> = (props) => {
       <Modal
         title={
           <span className="inline-block m-auto">
-            Deny Hardware Upgrade request
+            Deny Hardware Upgrade Request
           </span>
         }
         open={open}
