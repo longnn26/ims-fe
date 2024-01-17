@@ -40,7 +40,7 @@ const RequestExpandDetailInfor: React.FC<Props> = (props) => {
           {requestExpandDetail?.size}
         </Descriptions.Item>
         <Descriptions.Item label="Location" span={2}>
-          {requestExpandDetail?.serverAllocation?.serverLocation}
+          {requestExpandDetail?.chosenLocation}
         </Descriptions.Item>
         <Descriptions.Item label="Date Request" span={0}>
           {moment(requestExpandDetail?.dateCreated).format(dateAdvFormat)}
