@@ -17,14 +17,16 @@ const { confirm } = Modal;
 import requestExpandService from "@services/requestExpand";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
+import { UploadOutlined } from "@ant-design/icons";
 
 interface Props {
   open: boolean;
   onClose: () => void;
+  // loadingSubmit: boolean;
   onSubmit: () => void;
 }
 
-const ModalCreate: React.FC<Props> = (props) => {
+const ModalCreateRemoval: React.FC<Props> = (props) => {
   const formRef = useRef(null);
   const router = useRouter();
   const { data: session } = useSession();
@@ -66,7 +68,7 @@ const ModalCreate: React.FC<Props> = (props) => {
       <Modal
         title={
           <span className="inline-block m-auto">
-            Submit Server Allocation Request
+            Submit Server Removal Request
           </span>
         }
         open={open}
@@ -92,6 +94,9 @@ const ModalCreate: React.FC<Props> = (props) => {
                       serverAllocationId: parseInt(
                         router.query.serverAllocationId + ""
                       ),
+                      removalRequestDocument:
+                        form.getFieldValue("upload").fileList[0].originFileObj,
+                      removalRequestDocumentFileName: "Công văn ngưng server",
                     } as RequestExpandCreateModel;
 
                     // Call the provided onSubmit function with the formData
@@ -116,6 +121,11 @@ const ModalCreate: React.FC<Props> = (props) => {
               style={{ width: "100%" }}
               name="dynamic_form_complex"
             >
+              <Form.Item name="upload" label="Discontinued service letter">
+                <Upload>
+                  <Button icon={<UploadOutlined />}>Click to Upload</Button>
+                </Upload>
+              </Form.Item>
               <Form.Item
                 name="note"
                 label="Note"
@@ -131,4 +141,4 @@ const ModalCreate: React.FC<Props> = (props) => {
   );
 };
 
-export default ModalCreate;
+export default ModalCreateRemoval;
