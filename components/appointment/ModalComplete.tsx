@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Button, DatePicker, Input, Modal, Select, Spin, Switch, message } from "antd";
+import { Button, DatePicker, Divider, Input, Modal, Select, Spin, Switch, message } from "antd";
 import { Form } from "antd";
 import { ComponentUpdateModel, ComponentObj } from "@models/component";
 import { dateAdvFormat, optionStatus } from "@utils/constants";
@@ -167,11 +167,12 @@ const ModalComplete: React.FC<Props> = (props) => {
               labelAlign="left"
               style={{ width: "100%" }}
               labelWrap={true}
-            >
+            >              
               {appointment &&
                 appointment?.reason &&
                 appointment?.reason === "Install" && (
                   <>
+                  <Divider style={{fontWeight: 400}}>Create Reports</Divider>
                     <Form.Item
                       {...formItemLayout}
                       name="username"
@@ -216,21 +217,6 @@ const ModalComplete: React.FC<Props> = (props) => {
                     </Form.Item>
                   </>
                 )}
-
-              <Form.Item
-                {...formSwitchLayout}
-                name="good"
-                label="Technical Staff's assessment of the Request"
-              >
-                <Switch
-                  onChange={(value) =>
-                    form.setFieldsValue({
-                      good: value,
-                    })
-                  }
-                />{" "}
-              </Form.Item>
-
               <Form.Item
                 {...formItemLayout}
                 name="note"
@@ -238,6 +224,7 @@ const ModalComplete: React.FC<Props> = (props) => {
                 rules={[{ max: 2000 }]}>
                 <Input placeholder="Note" allowClear />
               </Form.Item>
+              <Divider style={{fontWeight: 400}}>Record Customer visit</Divider>
               <Form.Item
                 {...formItemLayout}
                 name="dateCheckedIn"
