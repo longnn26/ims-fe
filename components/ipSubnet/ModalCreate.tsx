@@ -99,7 +99,7 @@ const ModalCreate: React.FC<Props> = (props) => {
                 <Form.Item
                   style={{ width: "69%" }}
                   name="ipAddresss"
-                  label="Ip Addresss"
+                  label="IP Addresss"
                   rules={[
                     { required: true },
                     {
@@ -111,7 +111,7 @@ const ModalCreate: React.FC<Props> = (props) => {
                     },
                   ]}
                 >
-                  <Input placeholder="Ip Addresss" allowClear />
+                  <Input placeholder="IP Addresss" allowClear />
                 </Form.Item>
                 <div className="w-[1%] m-auto"></div>
                 <Form.Item

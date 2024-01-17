@@ -24,7 +24,12 @@ const ModalAssign: React.FC<Props> = (props) => {
   const [loading, setLoading] = useState(false);
 
   const [ipAddressParamGet, setIpAddressParamGet] = useState<IpAddressParamGet>(
-    { PageIndex: 0, PageSize: 6, IsAssigned: false, IsAvailable: true, } as IpAddressParamGet
+    {
+      PageIndex: 0,
+      PageSize: 6,
+      IsAssigned: false,
+      IsAvailable: true,
+    } as IpAddressParamGet
   );
   const [ipAddressList, setIpAddressList] = useState<IpAddress[]>([]);
   const [ipAddressSelected, setIpAddressSelected] = useState<
@@ -57,7 +62,11 @@ const ModalAssign: React.FC<Props> = (props) => {
   const getMoreIpAddressList = async () => {
     ipAddressParamGet.PageIndex += 1;
     await ipAddressService
-      .getData(session?.user.access_token!, {...ipAddressParamGet, IsAssigned: false, IsAvailable: true,})
+      .getData(session?.user.access_token!, {
+        ...ipAddressParamGet,
+        IsAssigned: false,
+        IsAvailable: true,
+      })
       .then(async (data) => {
         setTotalPageIp(data.totalPage);
         ipAddressParamGet.PageIndex = data.pageIndex;
@@ -90,7 +99,7 @@ const ModalAssign: React.FC<Props> = (props) => {
           <Space direction="vertical" style={{ width: "100%" }}>
             {Boolean(ipSuggestMaster) && (
               <Alert
-                message="Ip suggest master"
+                message="IP suggest master"
                 description={`${ipSuggestMaster?.address}`}
                 type="success"
                 showIcon
