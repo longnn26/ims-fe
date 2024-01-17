@@ -97,7 +97,7 @@ const ModalComplete: React.FC<Props> = (props) => {
                       location: form.getFieldValue("location"),
                       username: form.getFieldValue("username"),
                       isSendMS: form.getFieldValue("isSendMS"),
-                      good: form.getFieldValue("good"),
+                      good: true,
                       guid: form.getFieldValue("guid"),
                       note: form.getFieldValue("note"),
                       deviceCondition: form.getFieldValue("deviceCondition"),
@@ -232,7 +232,7 @@ const ModalComplete: React.FC<Props> = (props) => {
             >
               <Input placeholder="Server condition" allowClear />
             </Form.Item>
-            <Form.Item name="good" label="Good">
+            {/* <Form.Item name="good" label="Good">
               <Switch
                 onChange={(value) =>
                   form.setFieldsValue({
@@ -240,7 +240,7 @@ const ModalComplete: React.FC<Props> = (props) => {
                   })
                 }
               />{" "}
-            </Form.Item>
+            </Form.Item> */}
 
             <Form.Item name="note" label="Note" rules={[{ max: 2000 }]}>
               <Input placeholder="Note" allowClear />

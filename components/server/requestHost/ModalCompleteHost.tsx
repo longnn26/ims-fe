@@ -1,6 +1,15 @@
 import { RequestHostCompleteModel } from "@models/requestHost";
 import requestHost from "@services/requestHost";
-import { Button, Form, Input, Modal, Select, Spin, Switch, message } from "antd";
+import {
+  Button,
+  Form,
+  Input,
+  Modal,
+  Select,
+  Spin,
+  Switch,
+  message,
+} from "antd";
 import TextArea from "antd/es/input/TextArea";
 import { useSession } from "next-auth/react";
 import React, { useRef, useState } from "react";
@@ -75,11 +84,11 @@ const ModalCompletetHost: React.FC<Props> = (props) => {
                       qtName: form.getFieldValue("qtName"),
                       position: form.getFieldValue("position"),
                       location: form.getFieldValue("location"),
-                      good: form.getFieldValue("good"),
+                      good: true,
                       note: form.getFieldValue("note"),
                     } as RequestHostCompleteModel);
                   },
-                  onCancel() { },
+                  onCancel() {},
                 });
             }}
           >
@@ -97,7 +106,7 @@ const ModalCompletetHost: React.FC<Props> = (props) => {
                 wrapperCol={{ span: 14 }}
                 style={{ width: "100%" }}
               >
-                <Form.Item name="good" label="Good">
+                {/* <Form.Item name="good" label="Good">
                   <Switch
                     onChange={(value) =>
                       form.setFieldsValue({
@@ -105,7 +114,7 @@ const ModalCompletetHost: React.FC<Props> = (props) => {
                       })
                     }
                   />{" "}
-                </Form.Item>
+                </Form.Item> */}
                 <Form.Item name="note" label="Note" rules={[{ max: 2000 }]}>
                   <Input placeholder="Note" allowClear />
                 </Form.Item>
@@ -119,7 +128,7 @@ const ModalCompletetHost: React.FC<Props> = (props) => {
               wrapperCol={{ span: 14 }}
               style={{ width: "100%" }}
             >
-              <Form.Item name="good" label="Good">
+              {/* <Form.Item name="good" label="Good">
                 <Switch
                   onChange={(value) =>
                     form.setFieldsValue({
@@ -127,7 +136,7 @@ const ModalCompletetHost: React.FC<Props> = (props) => {
                     })
                   }
                 />{" "}
-              </Form.Item>
+              </Form.Item> */}
               <Form.Item name="note" label="Note" rules={[{ max: 2000 }]}>
                 <Input placeholder="Note" allowClear />
               </Form.Item>
