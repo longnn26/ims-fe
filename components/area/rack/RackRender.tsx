@@ -49,7 +49,7 @@ const RackRender: React.FC<Props> = (props) => {
         <div key={index}>
           <Divider orientation="center">
             <div className="p-1 font-bold ">
-              {area.name} {rowItem.id}
+              {area.name} {rowItem.id + 1}
             </div>
           </Divider>
           <Row gutter={16}>
