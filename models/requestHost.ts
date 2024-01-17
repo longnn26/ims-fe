@@ -26,6 +26,9 @@ export interface RequestHost extends BaseWithIdNumber {
   capacities: number[];
   removalRequestDocument: string;
   ipAddresses: IPAddresses[];
+  dateConfirm: string;
+  dateEvaluated: string;
+  dateExecuted: string;
 }
 
 export interface IPAddresses {
