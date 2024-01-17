@@ -27,6 +27,8 @@ import { AppointmentParseJson } from "@models/appointment";
 import { RequestUpgradeParseJson } from "@models/requestUpgrade";
 import { RequestHostParseJson } from "@models/requestHost";
 import { parseJwt } from "@utils/helpers";
+import { IncidentParseJson } from "@models/incident";
+import { ServerAllocationParseJson } from "@models/serverAllocation";
 
 const { Header } = Layout;
 
@@ -92,12 +94,15 @@ const HeaderComponent: React.FC<Props> = (props) => {
   };
 
   const handleNotification = async (notification: Notification) => {
+    // console.log("noti:", notification);
     switch (notification.data.key) {
       case "RequestExpand":
         var requestExpand = JSON.parse(
           notification.data.value
         ) as RequestExpandParseJson;
-        router.push(`/requestExpand/${requestExpand.Id}`);
+        router.push(
+          `/server/${requestExpand.ServerAllocationId}/requestExpand/${requestExpand.Id}`
+        );
         break;
       case "Appointment":
         var apppointment = JSON.parse(
@@ -109,19 +114,35 @@ const HeaderComponent: React.FC<Props> = (props) => {
         var requestUpgrade = JSON.parse(
           notification.data.value
         ) as RequestUpgradeParseJson;
-        router.push(`/requestUpgrade/${requestUpgrade.Id}`);
+        router.push(
+          `/server/${requestUpgrade.ServerAllocationId}/requestUpgrade/${requestUpgrade.Id}`
+        );
         break;
       case "RequestHost":
         var requestHost = JSON.parse(
           notification.data.value
         ) as RequestHostParseJson;
-        router.push(`/requestHost/${requestHost.Id}`);
+        router.push(
+          `/server/${requestHost.ServerAllocationId}/requestHost/${requestHost.Id}`
+        );
         break;
-
+      case "Incident":
+        var incident = JSON.parse(notification.data.value) as IncidentParseJson;
+        router.push(
+          `/server/${incident.ServerAllocationId}/incident/${incident.Id}`
+        );
+        break;
+      case "ServerAllocation":
+        var serverAllocation = JSON.parse(
+          notification.data.value
+        ) as ServerAllocationParseJson;
+        router.push(`/server/${serverAllocation.Id}`);
+        break;
       default:
         break;
     }
   };
+
   const items: MenuProps["items"] = [
     {
       label: (
