@@ -158,7 +158,6 @@ const RequestDetail: React.FC = () => {
   };
 
   const getProvideIps = async () => {
-    (provideIpsParamGet.ServerAllocationId = serverAllocationDetail?.id!),
       (provideIpsParamGet.Quantity = requestHostDetail?.quantity!),
       await ipSubnet
         .getSuggestAdditional(session?.user.access_token!, {
