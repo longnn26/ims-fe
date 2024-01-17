@@ -63,9 +63,7 @@ const RequestHostDetailInfor: React.FC<Props> = (props) => {
           {requestHostDetail?.quantity}
         </Descriptions.Item>
         {Boolean(
-          requestHostDetail?.type === "Port" &&
-            (requestHostDetail?.ipAddresses === null ||
-              requestHostDetail?.ipAddresses.length === 0)
+          requestHostDetail?.type === "Port"
         ) && (
           <Descriptions.Item label="Ports" span={2}>
             {requestHostDetail?.capacities.map((l, index) => (
