@@ -253,7 +253,7 @@ const RequestDetail: React.FC = () => {
                   {(ipAdressData === undefined ||
                     (ipAdressData &&
                       ipAdressData.data &&
-                      ipAdressData.data.length === 0)) &&
+                      ipAdressData?.data?.length === 0)) &&
                     Boolean(
                       requestHostDetail?.isRemoval != true &&
                         Boolean(
@@ -306,7 +306,7 @@ const RequestDetail: React.FC = () => {
                     className="w-full"
                     type="primary"
                     disabled={
-                      !Boolean(fileInspectionReport.length > 0) ||
+                      !Boolean(fileInspectionReport?.length > 0) ||
                       disabledInspectionReport
                     }
                     onClick={() => {
