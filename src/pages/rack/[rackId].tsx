@@ -27,9 +27,9 @@ const AreaDetail: React.FC = () => {
   const [rackDetail, setRackDetail] = useState<Rack | undefined>(undefined);
   const [rackMapList, setRackMapList] = useState<RackMap[]>([]);
   var available =
-    rackMapList.filter((_) => !_.serverAllocation).length / rackMapList.length;
+    rackMapList.filter((_) => !_.serverAllocation && !_.isReserved === true).length / rackMapList.length;
   var reserved =
-    rackMapList.filter((_) => _.serverAllocation).length / rackMapList.length;
+    rackMapList.filter((_) => _.serverAllocation || _.isReserved === true).length / rackMapList.length;
   var booked =
     rackMapList.filter((_) => _.requestedServerAllocation).length /
     rackMapList.length;
@@ -164,7 +164,7 @@ const AreaDetail: React.FC = () => {
                     data={[
                       { name: "Available", value: available, color: "#e1efd8" },
                       { name: "Booked", value: booked, color: "#c2e4ea" },
-                      { name: "Reserved", value: reserved, color: "#fbe4d4" },
+                      { name: "Reserved", value: reserved, color: "#fde3cf" },
                     ]}
                   />
                 </div>

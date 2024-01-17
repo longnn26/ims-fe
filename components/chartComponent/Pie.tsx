@@ -76,8 +76,10 @@ const PieChartComponent: React.FC<Props> = (props) => {
           labelLine={false}
           label={renderCustomizedLabel}
           outerRadius={200}
-          fill="#8884d8"
+          fill="#fde3cf"
           dataKey="value"
+          startAngle={90}
+          endAngle={-450}
         >
           {data.map(
             (entry, index) =>
