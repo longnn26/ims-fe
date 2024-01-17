@@ -56,6 +56,7 @@ import {
 import ModalUpdateDocument from "@components/appointment/ModalUpdateDocument";
 import ModalResolveIncident from "@components/appointment/ModalResolveIncident";
 import { IncidentResolve } from "@models/incident";
+import IncidentTable from "@components/server/incident/IncidentTable";
 const { confirm } = Modal;
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
@@ -99,6 +100,9 @@ const Appoinment: React.FC = () => {
   const [openFail, setOpenFail] = useState<boolean>(false);
   const { requestUpgradeData, requestExpandData } = useSelector(
     (state) => state.appointment
+  );
+  const { incidentDataLoading, incidentData } = useSelector(
+    (state) => state.incident
   );
 
   const getData = async () => {
@@ -313,6 +317,30 @@ const Appoinment: React.FC = () => {
               current={paramGet?.PageIndex}
               pageSize={requestExpandData?.pageSize ?? 10}
               total={requestExpandData?.totalSize}
+              onChange={(page, pageSize) => {
+                setParamGet({
+                  ...paramGet,
+                  PageIndex: page,
+                  PageSize: pageSize,
+                });
+              }}
+            />
+          )}
+        </>
+      ),
+    },
+    {
+      key: "3",
+      label: "Incident",
+      children: (
+        <>
+          <IncidentTable urlOncell="" typeGet="ByAppointmentId" />
+          {incidentData?.totalPage > 0 && (
+            <Pagination
+              className="text-end m-4"
+              current={paramGet?.PageIndex}
+              pageSize={incidentData?.pageSize ?? 10}
+              total={incidentData?.totalSize}
               onChange={(page, pageSize) => {
                 setParamGet({
                   ...paramGet,
