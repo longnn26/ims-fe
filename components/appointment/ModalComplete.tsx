@@ -237,7 +237,6 @@ const ModalComplete: React.FC<Props> = (props) => {
                   style={{ width: "100%" }}
                   placeholder="Date CheckedIn"
                   showTime
-                  disabledDate={(current) => appointment.dateAppointed !== undefined && current < convertDatePicker(appointment.dateAppointed).endOf('minute')}
                   disabledTime={
                     appointment?.reason !== "Incident"
                       ? () => ({
@@ -281,7 +280,6 @@ const ModalComplete: React.FC<Props> = (props) => {
                   style={{ width: "100%" }}
                   placeholder="Date CheckedOut"
                   showTime
-                  disabledDate={(current) => appointment.dateAppointed !== undefined && current.isBefore(dayjs(form.getFieldValue("dateCheckedIn")))}
                   disabledTime={
                     appointment?.reason !== "Incident"
                       ? () => ({

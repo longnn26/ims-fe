@@ -319,6 +319,20 @@ const ModalCreate: React.FC<Props> = (props) => {
                         dateAppointed: value,
                       })
                     }
+                    disabledTime={() => ({
+                      disabledHours: () => [0, 1, 2, 3, 4, 5, 6, 7, 18, 19, 20, 21, 22, 23, 24,],
+                    })}
+                    disabledDate={(current) => {
+                      const now = dayjs();
+                      const tomorrow = dayjs().add(1, 'day');
+                      const isAfterToday = current.isAfter(now, "day");
+                      const isDisabledTime =
+                        current &&
+                        now.isSame(tomorrow, "day") &&
+                        (current.hour() < 8 || current.hour() > 17);
+
+                      return isAfterToday || (isDisabledTime);
+                    }}
                   />
                 </Form.Item>
 
