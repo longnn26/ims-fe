@@ -105,11 +105,15 @@ const IncidentTable: React.FC<Props> = (props) => {
     {
       title: "Action",
       key: "operation",
-      render: (record: Incident) => (
+      render: (record: DataType) => (
         <Space wrap>
           <Tooltip title="View detail" color={"black"}>
             <Button
-              onClick={() => router.push(`${urlOncell}/incident/${record.id}`)}
+              onClick={() =>
+                router.push(
+                  `/server/${record.serverAllocationId}/incident/${record.id}`
+                )
+              }
             >
               <BiSolidCommentDetail />
             </Button>
@@ -135,7 +139,7 @@ const IncidentTable: React.FC<Props> = (props) => {
       key: listData?.data[i].id,
       id: listData?.data[i].id,
       description: listData?.data[i].description,
-      serverAllocationId: listData?.data[i].serverAllocationId,
+      serverAllocationId: listData?.data[i].serverAllocation.id,
       customer: listData?.data[i].customer,
       dateCreated: moment(listData?.data[i].dateCreated).format(dateAdvFormat),
       dateUpdated: moment(listData?.data[i].dateUpdated).format(dateAdvFormat),
