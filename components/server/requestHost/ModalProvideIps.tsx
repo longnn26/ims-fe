@@ -22,13 +22,12 @@ const ModalProvideIps: React.FC<Props> = (props) => {
   const [ipAddressId, setIpAddressId] = useState<number[]>([]);
   const [server, setServer] = useState<ServerAllocation>();
 
-  const getServerMasterIp = async() => {
-    await requestHost.getDetail(
-      session?.user.access_token!,
-      requestHostId + ""
-    ).then((res) => {
-      setServer(res.serverAllocation);
-    })
+  const getServerMasterIp = async () => {
+    await requestHost
+      .getDetail(session?.user.access_token!, requestHostId + "")
+      .then((res) => {
+        setServer(res.serverAllocation);
+      });
   };
 
   useEffect(() => {
@@ -104,19 +103,19 @@ const ModalProvideIps: React.FC<Props> = (props) => {
                   return (
                     <>
                       {`${m.firstOctet}.${m.secondOctet}.${m.thirdOctet}.${m.fourthOctet}/${m.prefixLength}`}
-                      <br/>
+                      <br />
                     </>
                   );
                 })}
               </>
             </Descriptions.Item>
-            <Descriptions.Item label="Ip Addresses" span={4}>
+            <Descriptions.Item label="IP Addresses" span={4}>
               <>
                 {provideIpsData?.ipAddresses.map((m, index) => {
                   return (
                     <>
                       {m.address}
-                      <br/>
+                      <br />
                     </>
                   );
                 })}
