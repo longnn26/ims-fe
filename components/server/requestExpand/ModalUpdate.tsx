@@ -39,14 +39,14 @@ interface Props {
   onClose: () => void;
   onSubmit: (data: RequestExpandUpdateModel) => void;
   onSaveLocation: (data: RequestedLocation) => void;
+  open: boolean;
 }
 
 const ModalUpdate: React.FC<Props> = (props) => {
   const formRef = useRef(null);
   const { data: session } = useSession();
   const [form] = Form.useForm();
-  const { onSubmit, requestExpand, onClose, suggestLocation, onSaveLocation } =
-    props;
+  const { onSubmit, requestExpand, onClose, suggestLocation, onSaveLocation, open } = props;
 
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [paramGet, setParamGet] = useState<LocationParamGet>({
@@ -148,7 +148,7 @@ const ModalUpdate: React.FC<Props> = (props) => {
       getMoreArea();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [session]);
+  }, [open]);
 
   useEffect(() => {
     if (selectedArea) {
@@ -421,7 +421,7 @@ const ModalUpdate: React.FC<Props> = (props) => {
             Update Server Allocation Request
           </span>
         }
-        open={Boolean(requestExpand)}
+        open={open}
         confirmLoading={confirmLoading}
         onCancel={() => {
           onClose();

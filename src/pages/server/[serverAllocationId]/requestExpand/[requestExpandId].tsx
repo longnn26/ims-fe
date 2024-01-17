@@ -78,6 +78,7 @@ const RequestExpandDetail: React.FC = () => {
   const { appointmentData } = useSelector((state) => state.requestExpand);
   const [openModalDeny, setOpenModalDeny] = useState<boolean>(false);
   const [openModalAccept, setOpenModalAccept] = useState<boolean>(false);
+  const [openModalUpdate, setOpenModalUpdate] = useState<boolean>(false);
 
   const [permission, setPermission] = useState<boolean>(true);
   const [content, setContent] = useState<string>("");
@@ -383,7 +384,7 @@ const RequestExpandDetail: React.FC = () => {
                           className="mb-2"
                           icon={<EditOutlined />}
                           onClick={async () => {
-                            setRequestExpandUpdate(requestExpandDetail);
+                            setOpenModalUpdate(true);
                             if (
                               !requestExpandDetail?.requestedLocation &&
                               requestExpandDetail?.size! > 0
@@ -514,13 +515,16 @@ const RequestExpandDetail: React.FC = () => {
                   <ModalUpdate
                     onSaveLocation={(data) => saveLocation(data)}
                     suggestLocation={suggestLocation}
-                    requestExpand={requestExpandUpdate!}
+                    requestExpand={requestExpandDetail!}
+                    open={openModalUpdate}
                     onClose={() => {
                       setRequestExpandUpdate(undefined);
+                      setOpenModalUpdate(false);
                       setSuggestLocation(undefined);
                     }}
                     onSubmit={(value) => {
                       updateData(value);
+                      setOpenModalUpdate(false);
                     }}
                   />
                 </>
