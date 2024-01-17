@@ -16,8 +16,8 @@ const RequestUpgradeDetailInfor: React.FC<Props> = (props) => {
       <Divider orientation="left" plain>
         <h3>Hardware Upgrade Request Information </h3>
       </Divider>{" "}
-      <Descriptions className="p-5">
-        <Descriptions.Item label="Status">
+      <Descriptions className="p-5" column={2}>
+        <Descriptions.Item label="Status" span={2}>
           <Tag
             className="text-center"
             color={
@@ -65,6 +65,16 @@ const RequestUpgradeDetailInfor: React.FC<Props> = (props) => {
         </Descriptions.Item>
         <Descriptions.Item label="Nearest Updated" span={2}>
           {moment(requestUpgradeDetail?.dateUpdated).format(dateAdvFormat)}
+        </Descriptions.Item>
+        <Descriptions.Item label="Date Approval" span={1}>
+          {requestUpgradeDetail?.dateEvaluated !== null
+            ? moment(requestUpgradeDetail?.dateEvaluated).format(dateAdvFormat)
+            : ""}
+        </Descriptions.Item>
+        <Descriptions.Item label="Date Completed">
+          {requestUpgradeDetail?.dateExecuted !== null
+            ? moment(requestUpgradeDetail?.dateExecuted).format(dateAdvFormat)
+            : ""}
         </Descriptions.Item>
       </Descriptions>
     </div>

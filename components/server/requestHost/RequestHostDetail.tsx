@@ -90,17 +90,17 @@ const RequestHostDetailInfor: React.FC<Props> = (props) => {
           {requestHostDetail?.techNote}
         </Descriptions.Item>
 
-        <Descriptions.Item label="Approval Date ">
+        <Descriptions.Item label="Date Approval">
           {requestHostDetail?.dateEvaluated !== null
             ? moment(requestHostDetail?.dateEvaluated).format(dateAdvFormat)
             : ""}
         </Descriptions.Item>
-        <Descriptions.Item label="Technical Recorded Date">
+        <Descriptions.Item label="Date Completed">
           {requestHostDetail?.dateExecuted !== null
             ? moment(requestHostDetail?.dateExecuted).format(dateAdvFormat)
             : ""}
         </Descriptions.Item>
-        <Descriptions.Item label="Customer Confirmed Date" span={2}>
+        <Descriptions.Item label="Date Customer Confirmed" span={2}>
           {requestHostDetail?.dateConfirm !== null
             ? moment(requestHostDetail?.dateConfirm).format(dateAdvFormat)
             : ""}
