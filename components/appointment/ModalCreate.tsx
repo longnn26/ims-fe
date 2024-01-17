@@ -508,7 +508,7 @@ const ModalCreate: React.FC<Props> = (props) => {
               <>
                 <Form.Item
                   name="requestUpgradeIds"
-                  label="Hardware Upgrade request"
+                  label="Hardware Upgrade Request"
                   labelAlign="right"
                   rules={[
                     { required: true, message: "Request must not empty!" },
