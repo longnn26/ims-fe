@@ -191,8 +191,8 @@ const ModalUpdate: React.FC<Props> = (props) => {
                                 style={{ width: "250px" }}
                                 className="mr-2"
                               >
-                                <Option value={0.1}>100 MB</Option>
-                                <Option value={1}>1 GB</Option>
+                                <Option value={0.1}>100 Mbps</Option>
+                                <Option value={1}>1 Gbps</Option>
                               </Select>
                             </Form.Item>
                             <CloseOutlined
