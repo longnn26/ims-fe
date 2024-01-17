@@ -87,7 +87,7 @@ const ModalCreate: React.FC<Props> = (props) => {
                   title: "Do you want to save?",
                   async onOk() {
                     const formData = {
-                      forRemoval: true,
+                      forRemoval: false,
                       note: form.getFieldValue("note"),
                       serverAllocationId: parseInt(
                         router.query.serverAllocationId + ""
