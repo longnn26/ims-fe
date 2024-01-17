@@ -53,3 +53,8 @@ export interface AppointmentIncidentCreateModel {
   dateAppointed: string;
   note: string;
 }
+
+export interface IncidentParseJson {
+  Id: number;
+  ServerAllocationId: number;
+}

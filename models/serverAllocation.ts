@@ -52,3 +52,8 @@ export interface SAUpdateModel {
 export interface MasterIpCreateModel {
   ipAddressId: number;
 }
+
+export interface ServerAllocationParseJson {
+  Id: number;
+  ServerAllocationId: number;
+}

@@ -110,4 +110,5 @@ export interface RequestHostRejectModel {
 
 export interface RequestHostParseJson {
   Id: number;
+  ServerAllocationId: number;
 }

@@ -60,4 +60,5 @@ export interface RequestedLocation {
 
 export interface RequestExpandParseJson {
   Id: number;
+  ServerAllocationId: number;
 }

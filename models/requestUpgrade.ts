@@ -68,4 +68,5 @@ export interface Descriptions {
 
 export interface RequestUpgradeParseJson {
   Id: number;
+  ServerAllocationId: number;
 }
