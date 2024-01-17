@@ -18,15 +18,15 @@ const RequestHostIPAddressTable: React.FC<Props> = (props) => {
   const { requestHostDetail } = props;
 
   const columns: TableColumnsType<DataType> = [
-    {
-      title: "No",
-      dataIndex: "id",
-      key: "id",
-      fixed: "left",
-      render: (text) => (
-        <p className="text-[#b75c3c] hover:text-[#ee4623]">{text}</p>
-      ),
-    },
+    // {
+    //   title: "No",
+    //   dataIndex: "id",
+    //   key: "id",
+    //   fixed: "left",
+    //   render: (text) => (
+    //     <p className="text-[#b75c3c] hover:text-[#ee4623]">{text}</p>
+    //   ),
+    // },
     { title: "Address", dataIndex: "address", key: "address" },
     {
       title: "Capacity",
@@ -36,7 +36,7 @@ const RequestHostIPAddressTable: React.FC<Props> = (props) => {
         // Chuyển đổi dữ liệu từ "0.1" sang "100 MB" và từ "1" sang "1 GB"
         const capacityValue = parseFloat(text);
         const formattedCapacity =
-          (capacityValue < 1)
+          capacityValue < 1
             ? `${capacityValue * 1000} Mbps`
             : `${capacityValue > 0 ? `${capacityValue} Gbps` : ""}`;
 
