@@ -3,6 +3,7 @@ import BreadcrumbComponent from "@components/BreadcrumbComponent";
 import ModalEmpty from "@components/ModalEmpty";
 import ServerDetail from "@components/server/ServerDetail";
 import AppointmentTable from "@components/server/requestUpgrade/AppointmentTable";
+import ModalAcceptUpgrade from "@components/server/requestUpgrade/ModalAccept";
 import ModalDeny from "@components/server/requestUpgrade/ModalDeny";
 import RequestUpgradeDetailInfor from "@components/server/requestUpgrade/RequestUpgradeDetail";
 import useDispatch from "@hooks/use-dispatch";
@@ -57,6 +58,7 @@ const RequestUpgradeDetail: React.FC = () => {
     } as unknown as RUAppointmentParamGet);
   const [permission, setPermission] = useState<boolean>(true);
   const [openModalDeny, setOpenModalDeny] = useState<boolean>(false);
+  const [openModalAccept, setOpenModalAccept] = useState<boolean>(false);
   const [content, setContent] = useState<string>("");
   const [paramGet, setParamGet] = useState<SHCParamGet>({
     PageIndex: 1,
@@ -126,15 +128,15 @@ const RequestUpgradeDetail: React.FC = () => {
             requestUpgradeDetail?.id + ""
           )
           .then((res) => {
-            message.success("Reject request upgrade successfully!", 1.5);
+            message.success("Reject Request successfully!", 1.5);
             getData();
           })
           .catch((errors) => {
             message.error(errors.response.data, 1.5);
           })
-          .finally(() => { });
+          .finally(() => {});
       },
-      onCancel() { },
+      onCancel() {},
     });
   };
 
@@ -154,43 +156,15 @@ const RequestUpgradeDetail: React.FC = () => {
             requestUpgradeDetail?.id + ""
           )
           .then((res) => {
-            message.success("Complete request upgrade successfully!", 1.5);
+            message.success("Complete Request successfully!", 1.5);
             getData();
           })
           .catch((errors) => {
             message.error(errors.response.data, 1.5);
           })
-          .finally(() => { });
+          .finally(() => {});
       },
-      onCancel() { },
-    });
-  };
-
-  const acceptRequestUpgrade = async () => {
-    confirm({
-      title: "Accept",
-      content: (
-        <Alert
-          message={`Do you want to accept with Id ${requestUpgradeDetail?.id}?`}
-          type="warning"
-        />
-      ),
-      async onOk() {
-        await requestUpgradeService
-          .acceptRequestUpgrade(
-            session?.user.access_token!,
-            requestUpgradeDetail?.id + ""
-          )
-          .then((res) => {
-            message.success("Accept request upgrade successfully!", 1.5);
-            getData();
-          })
-          .catch((errors) => {
-            message.error(errors.response.data, 1.5);
-          })
-          .finally(() => { });
-      },
-      onCancel() { },
+      onCancel() {},
     });
   };
 
@@ -315,8 +289,8 @@ const RequestUpgradeDetail: React.FC = () => {
                   <AppointmentTable
                     typeGet="ByRequestUpgradeId"
                     urlOncell=""
-                    onEdit={(record) => { }}
-                    onDelete={async (record) => { }}
+                    onEdit={(record) => {}}
+                    onDelete={async (record) => {}}
                   />
                   {appointmentData?.totalPage > 0 && (
                     <Pagination
@@ -347,7 +321,7 @@ const RequestUpgradeDetail: React.FC = () => {
                           onClick={() => setOpenModalDeny(true)}
                         />
                         <FloatButton
-                          onClick={() => acceptRequestUpgrade()}
+                          onClick={() => setOpenModalAccept(true)}
                           icon={<AiOutlineFileDone color="green" />}
                           tooltip="Accept"
                         />
@@ -355,30 +329,39 @@ const RequestUpgradeDetail: React.FC = () => {
                     )}
                   {Boolean(
                     areInArray(session?.user.roles!, ROLE_TECH) &&
-                    requestUpgradeDetail?.status === "Accepted" &&
-                    requestUpgradeDetail?.succeededAppointment?.status ===
-                    "Success"
+                      requestUpgradeDetail?.status === "Accepted" &&
+                      requestUpgradeDetail?.succeededAppointment?.status ===
+                        "Success"
                   ) && (
-                      <FloatButton.Group
-                        trigger="hover"
-                        type="primary"
-                        style={{ right: 60, bottom: 500 }}
-                        icon={<AiOutlineFileDone />}
-                      >
-                        <FloatButton
-                          icon={<MdCancel color="red" />}
-                          tooltip="Fail"
-                          onClick={() => rejectRequestUpgrade()}
-                        />
-                        <FloatButton
-                          onClick={() => completeRequestUpgrade()}
-                          icon={<AiOutlineFileDone color="green" />}
-                          tooltip="Complete"
-                        />
-                      </FloatButton.Group>
-                    )}
+                    <FloatButton.Group
+                      trigger="hover"
+                      type="primary"
+                      style={{ right: 60, bottom: 500 }}
+                      icon={<AiOutlineFileDone />}
+                    >
+                      <FloatButton
+                        icon={<MdCancel color="red" />}
+                        tooltip="Fail"
+                        onClick={() => rejectRequestUpgrade()}
+                      />
+                      <FloatButton
+                        onClick={() => completeRequestUpgrade()}
+                        icon={<AiOutlineFileDone color="green" />}
+                        tooltip="Complete"
+                      />
+                    </FloatButton.Group>
+                  )}
                 </>
               )}
+            <ModalAcceptUpgrade
+              open={openModalAccept}
+              onClose={() => setOpenModalAccept(false)}
+              onSubmit={() => {
+                getData();
+                setOpenModalAccept(false);
+              }}
+              requestUpgradeId={parseInt(router.query.requestUpgradeId + "")}
+            />
           </>
         }
       />

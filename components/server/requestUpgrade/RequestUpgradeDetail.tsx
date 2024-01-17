@@ -17,9 +17,6 @@ const RequestUpgradeDetailInfor: React.FC<Props> = (props) => {
         <h3>Hardware Upgrade Request Information </h3>
       </Divider>{" "}
       <Descriptions className="p-5">
-        <Descriptions.Item label="Customer" span={4}>
-          {requestUpgradeDetail?.customer.companyName}
-        </Descriptions.Item>
         <Descriptions.Item label="Status">
           <Tag
             className="text-center"
@@ -41,6 +38,12 @@ const RequestUpgradeDetailInfor: React.FC<Props> = (props) => {
         </Descriptions.Item>
         <Descriptions.Item label="Request Type" span={2}>
           {requestUpgradeDetail?.requestType}
+        </Descriptions.Item>
+        <Descriptions.Item label="Description" span={4}>
+          {requestUpgradeDetail?.description}
+        </Descriptions.Item>
+        <Descriptions.Item label="Customer" span={4}>
+          {requestUpgradeDetail?.customer.companyName}
         </Descriptions.Item>
         <Descriptions.Item label="Customer Note" span={4}>
           {requestUpgradeDetail?.note}

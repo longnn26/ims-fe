@@ -93,22 +93,26 @@ const deleteData = async (token: string, id: string): Promise<any> => {
 
 const acceptRequestUpgrade = async (
   token: string,
-  id: string
+  id: string,
+  data: string
 ): Promise<any> => {
   const response = await httpClient.put({
-    contentType: "application/json",
-    contentDisposition: "form-data",
     url: apiLinks.requestUpgrade.accept + `/${id}/Accept`,
     token: token,
+    data: { saleNote: data },
   });
   return response.data;
 };
 
-const denyRequestUpgrade = async (token: string, id: string, data: string): Promise<any> => {
+const denyRequestUpgrade = async (
+  token: string,
+  id: string,
+  data: string
+): Promise<any> => {
   const response = await httpClient.put({
     url: apiLinks.requestUpgrade.accept + `/${id}/Deny`,
     token: token,
-    data: {saleNote: data},
+    data: { saleNote: data },
   });
   return response.data;
 };

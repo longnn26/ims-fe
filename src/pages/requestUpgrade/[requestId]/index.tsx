@@ -32,6 +32,7 @@ import {
   SHCParamGet,
   ServerHardwareConfigData,
 } from "@models/serverHardwareConfig";
+import ModalAcceptUpgrade from "@components/server/requestUpgrade/ModalAccept";
 const { confirm } = Modal;
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
@@ -50,6 +51,7 @@ const RequestDetail: React.FC = () => {
 
   const [itemBreadcrumbs, setItemBreadcrumbs] = useState<ItemType[]>([]);
   const [openModalDeny, setOpenModalDeny] = useState<boolean>(false);
+  const [openModalAccept, setOpenModalAccept] = useState<boolean>(false);
 
   const [rUAppointmentParamGet, setRUAppointmentParamGet] =
     useState<RUAppointmentParamGet>({
@@ -87,34 +89,6 @@ const RequestDetail: React.FC = () => {
       });
   };
 
-  const acceptRequestUpgrade = async () => {
-    confirm({
-      title: "Accept",
-      content: (
-        <Alert
-          message={`Do you want to accept with Id ${requestUpgradeDetail?.id}?`}
-          type="warning"
-        />
-      ),
-      async onOk() {
-        await requestUpgradeService
-          .acceptRequestUpgrade(
-            session?.user.access_token!,
-            requestUpgradeDetail?.id + ""
-          )
-          .then((res) => {
-            message.success("Accept request upgrade successfully!", 1.5);
-            getData();
-          })
-          .catch((errors) => {
-            message.error(errors.response.data, 1.5);
-          })
-          .finally(() => {});
-      },
-      onCancel() {},
-    });
-  };
-
   const rejectRequestUpgrade = async () => {
     confirm({
       title: "Reject",
@@ -131,7 +105,7 @@ const RequestDetail: React.FC = () => {
             requestUpgradeDetail?.id + ""
           )
           .then((res) => {
-            message.success("Reject request upgrade successfully!", 1.5);
+            message.success("Reject Request successfully!", 1.5);
             getData();
           })
           .catch((errors) => {
@@ -159,7 +133,7 @@ const RequestDetail: React.FC = () => {
             requestUpgradeDetail?.id + ""
           )
           .then((res) => {
-            message.success("Complete request upgrade successfully!", 1.5);
+            message.success("Complete Request successfully!", 1.5);
             getData();
           })
           .catch((errors) => {
@@ -303,7 +277,7 @@ const RequestDetail: React.FC = () => {
                       onClick={() => setOpenModalDeny(true)}
                     />
                     <FloatButton
-                      onClick={() => acceptRequestUpgrade()}
+                      onClick={() => setOpenModalAccept(true)}
                       icon={<AiOutlineFileDone color="green" />}
                       tooltip="Accept"
                     />
@@ -336,6 +310,15 @@ const RequestDetail: React.FC = () => {
               )}
             </>
           )}
+          <ModalAcceptUpgrade
+            open={openModalAccept}
+            onClose={() => setOpenModalAccept(false)}
+            onSubmit={() => {
+              getData();
+              setOpenModalAccept(false);
+            }}
+            requestUpgradeId={parseInt(router.query.requestId + "")}
+          />
         </>
       }
     />

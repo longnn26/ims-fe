@@ -2,19 +2,13 @@
 import BreadcrumbComponent from "@components/BreadcrumbComponent";
 import ServerDetail from "@components/server/ServerDetail";
 import RequestExpandTable from "@components/server/requestExpand/RequestExpandTable";
-import ModalCreate from "@components/server/requestExpand/ModalCreate";
-import ModalUpdate from "@components/server/requestUpgrade/ModalUpdate";
+import ModalCreateRemoval from "@components/server/requestExpand/ModalCreateRemoval";
 import useDispatch from "@hooks/use-dispatch";
 import useSelector from "@hooks/use-selector";
-import {
-  RequestExpandCreateModel,
-  RequestExpandData,
-} from "@models/requestExpand";
+import { RequestExpandData } from "@models/requestExpand";
 import {
   RUParamGet,
   RequestUpgrade,
-  RequestUpgradeCreateModel,
-  RequestUpgradeData,
   RequestUpgradeUpdateModel,
 } from "@models/requestUpgrade";
 import { ServerAllocation } from "@models/serverAllocation";
@@ -34,14 +28,14 @@ import { useSession } from "next-auth/react";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
-import { AiOutlineFileDone } from "react-icons/ai";
-import { MdCancel } from "react-icons/md";
+
 import { IoIosSend } from "react-icons/io";
 import {
   SHCParamGet,
   ServerHardwareConfigData,
 } from "@models/serverHardwareConfig";
 import serverHardwareConfig from "@services/serverHardwareConfig";
+import ModalCreate from "@components/server/requestExpand/ModalCreate";
 
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
@@ -62,7 +56,10 @@ const RequestExpand: React.FC = () => {
   const [requestUpgradeUpdate, setRequestUpgradeUpdate] = useState<
     RequestUpgrade | undefined
   >(undefined);
+  const [openModalCreateRemoval, setOpenModalCreateRemoval] =
+    useState<boolean>(false);
   const [openModalCreate, setOpenModalCreate] = useState<boolean>(false);
+
   const [serverAllocationDetail, setServerAllocationDetail] =
     useState<ServerAllocation>();
   const [param, setParam] = useState<SHCParamGet>({
@@ -130,13 +127,10 @@ const RequestExpand: React.FC = () => {
           .deleteData(session?.user.access_token!, requestUpgrade.id.toString())
           .then(() => {
             getData();
-            message.success(`Delete request upgrade successfully`, 1.5);
+            message.success(`Delete Request successfully`, 1.5);
           })
           .catch((errors) => {
-            message.error(
-              errors.response.data ?? "Delete request upgrade failed",
-              1.5
-            );
+            message.error(errors.response.data ?? "Delete Request failed", 1.5);
             setLoadingSubmit(false);
           });
       },
@@ -210,10 +204,26 @@ const RequestExpand: React.FC = () => {
                     htmlType="submit"
                     icon={<IoIosSend />}
                     onClick={() => {
-                      setOpenModalCreate(true);
+                      setOpenModalCreateRemoval(true);
                     }}
                   >
                     Submit Server Removal Request
+                  </Button>
+                )}
+
+                {Boolean(
+                  serverAllocationDetail?.status === "Waiting" &&
+                    areInArray(session?.user.roles!, ROLE_CUSTOMER)
+                ) && (
+                  <Button
+                    type="primary"
+                    htmlType="submit"
+                    icon={<IoIosSend />}
+                    onClick={() => {
+                      setOpenModalCreate(true);
+                    }}
+                  >
+                    Submit Server Allocation Request
                   </Button>
                 )}
               </div>
@@ -223,6 +233,15 @@ const RequestExpand: React.FC = () => {
                 onClose={() => setOpenModalCreate(false)}
                 onSubmit={() => {
                   setOpenModalCreate(false);
+                  getData();
+                }}
+              />
+
+              <ModalCreateRemoval
+                open={openModalCreateRemoval}
+                onClose={() => setOpenModalCreateRemoval(false)}
+                onSubmit={() => {
+                  setOpenModalCreateRemoval(false);
                   getData();
                 }}
               />

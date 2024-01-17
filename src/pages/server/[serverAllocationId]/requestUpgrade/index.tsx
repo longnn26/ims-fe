@@ -147,13 +147,10 @@ const RequestUpgrade: React.FC = () => {
           .deleteData(session?.user.access_token!, requestUpgrade.id.toString())
           .then(() => {
             getData();
-            message.success(`Delete request upgrade successfully`, 1.5);
+            message.success(`Delete Request successfully`, 1.5);
           })
           .catch((errors) => {
-            message.error(
-              errors.response.data ?? "Delete request upgrade failed",
-              1.5
-            );
+            message.error(errors.response.data ?? "Delete Request failed", 1.5);
             setLoadingSubmit(false);
           });
       },
@@ -166,19 +163,19 @@ const RequestUpgrade: React.FC = () => {
     var items = router.asPath.split("/").filter((_) => _ != "");
     var path = "";
     items.forEach((element) => {
-      if (element !== serverAllocationDetail?.id+"") {
-      path += `/${element}`;
-      itemBrs.push({
-        href: path,
-        title: element,
-      });
-    } else {
-      path += `/${element}`;
+      if (element !== serverAllocationDetail?.id + "") {
+        path += `/${element}`;
+        itemBrs.push({
+          href: path,
+          title: element,
+        });
+      } else {
+        path += `/${element}`;
         itemBrs.push({
           href: path,
           title: serverAllocationDetail?.name,
         });
-    }
+      }
     });
     setItemBreadcrumbs(itemBrs);
   };

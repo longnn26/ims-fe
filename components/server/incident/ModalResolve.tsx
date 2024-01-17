@@ -1,7 +1,20 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Button, DatePicker, Input, Modal, Select, Spin, Switch, message } from "antd";
+import {
+  Button,
+  DatePicker,
+  Input,
+  Modal,
+  Select,
+  Spin,
+  Switch,
+  message,
+} from "antd";
 import { Form } from "antd";
-import { Incident, IncidentResolve, IncidentResolveModel } from "@models/incident";
+import {
+  Incident,
+  IncidentResolve,
+  IncidentResolveModel,
+} from "@models/incident";
 import incidentService from "@services/incident";
 import { useSession } from "next-auth/react";
 
@@ -42,7 +55,7 @@ const ModalResolve: React.FC<Props> = (props) => {
         data
       )
       .then((res) => {
-        message.success("Fail appointment successfully!", 1.5);
+        message.success("Resolve Incident successfully!", 1.5);
         onSubmit();
         form.resetFields();
       })
@@ -76,11 +89,11 @@ const ModalResolve: React.FC<Props> = (props) => {
                   title: "Do you want to resolve incident?",
                   async onOk() {
                     const data = {
-                      solution: form.getFieldValue("solution")
+                      solution: form.getFieldValue("solution"),
                     } as IncidentResolveModel;
                     resolveIncident(data);
                   },
-                  onCancel() { },
+                  onCancel() {},
                 });
             }}
           >

@@ -49,7 +49,7 @@ const resolveIncident = async (
   const response = await httpClient.put({
     url: apiLinks.incident.resolve + `/${id}/Resolve`,
     token: token,
-    data: { data: data },
+    data: { solution: data.solution },
   });
   return response.data;
 };

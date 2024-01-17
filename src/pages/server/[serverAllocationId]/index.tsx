@@ -389,7 +389,7 @@ const Customer: React.FC = () => {
                   )}
 
                   <FloatButton
-                    tooltip="Request upgrade"
+                    tooltip="Hardware Upgrade Request"
                     icon={<MdUpgrade />}
                     onClick={() =>
                       router.push(

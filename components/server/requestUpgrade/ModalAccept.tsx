@@ -1,36 +1,24 @@
-import React, { useRef, useState } from "react";
-import {
-  Button,
-  Input,
-  Modal,
-  Select,
-  Space,
-  Card,
-  message,
-  Upload,
-  Spin,
-} from "antd";
-import { Form } from "antd";
-import { RequestExpandCreateModel } from "@models/requestExpand";
-const { Option } = Select;
-const { confirm } = Modal;
-import requestExpandService from "@services/requestExpand";
-import { useRouter } from "next/router";
+import { Alert, Button, Form, Input, Modal, Spin, message } from "antd";
+
 import { useSession } from "next-auth/react";
+import React, { useRef, useState } from "react";
+import requestUpgradeService from "@services/requestUpgrade";
+import { useRouter } from "next/router";
+const { confirm } = Modal;
 
 interface Props {
   open: boolean;
   onClose: () => void;
   onSubmit: () => void;
+  requestUpgradeId: number;
 }
 
-const ModalCreate: React.FC<Props> = (props) => {
+const ModalAcceptUpgrade: React.FC<Props> = (props) => {
   const formRef = useRef(null);
-  const router = useRouter();
-  const { data: session } = useSession();
   const [form] = Form.useForm();
-  const { onSubmit, open, onClose } = props;
-
+  const { open, onClose, requestUpgradeId, onSubmit } = props;
+  const { data: session } = useSession();
+  const router = useRouter();
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -44,14 +32,18 @@ const ModalCreate: React.FC<Props> = (props) => {
     return result;
   };
 
-  const createData = async (data: RequestExpandCreateModel) => {
+  const accept = async (data: string) => {
     setLoading(true);
-    await requestExpandService
-      .createData(session?.user.access_token!, data)
+    await requestUpgradeService
+      .acceptRequestUpgrade(
+        session?.user.access_token!,
+        requestUpgradeId + "",
+        data
+      )
       .then((res) => {
-        message.success("Create successfully!", 1.5);
-        onSubmit();
+        message.success("Accept Hardware Upgrade Request successfully!", 1.5);
         form.resetFields();
+        onSubmit();
       })
       .catch((errors) => {
         message.error(errors.response.data, 1.5);
@@ -66,7 +58,7 @@ const ModalCreate: React.FC<Props> = (props) => {
       <Modal
         title={
           <span className="inline-block m-auto">
-            Submit Server Allocation Request
+            Accept Hardware Upgrade Request
           </span>
         }
         open={open}
@@ -77,51 +69,43 @@ const ModalCreate: React.FC<Props> = (props) => {
         }}
         footer={[
           <Button
-            // loading={loadingSubmit}
             className="btn-submit"
             key="submit"
             disabled={loading}
             onClick={async () => {
               if (!(await disabled()))
                 confirm({
-                  title: "Do you want to save?",
+                  title: "Do you want to Accept this Request?",
                   async onOk() {
-                    const formData = {
-                      forRemoval: false,
-                      note: form.getFieldValue("note"),
-                      serverAllocationId: parseInt(
-                        router.query.serverAllocationId + ""
-                      ),
-                    } as RequestExpandCreateModel;
-
-                    // Call the provided onSubmit function with the formData
-                    createData(formData);
+                    accept(form.getFieldValue("saleNote"));
                   },
                   onCancel() {},
                 });
             }}
           >
-            Submit
+            Accept
           </Button>,
         ]}
       >
         <div className="flex max-w-md flex-col gap-4 m-auto">
-          <Spin spinning={loading} tip="Creating request..." size="large">
+          <Spin spinning={loading} tip="Denying request..." size="large">
             <Form
               ref={formRef}
               form={form}
-              labelCol={{ span: 6 }}
-              labelWrap={true}
+              labelCol={{ span: 8 }}
               wrapperCol={{ span: 20 }}
               style={{ width: "100%" }}
-              name="dynamic_form_complex"
             >
               <Form.Item
-                name="note"
-                label="Note"
+                name="saleNote"
+                label="Sales Staff Note "
                 rules={[{ required: true, max: 2000 }]}
               >
-                <Input placeholder="Note" allowClear />
+                <Input.TextArea
+                  autoSize={{ minRows: 1, maxRows: 6 }}
+                  placeholder="Sales Staff Note"
+                  allowClear
+                />
               </Form.Item>
             </Form>
           </Spin>
@@ -131,4 +115,4 @@ const ModalCreate: React.FC<Props> = (props) => {
   );
 };
 
-export default ModalCreate;
+export default ModalAcceptUpgrade;
