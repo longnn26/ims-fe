@@ -15,7 +15,7 @@ const RequestHostDetailInfor: React.FC<Props> = (props) => {
   return (
     <div className="shadow-[rgba(13,_38,_76,_0.19)_0px_9px_20px] m-5 rounded-md">
       <Divider orientation="left" plain>
-        <h3>IP Request information </h3>
+        <h3>IP Request Information </h3>
       </Divider>{" "}
       <Descriptions className="p-5" column={2}>
         <Descriptions.Item label="Request's Status">
@@ -35,7 +35,9 @@ const RequestHostDetailInfor: React.FC<Props> = (props) => {
           </Tag>
         </Descriptions.Item>
         <Descriptions.Item label="Type">
-          {requestHostDetail?.type}
+          {requestHostDetail?.type === "Additional"
+            ? "IP"
+            : requestHostDetail?.type}
         </Descriptions.Item>
         <Descriptions.Item label="Date Created">
           {moment(requestHostDetail?.dateCreated).format(dateAdvFormat)}
@@ -62,14 +64,12 @@ const RequestHostDetailInfor: React.FC<Props> = (props) => {
         >
           {requestHostDetail?.quantity}
         </Descriptions.Item>
-        {Boolean(
-          requestHostDetail?.type === "Port"
-        ) && (
+        {Boolean(requestHostDetail?.type === "Port") && (
           <Descriptions.Item label="Ports" span={2}>
             {requestHostDetail?.capacities.map((l, index) => (
               <>
-              Port {index + 1} - {l === 0.1 ? "100 Mbps" : "1 Gbps"}
-              <br/>
+                Port {index + 1} - {l === 0.1 ? "100 Mbps" : "1 Gbps"}
+                <br />
               </>
             ))}
           </Descriptions.Item>
