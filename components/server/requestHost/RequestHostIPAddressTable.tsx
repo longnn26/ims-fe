@@ -63,7 +63,7 @@ const RequestHostIPAddressTable: React.FC<Props> = (props) => {
       <Table
         columns={columns}
         dataSource={data}
-        scroll={{ x: 1300 }}
+        // scroll={{ x: 1300 }}
         pagination={false}
         // className="cursor-pointer"
       />
