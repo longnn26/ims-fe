@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Button, DatePicker, Input, Modal, Select, Spin, Switch, message } from "antd";
+import { Button, DatePicker, Divider, Input, Modal, Select, Spin, Switch, message } from "antd";
 import { Form } from "antd";
 import { ComponentUpdateModel, ComponentObj } from "@models/component";
 import { dateAdvFormat, optionStatus } from "@utils/constants";
@@ -29,6 +29,15 @@ const ModalComplete: React.FC<Props> = (props) => {
 
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [loading, setLoading] = useState<boolean>(false);
+  const formItemLayout = {
+    labelCol: { span: 8 },
+    wrapperCol: { span: 18 },
+  };
+
+  const formSwitchLayout = {
+    labelCol: { span: 40 },
+    wrapperCol: { span: 4, flex:"right" },
+  };
 
   const disabled = async () => {
     var result = false;
@@ -55,7 +64,7 @@ const ModalComplete: React.FC<Props> = (props) => {
       });
   };
 
-  const complete = async (model: AppointmentComplete) => {    
+  const complete = async (model: AppointmentComplete) => {
     setLoading(true);
     await appointmentService
       .completeAppointment(
@@ -91,7 +100,7 @@ const ModalComplete: React.FC<Props> = (props) => {
         title={
           <span className="inline-block m-auto">Complete Appointment</span>
         }
-        width={700}
+        width={600}
         open={open}
         confirmLoading={confirmLoading}
         onCancel={() => {
@@ -151,93 +160,32 @@ const ModalComplete: React.FC<Props> = (props) => {
         ]}
       >
         <div className="flex max-w-md flex-col gap-4 m-auto">
-          {loading === true ? (
-            <Spin size="large" tip="Creating reports...">
-
-              <Form
-                ref={formRef}
-                form={form}
-                labelCol={{ span: 8 }}
-                labelAlign="left"
-                wrapperCol={{ span: 20 }}
-                style={{ width: "100%" }}
-                labelWrap={true}
-              >
-                {appointment &&
-                  appointment?.reason &&
-                  appointment?.reason === "Install" && (
-                    <>
-                      <Form.Item
-                        label="Bandwidth Username"
-                        rules={[{ max: 255 }]}
-                      >
-                        <Input placeholder="Username" allowClear />
-                      </Form.Item>
-                      <Form.Item label="SMS Password message send">
-                        <Switch />{" "}
-                      </Form.Item>
-                      <Form.Item
-                        label={
-                          <span style={{ width: "200px", display: "inline-block" }}>
-                            Instructed customers to change password after the 1st
-                            login
-                          </span>
-                        }
-                      >
-                        <Switch />{" "}
-                      </Form.Item>
-                      <Form.Item
-                        label="Server condition"
-                        rules={[{ max: 2000 }]}
-                      >
-                        <Input placeholder="Server condition" allowClear />
-                      </Form.Item>
-                    </>
-                  )}
-
-                <Form.Item label="Note">
-                  <Input placeholder="Note" allowClear />
-                </Form.Item>
-                <Form.Item
-                  label="Date CheckedIn"
-                >
-                  <DatePicker
-                    style={{ width: "100%" }}
-                    placeholder="Date CheckedIn"
-                  />
-                </Form.Item>
-                <Form.Item
-                  label="Date CheckedOut"
-                >
-                  <DatePicker
-                    style={{ width: "100%" }}
-                    placeholder="Date CheckedOut"
-                  />
-                </Form.Item>
-              </Form>
-            </Spin>
-          ) : (
+          <Spin size="large" tip="Creating reports..." spinning={loading}>
             <Form
               ref={formRef}
               form={form}
-              labelCol={{ span: 8 }}
               labelAlign="left"
-              wrapperCol={{ span: 20 }}
               style={{ width: "100%" }}
               labelWrap={true}
-            >
+            >              
               {appointment &&
                 appointment?.reason &&
                 appointment?.reason === "Install" && (
                   <>
+                  <Divider style={{fontWeight: 400}}>Create Reports</Divider>
                     <Form.Item
+                      {...formItemLayout}
                       name="username"
                       label="Bandwidth Username"
                       rules={[{ max: 255 }]}
                     >
                       <Input placeholder="Username" allowClear />
                     </Form.Item>
-                    <Form.Item name="isSendMS" label="SMS Password message send">
+                    <Form.Item
+                      {...formSwitchLayout}
+                      name="isSendMS"
+                      label="SMS Password message send"
+                    >
                       <Switch
                         onChange={(value) =>
                           form.setFieldsValue({
@@ -247,13 +195,9 @@ const ModalComplete: React.FC<Props> = (props) => {
                       />{" "}
                     </Form.Item>
                     <Form.Item
+                      {...formSwitchLayout}
                       name="guid"
-                      label={
-                        <span style={{ width: "200px", display: "inline-block" }}>
-                          Instructed customers to change password after the 1st
-                          login
-                        </span>
-                      }
+                      label="Instructed customers to change password after the 1st login"
                     >
                       <Switch
                         onChange={(value) =>
@@ -264,6 +208,7 @@ const ModalComplete: React.FC<Props> = (props) => {
                       />{" "}
                     </Form.Item>
                     <Form.Item
+                      {...formItemLayout}
                       name="deviceCondition"
                       label="Server condition"
                       rules={[{ max: 2000 }]}
@@ -272,21 +217,16 @@ const ModalComplete: React.FC<Props> = (props) => {
                     </Form.Item>
                   </>
                 )}
-
-              <Form.Item name="good" label="Good">
-                <Switch
-                  onChange={(value) =>
-                    form.setFieldsValue({
-                      good: value,
-                    })
-                  }
-                />{" "}
-              </Form.Item>
-
-              <Form.Item name="note" label="Note" rules={[{ max: 2000 }]}>
+              <Form.Item
+                {...formItemLayout}
+                name="note"
+                label="Note"
+                rules={[{ max: 2000 }]}>
                 <Input placeholder="Note" allowClear />
               </Form.Item>
+              <Divider style={{fontWeight: 400}}>Record Customer visit</Divider>
               <Form.Item
+                {...formItemLayout}
                 name="dateCheckedIn"
                 label="Date CheckedIn"
                 rules={[
@@ -319,6 +259,7 @@ const ModalComplete: React.FC<Props> = (props) => {
                 />
               </Form.Item>
               <Form.Item
+                {...formItemLayout}
                 name="dateCheckedOut"
                 label="Date CheckedOut"
                 rules={[
@@ -361,7 +302,7 @@ const ModalComplete: React.FC<Props> = (props) => {
                 />
               </Form.Item>
             </Form>
-          )}
+          </Spin>
         </div>
       </Modal>
     </>
