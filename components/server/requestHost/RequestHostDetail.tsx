@@ -67,8 +67,13 @@ const RequestHostDetailInfor: React.FC<Props> = (props) => {
             (requestHostDetail?.ipAddresses === null ||
               requestHostDetail?.ipAddresses.length === 0)
         ) && (
-          <Descriptions.Item label="Capacity (GB)">
-            {requestHostDetail?.capacities.join(" | ")}
+          <Descriptions.Item label="Ports">
+            {requestHostDetail?.capacities.map((l, index) => (
+              <>
+              Port {index + 1} - {l === 0.1 ? "100 Mbps" : "1 Gbps"}
+              <br/>
+              </>
+            ))}
           </Descriptions.Item>
         )}
         <Descriptions.Item label="Sales Staff">
