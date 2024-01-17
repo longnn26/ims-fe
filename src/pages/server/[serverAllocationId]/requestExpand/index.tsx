@@ -114,21 +114,6 @@ const RequestExpand: React.FC = () => {
     });
   };
 
-  const updateData = async (data: RequestUpgradeUpdateModel) => {
-    await requestUpgradeService
-      .updateData(session?.user.access_token!, data)
-      .then((res) => {
-        message.success("Update successfully!", 1.5);
-        getData();
-      })
-      .catch((errors) => {
-        message.error(errors.response.data, 1.5);
-      })
-      .finally(() => {
-        setRequestUpgradeUpdate(undefined);
-      });
-  };
-
   const deleteData = (requestUpgrade: RequestUpgrade) => {
     confirm({
       title: "Delete",

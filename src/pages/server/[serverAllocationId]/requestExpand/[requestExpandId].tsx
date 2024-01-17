@@ -372,12 +372,8 @@ const RequestExpandDetail: React.FC = () => {
                 {Boolean(
                   requestExpandDetail?.requestType !== "RemoveLocation" &&
                   requestExpandDetail?.status === "Accepted" &&
-                  areInArray(
-                    session?.user.roles!,
-                    // ROLE_SALES,
-                    ROLE_TECH
-                    // ROLE_CUSTOMER
-                  )
+                  requestExpandDetail.chosenLocation === null &&
+                  areInArray(session?.user.roles!, ROLE_TECH)
                 ) &&
                   permission && (
                     <>

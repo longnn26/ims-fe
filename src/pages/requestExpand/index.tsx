@@ -68,49 +68,6 @@ const Customer: React.FC = () => {
     });
   };
 
-  //   const updateData = async (data: RequestUpgradeUpdateModel) => {
-  //     await requestUpgradeService
-  //       .updateData(session?.user.access_token!, data)
-  //       .then((res) => {
-  //         message.success("Update successfully!", 1.5);
-  //         getData();
-  //       })
-  //       .catch((errors) => {
-  //         message.error(errors.response.data, 1.5);
-  //       })
-  //       .finally(() => {
-  //         setRequestUpgradeUpdate(undefined);
-  //       });
-  //   };
-
-  //   const deleteData = (requestExpand: RequestExpand) => {
-  //     confirm({
-  //       title: "Delete",
-  //       content: (
-  //         <Alert
-  //           message={`Do you want to delete with Id ${requestExpand.id}?`}
-  //           // description={`${serverAllocation.id}`}
-  //           type="warning"
-  //         />
-  //       ),
-  //       async onOk() {
-  //         await requestUpgradeService
-  //           .deleteData(session?.user.access_token!, requestExpand.id.toString())
-  //           .then(() => {
-  //             getData();
-  //             message.success(`Delete request upgrade successfully`, 1.5);
-  //           })
-  //           .catch((errors) => {
-  //             message.error(
-  //               errors.response.data ?? "Delete request upgrade failed",
-  //               1.5
-  //             );
-  //           });
-  //       },
-  //       onCancel() {},
-  //     });
-  //   };
-
   const handleChange = (value) => {
     switch (value) {
       case "0":
