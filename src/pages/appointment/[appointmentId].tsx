@@ -57,6 +57,7 @@ import ModalUpdateDocument from "@components/appointment/ModalUpdateDocument";
 import ModalResolveIncident from "@components/appointment/ModalResolveIncident";
 import { IncidentResolve } from "@models/incident";
 import IncidentTable from "@components/server/incident/IncidentTable";
+import { getIncidentData } from "@slices/incident";
 const { confirm } = Modal;
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
@@ -257,6 +258,12 @@ const Appoinment: React.FC = () => {
 
       dispatch(
         getRequestExpandData({
+          token: session?.user.access_token!,
+          paramGet: { ...paramGet },
+        })
+      );
+      dispatch(
+        getIncidentData({
           token: session?.user.access_token!,
           paramGet: { ...paramGet },
         })
