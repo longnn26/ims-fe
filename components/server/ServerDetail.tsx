@@ -44,7 +44,7 @@ const ServerDetail: React.FC<Props> = (props) => {
           {serverAllocationDetail?.name}
         </Descriptions.Item>
         <Descriptions.Item label="Power" span={0}>
-          {serverAllocationDetail?.power} W
+          {serverAllocationDetail?.power}W
         </Descriptions.Item>
         <Descriptions.Item label="Part Number" span={2}>
           {serverAllocationDetail?.partNumber}

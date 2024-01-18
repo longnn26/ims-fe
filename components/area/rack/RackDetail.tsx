@@ -15,7 +15,12 @@ const RackDetail: React.FC<Props> = (props) => {
   return (
     <div className="shadow-[rgba(13,_38,_76,_0.19)_0px_9px_20px] m-5 rounded-md">
       <Divider orientation="left" plain>
-        <h3>Rack {`${rackDetail?.area.name}${rackDetail?.row + 1} - ${rackDetail?.column + 1}`} </h3>
+        <h3>
+          Rack{" "}
+          {`${rackDetail?.area.name}${rackDetail?.row + 1} - ${
+            rackDetail?.column + 1
+          }`}{" "}
+        </h3>
       </Divider>{" "}
       <Descriptions className="p-5">
         {/* <Descriptions.Item label="Id">{rackDetail?.id}</Descriptions.Item> */}
@@ -23,9 +28,9 @@ const RackDetail: React.FC<Props> = (props) => {
         <Descriptions.Item label="Max power">
           {rackDetail?.maxPower}
         </Descriptions.Item>
-        <Descriptions.Item label="Current power">
+        {/* <Descriptions.Item label="Current power">
           {rackDetail?.currentPower}
-        </Descriptions.Item>
+        </Descriptions.Item> */}
         <Descriptions.Item label="Size" span={4}>
           {rackDetail?.size} U
         </Descriptions.Item>

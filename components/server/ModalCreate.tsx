@@ -93,7 +93,10 @@ const ModalCreate: React.FC<Props> = (props) => {
                       name: form.getFieldValue("name"),
                       serialNumber: form.getFieldValue("serialNumber"),
                       power: form.getFieldValue("power"),
-                      partNumber: form.getFieldValue("partNumber"),
+                      partNumber:
+                        form.getFieldValue("partNumber") === ""
+                          ? null
+                          : form.getFieldValue("partNumber"),
                       note: form.getFieldValue("note"),
                     } as SACreateModel;
                     setLoadingSubmit(true);
