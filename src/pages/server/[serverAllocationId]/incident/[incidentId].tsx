@@ -165,7 +165,9 @@ const IncidentDetail: React.FC = () => {
   }, [serverAllocationDetail]);
 
   useEffect(() => {
+    checkPermission();
     if (router.query.incidentId && session) {
+      getData();
       handleBreadCumb();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -191,10 +193,6 @@ const IncidentDetail: React.FC = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session, rUAppointmentParamGet]);
-
-  useEffect(() => {
-    checkPermission();
-  }, [incidentDetail]);
 
   if (incidentDetail === undefined) {
     return (
