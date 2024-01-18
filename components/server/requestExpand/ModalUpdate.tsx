@@ -134,7 +134,7 @@ const ModalUpdate: React.FC<Props> = (props) => {
   const assignLocation = async (locationId: number) => {
     setLoading(true);
     await requestExpandService
-      .saveLocation(session?.user.access_token!, requestExpand.id, {
+      .saveLocation(session?.user.access_token!, parseInt(router.query.requestExpandId+""), {
         rackId: selectedRack,
         startPosition: locationId,
       } as RequestedLocation)
