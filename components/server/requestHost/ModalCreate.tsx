@@ -51,9 +51,10 @@ const ModalCreate: React.FC<Props> = (props) => {
       })
       .catch((errors) => {
         message.error(errors.response.data, 1.5);
-      }).finally(() => {
-        setLoading(false);
       })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   const [requestType, setRequestType] = useState<string | undefined>(undefined);
@@ -84,7 +85,8 @@ const ModalCreate: React.FC<Props> = (props) => {
               if (!(await disabled()))
                 confirm({
                   title: "Do you want to save?",
-                  async onOk() {// Đặt trạng thái loading khi bắt đầu gửi dữ liệu
+                  async onOk() {
+                    // Đặt trạng thái loading khi bắt đầu gửi dữ liệu
                     let formData: RequestHostCreateModel;
 
                     if (form.getFieldValue("type") === "Additional") {
@@ -110,14 +112,16 @@ const ModalCreate: React.FC<Props> = (props) => {
                         isRemoval: false,
                       } as RequestHostCreateModel;
                     }
-                    formData.serverAllocationId = parseInt(router.query.serverAllocationId!.toString());
+                    formData.serverAllocationId = parseInt(
+                      router.query.serverAllocationId!.toString()
+                    );
                     createData(formData);
                   },
-                  onCancel() { },
+                  onCancel() {},
                 });
             }}
           >
-            Submit
+            Create
           </Button>,
         ]}
       >
@@ -194,7 +198,9 @@ const ModalCreate: React.FC<Props> = (props) => {
                                 placeholder="Choose Capacity"
                                 onChange={(value: number) => {
                                   setSelectedCapacities((prevCapacities) => {
-                                    const updatedCapacities = [...prevCapacities];
+                                    const updatedCapacities = [
+                                      ...prevCapacities,
+                                    ];
                                     updatedCapacities[index] = value;
                                     return updatedCapacities;
                                   });
@@ -219,7 +225,11 @@ const ModalCreate: React.FC<Props> = (props) => {
                             />
                           </Space>
                         ))}
-                        <Button type="dashed" onClick={() => subOpt.add()} block>
+                        <Button
+                          type="dashed"
+                          onClick={() => subOpt.add()}
+                          block
+                        >
                           + Add Capacity
                         </Button>
                       </div>

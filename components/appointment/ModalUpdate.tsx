@@ -1,5 +1,16 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Button, Col, Input, Modal, Row, Select, Card, DatePicker, message, Spin } from "antd";
+import {
+  Button,
+  Col,
+  Input,
+  Modal,
+  Row,
+  Select,
+  Card,
+  DatePicker,
+  message,
+  Spin,
+} from "antd";
 import { Form } from "antd";
 import { Appointment, AppointmentUpdateModel } from "@models/appointment";
 import customerService from "@services/customer";
@@ -32,7 +43,9 @@ const ModalCreate: React.FC<Props> = (props) => {
   const { data: session, update: sessionUpdate } = useSession();
 
   const [confirmLoading, setConfirmLoading] = useState(false);
-  const [contactList, setContactList] = useState<string[] | undefined>(undefined);
+  const [contactList, setContactList] = useState<string[] | undefined>(
+    undefined
+  );
   const [loading, setLoading] = useState<boolean>(false);
 
   const disabled = async () => {
@@ -47,12 +60,14 @@ const ModalCreate: React.FC<Props> = (props) => {
 
   const getContacts = async () => {
     await customerService
-      .getCustomerById(
-        session?.user.access_token!,
-        appointment.customer.id
-      )
+      .getCustomerById(session?.user.access_token!, appointment.customer.id)
       .then(async (data) => {
-        const contacts = data.contacts.filter((l) => l.forAppointment === true).map((contact, index) => (`${contact.name} - - SĐT: ${contact.phoneNumber} - CCCD: ${contact.cccd}`));
+        const contacts = data.contacts
+          .filter((l) => l.forAppointment === true)
+          .map(
+            (contact, index) =>
+              `${contact.name} - - SĐT: ${contact.phoneNumber} - CCCD: ${contact.cccd}`
+          );
         setContactList(contacts);
       });
   };
@@ -61,7 +76,7 @@ const ModalCreate: React.FC<Props> = (props) => {
     if (formRef.current)
       form.setFieldsValue({
         id: appointment.id,
-        appointedCustomer: appointment.appointedCustomer?.split(','),
+        appointedCustomer: appointment.appointedCustomer?.split(","),
         dateAppointed: convertDatePicker(appointment.dateAppointed),
         note: appointment.note,
         techNote: appointment.techNote,
@@ -109,8 +124,12 @@ const ModalCreate: React.FC<Props> = (props) => {
                   async onOk() {
                     const dataUpdate = {
                       id: appointment.id,
-                      appointedCustomer: form.getFieldValue("appointedCustomer")?.join(','),
-                      dateAppointed: form.getFieldValue("dateAppointed").format(dateAdvFormat),
+                      appointedCustomer: form
+                        .getFieldValue("appointedCustomer")
+                        ?.join(","),
+                      dateAppointed: form
+                        .getFieldValue("dateAppointed")
+                        .format(dateAdvFormat),
                       note: form.getFieldValue("note")
                         ? form.getFieldValue("note")
                         : appointment.note,
@@ -136,11 +155,11 @@ const ModalCreate: React.FC<Props> = (props) => {
                         setLoading(false);
                       });
                   },
-                  onCancel() { },
+                  onCancel() {},
                 });
             }}
           >
-            Submit
+            Update
           </Button>,
         ]}
       >
@@ -156,24 +175,19 @@ const ModalCreate: React.FC<Props> = (props) => {
               >
                 {areInArray(session?.user.roles!, ROLE_CUSTOMER) && (
                   <>
-                    <Form.Item
-                      label="Visitor"
-                      rules={[{ required: true }]}
-                    >
+                    <Form.Item label="Visitor" rules={[{ required: true }]}>
                       {/* <Input placeholder="Visitor" allowClear /> */}
                       <Select
                         mode="multiple"
                         placeholder="Please select visitor(s) for appointment"
                         allowClear
                       >
-                        {contactList && (
+                        {contactList &&
                           contactList.map((c, index) => (
                             <Option value={c} key={index}>
                               {`${c}`}
                             </Option>
-                          ))
-                        )}
-
+                          ))}
                       </Select>
                     </Form.Item>
                     <Form.Item
@@ -182,11 +196,15 @@ const ModalCreate: React.FC<Props> = (props) => {
                         {
                           required: true,
                           validator: (_, value) => {
-                            const todate = convertDatePicker(moment().toString());
+                            const todate = convertDatePicker(
+                              moment().toString()
+                            );
                             if (value.isAfter(todate)) {
                               return Promise.resolve();
                             } else {
-                              return Promise.reject("Visit date must be later!");
+                              return Promise.reject(
+                                "Visit date must be later!"
+                              );
                             }
                           },
                         },
@@ -280,17 +298,18 @@ const ModalCreate: React.FC<Props> = (props) => {
                       allowClear
                       onChange={(selectedValues) => {
                         form.setFieldsValue({
-                          appointedCustomer: selectedValues.map((value) => value),
+                          appointedCustomer: selectedValues.map(
+                            (value) => value
+                          ),
                         });
                       }}
                     >
-                      {contactList && (
+                      {contactList &&
                         contactList.map((c, index) => (
                           <Option value={c} key={index}>
                             {`${c}`}
                           </Option>
-                        ))
-                      )}
+                        ))}
                     </Select>
                   </Form.Item>
                   <Form.Item
@@ -316,7 +335,8 @@ const ModalCreate: React.FC<Props> = (props) => {
                       showTime
                       disabledDate={(current) => {
                         const now = dayjs();
-                        const isBeforeToday = current && current.isBefore(now, "day");
+                        const isBeforeToday =
+                          current && current.isBefore(now, "day");
                         const isToday = current && current.isSame(now, "day");
                         const isDisabledTime =
                           current &&
@@ -326,8 +346,10 @@ const ModalCreate: React.FC<Props> = (props) => {
                         return isBeforeToday || (isToday && isDisabledTime);
                       }}
                       disabledTime={() => ({
-                        disabledHours: () => [0, 1, 2, 3, 4, 5, 6, 7, 18, 19, 20, 21, 22, 23, 24,],
-                      })}                        
+                        disabledHours: () => [
+                          0, 1, 2, 3, 4, 5, 6, 7, 18, 19, 20, 21, 22, 23, 24,
+                        ],
+                      })}
                       format={dateAdvFormat}
                       onChange={(value) =>
                         form.setFieldsValue({

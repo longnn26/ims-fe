@@ -86,7 +86,7 @@ const ModalRemove: React.FC<Props> = (props) => {
       <Modal
         title={
           <span className="inline-block m-auto">
-            Submit Hardware Remove Request
+            Create Hardware Remove Request
           </span>
         }
         open={open}
@@ -118,7 +118,7 @@ const ModalRemove: React.FC<Props> = (props) => {
                 });
             }}
           >
-            Submit
+            Create
           </Button>,
         ]}
       >

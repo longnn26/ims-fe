@@ -97,7 +97,7 @@ const ModalResolve: React.FC<Props> = (props) => {
                 });
             }}
           >
-            Submit
+            Resolve
           </Button>,
         ]}
       >

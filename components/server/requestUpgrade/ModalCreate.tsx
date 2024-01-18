@@ -3,7 +3,10 @@ import { Button, Input, Modal, Select, Space, Card, message } from "antd";
 import { Form } from "antd";
 import { CloseOutlined } from "@ant-design/icons";
 import useSelector from "@hooks/use-selector";
-import { RequestUpgradeCreateModel, RequestUpgradeUpdateModel } from "@models/requestUpgrade";
+import {
+  RequestUpgradeCreateModel,
+  RequestUpgradeUpdateModel,
+} from "@models/requestUpgrade";
 import requestUpgradeService from "@services/requestUpgrade";
 import { title } from "process";
 import { useSession } from "next-auth/react";
@@ -27,7 +30,9 @@ const ModalCreate: React.FC<Props> = (props) => {
 
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [loading, setLoading] = useState<boolean>(false);
-  const [openModalCreate, setOpenModalCreate] = useState<boolean | undefined>(undefined);
+  const [openModalCreate, setOpenModalCreate] = useState<boolean | undefined>(
+    undefined
+  );
   const { componentOptions } = useSelector((state) => state.component);
 
   const disabled = async () => {
@@ -44,7 +49,9 @@ const ModalCreate: React.FC<Props> = (props) => {
     <>
       <Modal
         title={
-          <span className="inline-block m-auto">Create Hardware Upgrade request</span>
+          <span className="inline-block m-auto">
+            Create Hardware Upgrade request
+          </span>
         }
         open={openModalCreate === undefined ? open : openModalCreate}
         confirmLoading={confirmLoading}
@@ -66,7 +73,9 @@ const ModalCreate: React.FC<Props> = (props) => {
                     const formData = {
                       description: form.getFieldValue("description"),
                       componentId: form.getFieldValue("component"),
-                      serverAllocationId: parseInt(router.query.serverAllocationId+""),
+                      serverAllocationId: parseInt(
+                        router.query.serverAllocationId + ""
+                      ),
                       note: form.getFieldValue("note"),
                     } as RequestUpgradeCreateModel;
                     setLoading(true);
@@ -87,11 +96,11 @@ const ModalCreate: React.FC<Props> = (props) => {
                         setLoading(false);
                       });
                   },
-                  onCancel() { },
+                  onCancel() {},
                 });
             }}
           >
-            Submit
+            Create
           </Button>,
         ]}
       >
@@ -111,10 +120,7 @@ const ModalCreate: React.FC<Props> = (props) => {
                 { required: true, message: "Please select a hardware type." },
               ]}
             >
-              <Select
-                allowClear
-                placeholder="Select a hardware type."
-              >
+              <Select allowClear placeholder="Select a hardware type.">
                 <Option value={1}>CPU</Option>
                 <Option value={2}>Memory</Option>
                 <Option value={3}>Storage</Option>
@@ -127,11 +133,7 @@ const ModalCreate: React.FC<Props> = (props) => {
             >
               <Input allowClear placeholder="Description" />
             </Form.Item>
-            <Form.Item
-              label="Note"
-              name="note"
-              rules={[{ max: 2000 }]}
-            >
+            <Form.Item label="Note" name="note" rules={[{ max: 2000 }]}>
               <Input allowClear placeholder="Note" />
             </Form.Item>
           </Form>

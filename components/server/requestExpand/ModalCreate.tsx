@@ -66,7 +66,7 @@ const ModalCreate: React.FC<Props> = (props) => {
       <Modal
         title={
           <span className="inline-block m-auto">
-            Submit Server Allocation Request
+            Create Server Allocation Request
           </span>
         }
         open={open}
@@ -101,7 +101,7 @@ const ModalCreate: React.FC<Props> = (props) => {
                 });
             }}
           >
-            Submit
+            Create
           </Button>,
         ]}
       >

@@ -46,7 +46,14 @@ const ModalUpdate: React.FC<Props> = (props) => {
   const formRef = useRef(null);
   const { data: session } = useSession();
   const [form] = Form.useForm();
-  const { onSubmit, requestExpand, onClose, suggestLocation, onSaveLocation, open } = props;
+  const {
+    onSubmit,
+    requestExpand,
+    onClose,
+    suggestLocation,
+    onSaveLocation,
+    open,
+  } = props;
 
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [paramGet, setParamGet] = useState<LocationParamGet>({
@@ -215,7 +222,7 @@ const ModalUpdate: React.FC<Props> = (props) => {
                       });
                   }}
                 >
-                  Submit
+                  Update
                 </Button>
               </Form.Item>
             </Form>
@@ -375,10 +382,14 @@ const ModalUpdate: React.FC<Props> = (props) => {
                       {locationList.map((l, index) => (
                         <Option
                           value={l.position}
-                          label={`${l?.rack.area.name}${l?.rack.row + 1} - ${l?.rack.column + 1} U${l?.position + 1}`}
+                          label={`${l?.rack.area.name}${l?.rack.row + 1} - ${
+                            l?.rack.column + 1
+                          } U${l?.position + 1}`}
                           key={index}
                         >
-                          {`${l?.rack.area.name}${l?.rack.row + 1} - ${l?.rack.column + 1} U${l?.position + 1}`}
+                          {`${l?.rack.area.name}${l?.rack.row + 1} - ${
+                            l?.rack.column + 1
+                          } U${l?.position + 1}`}
                         </Option>
                       ))}
                     </Select>

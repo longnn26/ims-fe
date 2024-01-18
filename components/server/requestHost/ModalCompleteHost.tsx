@@ -92,7 +92,7 @@ const ModalCompletetHost: React.FC<Props> = (props) => {
                 });
             }}
           >
-            Submit
+            Complete
           </Button>,
         ]}
       >

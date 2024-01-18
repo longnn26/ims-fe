@@ -1,5 +1,15 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Button, DatePicker, Divider, Input, Modal, Select, Spin, Switch, message } from "antd";
+import {
+  Button,
+  DatePicker,
+  Divider,
+  Input,
+  Modal,
+  Select,
+  Spin,
+  Switch,
+  message,
+} from "antd";
 import { Form } from "antd";
 import { ComponentUpdateModel, ComponentObj } from "@models/component";
 import { dateAdvFormat, optionStatus } from "@utils/constants";
@@ -36,7 +46,7 @@ const ModalComplete: React.FC<Props> = (props) => {
 
   const formSwitchLayout = {
     labelCol: { span: 40 },
-    wrapperCol: { span: 4, flex:"right" },
+    wrapperCol: { span: 4, flex: "right" },
   };
 
   const disabled = async () => {
@@ -67,11 +77,7 @@ const ModalComplete: React.FC<Props> = (props) => {
   const complete = async (model: AppointmentComplete) => {
     setLoading(true);
     await appointmentService
-      .completeAppointment(
-        session?.user.access_token!,
-        appointment?.id!,
-        model
-      )
+      .completeAppointment(session?.user.access_token!, appointment?.id!, model)
       .then((res) => {
         message.success("Complete appointment successfully!", 1.5);
         onSubmit();
@@ -151,11 +157,11 @@ const ModalComplete: React.FC<Props> = (props) => {
                     } as AppointmentComplete;
                     complete(model);
                   },
-                  onCancel() { },
+                  onCancel() {},
                 });
             }}
           >
-            Submit
+            Complete
           </Button>,
         ]}
       >
@@ -167,12 +173,14 @@ const ModalComplete: React.FC<Props> = (props) => {
               labelAlign="left"
               style={{ width: "100%" }}
               labelWrap={true}
-            >              
+            >
               {appointment &&
                 appointment?.reason &&
                 appointment?.reason === "Install" && (
                   <>
-                  <Divider style={{fontWeight: 400}}>Create Reports</Divider>
+                    <Divider style={{ fontWeight: 400 }}>
+                      Create Reports
+                    </Divider>
                     <Form.Item
                       {...formItemLayout}
                       name="username"
@@ -221,10 +229,13 @@ const ModalComplete: React.FC<Props> = (props) => {
                 {...formItemLayout}
                 name="note"
                 label="Note"
-                rules={[{ max: 2000 }]}>
+                rules={[{ max: 2000 }]}
+              >
                 <Input placeholder="Note" allowClear />
               </Form.Item>
-              <Divider style={{fontWeight: 400}}>Record Customer visit</Divider>
+              <Divider style={{ fontWeight: 400 }}>
+                Record Customer visit
+              </Divider>
               <Form.Item
                 {...formItemLayout}
                 name="dateCheckedIn"
@@ -240,13 +251,13 @@ const ModalComplete: React.FC<Props> = (props) => {
                   disabledTime={
                     appointment?.reason !== "Incident"
                       ? () => ({
-                        disabledHours: () => [
-                          0, 1, 2, 3, 4, 5, 6, 7, 18, 19, 20, 21, 22, 23, 24,
-                        ],
-                      })
+                          disabledHours: () => [
+                            0, 1, 2, 3, 4, 5, 6, 7, 18, 19, 20, 21, 22, 23, 24,
+                          ],
+                        })
                       : () => ({
-                        disabledHours: () => [],
-                      })
+                          disabledHours: () => [],
+                        })
                   }
                   format={dateAdvFormat}
                   onChange={(value) =>
@@ -266,7 +277,7 @@ const ModalComplete: React.FC<Props> = (props) => {
                   ({ getFieldValue }) => ({
                     validator(_, value) {
                       const dateCheckedIn = form.getFieldValue("dateCheckedIn");
-                      if (value.isAfter(dateCheckedIn.add('1', 'second'))) {
+                      if (value.isAfter(dateCheckedIn.add("1", "second"))) {
                         return Promise.resolve();
                       }
                       return Promise.reject(
@@ -283,13 +294,13 @@ const ModalComplete: React.FC<Props> = (props) => {
                   disabledTime={
                     appointment?.reason !== "Incident"
                       ? () => ({
-                        disabledHours: () => [
-                          0, 1, 2, 3, 4, 5, 6, 7, 18, 19, 20, 21, 22, 23, 24,
-                        ],
-                      })
+                          disabledHours: () => [
+                            0, 1, 2, 3, 4, 5, 6, 7, 18, 19, 20, 21, 22, 23, 24,
+                          ],
+                        })
                       : () => ({
-                        disabledHours: () => [],
-                      })
+                          disabledHours: () => [],
+                        })
                   }
                   format={dateAdvFormat}
                   onChange={(value) =>

@@ -68,7 +68,7 @@ const ModalCreateRemoval: React.FC<Props> = (props) => {
       <Modal
         title={
           <span className="inline-block m-auto">
-            Submit Server Removal Request
+            Create Server Removal Request
           </span>
         }
         open={open}
@@ -106,7 +106,7 @@ const ModalCreateRemoval: React.FC<Props> = (props) => {
                 });
             }}
           >
-            Submit
+            Create
           </Button>,
         ]}
       >

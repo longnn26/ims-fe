@@ -211,7 +211,7 @@ const IpSubnet: React.FC = () => {
                       setOpenModalCreate(true);
                     }}
                   >
-                    Create
+                    Create IP Subnet
                   </Button>
                   <div>
                     {ipAddressData &&

@@ -206,7 +206,7 @@ const RequestExpand: React.FC = () => {
                       setOpenModalCreateRemoval(true);
                     }}
                   >
-                    Submit Server Removal Request
+                    Create Server Removal Request
                   </Button>
                 )}
 
@@ -222,7 +222,7 @@ const RequestExpand: React.FC = () => {
                       setOpenModalCreate(true);
                     }}
                   >
-                    Submit Server Allocation Request
+                    Create Server Allocation Request
                   </Button>
                 )}
               </div>

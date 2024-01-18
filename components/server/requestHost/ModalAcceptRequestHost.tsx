@@ -54,11 +54,7 @@ const ModalAcceptRequestHost: React.FC<Props> = (props) => {
   const accept = async (data: string) => {
     setLoading(true);
     await requestHost
-      .acceptRequestHost(
-        session?.user.access_token!,
-        requestHostId + "",
-        data
-      )
+      .acceptRequestHost(session?.user.access_token!, requestHostId + "", data)
       .then((res) => {
         message.success("Accept IP request successfully!", 1.5);
         form.resetFields();
@@ -100,11 +96,11 @@ const ModalAcceptRequestHost: React.FC<Props> = (props) => {
                   async onOk() {
                     accept(form.getFieldValue("saleNote"));
                   },
-                  onCancel() { },
+                  onCancel() {},
                 });
             }}
           >
-            Submit
+            Accept
           </Button>,
         ]}
       >
@@ -122,7 +118,11 @@ const ModalAcceptRequestHost: React.FC<Props> = (props) => {
                 label="Sales Staff Note"
                 rules={[{ max: 2000 }]}
               >
-                <Input.TextArea autoSize={{ minRows: 1, maxRows: 6 }} placeholder="Note" allowClear />
+                <Input.TextArea
+                  autoSize={{ minRows: 1, maxRows: 6 }}
+                  placeholder="Note"
+                  allowClear
+                />
               </Form.Item>
             </Form>
           </Spin>

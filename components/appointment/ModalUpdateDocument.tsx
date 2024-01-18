@@ -129,7 +129,7 @@ const ModalComplete: React.FC<Props> = (props) => {
                 });
             }}
           >
-            Submit
+            Update
           </Button>,
         ]}
       >

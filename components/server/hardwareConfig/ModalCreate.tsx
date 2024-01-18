@@ -1,7 +1,7 @@
 import React, { useRef, useState } from "react";
 import { Button, Input, Modal, Select, Space, Card, message, Spin } from "antd";
 import { Form } from "antd";
-import { CloseOutlined } from '@ant-design/icons';
+import { CloseOutlined } from "@ant-design/icons";
 import { SHCCreateModel } from "@models/serverHardwareConfig";
 import useSelector from "@hooks/use-selector";
 import { useRouter } from "next/router";
@@ -24,7 +24,9 @@ const ModalCreate: React.FC<Props> = (props) => {
   const { onSubmit, open, onClose } = props;
 
   const [confirmLoading, setConfirmLoading] = useState(false);
-  const [openModalCreate, setOpenModalCreate] = useState<boolean | undefined>(undefined);
+  const [openModalCreate, setOpenModalCreate] = useState<boolean | undefined>(
+    undefined
+  );
   const [loading, setLoading] = useState<boolean>(false);
 
   const disabled = async () => {
@@ -42,7 +44,7 @@ const ModalCreate: React.FC<Props> = (props) => {
         title={
           <span className="inline-block m-auto">Add Hardware Information</span>
         }
-        open={openModalCreate === undefined  ? open: openModalCreate}
+        open={openModalCreate === undefined ? open : openModalCreate}
         confirmLoading={confirmLoading}
         onCancel={() => {
           onClose();
@@ -64,11 +66,16 @@ const ModalCreate: React.FC<Props> = (props) => {
                       cpu: form.getFieldValue("cpu"),
                       ram: form.getFieldValue("ram"),
                       harddisk: form.getFieldValue("harddisk"),
-                      serverAllocationId: parseInt(router.query.serverAllocationId + ""),
+                      serverAllocationId: parseInt(
+                        router.query.serverAllocationId + ""
+                      ),
                     } as SHCCreateModel;
                     setLoading(true);
                     await serverHardwareConfigService
-                      .createServerHardwareConfig(session?.user.access_token!, formData)
+                      .createServerHardwareConfig(
+                        session?.user.access_token!,
+                        formData
+                      )
                       .then((res) => {
                         form.resetFields();
                         setOpenModalCreate(undefined);
@@ -84,11 +91,11 @@ const ModalCreate: React.FC<Props> = (props) => {
                         onSubmit();
                       });
                   },
-                  onCancel() { },
+                  onCancel() {},
                 });
             }}
           >
-            Submit
+            Create
           </Button>,
         ]}
       >
@@ -104,22 +111,13 @@ const ModalCreate: React.FC<Props> = (props) => {
                   style={{ width: "100%" }}
                   name="dynamic_form_complex"
                 >
-                  <Form.Item
-                    label="CPU"
-                    labelAlign="left"
-                  >
+                  <Form.Item label="CPU" labelAlign="left">
                     <Input.TextArea />
                   </Form.Item>
-                  <Form.Item
-                    labelAlign="left"
-                    label="Memory"
-                  >
+                  <Form.Item labelAlign="left" label="Memory">
                     <Input.TextArea />
                   </Form.Item>
-                  <Form.Item
-                    labelAlign="left"
-                    label="Storage"
-                  >
+                  <Form.Item labelAlign="left" label="Storage">
                     <Input.TextArea />
                   </Form.Item>
                 </Form>

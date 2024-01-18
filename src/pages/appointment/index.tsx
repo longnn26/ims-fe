@@ -224,7 +224,7 @@ const Appoinment: React.FC = () => {
                     setOpenModalCreate(true);
                   }}
                 >
-                  Create
+                  Create Appointment
                 </Button>
                 <ModalCreate
                   open={openModalCreate}

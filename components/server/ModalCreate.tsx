@@ -71,9 +71,7 @@ const ModalCreate: React.FC<Props> = (props) => {
   return (
     <>
       <Modal
-        title={
-          <span className="inline-block m-auto">Create server</span>
-        }
+        title={<span className="inline-block m-auto">Create server</span>}
         open={openModalCreate === undefined ? open : openModalCreate}
         confirmLoading={confirmLoading}
         onCancel={() => {
@@ -101,10 +99,7 @@ const ModalCreate: React.FC<Props> = (props) => {
                     setLoadingSubmit(true);
                     // Gọi hàm getCustomerServerData với id của người dùng
                     await serverAllocationService
-                      .createServerAllocation(
-                        session?.user.access_token!,
-                        data
-                      )
+                      .createServerAllocation(session?.user.access_token!, data)
                       .then(() => {
                         message.success("Create successfully!", 1.5);
                         form.resetFields();
@@ -112,18 +107,18 @@ const ModalCreate: React.FC<Props> = (props) => {
                         onClose();
                       })
                       .catch((errors) => {
-                        message.error(errors.response.data, 1.5)
+                        message.error(errors.response.data, 1.5);
                         setOpenModalCreate(true);
                       })
                       .finally(() => {
                         setLoadingSubmit(false);
-                      })
+                      });
                   },
                   onCancel() {},
                 });
             }}
           >
-            Submit
+            Create
           </Button>,
         ]}
       >
@@ -162,15 +157,15 @@ const ModalCreate: React.FC<Props> = (props) => {
                 },
                 {
                   validator: (_, value) => {
-                    const powerValue = parseInt(value, 10);            
+                    const powerValue = parseInt(value, 10);
                     if (powerValue < 100) {
                       return Promise.reject("Power must be at least 100 W");
                     }
-            
+
                     if (powerValue > 9999) {
                       return Promise.reject("Power must be at most 9999 W");
                     }
-            
+
                     return Promise.resolve();
                   },
                 },
@@ -185,7 +180,7 @@ const ModalCreate: React.FC<Props> = (props) => {
                 {
                   min: 6,
                   max: 30,
-                }
+                },
               ]}
             >
               <Input placeholder="Part Number" allowClear />
@@ -196,7 +191,7 @@ const ModalCreate: React.FC<Props> = (props) => {
               rules={[
                 {
                   max: 2000,
-                }
+                },
               ]}
             >
               <Input placeholder="Note" allowClear />

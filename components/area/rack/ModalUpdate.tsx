@@ -82,7 +82,7 @@ const ModalUpdate: React.FC<Props> = (props) => {
                 });
             }}
           >
-            Submit
+            Update
           </Button>,
         ]}
       >
@@ -115,11 +115,7 @@ const ModalUpdate: React.FC<Props> = (props) => {
             >
               <Input placeholder="Column" allowClear />
             </Form.Item>
-            <Form.Item
-              name="row"
-              label="Row"
-              rules={[{ required: true }]}
-            >
+            <Form.Item name="row" label="Row" rules={[{ required: true }]}>
               <Input placeholder="RÏow" allowClear />
             </Form.Item>
             <Form.Item

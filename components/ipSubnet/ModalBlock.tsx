@@ -82,9 +82,9 @@ const ModalBlock: React.FC<Props> = (props) => {
       .then((data) => {
         setTotalPageCus(data.totalPage);
         setPageIndexCus(data.pageIndex);
-        first === true ?
-        setIpAddresses(data.data) :
-        setIpAddresses([...ipAddresses, ...data.data]);
+        first === true
+          ? setIpAddresses(data.data)
+          : setIpAddresses([...ipAddresses, ...data.data]);
       });
   };
 
@@ -122,11 +122,11 @@ const ModalBlock: React.FC<Props> = (props) => {
                       form.getFieldValue("ids")
                     );
                   },
-                  onCancel() { },
+                  onCancel() {},
                 });
             }}
           >
-            Submit
+            Block
           </Button>,
         ]}
       >
@@ -173,7 +173,7 @@ const ModalBlock: React.FC<Props> = (props) => {
                     const { target } = e;
                     if (
                       (target as any).scrollTop +
-                      (target as any).offsetHeight ===
+                        (target as any).offsetHeight ===
                       (target as any).scrollHeight
                     ) {
                       if (pageIndexCus < totalPageCus) {
@@ -184,7 +184,13 @@ const ModalBlock: React.FC<Props> = (props) => {
                 >
                   {ipAddresses.map((l, index) => (
                     <Option key={l.id} value={l.id}>
-                      {`${l.address} ${l.serverAllocation !== null ? `- Server ${l.serverAllocation.name} ${l.assignmentType === "Master" ? `- Master IP` : ``}` : ``}`}
+                      {`${l.address} ${
+                        l.serverAllocation !== null
+                          ? `- Server ${l.serverAllocation.name} ${
+                              l.assignmentType === "Master" ? `- Master IP` : ``
+                            }`
+                          : ``
+                      }`}
                     </Option>
                   ))}
                 </Select>

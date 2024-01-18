@@ -1,9 +1,18 @@
 import React, { useRef, useState, useEffect } from "react";
-import { Button, Input, Modal, Select, Spin, Upload, UploadFile, message } from "antd";
+import {
+  Button,
+  Input,
+  Modal,
+  Select,
+  Spin,
+  Upload,
+  UploadFile,
+  message,
+} from "antd";
 import { Form } from "antd";
 import useSelector from "@hooks/use-selector";
 import { RequestHostCreateModel } from "@models/requestHost";
-import { UploadOutlined } from '@ant-design/icons';
+import { UploadOutlined } from "@ant-design/icons";
 
 import { useSession } from "next-auth/react";
 import requestHostService from "@services/requestHost";
@@ -44,7 +53,7 @@ const ModalCreate: React.FC<Props> = (props) => {
   const [ipAddresses, setIpAddresses] = useState<IpAddress[]>([]);
   const [requestType, setRequestType] = useState<string | undefined>(undefined);
   const [fileUpload, setFileUpload] = useState<UploadFile[]>([]);
-  const [disabledFileUpload, setDisabledFileUpload] =  useState<boolean>(false);
+  const [disabledFileUpload, setDisabledFileUpload] = useState<boolean>(false);
 
   const disabled = async () => {
     var result = false;
@@ -73,17 +82,16 @@ const ModalCreate: React.FC<Props> = (props) => {
       });
   };
 
-  const createRequest = async (formData: RequestHostCreateModel, ipData: number[]) => {
+  const createRequest = async (
+    formData: RequestHostCreateModel,
+    ipData: number[]
+  ) => {
     setLoading(true);
     await requestHostService
       .createData(session?.user.access_token!, formData)
       .then(async (res) => {
         await requestHostService
-          .saveProvideIps(
-            session?.user.access_token!,
-            res.id,
-            ipData
-          )
+          .saveProvideIps(session?.user.access_token!, res.id, ipData)
           .then((res) => {
             message.success("Create successfully!", 1.5);
             form.resetFields();
@@ -93,7 +101,7 @@ const ModalCreate: React.FC<Props> = (props) => {
           .catch((errors) => {
             setOpenModal(true);
             message.error(errors.response.data, 1.5);
-          })
+          });
       })
       .catch((errors) => {
         setOpenModal(true);
@@ -102,7 +110,7 @@ const ModalCreate: React.FC<Props> = (props) => {
       .finally(() => {
         setLoading(false);
       });
-  }
+  };
 
   useEffect(() => {
     // Khi requestType thay đổi, reset selectedCapacities và hiển thị/ẩn quantity
@@ -153,9 +161,13 @@ const ModalCreate: React.FC<Props> = (props) => {
                       type: form.getFieldValue("type"),
                       quantity: form.getFieldValue("ipAddressIds")?.length || 0,
                       note: form.getFieldValue("note"),
-                      serverAllocationId: parseInt(router.query.serverAllocationId + ""),
-                      removalRequestDocument: form.getFieldValue("upload").fileList[0].originFileObj,
-                      removalRequestDocumentFileName: "Công văn ngưng (dịch vụ IP)"
+                      serverAllocationId: parseInt(
+                        router.query.serverAllocationId + ""
+                      ),
+                      removalRequestDocument:
+                        form.getFieldValue("upload").fileList[0].originFileObj,
+                      removalRequestDocumentFileName:
+                        "Công văn ngưng (dịch vụ IP)",
                     } as RequestHostCreateModel;
 
                     ipData = form
@@ -165,11 +177,11 @@ const ModalCreate: React.FC<Props> = (props) => {
 
                     createRequest(formData, ipData);
                   },
-                  onCancel() { },
+                  onCancel() {},
                 });
             }}
           >
-            Submit
+            Create
           </Button>,
         ]}
       >
@@ -223,7 +235,9 @@ const ModalCreate: React.FC<Props> = (props) => {
                         onPopupScroll={async (e: any) => {
                           const { target } = e;
                           if (
-                            (target as any).scrollTop + (target as any).offsetHeight === (target as any).scrollHeight
+                            (target as any).scrollTop +
+                              (target as any).offsetHeight ===
+                            (target as any).scrollHeight
                           ) {
                             if (pageIndexCus < totalPageCus) {
                               getMoreIp();
@@ -233,20 +247,21 @@ const ModalCreate: React.FC<Props> = (props) => {
                       >
                         {requestType === "Additional"
                           ? ipAddresses
-                            .filter((l) => l.assignmentType === "Additional")
-                            .map((l, index) => (
-                              <Option value={l.id} key={index}>
-                                {`${l.address}`}
-                              </Option>
-                            ))
+                              .filter((l) => l.assignmentType === "Additional")
+                              .map((l, index) => (
+                                <Option value={l.id} key={index}>
+                                  {`${l.address}`}
+                                </Option>
+                              ))
                           : ipAddresses
-                            .filter((l) => l.assignmentType === "Port")
-                            .map((l, index) => (
-                              <Option value={l.id} key={index}>
-                                {`${l.address} - ${l.capacity! === 0.1 ? "100 Mbps" : "1 GBps"
+                              .filter((l) => l.assignmentType === "Port")
+                              .map((l, index) => (
+                                <Option value={l.id} key={index}>
+                                  {`${l.address} - ${
+                                    l.capacity! === 0.1 ? "100 Mbps" : "1 GBps"
                                   }`}
-                              </Option>
-                            ))}
+                                </Option>
+                              ))}
                       </Select>
                     </Form.Item>
                   </>

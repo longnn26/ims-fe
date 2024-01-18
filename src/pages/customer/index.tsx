@@ -161,7 +161,7 @@ const Customer: React.FC = () => {
                   setOpenModalCreate(true);
                 }}
               >
-                Create
+                Create Customer
               </Button>
             )}
             {!areInArray(session?.user.roles!, ROLE_SALES) && (
