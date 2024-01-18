@@ -521,9 +521,9 @@ const RequestExpandDetail: React.FC = () => {
                       setOpenModalUpdate(false);
                       setSuggestLocation(undefined);
                     }}
-                    onSubmit={(value) => {
-                      updateData(value);
+                    onSubmit={() => {
                       setOpenModalUpdate(false);
+                      getData();
                     }}
                   />
                 </>
