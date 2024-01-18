@@ -16,7 +16,7 @@ const IncidentDetailInfo: React.FC<Props> = (props) => {
       <Divider orientation="left" plain>
         <h3>Incident Information</h3>
       </Divider>{" "}
-      <Descriptions className="p-5">
+      <Descriptions className="p-5" column={2}>
         <Descriptions.Item label="Status">
           {incidentDetail.isResolved ? (
             <Badge status="success" text="Resolved" />
@@ -30,7 +30,7 @@ const IncidentDetailInfo: React.FC<Props> = (props) => {
           </Descriptions.Item>
         )}
 
-        <Descriptions.Item label="Description" span={4}>
+        <Descriptions.Item label="Warning" span={1}>
           {incidentDetail?.description}
         </Descriptions.Item>
         <Descriptions.Item label="Solution" span={4}>
@@ -41,10 +41,10 @@ const IncidentDetailInfo: React.FC<Props> = (props) => {
           {incidentDetail?.executor?.fullname}
         </Descriptions.Item>
 
-        <Descriptions.Item label="Date Request" span={0}>
+        <Descriptions.Item label="Date Created" span={0}>
           {moment(incidentDetail?.dateCreated).format(dateAdvFormat)}
         </Descriptions.Item>
-        <Descriptions.Item label="Nearest Updated " span={2}>
+        <Descriptions.Item label="Nearest Updated " span={1}>
           {moment(incidentDetail?.dateUpdated).format(dateAdvFormat)}
         </Descriptions.Item>
       </Descriptions>

@@ -129,7 +129,7 @@ const Area: React.FC = () => {
                       setOpenModalCreate(true);
                     }}
                   >
-                    Create
+                    Create Area
                   </Button>
                 )}
                 {!areInArray(session?.user.roles!, ROLE_TECH) && (
