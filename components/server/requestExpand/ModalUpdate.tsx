@@ -29,6 +29,7 @@ import { ParamGet } from "@models/base";
 import { Rack } from "@models/rack";
 import { BsFillHddNetworkFill } from "react-icons/bs";
 import { error } from "console";
+import { useRouter } from "next/router";
 
 const { confirm } = Modal;
 const { Option } = Select;
@@ -37,20 +38,20 @@ interface Props {
   requestExpand: RequestExpand;
   suggestLocation?: SuggestLocation;
   onClose: () => void;
-  onSubmit: (data: RequestExpandUpdateModel) => void;
+  onSubmit: () => void;
   onSaveLocation: (data: RequestedLocation) => void;
   open: boolean;
 }
 
 const ModalUpdate: React.FC<Props> = (props) => {
   const formRef = useRef(null);
+  const router = useRouter();
   const { data: session } = useSession();
   const [form] = Form.useForm();
   const {
     onSubmit,
     requestExpand,
     onClose,
-    suggestLocation,
     onSaveLocation,
     open,
   } = props;
@@ -73,6 +74,7 @@ const ModalUpdate: React.FC<Props> = (props) => {
   const [areaList, setAreaList] = useState<Area[]>([]);
   const [selectedArea, setSelectedArea] = useState<number>();
   const [loading, setLoading] = useState<boolean>(false);
+  const [suggestLocation, setSuggestLocation] = useState<SuggestLocation>();
 
   const disabled = async () => {
     var result = false;
@@ -149,6 +151,33 @@ const ModalUpdate: React.FC<Props> = (props) => {
       });
   };
 
+  const updateData = async (data: RequestExpandUpdateModel) => {
+    await requestExpandService
+      .updateData(session?.user.access_token!, data)
+      .then(async (res) => {
+        message.success("Update successfully!", 1.5);
+        await requestExpandService
+          .getDetail(
+            session?.user.access_token!,
+            router.query.requestExpandId + ""
+          )
+          .then(async (res) => {
+              await requestExpandService
+                .getSuggestLocation(
+                  session?.user.access_token!,
+                  res?.id!
+                )
+                .then((res) => {
+                  setSuggestLocation(res);
+                })
+                .catch((e) => {});
+          });
+      })
+      .catch((errors) => {
+        message.error(errors.response.data, 1.5);
+      });
+  };
+
   useEffect(() => {
     if (session) {
       setFieldsValueInitial();
@@ -211,7 +240,7 @@ const ModalUpdate: React.FC<Props> = (props) => {
                       confirm({
                         title: "Do you want to save?",
                         async onOk() {
-                          onSubmit({
+                          updateData({
                             id: requestExpand.id,
                             size: Number.parseInt(form.getFieldValue("size")),
                             techNote: form.getFieldValue("techNote"),
@@ -402,7 +431,6 @@ const ModalUpdate: React.FC<Props> = (props) => {
                     loading={confirmLoading}
                     type="primary"
                     disabled={loading}
-                    icon={<BsFillHddNetworkFill />}
                     onClick={() => {
                       confirm({
                         title: "Do you want to save?",

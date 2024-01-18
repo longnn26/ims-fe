@@ -158,46 +158,6 @@ const RequestExpandDetail: React.FC = () => {
     });
   };
 
-  const updateData = async (data: RequestExpandUpdateModel) => {
-    await requestExpandService
-      .updateData(session?.user.access_token!, data)
-      .then(async (res) => {
-        message.success("Update successfully!", 1.5);
-        await requestExpandService
-          .getDetail(
-            session?.user.access_token!,
-            router.query.requestExpandId + ""
-          )
-          .then(async (res) => {
-            await serverAllocationService
-              .getServerAllocationById(
-                session?.user.access_token!,
-                res.serverAllocationId + ""
-              )
-              .then((res) => {
-                setServerAllocationDetail(res);
-              });
-            setRequestExpandDetail(res);
-            setRequestExpandUpdate(res);
-            if (!res?.requestedLocation && res?.size! > 0) {
-              await requestExpandService
-                .getSuggestLocation(
-                  session?.user.access_token!,
-                  requestExpandDetail?.id!
-                )
-                .then((res) => {
-                  setSuggestLocation(res);
-                })
-                .catch((e) => {});
-            }
-          });
-        // getData();
-      })
-      .catch((errors) => {
-        message.error(errors.response.data, 1.5);
-      });
-  };
-
   const saveLocation = async (data: RequestedLocation) => {
     await requestExpandService
       .saveLocation(session?.user.access_token!, requestExpandUpdate?.id!, data)
@@ -406,9 +366,9 @@ const RequestExpandDetail: React.FC = () => {
                   setOpenModalUpdate(false);
                   setSuggestLocation(undefined);
                 }}
-                onSubmit={(value) => {
+                onSubmit={() => {
                   setOpenModalUpdate(false);
-                  updateData(value);
+                  getData();
                 }}
               />
               <ModalAcceptExpand
