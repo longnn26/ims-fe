@@ -129,7 +129,7 @@ const ModalComplete: React.FC<Props> = (props) => {
                       // location: form.getFieldValue("location"),
                       username: form.getFieldValue("username")
                         ? form.getFieldValue("username")
-                        : "abc",
+                        : ".",
                       isSendMS: form.getFieldValue("isSendMS")
                         ? form.getFieldValue("isSendMS")
                         : false,
@@ -139,10 +139,10 @@ const ModalComplete: React.FC<Props> = (props) => {
                         : false,
                       note: form.getFieldValue("note")
                         ? form.getFieldValue("note")
-                        : "Không có note",
+                        : ".",
                       deviceCondition: form.getFieldValue("deviceCondition")
                         ? form.getFieldValue("deviceCondition")
-                        : "abc",
+                        : ".",
                     } as DocumentModelAppointment;
 
                     var model = {
