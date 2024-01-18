@@ -105,7 +105,7 @@ const RequestDetail: React.FC = () => {
             requestUpgradeDetail?.id + ""
           )
           .then((res) => {
-            message.success("Reject Request successfully!", 1.5);
+            message.success("Failed Request successfully!", 1.5);
             getData();
           })
           .catch((errors) => {

@@ -41,7 +41,7 @@ const ModalRejectHost: React.FC<Props> = (props) => {
     await requestHost
       .rejectRequestHost(session?.user.access_token!, requestHostId, data)
       .then((res) => {
-        message.success("Reject IP Request successfully!", 1.5);
+        message.success("Failed IP Request successfully!", 1.5);
         onRefresh();
         onClose();
         form.resetFields();

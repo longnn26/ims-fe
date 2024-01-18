@@ -102,7 +102,7 @@ const ModalCreate: React.FC<Props> = (props) => {
         <div className="flex max-w-md flex-col gap-4 m-auto">
           {loading === true && (
             <>
-              <Spin size="large" tip="Adding hardware information">
+              <Spin size="large" tip="Adding hardware information...">
                 <Form
                   ref={formRef}
                   form={form}

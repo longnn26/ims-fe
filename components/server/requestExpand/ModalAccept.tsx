@@ -90,7 +90,7 @@ const ModalAcceptExpand: React.FC<Props> = (props) => {
         ]}
       >
         <div className="flex max-w-md flex-col gap-4 m-auto">
-          <Spin spinning={loading} tip="Denying request..." size="large">
+          <Spin spinning={loading} tip="Accepting request..." size="large">
             <Form
               ref={formRef}
               form={form}

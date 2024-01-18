@@ -120,7 +120,7 @@ const ModalUnreserve: React.FC<Props> = (props) => {
           </Button>,
         ]}
       >
-        <Spin spinning={loading} tip="Reserve" size="large">
+        <Spin spinning={loading} tip="Unreserving locations..." size="large">
           <div className="flex max-w-md flex-col gap-4 m-auto">
             <Form
               ref={formRef}
