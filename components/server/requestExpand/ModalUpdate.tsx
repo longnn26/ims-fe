@@ -131,11 +131,11 @@ const ModalUpdate: React.FC<Props> = (props) => {
       });
   };
 
-  const assignLocation = async (locationId: number) => {
+  const assignLocation = async (rackId: number, locationId: number) => {
     setLoading(true);
     await requestExpandService
       .saveLocation(session?.user.access_token!, parseInt(router.query.requestExpandId+""), {
-        rackId: selectedRack,
+        rackId: rackId,
         startPosition: locationId,
       } as RequestedLocation)
       .then((res) => {
@@ -288,10 +288,11 @@ const ModalUpdate: React.FC<Props> = (props) => {
                       type="text"
                       icon={<SaveOutlined />}
                       onClick={() => {
-                        onSaveLocation({
-                          rackId: suggestLocation?.rack.id!,
-                          startPosition: suggestLocation?.position!,
-                        });
+                        // onSaveLocation({
+                        //   rackId: suggestLocation?.rack.id!,
+                        //   startPosition: suggestLocation?.position!,
+                        // });
+                        assignLocation(suggestLocation?.rack.id!, suggestLocation?.position!);
                       }}
                     >
                       Save
@@ -435,7 +436,7 @@ const ModalUpdate: React.FC<Props> = (props) => {
                       confirm({
                         title: "Do you want to save?",
                         async onOk() {
-                          assignLocation(selectedLocation);
+                          assignLocation(selectedRack!, selectedLocation);
                         },
                         onCancel() {},
                       });

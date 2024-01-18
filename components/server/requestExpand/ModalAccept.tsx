@@ -101,7 +101,7 @@ const ModalAcceptExpand: React.FC<Props> = (props) => {
               <Form.Item
                 name="saleNote"
                 label="Sales Staff Note "
-                rules={[{ required: true, max: 2000 }]}
+                rules={[{ max: 2000 }]}
               >
                 <Input.TextArea
                   autoSize={{ minRows: 1, maxRows: 6 }}

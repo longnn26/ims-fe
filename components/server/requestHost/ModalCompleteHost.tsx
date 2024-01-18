@@ -75,6 +75,7 @@ const ModalCompletetHost: React.FC<Props> = (props) => {
             // loading={loadingSubmit}
             className="btn-submit"
             key="submit"
+            disabled={loading}
             onClick={async () => {
               if (!(await disabled()))
                 confirm({
@@ -102,8 +103,8 @@ const ModalCompletetHost: React.FC<Props> = (props) => {
               <Form
                 ref={formRef}
                 form={form}
-                labelCol={{ span: 10 }}
-                wrapperCol={{ span: 14 }}
+                labelCol={{ span: 8 }}
+                wrapperCol={{ span: 20 }}
                 style={{ width: "100%" }}
               >
                 {/* <Form.Item name="good" label="Good">

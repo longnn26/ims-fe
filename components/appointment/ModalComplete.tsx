@@ -118,6 +118,7 @@ const ModalComplete: React.FC<Props> = (props) => {
             // loading={confirmLoading}
             className="btn-submit"
             key="submit"
+            disabled={loading}
             onClick={async () => {
               if (!(await disabled()))
                 confirm({
