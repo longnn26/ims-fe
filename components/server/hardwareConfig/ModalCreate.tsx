@@ -95,7 +95,7 @@ const ModalCreate: React.FC<Props> = (props) => {
                 });
             }}
           >
-            Create
+            Add
           </Button>,
         ]}
       >
