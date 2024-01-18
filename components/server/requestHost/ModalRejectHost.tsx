@@ -84,7 +84,7 @@ const ModalRejectHost: React.FC<Props> = (props) => {
                 });
             }}
           >
-            Submit
+            Reject
           </Button>,
         ]}
       >

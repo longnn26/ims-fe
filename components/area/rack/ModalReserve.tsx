@@ -76,8 +76,8 @@ const ModalReserve: React.FC<Props> = (props) => {
       .then(async (data) => {
         setTotalPage(data.totalPage);
         paramGet.PageIndex = data.pageIndex;
-        isFirst === true ?
-          setLocationList([...data.data])
+        isFirst === true
+          ? setLocationList([...data.data])
           : setLocationList([...locationList, ...data.data]);
       });
   };
@@ -109,11 +109,11 @@ const ModalReserve: React.FC<Props> = (props) => {
                   async onOk() {
                     reverse(form.getFieldValue("ids"));
                   },
-                  onCancel() { },
+                  onCancel() {},
                 });
             }}
           >
-            Submit
+            Reserve
           </Button>,
         ]}
       >
@@ -149,7 +149,7 @@ const ModalReserve: React.FC<Props> = (props) => {
                     const { target } = e;
                     if (
                       (target as any).scrollTop +
-                      (target as any).offsetHeight ===
+                        (target as any).offsetHeight ===
                       (target as any).scrollHeight
                     ) {
                       if (paramGet.PageIndex < totalPage) {
@@ -160,7 +160,9 @@ const ModalReserve: React.FC<Props> = (props) => {
                 >
                   {locationList.map((l, index) => (
                     <Option key={l.id} value={l.id} label={l.id}>
-                      {`${l?.rack.area.name}${l?.rack.row + 1} - ${l?.rack.column + 1} U${l.position + 1}`}
+                      {`${l?.rack.area.name}${l?.rack.row + 1} - ${
+                        l?.rack.column + 1
+                      } U${l.position + 1}`}
                     </Option>
                   ))}
                 </Select>

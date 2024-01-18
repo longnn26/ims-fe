@@ -1,129 +1,129 @@
-  import React, { useEffect, useRef, useState } from "react";
-  import { Button, Input, Modal, Select } from "antd";
-  import { Form } from "antd";
-  import { SAUpdateModel, ServerAllocation } from "@models/serverAllocation";
-  import { optionStatus, serverAllocationStatus } from "@utils/constants";
-  const { confirm } = Modal;
+import React, { useEffect, useRef, useState } from "react";
+import { Button, Input, Modal, Select } from "antd";
+import { Form } from "antd";
+import { SAUpdateModel, ServerAllocation } from "@models/serverAllocation";
+import { optionStatus, serverAllocationStatus } from "@utils/constants";
+const { confirm } = Modal;
 
-  interface Props {
-    serverAllocation: ServerAllocation;
-    onClose: () => void;
-    onSubmit: (saCreateModel: SAUpdateModel) => void;
-  }
+interface Props {
+  serverAllocation: ServerAllocation;
+  onClose: () => void;
+  onSubmit: (saCreateModel: SAUpdateModel) => void;
+}
 
-  const ModalUpdate: React.FC<Props> = (props) => {
-    const formRef = useRef(null);
-    const [form] = Form.useForm();
-    const { onSubmit, serverAllocation, onClose } = props;
+const ModalUpdate: React.FC<Props> = (props) => {
+  const formRef = useRef(null);
+  const [form] = Form.useForm();
+  const { onSubmit, serverAllocation, onClose } = props;
 
-    const [confirmLoading, setConfirmLoading] = useState(false);
+  const [confirmLoading, setConfirmLoading] = useState(false);
 
-    const disabled = async () => {
-      var result = false;
-      try {
-        await form.validateFields();
-      } catch (errorInfo) {
-        result = true;
-      }
-      return result;
-    };
+  const disabled = async () => {
+    var result = false;
+    try {
+      await form.validateFields();
+    } catch (errorInfo) {
+      result = true;
+    }
+    return result;
+  };
 
-    const setFieldsValueInitial = () => {
-      if (formRef.current)
-        form.setFieldsValue({
-          id: serverAllocation.id,
-          name: serverAllocation.name,
-          power: serverAllocation.power,
-          serialNumber: serverAllocation.serialNumber,
-          techNote: serverAllocation.techNote,
-          partNumber: serverAllocation.partNumber,
-          note: serverAllocation.note,
-          // status: serverAllocation?.status
-          //   ? {
-          //       value: serverAllocation?.status,
-          //       label: serverAllocation?.status,
-          //     }
-          //   : undefined,
-        });
-    };
+  const setFieldsValueInitial = () => {
+    if (formRef.current)
+      form.setFieldsValue({
+        id: serverAllocation.id,
+        name: serverAllocation.name,
+        power: serverAllocation.power,
+        serialNumber: serverAllocation.serialNumber,
+        techNote: serverAllocation.techNote,
+        partNumber: serverAllocation.partNumber,
+        note: serverAllocation.note,
+        // status: serverAllocation?.status
+        //   ? {
+        //       value: serverAllocation?.status,
+        //       label: serverAllocation?.status,
+        //     }
+        //   : undefined,
+      });
+  };
 
-    useEffect(() => {
-      // refresh after submit for fileList
-      if (serverAllocation) {
-        setFieldsValueInitial();
-      }
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [serverAllocation]);
+  useEffect(() => {
+    // refresh after submit for fileList
+    if (serverAllocation) {
+      setFieldsValueInitial();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [serverAllocation]);
 
-    return (
-      <>
-        <Modal
-          title={
-            <span className="inline-block m-auto">
-              {"Edit Server's Information"}
-            </span>
-          }
-          open={Boolean(serverAllocation)}
-          confirmLoading={confirmLoading}
-          onCancel={() => {
-            onClose();
-          }}
-          footer={[
-            <Button
-              // loading={loadingSubmit}
-              className="btn-submit"
-              key="submit"
-              onClick={async () => {
-                if (!(await disabled()))
-                  confirm({
-                    title: "Do you want to save?",
-                    async onOk() {
-                      onSubmit({
-                        id: form.getFieldValue("id"),
-                        name: form.getFieldValue("name"),
-                        power: form.getFieldValue("power"),
-                        partNumber: form.getFieldValue("partNumber"),
-                        serialNumber: form.getFieldValue("serialNumber"),
-                        techNote: form.getFieldValue("techNote"),
-                      } as SAUpdateModel);
-                      form.resetFields();
-                    },
-                    onCancel() { },
-                  });
-              }}
-            >
-              Submit
-            </Button>,
-          ]}
-        >
-          <div className="flex max-w-md flex-col gap-4 m-auto">
-            <Form
-              ref={formRef}
-              form={form}
-              labelCol={{ span: 10 }}
-              wrapperCol={{ span: 14 }}
-              style={{ width: "100%" }}
-            >
-              <Form.Item label="Customer">
-                <Input.TextArea
-                  value={serverAllocation?.customer?.companyName}
-                  autoSize={{ minRows: 1, maxRows: 6 }}
-                  readOnly
-                  disabled
-                />
-              </Form.Item>
-              <Form.Item label="Customer Note">
-                <Input.TextArea
-                  value={serverAllocation?.note}
-                  autoSize={{ minRows: 1, maxRows: 6 }}
-                  readOnly
-                  disabled
-                />
-              </Form.Item>
-              <Form.Item
-                name="serialNumber"
-                label="Serial Number"
-                rules={[{ required: true, min: 6, max: 255 }]}
+  return (
+    <>
+      <Modal
+        title={
+          <span className="inline-block m-auto">
+            {"Edit Server's Information"}
+          </span>
+        }
+        open={Boolean(serverAllocation)}
+        confirmLoading={confirmLoading}
+        onCancel={() => {
+          onClose();
+        }}
+        footer={[
+          <Button
+            // loading={loadingSubmit}
+            className="btn-submit"
+            key="submit"
+            onClick={async () => {
+              if (!(await disabled()))
+                confirm({
+                  title: "Do you want to save?",
+                  async onOk() {
+                    onSubmit({
+                      id: form.getFieldValue("id"),
+                      name: form.getFieldValue("name"),
+                      power: form.getFieldValue("power"),
+                      partNumber: form.getFieldValue("partNumber"),
+                      serialNumber: form.getFieldValue("serialNumber"),
+                      techNote: form.getFieldValue("techNote"),
+                    } as SAUpdateModel);
+                    form.resetFields();
+                  },
+                  onCancel() {},
+                });
+            }}
+          >
+            Update
+          </Button>,
+        ]}
+      >
+        <div className="flex max-w-md flex-col gap-4 m-auto">
+          <Form
+            ref={formRef}
+            form={form}
+            labelCol={{ span: 10 }}
+            wrapperCol={{ span: 14 }}
+            style={{ width: "100%" }}
+          >
+            <Form.Item label="Customer">
+              <Input.TextArea
+                value={serverAllocation?.customer?.companyName}
+                autoSize={{ minRows: 1, maxRows: 6 }}
+                readOnly
+                disabled
+              />
+            </Form.Item>
+            <Form.Item label="Customer Note">
+              <Input.TextArea
+                value={serverAllocation?.note}
+                autoSize={{ minRows: 1, maxRows: 6 }}
+                readOnly
+                disabled
+              />
+            </Form.Item>
+            <Form.Item
+              name="serialNumber"
+              label="Serial Number"
+              rules={[{ required: true, min: 6, max: 255 }]}
               // rules={[
               //   { required: true },
 
@@ -132,60 +132,60 @@
               //     message: "Server Serial Number no more than 2000 words",
               //   },
               // ]}
-              >
-                <Input.TextArea
-                  value={serverAllocation?.serialNumber}
-                  autoSize={{ minRows: 1, maxRows: 6 }}
-                  placeholder="Serial Number"
-                  allowClear
-                />
-              </Form.Item>
-              <Form.Item
-                name="name"
-                label="Server Name"
-                rules={[{ required: true, min: 6, max: 255 }]}
-              >
-                <Input placeholder="Server Name" allowClear />
-              </Form.Item>
-              <Form.Item
-                name="power"
-                label="Server Power (W)"
-                rules={[
-                  {
-                    required: true,
-                  },
-                  {
-                    pattern: new RegExp(/^(100|[1-9]\d{2,})$/),
-                    message:
-                      "Power must be a number greater than or equal to 100",
-                  },
-                ]}
-              >
-                <Input placeholder="Power" allowClear />
-              </Form.Item>
-              <Form.Item
-                name="partNumber"
-                label="Part Number"
-                rules={[
-                  {
-                    min: 6,
-                    max: 30,
-                  }
-                ]}
-              >
-                <Input placeholder="Part Number" allowClear />
-              </Form.Item>
-              <Form.Item
-                name="techNote"
-                label="Technical Note"
-                rules={[{ max: 2000 }]}
-              >
-                <Input placeholder="Technical Note" allowClear />
-              </Form.Item>
-              {/* <Form.Item name="note" label="Note">
+            >
+              <Input.TextArea
+                value={serverAllocation?.serialNumber}
+                autoSize={{ minRows: 1, maxRows: 6 }}
+                placeholder="Serial Number"
+                allowClear
+              />
+            </Form.Item>
+            <Form.Item
+              name="name"
+              label="Server Name"
+              rules={[{ required: true, min: 6, max: 255 }]}
+            >
+              <Input placeholder="Server Name" allowClear />
+            </Form.Item>
+            <Form.Item
+              name="power"
+              label="Server Power (W)"
+              rules={[
+                {
+                  required: true,
+                },
+                {
+                  pattern: new RegExp(/^(100|[1-9]\d{2,})$/),
+                  message:
+                    "Power must be a number greater than or equal to 100",
+                },
+              ]}
+            >
+              <Input placeholder="Power" allowClear />
+            </Form.Item>
+            <Form.Item
+              name="partNumber"
+              label="Part Number"
+              rules={[
+                {
+                  min: 6,
+                  max: 30,
+                },
+              ]}
+            >
+              <Input placeholder="Part Number" allowClear />
+            </Form.Item>
+            <Form.Item
+              name="techNote"
+              label="Technical Note"
+              rules={[{ max: 2000 }]}
+            >
+              <Input placeholder="Technical Note" allowClear />
+            </Form.Item>
+            {/* <Form.Item name="note" label="Note">
                 <Input placeholder="Note" disabled />
               </Form.Item> */}
-              {/* <Form.Item
+            {/* <Form.Item
                 name="status"
                 label="Status"
                 labelAlign="right"
@@ -197,11 +197,11 @@
                   options={serverAllocationStatus}
                 />
               </Form.Item> */}
-            </Form>
-          </div>
-        </Modal>
-      </>
-    );
-  };
+          </Form>
+        </div>
+      </Modal>
+    </>
+  );
+};
 
-  export default ModalUpdate;
+export default ModalUpdate;

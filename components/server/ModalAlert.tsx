@@ -13,7 +13,6 @@ interface Props {
   serverAllocation: ServerAllocation;
   onClose: () => void;
   onSubmit: () => void;
-
 }
 
 const ModalAlert: React.FC<Props> = (props) => {
@@ -77,27 +76,31 @@ const ModalAlert: React.FC<Props> = (props) => {
                       serverAllocationId: serverAllocation.id,
                       description: form.getFieldValue("description"),
                       isResolvByClient: form.getFieldValue("isResolvByClient"),
-                      pausingRequired: form.getFieldValue("pausingRequired")
+                      pausingRequired: form.getFieldValue("pausingRequired"),
                     } as IncidentCreateModel;
                     setLoading(true);
-                    await incident.createIncident(
-                      session?.user.access_token!,
-                      data
-                    ).then((res) => {
-                      message.success("Create server incident warning successfully!", 1.5);
-                      onSubmit();
-                      form.resetFields();
-                    }).catch((error) => {
-                      message.error(error.response.data, 1.5);
-                    }).finally(() => {
-                      setLoading(false);
-                    })
+                    await incident
+                      .createIncident(session?.user.access_token!, data)
+                      .then((res) => {
+                        message.success(
+                          "Create server incident warning successfully!",
+                          1.5
+                        );
+                        onSubmit();
+                        form.resetFields();
+                      })
+                      .catch((error) => {
+                        message.error(error.response.data, 1.5);
+                      })
+                      .finally(() => {
+                        setLoading(false);
+                      });
                   },
-                  onCancel() { },
+                  onCancel() {},
                 });
             }}
           >
-            Submit
+            Create
           </Button>,
         ]}
       >
@@ -113,17 +116,13 @@ const ModalAlert: React.FC<Props> = (props) => {
                   style={{ width: "100%" }}
                   labelWrap={true}
                 >
-                  <Form.Item
-                    label="Customer"
-                  >
+                  <Form.Item label="Customer">
                     <Input.TextArea
                       autoSize={{ minRows: 1, maxRows: 6 }}
                       readOnly
                     />
                   </Form.Item>
-                  <Form.Item
-                    label="Server"
-                  >
+                  <Form.Item label="Server">
                     <Input.TextArea
                       autoSize={{ minRows: 1, maxRows: 6 }}
                       readOnly
@@ -135,14 +134,10 @@ const ModalAlert: React.FC<Props> = (props) => {
                   >
                     <Input placeholder="Incident description" allowClear />
                   </Form.Item>
-                  <Form.Item
-                    label="Customer must create an appointment"
-                  >
+                  <Form.Item label="Customer must create an appointment">
                     <Switch />
                   </Form.Item>
-                  <Form.Item
-                    label="Pause the server"
-                  >
+                  <Form.Item label="Pause the server">
                     <Switch />
                   </Form.Item>
                 </Form>
@@ -157,19 +152,13 @@ const ModalAlert: React.FC<Props> = (props) => {
               style={{ width: "100%" }}
               labelWrap={true}
             >
-              <Form.Item
-                name="customer"
-                label="Customer"
-              >
+              <Form.Item name="customer" label="Customer">
                 <Input.TextArea
                   autoSize={{ minRows: 1, maxRows: 6 }}
                   readOnly
                 />
               </Form.Item>
-              <Form.Item
-                name="server"
-                label="Server"
-              >
+              <Form.Item name="server" label="Server">
                 <Input.TextArea
                   autoSize={{ minRows: 1, maxRows: 6 }}
                   readOnly
@@ -188,10 +177,7 @@ const ModalAlert: React.FC<Props> = (props) => {
               >
                 <Switch />
               </Form.Item>
-              <Form.Item
-                name="pausingRequired"
-                label="Pause the server"
-              >
+              <Form.Item name="pausingRequired" label="Pause the server">
                 <Switch />
               </Form.Item>
             </Form>

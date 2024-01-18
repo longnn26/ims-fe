@@ -37,13 +37,9 @@ const ModalAccept: React.FC<Props> = (props) => {
   const accept = async (data: string) => {
     setLoading(true);
     await appointment
-      .acceptAppointment(
-        session?.user.access_token!,
-        appointmentId + "",
-        data
-      )
+      .acceptAppointment(session?.user.access_token!, appointmentId + "", data)
       .then((res) => {
-        message.success("Accept Appointment successfully!",1.5);
+        message.success("Accept Appointment successfully!", 1.5);
         form.resetFields();
         onSubmit();
       })
@@ -83,31 +79,35 @@ const ModalAccept: React.FC<Props> = (props) => {
                   async onOk() {
                     accept(form.getFieldValue("saleNote"));
                   },
-                  onCancel() { },
+                  onCancel() {},
                 });
             }}
           >
-            Submit
+            Accept
           </Button>,
         ]}
       >
         <div className="flex max-w-md flex-col gap-4 m-auto">
           <Spin spinning={loading} tip="Accepting appointment..." size="large">
-          <Form
-            ref={formRef}
-            form={form}
-            labelCol={{ span: 8 }}
-            wrapperCol={{ span: 16 }}
-            style={{ width: "100%" }}
-          >
-            <Form.Item
-              name="saleNote"
-              label="Sales Staff Note"
-              rules={[{ max: 2000 }]}
+            <Form
+              ref={formRef}
+              form={form}
+              labelCol={{ span: 8 }}
+              wrapperCol={{ span: 16 }}
+              style={{ width: "100%" }}
             >
-              <Input.TextArea autoSize={{ minRows: 1, maxRows: 6 }} placeholder="Note" allowClear />
-            </Form.Item>
-          </Form>
+              <Form.Item
+                name="saleNote"
+                label="Sales Staff Note"
+                rules={[{ max: 2000 }]}
+              >
+                <Input.TextArea
+                  autoSize={{ minRows: 1, maxRows: 6 }}
+                  placeholder="Note"
+                  allowClear
+                />
+              </Form.Item>
+            </Form>
           </Spin>
         </div>
       </Modal>

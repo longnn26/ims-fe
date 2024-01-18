@@ -129,7 +129,7 @@ const ModalResolveIncident: React.FC<Props> = (props) => {
                 });
             }}
           >
-            Submit
+            Complete
           </Button>,
         ]}
       >

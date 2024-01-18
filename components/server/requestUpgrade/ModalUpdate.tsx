@@ -32,7 +32,9 @@ const ModalUpdate: React.FC<Props> = (props) => {
   const [confirmLoading, setConfirmLoading] = useState(false);
   const { componentOptions } = useSelector((state) => state.component);
   const [loading, setLoading] = useState<boolean>(false);
-  const [openModalUpdate, setOpenModalUpdate] = useState<boolean | undefined>(undefined);
+  const [openModalUpdate, setOpenModalUpdate] = useState<boolean | undefined>(
+    undefined
+  );
 
   const disabled = async () => {
     var result = false;
@@ -67,7 +69,9 @@ const ModalUpdate: React.FC<Props> = (props) => {
     <>
       <Modal
         title={
-          <span className="inline-block m-auto">Update Hardware Upgrade request</span>
+          <span className="inline-block m-auto">
+            Update Hardware Upgrade request
+          </span>
         }
         open={openModalUpdate === undefined ? open : openModalUpdate}
         confirmLoading={confirmLoading}
@@ -89,33 +93,39 @@ const ModalUpdate: React.FC<Props> = (props) => {
                     const formData = {
                       id: requestUpgrade.id,
                       description: form.getFieldValue("description"),
-                      note: form.getFieldValue("note") ? form.getFieldValue("note") : requestUpgrade.note,
-                      techNote: form.getFieldValue("techNote") ? form.getFieldValue("techNote") : requestUpgrade.techNote,
-                      saleNote: form.getFieldValue("saleNote") ? form.getFieldValue("saleNote") : requestUpgrade.saleNote,
+                      note: form.getFieldValue("note")
+                        ? form.getFieldValue("note")
+                        : requestUpgrade.note,
+                      techNote: form.getFieldValue("techNote")
+                        ? form.getFieldValue("techNote")
+                        : requestUpgrade.techNote,
+                      saleNote: form.getFieldValue("saleNote")
+                        ? form.getFieldValue("saleNote")
+                        : requestUpgrade.saleNote,
                     } as RequestUpgradeUpdateModel;
                     await setLoading(true);
                     await requestUpgradeService
-                    .updateData(session?.user.access_token!, formData)
-                    .then((res) => {
-                      message.success("Update successfully!", 1.5);
-                      form.resetFields();
-                      setOpenModalUpdate(undefined);
-                      onClose();
-                    })
-                    .catch((errors) => {
-                      setOpenModalUpdate(true);
-                      message.error(errors.response.data, 1.5);
-                    })
-                    .finally(() => {
-                      onSubmit();
-                      setLoading(false);
-                    });
+                      .updateData(session?.user.access_token!, formData)
+                      .then((res) => {
+                        message.success("Update successfully!", 1.5);
+                        form.resetFields();
+                        setOpenModalUpdate(undefined);
+                        onClose();
+                      })
+                      .catch((errors) => {
+                        setOpenModalUpdate(true);
+                        message.error(errors.response.data, 1.5);
+                      })
+                      .finally(() => {
+                        onSubmit();
+                        setLoading(false);
+                      });
                   },
                   onCancel() {},
                 });
             }}
           >
-            Submit
+            Update
           </Button>,
         ]}
       >
@@ -135,10 +145,7 @@ const ModalUpdate: React.FC<Props> = (props) => {
                 { required: true, message: "Please select a hardware type." },
               ]}
             >
-              <Select
-                allowClear
-                placeholder="Select a hardware type."
-              >
+              <Select allowClear placeholder="Select a hardware type.">
                 <Option value={1}>CPU</Option>
                 <Option value={2}>Memory</Option>
                 <Option value={3}>Storage</Option>
@@ -152,11 +159,7 @@ const ModalUpdate: React.FC<Props> = (props) => {
               <Input allowClear placeholder="Description" />
             </Form.Item>
             {areInArray(session?.user.roles!, ROLE_CUSTOMER) && (
-              <Form.Item
-                label="Note"
-                name="note"
-                rules={[{ max: 2000 }]}
-              >
+              <Form.Item label="Note" name="note" rules={[{ max: 2000 }]}>
                 <Input allowClear placeholder="Note" />
               </Form.Item>
             )}
@@ -173,7 +176,7 @@ const ModalUpdate: React.FC<Props> = (props) => {
               <Form.Item
                 label="Note"
                 name="techNote"
-                rules={[{required: true, max: 2000 }]}
+                rules={[{ required: true, max: 2000 }]}
               >
                 <Input allowClear placeholder="Note" />
               </Form.Item>

@@ -109,7 +109,7 @@ const ModalFail: React.FC<Props> = (props) => {
                 });
             }}
           >
-            Submit
+            Fail
           </Button>,
         ]}
       >
