@@ -87,19 +87,29 @@ const ServerDetail: React.FC<Props> = (props) => {
           {moment(appointmentDetail?.dateAppointed).format(dateAdvFormat)}
         </Descriptions.Item>
         <Descriptions.Item label="Date Checked In">
-          {appointmentDetail?.dateCheckedIn !== null ? moment(appointmentDetail?.dateCheckedIn).format(dateAdvFormat) : ""}
+          {appointmentDetail?.dateCheckedIn !== null
+            ? moment(appointmentDetail?.dateCheckedIn).format(dateAdvFormat)
+            : ""}
         </Descriptions.Item>
         <Descriptions.Item label="Date Checked Out" span={1}>
-          {appointmentDetail?.dateCheckedOut !== null ? moment(appointmentDetail?.dateCheckedOut).format(dateAdvFormat) : ""}
+          {appointmentDetail?.dateCheckedOut !== null
+            ? moment(appointmentDetail?.dateCheckedOut).format(dateAdvFormat)
+            : ""}
         </Descriptions.Item>
-        <Descriptions.Item label="Approval Date" span={1}>
-          {appointmentDetail?.dateEvaluated !== null ? moment(appointmentDetail?.dateEvaluated).format(dateAdvFormat) : ""}
+        <Descriptions.Item label="Date Approval" span={1}>
+          {appointmentDetail?.dateEvaluated !== null
+            ? moment(appointmentDetail?.dateEvaluated).format(dateAdvFormat)
+            : ""}
         </Descriptions.Item>
-        <Descriptions.Item label="Technical Recorded Date" span={1}>
-          {appointmentDetail?.dateExecuted !== null ? moment(appointmentDetail?.dateExecuted).format(dateAdvFormat) : ""}
+        <Descriptions.Item label="Date Completed" span={1}>
+          {appointmentDetail?.dateExecuted !== null
+            ? moment(appointmentDetail?.dateExecuted).format(dateAdvFormat)
+            : ""}
         </Descriptions.Item>
-        <Descriptions.Item label="Customer Confirmed Date" span={2}>
-          {appointmentDetail?.dateConfirm !== null ? moment(appointmentDetail?.dateConfirm).format(dateAdvFormat) : ""}
+        <Descriptions.Item label="Date Customer Confirmed" span={2}>
+          {appointmentDetail?.dateConfirm !== null
+            ? moment(appointmentDetail?.dateConfirm).format(dateAdvFormat)
+            : ""}
         </Descriptions.Item>
         {/* Không biết có cần hay khum;-;
         <Descriptions.Item label="Nearest Date Updated" span={1}>

@@ -6,7 +6,7 @@ import { ServerAllocation } from "./serverAllocation";
 
 export interface Incident extends BaseWithIdNumber {
   serverAllocationId: number;
-  description;
+  description: string;
   dateCreated: string;
   dateUpdated: string;
   customer: Customer;

@@ -42,15 +42,15 @@ const RequestHostDetailInfor: React.FC<Props> = (props) => {
         <Descriptions.Item label="Date Created">
           {moment(requestHostDetail?.dateCreated).format(dateAdvFormat)}
         </Descriptions.Item>
-        <Descriptions.Item label="Customer" span={4}>
-          {requestHostDetail?.customer.companyName}
-        </Descriptions.Item>
         <Descriptions.Item label="Purpose">
           {requestHostDetail?.isRemoval
             ? "Remove"
             : requestHostDetail?.isUpgrade
             ? "Upgrade"
             : "Add"}
+        </Descriptions.Item>
+        <Descriptions.Item label="Customer" span={2}>
+          {requestHostDetail?.customer.companyName}
         </Descriptions.Item>
         <Descriptions.Item
           label="Quantity"
@@ -74,6 +74,9 @@ const RequestHostDetailInfor: React.FC<Props> = (props) => {
             ))}
           </Descriptions.Item>
         )}
+        <Descriptions.Item label="Customer Note" span={2}>
+          {requestHostDetail?.note}
+        </Descriptions.Item>
         <Descriptions.Item label="Sales Staff">
           {requestHostDetail?.evaluator?.fullname}
         </Descriptions.Item>
@@ -86,8 +89,21 @@ const RequestHostDetailInfor: React.FC<Props> = (props) => {
         <Descriptions.Item label="Technical Staff Note" span={2}>
           {requestHostDetail?.techNote}
         </Descriptions.Item>
-        <Descriptions.Item label="Customer's Note" span={4}>
-          {requestHostDetail?.note}
+
+        <Descriptions.Item label="Date Approval">
+          {requestHostDetail?.dateEvaluated !== null
+            ? moment(requestHostDetail?.dateEvaluated).format(dateAdvFormat)
+            : ""}
+        </Descriptions.Item>
+        <Descriptions.Item label="Date Completed">
+          {requestHostDetail?.dateExecuted !== null
+            ? moment(requestHostDetail?.dateExecuted).format(dateAdvFormat)
+            : ""}
+        </Descriptions.Item>
+        <Descriptions.Item label="Date Customer Confirmed" span={2}>
+          {requestHostDetail?.dateConfirm !== null
+            ? moment(requestHostDetail?.dateConfirm).format(dateAdvFormat)
+            : ""}
         </Descriptions.Item>
         <Descriptions.Item label="Discontinued Service Letter" span={4}>
           {requestHostDetail?.removalRequestDocument !== null && (

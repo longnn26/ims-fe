@@ -16,7 +16,7 @@ const RequestExpandDetailInfor: React.FC<Props> = (props) => {
       <Divider orientation="left" plain>
         <h3>Server Allocation Request Information </h3>
       </Divider>{" "}
-      <Descriptions className="p-5">
+      <Descriptions className="p-5" column={2}>
         <Descriptions.Item label="Status">
           <Tag
             className="text-center"
@@ -33,7 +33,7 @@ const RequestExpandDetailInfor: React.FC<Props> = (props) => {
             }
           </Tag>
         </Descriptions.Item>
-        <Descriptions.Item label="Request Type" span={2}>
+        <Descriptions.Item label="Request Type">
           {requestExpandDetail?.requestType}
         </Descriptions.Item>
         <Descriptions.Item label="Size">
@@ -48,7 +48,6 @@ const RequestExpandDetailInfor: React.FC<Props> = (props) => {
         <Descriptions.Item label="Nearest Updated " span={2}>
           {moment(requestExpandDetail?.dateUpdated).format(dateAdvFormat)}
         </Descriptions.Item>
-
         <Descriptions.Item label="Customer" span={4}>
           {requestExpandDetail?.customer?.companyName}
         </Descriptions.Item>
@@ -67,6 +66,21 @@ const RequestExpandDetailInfor: React.FC<Props> = (props) => {
         <Descriptions.Item label="Technical Staff Note" span={4}>
           {requestExpandDetail?.techNote}
         </Descriptions.Item>
+        <Descriptions.Item label="Date Approval" span={2}>
+          {requestExpandDetail?.dateEvaluated !== null
+            ? moment(requestExpandDetail?.dateEvaluated).format(dateAdvFormat)
+            : ""}
+        </Descriptions.Item>
+        <Descriptions.Item label="Date Completed" span={2}>
+          {requestExpandDetail?.dateExecuted !== null
+            ? moment(requestExpandDetail?.dateExecuted).format(dateAdvFormat)
+            : ""}
+        </Descriptions.Item>
+        {/* <Descriptions.Item label="Customer Confirmed Date">
+          {requestExpandDetail?.dateConfirm !== null
+            ? moment(requestExpandDetail?.dateConfirm).format(dateAdvFormat)
+            : ""}
+        </Descriptions.Item> */}
       </Descriptions>
     </div>
   );

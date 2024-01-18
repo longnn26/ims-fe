@@ -20,6 +20,9 @@ export interface RequestUpgrade extends BaseWithIdNumber {
   evaluator: Evaluator;
   executor: Executor;
   serverAllocation: ServerAllocation;
+  dateConfirm: string;
+  dateEvaluated: string;
+  dateExecuted: string;
 }
 
 export interface RUParamGet extends ParamGet {

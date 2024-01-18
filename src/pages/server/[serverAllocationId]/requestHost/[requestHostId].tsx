@@ -423,8 +423,7 @@ const RequestHostDetail: React.FC = () => {
               session?.user.roles!,
               ROLE_SALES,
               ROLE_TECH,
-              ROLE_CUSTOMER,
-              ROLE_MANAGER
+              ROLE_CUSTOMER
             ) &&
               permission && (
                 <>

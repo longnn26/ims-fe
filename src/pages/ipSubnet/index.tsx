@@ -200,7 +200,7 @@ const IpSubnet: React.FC = () => {
     <AntdLayoutNoSSR
       content={
         <>
-          {areInArray(session?.user.roles!, ROLE_TECH, ROLE_MANAGER) && (
+          {areInArray(session?.user.roles!, ROLE_TECH) && (
             <>
               <div className="flex flex-col mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
                 <div className="flex justify-between p-2">
@@ -230,7 +230,8 @@ const IpSubnet: React.FC = () => {
                         </Button>
                       )}
                     {ipAddressData &&
-                      ipAddressData.data?.filter((l) => l.blocked === true).length > 0 && (
+                      ipAddressData.data?.filter((l) => l.blocked === true)
+                        .length > 0 && (
                         <Button
                           type="primary"
                           htmlType="submit"

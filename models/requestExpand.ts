@@ -24,6 +24,9 @@ export interface RequestExpand extends BaseWithIdNumber {
   executor: Executor;
   saleNote: string;
   chosenLocation: string;
+  dateConfirm: string;
+  dateEvaluated: string;
+  dateExecuted: string;
 }
 
 export interface RequestExpandData extends PagingModel {

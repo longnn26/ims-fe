@@ -12,7 +12,16 @@ import {
 } from "@models/serverAllocation";
 import customerService from "@services/customer";
 import serverService from "@services/serverAllocation";
-import { Alert, Button, FloatButton, Modal, Pagination, Tabs, TabsProps, message } from "antd";
+import {
+  Alert,
+  Button,
+  FloatButton,
+  Modal,
+  Pagination,
+  Tabs,
+  TabsProps,
+  message,
+} from "antd";
 import { ItemType } from "antd/es/breadcrumb/Breadcrumb";
 import { useSession } from "next-auth/react";
 import dynamic from "next/dynamic";
@@ -144,28 +153,28 @@ const Customer: React.FC = () => {
       label: "Servers",
       children: (
         <>
-        <ServerAllocationTable
-          urlOncell={`/customer/${customerDetail?.id}`}
-          data={serverAllocationData}
-          onEdit={(record) => {
-            setUpdate(record);
-          }}
-        />
-        {serverAllocationData?.totalPage > 0 && (
-          <Pagination
-            className="text-end m-4"
-            current={paramGet.PageIndex}
-            pageSize={serverAllocationData?.pageSize ?? 10}
-            total={serverAllocationData?.totalSize}
-            onChange={(page, pageSize) => {
-              setParamGet({
-                ...paramGet,
-                PageIndex: page,
-                PageSize: pageSize,
-              });
+          <ServerAllocationTable
+            urlOncell={`/customer/${customerDetail?.id}`}
+            data={serverAllocationData}
+            onEdit={(record) => {
+              setUpdate(record);
             }}
           />
-        )}
+          {serverAllocationData?.totalPage > 0 && (
+            <Pagination
+              className="text-end m-4"
+              current={paramGet.PageIndex}
+              pageSize={serverAllocationData?.pageSize ?? 10}
+              total={serverAllocationData?.totalSize}
+              onChange={(page, pageSize) => {
+                setParamGet({
+                  ...paramGet,
+                  PageIndex: page,
+                  PageSize: pageSize,
+                });
+              }}
+            />
+          )}
         </>
       ),
     },
@@ -175,9 +184,8 @@ const Customer: React.FC = () => {
       children: (
         <>
           <ContactTable
-          contacts={customerDetail?.contacts!}
-            onEdit={(value) => {
-            }}
+            contacts={customerDetail?.contacts!}
+            onEdit={(value) => {}}
             onDelete={(value) => {}}
           />
         </>
@@ -228,7 +236,14 @@ const Customer: React.FC = () => {
                   <CustomerDetail
                     customerDetail={customerDetail!}
                   ></CustomerDetail>
-                  <Tabs className="m-5" defaultActiveKey="1" items={items} />
+                  {areInArray(
+                    session?.user.roles!,
+                    ROLE_SALES,
+                    ROLE_TECH,
+                    ROLE_CUSTOMER
+                  ) && (
+                    <Tabs className="m-5" defaultActiveKey="1" items={items} />
+                  )}
                 </>
               )}
           </>
