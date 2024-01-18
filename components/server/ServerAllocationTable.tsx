@@ -68,6 +68,8 @@ const ServerAllocationTable: React.FC<Props> = (props) => {
       },
     },
     { title: "Server Name", dataIndex: "name", key: "name" },
+    { title: "Serial Number", dataIndex: "serialNumber", key: "serialNumber" },
+
     {
       title: "Customer",
       key: "customer",
@@ -86,7 +88,6 @@ const ServerAllocationTable: React.FC<Props> = (props) => {
       },
     },
     // { title: "Power", dataIndex: "power", key: "power" },
-    // { title: "Serial Number", dataIndex: "serialNumber", key: "serialNumber" },
     // { title: "Note", dataIndex: "note", key: "note" },
     { title: "Date Request", dataIndex: "dateCreated", key: "dateCreated" },
     // { title: "Date Updated", dataIndex: "dateUpdated", key: "dateUpdated" },
@@ -103,28 +104,28 @@ const ServerAllocationTable: React.FC<Props> = (props) => {
           </Tooltip>
           {Boolean(
             record.status === "Working" &&
-            areInArray(session?.user.roles!, ROLE_TECH)
+              areInArray(session?.user.roles!, ROLE_TECH)
           ) && (
-              <>
-                <Tooltip title="Create Warning" color={"black"}>
-                  <Button onClick={() => onAlert(record)}>
-                    <AiFillWarning />
-                  </Button>
-                </Tooltip>
-              </>
-            )}
+            <>
+              <Tooltip title="Create Warning" color={"black"}>
+                <Button onClick={() => onAlert(record)}>
+                  <AiFillWarning />
+                </Button>
+              </Tooltip>
+            </>
+          )}
           {Boolean(
             record.status === "Waiting" &&
-            areInArray(session?.user.roles!, ROLE_TECH, ROLE_CUSTOMER)
+              areInArray(session?.user.roles!, ROLE_TECH, ROLE_CUSTOMER)
           ) && (
-              <>
-                <Tooltip title="Edit" color={"black"}>
-                  <Button onClick={() => onEdit(record)}>
-                    <BiEdit />
-                  </Button>
-                </Tooltip>
-              </>
-            )}
+            <>
+              <Tooltip title="Edit" color={"black"}>
+                <Button onClick={() => onEdit(record)}>
+                  <BiEdit />
+                </Button>
+              </Tooltip>
+            </>
+          )}
           {/* <Tooltip title="Delete" color={"black"}>
             <Button onClick={() => onDelete(record)}>
               <AiFillDelete />
