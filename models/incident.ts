@@ -18,6 +18,7 @@ export interface Incident extends BaseWithIdNumber {
   isResolvByClient: boolean;
   isResolved: boolean;
   solution: string;
+  appointment: Appointment;
 }
 
 export interface IncidentData extends PagingModel {

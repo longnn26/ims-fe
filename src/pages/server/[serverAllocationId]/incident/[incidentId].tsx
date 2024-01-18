@@ -259,7 +259,7 @@ const IncidentDetail: React.FC = () => {
                   </div>
 
                   <AppointmentTable
-                    typeGet="ByIncidentId"
+                    typeGet={incidentDetail.appointment === null ? "" : "ByIncidentId"}
                     urlOncell=""
                     onEdit={(record) => {}}
                     onDelete={async (record) => {}}

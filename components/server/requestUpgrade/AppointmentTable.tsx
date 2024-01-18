@@ -18,7 +18,7 @@ import { useRouter } from "next/router";
 import { BiSolidCommentDetail, BiEdit } from "react-icons/bi";
 import { getAppointmentData } from "@slices/incident";
 import { useSession } from "next-auth/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { getListAppointment } from "@slices/appointment";
 import { areInArray } from "@utils/helpers";
 
@@ -56,15 +56,6 @@ const AppointmentTable: React.FC<Props> = (props) => {
   const { appointmentData: appointmentDataRE } = useSelector((state) => state.requestExpand);
   const { appointmentData: appointmentIncident } = useSelector((state) => state.incident);
   const { listAppointmentData } = useSelector((state) => state.appointment);
-
-  {typeGet === "ByIncidentId" && (
-    dispatch(getAppointmentData({
-      token: session?.user.access_token!,
-      paramGet: {
-        IncidentId: parseInt(router.query.incidentId + ""),
-      } as ParamGetExtend
-    }))
-  )}
 
   var listData = typeGet === "All" ? listAppointmentData
     : typeGet === "ByRequestUpgradeId" ? appointmentData
@@ -147,6 +138,17 @@ const AppointmentTable: React.FC<Props> = (props) => {
       ),
     },
   ];
+
+  useEffect(() => {
+  {typeGet === "ByIncidentId" && (
+    dispatch(getAppointmentData({
+      token: session?.user.access_token!,
+      paramGet: {
+        IncidentId: parseInt(router.query.incidentId + ""),
+      } as ParamGetExtend
+    }))
+  )}
+  }, [typeGet])
 
   const data: DataType[] = [];
   for (let i = 0; i < listData?.data?.length; ++i) {
