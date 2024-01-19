@@ -165,7 +165,7 @@ const RequestDetail: React.FC = () => {
       await ipSubnet
         .getSuggestAdditional(session?.user.access_token!, {
           ...provideIpsParamGet,
-          ServerAllocationId: parseInt(router.query.serverAllocationId + ""),
+          ServerAllocationId: requestHostDetail!.serverAllocation.id,
         })
         .then((res) => {
           setProvideIpsData(res);
