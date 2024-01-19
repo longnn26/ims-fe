@@ -396,7 +396,7 @@ const RequestHostDetail: React.FC = () => {
                   {Boolean(
                     requestHostDetail?.status === "Waiting" &&
                       requestHostDetail?.isRemoval === true &&
-                      areInArray(session?.user.roles!, ROLE_SALES) &&
+                      areInArray(session?.user.roles!, ROLE_CUSTOMER) &&
                       permission
                   ) && (
                     <>
