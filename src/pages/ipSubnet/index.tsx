@@ -26,7 +26,7 @@ import SearchComponent from "@components/SearchComponent";
 import IpSubnetDetailInfor from "@components/ipSubnet/IpSubnetDetail";
 import IpAddressTable from "@components/ipSubnet/IpAddressTable";
 import { DownOutlined } from "@ant-design/icons";
-import { getIpAddressData } from "@slices/ipSubnet";
+import { getIpAddressData, getIpUnblockData } from "@slices/ipSubnet";
 import { IpAddress, IpAddressParamGet } from "@models/ipAddress";
 import ModalBlock from "@components/ipSubnet/ModalBlock";
 import ModalUnblock from "@components/ipSubnet/ModalUnblock";
@@ -61,7 +61,15 @@ const IpSubnet: React.FC = () => {
       PageSize: 4,
     } as unknown as IpAddressParamGet
   );
+
+  const [ipUnblockParamGet, setIpUnblockParamGet] = useState<IpAddressParamGet>(
+    {
+      PageIndex: 1,
+      PageSize: 10,
+    } as unknown as IpAddressParamGet
+  );
   const { ipAddressData } = useSelector((state) => state.ipSubnet);
+  const { ipUnblockData } = useSelector((state) => state.ipSubnet);
   const [treeData, setTreeData] = useState<DataNode[]>([]);
   const [ipSubnetSelected, setIpSubnetSelected] = useState<
     string | undefined
@@ -91,6 +99,12 @@ const IpSubnet: React.FC = () => {
       getIpAddressData({
         token: session?.user.access_token!,
         paramGet: { ...ipAddressParamGet, IsAvailable: status },
+      })
+    );
+    dispatch(
+      getIpUnblockData({
+        token: session?.user.access_token!,
+        paramGet: { ...ipUnblockParamGet, IsBlocked: true },
       })
     );
   };
@@ -140,9 +154,27 @@ const IpSubnet: React.FC = () => {
           paramGet: { ...ipAddressParamGet, IsAvailable: status },
         })
       );
+      dispatch(
+        getIpUnblockData({
+          token: session?.user.access_token!,
+          paramGet: { ...ipUnblockParamGet, IsBlocked: true },
+        })
+      );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session, ipAddressParamGet]);
+
+  useEffect(() => {
+    if (session) {
+      dispatch(
+        getIpUnblockData({
+          token: session?.user.access_token!,
+          paramGet: { ...ipUnblockParamGet, IsBlocked: true },
+        })
+      );
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ipUnblockParamGet]);
 
   useEffect(() => {
     if (session) {
@@ -162,6 +194,12 @@ const IpSubnet: React.FC = () => {
       getIpAddressData({
         token: session?.user.access_token!,
         paramGet: { ...ipAddressParamGet, IsAvailable: status },
+      })
+    );
+    dispatch(
+      getIpUnblockData({
+        token: session?.user.access_token!,
+        paramGet: { ...ipUnblockParamGet, IsBlocked: true },
       })
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -224,19 +262,20 @@ const IpSubnet: React.FC = () => {
                           htmlType="submit"
                           onClick={() => {
                             setOpenModalBlock(true);
+                            setIpUnblockParamGet({...ipUnblockParamGet, IsBlocked: true});
                           }}
                         >
                           Block IPs
                         </Button>
                       )}
-                    {ipAddressData &&
-                      ipAddressData.data?.filter((l) => l.blocked === true)
-                        .length > 0 && (
+                    {ipUnblockData &&
+                      ipUnblockData.data.length > 0 && (
                         <Button
                           type="primary"
                           htmlType="submit"
                           onClick={() => {
                             setOpenModalUnblock(true);
+                            setIpUnblockParamGet({...ipUnblockParamGet, IsBlocked: true});
                           }}
                         >
                           Unblock IPs

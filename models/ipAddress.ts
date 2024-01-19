@@ -33,6 +33,7 @@ export interface IpAddressParamGet extends ParamGet {
   RequestHostId?: number;
   SubnetId?: number;
   Purposes?: string;
+  IsBlocked?: boolean;
 }
 
 export interface IpAddressHistory {

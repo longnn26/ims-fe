@@ -12,18 +12,22 @@ import ipAddress from "@services/ipAddress";
 interface State {
   ipSubnetData: IpSubnetData;
   ipAddressData: IpAddressData;
+  ipUnblockData: IpAddressData;
   ipAddressHistoryData: IpAddressHistoryData;
   ipSubnetDataLoading: boolean;
   ipAddressDataLoading: boolean;
+  ipUnblockDataLoading: boolean;
   ipAddressHistoryDataLoading: boolean;
 }
 
 const initialState: State = {
   ipSubnetData: {} as IpSubnetData,
   ipAddressData: {} as IpAddressData,
+  ipUnblockData: {} as IpAddressData,
   ipAddressHistoryData: {} as IpAddressHistoryData,
   ipSubnetDataLoading: false,
   ipAddressDataLoading: false,
+  ipUnblockDataLoading: false,
   ipAddressHistoryDataLoading: false,
 };
 
@@ -39,6 +43,14 @@ const getIpSubnetData = createAsyncThunk(
 
 const getIpAddressData = createAsyncThunk(
   `${TYPE_PREFIX}/getIpAddressData`,
+  async (arg: { token: string; paramGet: IpAddressParamGet }) => {
+    const result = await ipAddress.getData(arg.token, arg.paramGet);
+    return result;
+  }
+);
+
+const getIpUnblockData = createAsyncThunk(
+  `${TYPE_PREFIX}/getIpUnblockData`,
   async (arg: { token: string; paramGet: IpAddressParamGet }) => {
     const result = await ipAddress.getData(arg.token, arg.paramGet);
     return result;
@@ -86,6 +98,20 @@ const slice = createSlice({
       ipAddressDataLoading: false,
     }));
 
+    builder.addCase(getIpUnblockData.pending, (state) => ({
+      ...state,
+      ipUnblockDataLoading: true,
+    }));
+    builder.addCase(getIpUnblockData.fulfilled, (state, { payload }) => ({
+      ...state,
+      ipUnblockData: payload,
+      ipUnblockDataLoading: false,
+    }));
+    builder.addCase(getIpUnblockData.rejected, (state) => ({
+      ...state,
+      ipUnblockDataLoading: false,
+    }));
+
     builder.addCase(getIpAddressHistoryData.pending, (state) => ({
       ...state,
       ipAddressHistoryDataLoading: true,
@@ -105,6 +131,6 @@ const slice = createSlice({
   },
 });
 
-export { getIpSubnetData, getIpAddressData, getIpAddressHistoryData };
+export { getIpSubnetData, getIpAddressData, getIpAddressHistoryData, getIpUnblockData };
 
 export default slice.reducer;
