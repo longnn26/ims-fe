@@ -48,13 +48,7 @@ const ModalUpdate: React.FC<Props> = (props) => {
   const router = useRouter();
   const { data: session } = useSession();
   const [form] = Form.useForm();
-  const {
-    onSubmit,
-    requestExpand,
-    onClose,
-    onSaveLocation,
-    open,
-  } = props;
+  const { onSubmit, requestExpand, onClose, onSaveLocation, open } = props;
 
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [paramGet, setParamGet] = useState<LocationParamGet>({
@@ -134,10 +128,14 @@ const ModalUpdate: React.FC<Props> = (props) => {
   const assignLocation = async (rackId: number, locationId: number) => {
     setLoading(true);
     await requestExpandService
-      .saveLocation(session?.user.access_token!, parseInt(router.query.requestExpandId+""), {
-        rackId: rackId,
-        startPosition: locationId,
-      } as RequestedLocation)
+      .saveLocation(
+        session?.user.access_token!,
+        parseInt(router.query.requestExpandId + ""),
+        {
+          rackId: rackId,
+          startPosition: locationId,
+        } as RequestedLocation
+      )
       .then((res) => {
         message.success("Assign server to rack successfully!", 1.5);
         form.resetFields();
@@ -162,15 +160,12 @@ const ModalUpdate: React.FC<Props> = (props) => {
             router.query.requestExpandId + ""
           )
           .then(async (res) => {
-              await requestExpandService
-                .getSuggestLocation(
-                  session?.user.access_token!,
-                  res?.id!
-                )
-                .then((res) => {
-                  setSuggestLocation(res);
-                })
-                .catch((e) => {});
+            await requestExpandService
+              .getSuggestLocation(session?.user.access_token!, res?.id!)
+              .then((res) => {
+                setSuggestLocation(res);
+              })
+              .catch((e) => {});
           });
       })
       .catch((errors) => {
@@ -292,7 +287,10 @@ const ModalUpdate: React.FC<Props> = (props) => {
                         //   rackId: suggestLocation?.rack.id!,
                         //   startPosition: suggestLocation?.position!,
                         // });
-                        assignLocation(suggestLocation?.rack.id!, suggestLocation?.position!);
+                        assignLocation(
+                          suggestLocation?.rack.id!,
+                          suggestLocation?.position!
+                        );
                       }}
                     >
                       Save
@@ -344,7 +342,7 @@ const ModalUpdate: React.FC<Props> = (props) => {
                   <div className="flex flex-grow m-2">
                     <span className="mt-1 mr-2">Rack: </span>
                     <Select
-                      placeholder="Please select a rack area"
+                      placeholder="Please select a rack"
                       labelInValue
                       listHeight={160}
                       style={{ width: "100%" }}
