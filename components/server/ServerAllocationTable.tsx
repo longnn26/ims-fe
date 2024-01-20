@@ -61,7 +61,7 @@ const ServerAllocationTable: React.FC<Props> = (props) => {
     //   ),
     // },
     {
-      title: "Server IP",
+      title: "Server's master IP",
       key: "masterIp",
       render: (record: ServerAllocation) => {
         return <p>{record?.masterIp?.address}</p>;

@@ -42,7 +42,7 @@ const HistoryIpAddressTable: React.FC<Props> = (props) => {
       title: "Server Name",
       key: "name",
       render: (record: DataType) => {
-        return record.currentServer.name;
+        return <a href={`/server/${record.currentServer.id}`}>{record.currentServer.name}</a>;
       },
     },
     {

@@ -42,7 +42,7 @@ const ModalProvideIps: React.FC<Props> = (props) => {
   return (
     <>
       <Modal
-        title={<span className="inline-block m-auto">Provide Ips</span>}
+        title={<span className="inline-block m-auto">Provide IPs</span>}
         open={Boolean(provideIpsData)}
         confirmLoading={confirmLoading}
         onCancel={() => {
