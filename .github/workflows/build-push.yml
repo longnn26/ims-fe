@@ -3,7 +3,7 @@ name: Build-Push Docker Image
 on:
   push:
     branches:
-      - 'ims-develop'
+      - 'dbs-develop'
 
 jobs:
   docker:
