@@ -1,29 +1,24 @@
-import React, { useRef, useState, useEffect } from "react";
-import { Button, Input, Modal, Select, Space, Card, message } from "antd";
+import React, { useRef, useState } from "react";
+import { Button, Input, Modal, message } from "antd";
 import { Form } from "antd";
-import { CloseOutlined } from "@ant-design/icons";
-import { UserUpdateModel, User } from "@models/user";
-import useSelector from "@hooks/use-selector";
-import { ChangePassword, Customer } from "@models/customer";
-import customerService from "@services/customer";
+import { ChangePassword } from "@models/user";
+import userService from "@services/user";
 import { useSession } from "next-auth/react";
-const { Option } = Select;
+import { User } from "@models/user";
 const { confirm } = Modal;
 
 interface Props {
-  isCustomer: boolean;
   open: boolean;
   onClose: () => void;
-  dataStaff: User | undefined;
-  dataCust: Customer | undefined;
+  dataUser: User | undefined;
   onSubmit: () => void;
 }
 
-const ModalUpdate: React.FC<Props> = (props) => {
+const ModalChangePassword: React.FC<Props> = (props) => {
   const formRef = useRef(null);
   const { data: session } = useSession();
   const [form] = Form.useForm();
-  const { onSubmit, open, onClose, dataStaff, dataCust, isCustomer } = props;
+  const { onSubmit, open, onClose, dataUser } = props;
 
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [loadingSubmit, setLoadingSubmit] = useState<boolean>(false);
@@ -64,46 +59,25 @@ const ModalUpdate: React.FC<Props> = (props) => {
                   title: "Do you want to update your password?",
                   async onOk() {
                     setLoadingSubmit(true);
-                    if (isCustomer === true) {
-                      await customerService
-                        .changePassword(session?.user.access_token!, {
-                          email: session?.user.email,
-                          currentPassword: form.getFieldValue("currentPass"),
-                          newPassword: form.getFieldValue("password"),
-                        } as ChangePassword)
-                        .then((res) => {
-                          message.success("Update password successfully!", 1.5);
-                          form.resetFields();
-                          setOpenModalCreate(undefined);
-                          onClose();
-                        })
-                        .catch((errors) => {
-                          setOpenModalCreate(true);
-                          message.error(errors.response.data, 1.5);
-                        })
-                        .finally(() => {
-                          setLoadingSubmit(false);
-                        });
-                    } else {
-                      //chưa có api
-                      // await user.changePassword(
-                      //     session?.user.access_token!,
-                      //     form.getFieldValue("currentPass"),
-                      //     form.getFieldValue("password")
-                      // ).then((res) => {
-                      //     message.success("Create successfully!");
-                      //     form.resetFields();
-                      //     setOpenModalCreate(undefined);
-                      //     onClose();
-                      // })
-                      //     .catch((errors) => {
-                      //         setOpenModalCreate(true);
-                      //         message.error(errors.response.data);
-                      //     })
-                      //     .finally(() => {
-                      //         setLoadingSubmit(false);
-                      //     });
-                    }
+                    await userService
+                      .changePassword(session?.user.access_token!, {
+                        email: dataUser?.email,
+                        currentPassword: form.getFieldValue("currentPass"),
+                        newPassword: form.getFieldValue("password"),
+                      } as ChangePassword)
+                      .then((res) => {
+                        message.success("Update password successfully!", 1.5);
+                        form.resetFields();
+                        setOpenModalCreate(undefined);
+                        onClose();
+                      })
+                      .catch((errors) => {
+                        setOpenModalCreate(true);
+                        message.error(errors.response.data, 1.5);
+                      })
+                      .finally(() => {
+                        setLoadingSubmit(false);
+                      });
                   },
                   onCancel() {},
                 });
@@ -207,4 +181,4 @@ const ModalUpdate: React.FC<Props> = (props) => {
   );
 };
 
-export default ModalUpdate;
+export default ModalChangePassword;

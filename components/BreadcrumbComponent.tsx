@@ -10,14 +10,14 @@ const BreadcrumbComponent: React.FC<Props> = (props) => {
   const { itemBreadcrumbs } = props;
   itemBreadcrumbs.forEach((element) => {
     switch (element.title) {
-      case "account":
-        element.title = "Account";
+      case "receive":
+        element.title = "Receive";
         break;
-      case "booking":
-        element.title = "Booking";
+      case "product":
+        element.title = "product";
         break;
-      case "support":
-        element.title = "Support";
+      case "dashboard":
+        element.title = "dashboard";
         break;
     }
   });

@@ -7,7 +7,7 @@ const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
 });
 const { confirm } = Modal;
 
-const Account: React.FC = () => {
+const Dashboard: React.FC = () => {
   return (
     <AntdLayoutNoSSR
       content={
@@ -19,4 +19,4 @@ const Account: React.FC = () => {
   );
 };
 
-export default Account;
+export default Dashboard;

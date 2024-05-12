@@ -7,7 +7,7 @@ const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
 });
 const { confirm } = Modal;
 
-const Support: React.FC = () => {
+const Product: React.FC = () => {
   return (
     <AntdLayoutNoSSR
       content={
@@ -19,4 +19,4 @@ const Support: React.FC = () => {
   );
 };
 
-export default Support;
+export default Product;

@@ -15,35 +15,13 @@ const initialState: State = {
 
 const TYPE_PREFIX = "user";
 
-const getUserData = createAsyncThunk(
-  `${TYPE_PREFIX}/getData`,
-  async (arg: { token: string; paramGet: ParamGet }) => {
-    const result = await userService.getUserData(arg.token, arg.paramGet);
-    return result;
-  }
-);
-
 const slice = createSlice({
   name: "component",
   initialState,
   reducers: {},
-  extraReducers: (builder) => {
-    builder.addCase(getUserData.pending, (state) => ({
-      ...state,
-      userDataLoading: true,
-    }));
-    builder.addCase(getUserData.fulfilled, (state, { payload }) => ({
-      ...state,
-      userData: payload,
-      userDataLoading: false,
-    }));
-    builder.addCase(getUserData.rejected, (state) => ({
-      ...state,
-      userDataLoading: false,
-    }));
-  },
+  extraReducers: (builder) => {},
 });
 
-export { getUserData };
+export {};
 
 export default slice.reducer;

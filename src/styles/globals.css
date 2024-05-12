@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 .ant-btn-primary {
-    background-color: #01a0e9 !important;
+    background-color: #dba50f !important;
 }
 
 @layer components {
@@ -39,7 +39,7 @@
     }
 
     .btn-submit:hover {
-        background-color: "#01a0e9";
+        background-color: "#dba50f";
         color: white !important;
 
     }

@@ -8,7 +8,7 @@ interface State {
 
 const initialState: State = {
   collapsed: false,
-  sliderMenuItemSelectedKey: 'home',
+  sliderMenuItemSelectedKey: 'product',
 };
 
 type CR<T> = CaseReducer<State, PayloadAction<T>>;

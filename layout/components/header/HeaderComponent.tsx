@@ -92,7 +92,7 @@ const HeaderComponent: React.FC<Props> = (props) => {
   const handleNotification = async (notification: Notification) => {
     // console.log("noti:", notification);
     switch (notification.data.key) {
-      case "Account":
+      case "Receive":
         // var model = JSON.parse(
         //   notification.data.value
         // ) as ServerAllocationParseJson;
@@ -126,7 +126,7 @@ const HeaderComponent: React.FC<Props> = (props) => {
       label: (
         <span
           onClick={() => {
-            dispatch(setSliderMenuItemSelectedKey("support"));
+            dispatch(setSliderMenuItemSelectedKey("product"));
             signOut();
           }}
         >
@@ -139,14 +139,14 @@ const HeaderComponent: React.FC<Props> = (props) => {
 
   useEffect(() => {
     switch (router.pathname) {
-      case "/booking":
-        dispatch(setSliderMenuItemSelectedKey("booking"));
+      case "/receive":
+        dispatch(setSliderMenuItemSelectedKey("receive"));
         break;
-      case "/account":
-        dispatch(setSliderMenuItemSelectedKey("account"));
+      case "/product":
+        dispatch(setSliderMenuItemSelectedKey("product"));
         break;
-      case "/support":
-        dispatch(setSliderMenuItemSelectedKey("support"));
+      case "/dashboard":
+        dispatch(setSliderMenuItemSelectedKey("dashboard"));
         break;
       case "/profile":
         dispatch(setSliderMenuItemSelectedKey("profile"));
@@ -249,9 +249,6 @@ const HeaderComponent: React.FC<Props> = (props) => {
               className="h-14 mr-3"
               alt="FlowBite Logo"
             />
-            <span className="self-center text-2xl font-semibold whitespace-nowrap">
-              SRH
-            </span>
           </div>
         </div>
       </div>
@@ -273,9 +270,9 @@ const HeaderComponent: React.FC<Props> = (props) => {
           <Badge count={newNotifyCount}>
             <Avatar
               // className="bg-[#fde3cf] hover:bg-[#fde3cf]/50"
-              className="bg-[#e3eced] hover:bg-[#e3eced]/50"
+              className="bg-[#edebd3] hover:bg-[#edebd3]/50"
               shape="circle"
-              icon={<IoMdNotifications style={{ color: "#01a0e9" }} />}
+              icon={<IoMdNotifications style={{ color: "#dba50f" }} />}
             />
           </Badge>
         </Space>
@@ -284,7 +281,7 @@ const HeaderComponent: React.FC<Props> = (props) => {
             className=" top-[80px] z-20 absolute w-full max-w-sm bg-white divide-y divide-gray-100 rounded-lg shadow"
             aria-labelledby="dropdownNotificationButton"
           >
-            <div className="block px-4 py-2 font-medium text-center text-[#01a0e9] rounded-t-lg bg-gray-50">
+            <div className="block px-4 py-2 font-medium text-center text-[#dba50f] rounded-t-lg bg-gray-50">
               Notifications
             </div>
             <InfiniteScroll
@@ -341,7 +338,7 @@ const HeaderComponent: React.FC<Props> = (props) => {
                             }
                             // !noti.seen && seenNotification(noti.id!)
                           }
-                          color={` ${noti.seen ? "gray" : "#01a0e9"}`}
+                          color={` ${noti.seen ? "gray" : "#dba50f"}`}
                         />
                       </div>
                     </div>
@@ -358,7 +355,7 @@ const HeaderComponent: React.FC<Props> = (props) => {
           className="cursor-pointer"
         >
           <Space>
-            <Avatar style={{ backgroundColor: "#e3eced", color: "#01a0e9" }}>
+            <Avatar style={{ backgroundColor: "#edebd3", color: "#dba50f" }}>
               {session?.user.roles.includes("Customer")
                 ? parseJwt(session.user.access_token).Email.charAt(0)
                 : session?.user.userName?.charAt(0)}

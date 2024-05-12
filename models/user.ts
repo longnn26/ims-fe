@@ -55,3 +55,9 @@ export interface UserUpdateRole {
   id: string,
   roles: string[];
 }
+
+export interface ChangePassword {
+  email: string;
+  currentPassword: string;
+  newPassword: string;
+}

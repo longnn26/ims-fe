@@ -1,7 +1,8 @@
 import { ReactNode } from "react";
-import { AiFillSchedule } from "react-icons/ai";
-import { BiSolidUserAccount } from "react-icons/bi";
-import { MdOutlineSupportAgent } from "react-icons/md";
+import { RiFolderReceivedFill } from "react-icons/ri";
+import { MdInventory } from "react-icons/md";
+import { AiOutlineDashboard } from "react-icons/ai";
+
 
 import {
   ROLE_ADMIN,
@@ -17,22 +18,21 @@ export interface SliderMenuItem {
 
 export const sliderMenu = [
   {
-    key: "booking",
-    icon: <AiFillSchedule />,
-    label: "Booking",
-
-    roles: [ROLE_CUSTOMER],
+    key: "receive",
+    icon: <RiFolderReceivedFill />,
+    label: "Receive",
+    roles: [ROLE_CUSTOMER, ROLE_ADMIN],
   },
   {
-    key: "account",
-    icon: <BiSolidUserAccount />,
-    label: "Account",
-    roles: [ROLE_CUSTOMER],
+    key: "product",
+    icon: <MdInventory />,
+    label: "Product",
+    roles: [ROLE_CUSTOMER, ROLE_ADMIN],
   },
   {
-    key: "support",
-    icon: <MdOutlineSupportAgent />,
-    label: "Support",
+    key: "dashboard",
+    icon: <AiOutlineDashboard />,
+    label: "Dashboard",
     roles: [ROLE_CUSTOMER, ROLE_ADMIN],
   },
 ] as SliderMenuItem[];
