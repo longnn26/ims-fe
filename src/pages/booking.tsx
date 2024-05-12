@@ -7,7 +7,7 @@ const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
 });
 const { confirm } = Modal;
 
-const Customer: React.FC = () => {
+const Booking: React.FC = () => {
   return (
     <AntdLayoutNoSSR
       content={
@@ -19,4 +19,4 @@ const Customer: React.FC = () => {
   );
 };
 
-export default Customer;
+export default Booking;

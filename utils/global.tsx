@@ -1,17 +1,11 @@
 import { ReactNode } from "react";
-import { FaUser, FaChartArea, FaExpand } from "react-icons/fa";
-import { BiServer, BiSolidComponent } from "react-icons/bi";
-import { BsFillHddNetworkFill } from "react-icons/bs";
-import { GrHost, GrSchedules } from "react-icons/gr";
-import { MdUpgrade } from "react-icons/md";
-import { IoInformationOutline } from "react-icons/io5";
-import { RiBarChartGroupedFill } from "react-icons/ri";
+import { AiFillSchedule } from "react-icons/ai";
+import { BiSolidUserAccount } from "react-icons/bi";
+import { MdOutlineSupportAgent } from "react-icons/md";
+
 import {
   ROLE_ADMIN,
   ROLE_CUSTOMER,
-  ROLE_MANAGER,
-  ROLE_SALES,
-  ROLE_TECH,
 } from "./constants";
 
 export interface SliderMenuItem {
@@ -23,71 +17,22 @@ export interface SliderMenuItem {
 
 export const sliderMenu = [
   {
-    key: "server",
-    icon: <BiServer />,
-    label: "Server",
-    roles: [ROLE_SALES, ROLE_TECH, ROLE_CUSTOMER],
-  },
-  {
-    key: "customer",
-    icon: <FaUser />,
-    label: "Customer",
-    roles: [ROLE_TECH, ROLE_SALES, ROLE_MANAGER],
-  },
-  {
-    key: "area",
-    icon: <FaChartArea />,
-    label: "Rack map",
-    roles: [ROLE_TECH],
-  },
-  {
-    key: "requestHost",
-    icon: <GrHost />,
-    label: "IP Request",
-    roles: [ROLE_CUSTOMER, ROLE_SALES, ROLE_TECH],
-  },
-  {
-    key: "ipSubnet",
-    icon: <BsFillHddNetworkFill />,
-    label: "IP Subnet",
-    roles: [ROLE_TECH],
-  },
+    key: "booking",
+    icon: <AiFillSchedule />,
+    label: "Booking",
 
-  {
-    key: "requestExpand",
-    icon: <FaExpand />,
-    label: "Server Allocation Request",
-
-    roles: [ROLE_SALES, ROLE_TECH, ROLE_CUSTOMER],
+    roles: [ROLE_CUSTOMER],
   },
   {
-    key: "requestUpgrade",
-    icon: <MdUpgrade />,
-    label: "Hardware Upgrade Request",
-    roles: [ROLE_SALES, ROLE_TECH, ROLE_CUSTOMER],
+    key: "account",
+    icon: <BiSolidUserAccount />,
+    label: "Account",
+    roles: [ROLE_CUSTOMER],
   },
   {
-    key: "appointment",
-    icon: <GrSchedules />,
-    label: "Appointment",
-    roles: [ROLE_SALES, ROLE_TECH, ROLE_CUSTOMER],
-  },
-  {
-    key: "staffAccount",
-    icon: <FaUser />,
-    label: "Staff Account Management",
-    roles: [ROLE_ADMIN],
-  },
-  {
-    key: "informationDC",
-    icon: <IoInformationOutline />,
-    label: "Information DC",
-    roles: [ROLE_ADMIN],
-  },
-  {
-    key: "statistic",
-    icon: <RiBarChartGroupedFill />,
-    label: "Statistic",
-    roles: [ROLE_SALES, ROLE_MANAGER],
+    key: "support",
+    icon: <MdOutlineSupportAgent />,
+    label: "Support",
+    roles: [ROLE_CUSTOMER, ROLE_ADMIN],
   },
 ] as SliderMenuItem[];

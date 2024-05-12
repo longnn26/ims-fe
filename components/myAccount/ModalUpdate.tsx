@@ -4,7 +4,7 @@ import { Form } from "antd";
 import { CloseOutlined } from "@ant-design/icons";
 import { UserUpdateModel, User } from "@models/user";
 import useSelector from "@hooks/use-selector";
-import { Customer } from "@models/customer";
+import { ChangePassword, Customer } from "@models/customer";
 import customerService from "@services/customer";
 import { useSession } from "next-auth/react";
 const { Option } = Select;
@@ -66,11 +66,11 @@ const ModalUpdate: React.FC<Props> = (props) => {
                     setLoadingSubmit(true);
                     if (isCustomer === true) {
                       await customerService
-                        .changePassword(
-                          session?.user.access_token!,
-                          form.getFieldValue("currentPass"),
-                          form.getFieldValue("password")
-                        )
+                        .changePassword(session?.user.access_token!, {
+                          email: session?.user.email,
+                          currentPassword: form.getFieldValue("currentPass"),
+                          newPassword: form.getFieldValue("password"),
+                        } as ChangePassword)
                         .then((res) => {
                           message.success("Update password successfully!", 1.5);
                           form.resetFields();
@@ -124,7 +124,8 @@ const ModalUpdate: React.FC<Props> = (props) => {
             <Form.Item
               name="currentPass"
               label="Current Password"
-              rules={[{ required: true, type: "string", min: 8, max: 25 }]}
+              rules={[{ required: true, type: "string", min: 6, max: 25 }]}
+              // rules={[{ required: true, type: "string", min: 8, max: 25 }]}
             >
               <Input.Password placeholder="Your Password" className="h-9" />
             </Form.Item>

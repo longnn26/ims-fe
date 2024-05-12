@@ -1,10 +1,10 @@
 import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
-import { url } from '../utils/api-links';
+import { urlNoti } from '../utils/api-links';
 
 var connection: HubConnection;
 const connectionServer = (token: string) => {
   const newConnection = new HubConnectionBuilder()
-    .withUrl(`${url}/notificationHub`, {
+    .withUrl(`${urlNoti}/notificationHub`, {
       accessTokenFactory: () => token,
     })
     .withAutomaticReconnect()

@@ -33,7 +33,7 @@ const AntdLayout: React.FC<Props> = (props) => {
           <div className="">{content}</div>
         </Content>
       </Layout>
-      <Footer style={{ textAlign: "center" }}>Copyright © 2023 QTSC</Footer>
+      <Footer style={{ textAlign: "center" }}>Copyright © 2024 SRH</Footer>
     </Layout>
   );
 };

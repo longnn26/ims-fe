@@ -19,7 +19,6 @@ const ModalCreate: React.FC<Props> = (props) => {
   const { onSubmit, open, onClose } = props;
 
   const [confirmLoading, setConfirmLoading] = useState(false);
-  const { componentOptions } = useSelector((state) => state.component);
 
   const disabled = async () => {
     var result = false;

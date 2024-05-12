@@ -4,7 +4,7 @@ export interface LoginResponse {
   access_token: string;
   tokenType: string;
   userId: string;
-  expires_in: number;
+  expiresIn: number;
   userName: string;
   email: string;
   phoneNumber?: string;

@@ -15,20 +15,12 @@ import { IoMdNotifications } from "react-icons/io";
 import signalR from "@signalR/hub";
 import notificationService from "@services/notification";
 import userService from "@services/user";
-import { ParamGet } from "@models/base";
 import { Notification } from "@models/notification";
 import InfiniteScroll from "react-infinite-scroll-component";
 import moment from "moment";
 import { FaDotCircle } from "react-icons/fa";
 import { TypeOptions, toast } from "react-toastify";
-import { MdReportProblem } from "react-icons/md";
-import { RequestExpand, RequestExpandParseJson } from "@models/requestExpand";
-import { AppointmentParseJson } from "@models/appointment";
-import { RequestUpgradeParseJson } from "@models/requestUpgrade";
-import { RequestHostParseJson } from "@models/requestHost";
 import { parseJwt } from "@utils/helpers";
-import { IncidentParseJson } from "@models/incident";
-import { ServerAllocationParseJson } from "@models/serverAllocation";
 
 const { Header } = Layout;
 
@@ -47,29 +39,33 @@ const HeaderComponent: React.FC<Props> = (props) => {
   const item = sliderMenu.find((_) => _.key === sliderMenuItemSelectedKey);
   const [showNotification, setShowNotification] = useState<boolean>(false);
   const [notifications, setNotifications] = useState<Notification[]>([]);
-  const [pageSizeNoti, setPageSizeNoti] = useState<number>(6);
-  const [totalPageNoti, setTotalPageNoti] = useState<number>(2);
-  const [pageIndexNoti, setPageIndexNoti] = useState<number>(0);
+  // const [pageSizeNoti, setPageSizeNoti] = useState<number>(6);
+  // const [totalPageNoti, setTotalPageNoti] = useState<number>(2);
+  // const [pageIndexNoti, setPageIndexNoti] = useState<number>(0);
   const [newNotifyCount, setNewNotifyCount] = useState<number>(
     session?.user.currenNoticeCount!
   );
 
   const getNotifications = async () => {
     await notificationService
-      .getNotifications(session?.user.access_token!, {
-        PageSize: pageSizeNoti,
-        PageIndex: pageIndexNoti + 1,
-      } as ParamGet)
+      .getNotifications(
+        session?.user.access_token!
+        //   , {
+        //   PageSize: pageSizeNoti,
+        //   PageIndex: pageIndexNoti + 1,
+        // } as ParamGet
+      )
       .then(async (data) => {
-        setTotalPageNoti(data.totalPage);
-        setPageIndexNoti(data.pageIndex);
-        setNotifications([...notifications, ...data.data]);
+        // setTotalPageNoti(data.totalPage);
+        // setPageIndexNoti(data.pageIndex);
+        // setNotifications([...notifications, ...data.data]);
+        setNotifications([...notifications, ...data]);
       });
   };
 
   const seenCurrenNoticeCount = async () => {
     await userService
-      .seenCurrenNoticeCount(session?.user.access_token!)
+      .seenCurrentNoticeCount(session?.user.access_token!)
       .then(async (data) => {
         setNewNotifyCount(0);
         const newSession = {
@@ -96,47 +92,11 @@ const HeaderComponent: React.FC<Props> = (props) => {
   const handleNotification = async (notification: Notification) => {
     // console.log("noti:", notification);
     switch (notification.data.key) {
-      case "RequestExpand":
-        var requestExpand = JSON.parse(
-          notification.data.value
-        ) as RequestExpandParseJson;
-        router.push(
-          `/server/${requestExpand.ServerAllocationId}/requestExpand/${requestExpand.Id}`
-        );
-        break;
-      case "Appointment":
-        var apppointment = JSON.parse(
-          notification.data.value
-        ) as AppointmentParseJson;
-        router.push(`/appointment/${apppointment.Id}`);
-        break;
-      case "RequestUpgrade":
-        var requestUpgrade = JSON.parse(
-          notification.data.value
-        ) as RequestUpgradeParseJson;
-        router.push(
-          `/server/${requestUpgrade.ServerAllocationId}/requestUpgrade/${requestUpgrade.Id}`
-        );
-        break;
-      case "RequestHost":
-        var requestHost = JSON.parse(
-          notification.data.value
-        ) as RequestHostParseJson;
-        router.push(
-          `/server/${requestHost.ServerAllocationId}/requestHost/${requestHost.Id}`
-        );
-        break;
-      case "Incident":
-        var incident = JSON.parse(notification.data.value) as IncidentParseJson;
-        router.push(
-          `/server/${incident.ServerAllocationId}/incident/${incident.Id}`
-        );
-        break;
-      case "ServerAllocation":
-        var serverAllocation = JSON.parse(
-          notification.data.value
-        ) as ServerAllocationParseJson;
-        router.push(`/server/${serverAllocation.Id}`);
+      case "Account":
+        // var model = JSON.parse(
+        //   notification.data.value
+        // ) as ServerAllocationParseJson;
+        // router.push(`/account/${model.id}`);
         break;
       default:
         break;
@@ -148,9 +108,7 @@ const HeaderComponent: React.FC<Props> = (props) => {
       label: (
         <span
           onClick={() => {
-            router.push(
-              `/myAccount/${parseJwt(session?.user.access_token).UserId}`
-            );
+            router.push(`profile`);
           }}
         >
           {session?.user.roles.includes("Customer")
@@ -168,7 +126,7 @@ const HeaderComponent: React.FC<Props> = (props) => {
       label: (
         <span
           onClick={() => {
-            dispatch(setSliderMenuItemSelectedKey("server-allocation"));
+            dispatch(setSliderMenuItemSelectedKey("support"));
             signOut();
           }}
         >
@@ -181,32 +139,17 @@ const HeaderComponent: React.FC<Props> = (props) => {
 
   useEffect(() => {
     switch (router.pathname) {
-      case "/server":
-        dispatch(setSliderMenuItemSelectedKey("server"));
+      case "/booking":
+        dispatch(setSliderMenuItemSelectedKey("booking"));
         break;
-      case "/component":
-        dispatch(setSliderMenuItemSelectedKey("component"));
+      case "/account":
+        dispatch(setSliderMenuItemSelectedKey("account"));
         break;
-      case "/ipSubnet":
-        dispatch(setSliderMenuItemSelectedKey("ipSubnet"));
+      case "/support":
+        dispatch(setSliderMenuItemSelectedKey("support"));
         break;
-      case "/customer":
-        dispatch(setSliderMenuItemSelectedKey("customer"));
-        break;
-      case "/area":
-        dispatch(setSliderMenuItemSelectedKey("area"));
-        break;
-      case "/request":
-        dispatch(setSliderMenuItemSelectedKey("request"));
-        break;
-      case "/appointment":
-        dispatch(setSliderMenuItemSelectedKey("appointment"));
-        break;
-      case "/staffAccount":
-        dispatch(setSliderMenuItemSelectedKey("staffAccount"));
-        break;
-      case "/informationDC":
-        dispatch(setSliderMenuItemSelectedKey("informationDC"));
+      case "/profile":
+        dispatch(setSliderMenuItemSelectedKey("profile"));
         break;
       default:
         break;
@@ -302,12 +245,12 @@ const HeaderComponent: React.FC<Props> = (props) => {
         <div className="max-w-screen-xl inline-block flex-wrap items-center justify-between">
           <div className="flex items-center">
             <img
-              src="/images/logo.jpeg"
+              src="/images/logo.png"
               className="h-14 mr-3"
               alt="FlowBite Logo"
             />
             <span className="self-center text-2xl font-semibold whitespace-nowrap">
-              IMS
+              SRH
             </span>
           </div>
         </div>
@@ -329,9 +272,10 @@ const HeaderComponent: React.FC<Props> = (props) => {
         >
           <Badge count={newNotifyCount}>
             <Avatar
-              className="bg-[#fde3cf] hover:bg-[#fde3cf]/50"
+              // className="bg-[#fde3cf] hover:bg-[#fde3cf]/50"
+              className="bg-[#e3eced] hover:bg-[#e3eced]/50"
               shape="circle"
-              icon={<IoMdNotifications style={{ color: "#f56a00" }} />}
+              icon={<IoMdNotifications style={{ color: "#01a0e9" }} />}
             />
           </Badge>
         </Space>
@@ -340,7 +284,7 @@ const HeaderComponent: React.FC<Props> = (props) => {
             className=" top-[80px] z-20 absolute w-full max-w-sm bg-white divide-y divide-gray-100 rounded-lg shadow"
             aria-labelledby="dropdownNotificationButton"
           >
-            <div className="block px-4 py-2 font-medium text-center text-[#f56a00] rounded-t-lg bg-gray-50">
+            <div className="block px-4 py-2 font-medium text-center text-[#01a0e9] rounded-t-lg bg-gray-50">
               Notifications
             </div>
             <InfiniteScroll
@@ -351,7 +295,8 @@ const HeaderComponent: React.FC<Props> = (props) => {
                 display: "flex",
                 flexDirection: "column",
               }}
-              hasMore={Boolean(pageIndexNoti < totalPageNoti)}
+              // hasMore={Boolean(pageIndexNoti < totalPageNoti)}
+              hasMore={false}
               loader={<h4>Loading...</h4>}
               scrollableTarget="scrollableDiv"
             >
@@ -396,7 +341,7 @@ const HeaderComponent: React.FC<Props> = (props) => {
                             }
                             // !noti.seen && seenNotification(noti.id!)
                           }
-                          color={` ${noti.seen ? "gray" : "#f56a00"}`}
+                          color={` ${noti.seen ? "gray" : "#01a0e9"}`}
                         />
                       </div>
                     </div>
@@ -413,7 +358,7 @@ const HeaderComponent: React.FC<Props> = (props) => {
           className="cursor-pointer"
         >
           <Space>
-            <Avatar style={{ backgroundColor: "#fde3cf", color: "#f56a00" }}>
+            <Avatar style={{ backgroundColor: "#e3eced", color: "#01a0e9" }}>
               {session?.user.roles.includes("Customer")
                 ? parseJwt(session.user.access_token).Email.charAt(0)
                 : session?.user.userName?.charAt(0)}

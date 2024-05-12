@@ -71,7 +71,7 @@ const Signin: React.FC<Props> = (props) => {
         </div>
         <div className="m-auto max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow-2xl relative">
           <div className="flex justify-center">
-            <img src="/images/logo.jpeg" className="h-20 mr-3" alt="Logo" />
+            <img src="/images/logo.png" className="h-20 mr-3" alt="Logo" />
           </div>
           <Form
             form={form}

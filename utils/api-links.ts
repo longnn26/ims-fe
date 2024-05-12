@@ -1,13 +1,14 @@
 export const url = "https://imsapi.hisoft.vn";
+export const urlNoti = "https://ims.hisoft.vn";
 export const urlServerSide = "http://192.168.40.83:8001";
-export const url3rdParty = "https://api.vietqr.io/v2/business";
+// export const url3rdParty = "https://api.vietqr.io/v2/business";
 // export const urlServerSide = "https://imsapi.hisoft.vn";
 
 const apiLinks = {
   user: {
     login: `${urlServerSide}/api/User/Login`,
     getUserTech: `${url}/api/User/Tech`,
-    seenCurrenNoticeCount: `${url}/api/User/SeenCurrenNoticeCount`,
+    seenCurrentNoticeCount: `${urlNoti}/api/User/SeenCurrentNoticeCount`,
     get: `${url}/api/User`,
     create: `${url}/api/User/Register`,
     update: `${url}/api/User/MyAccount`,
@@ -40,15 +41,15 @@ const apiLinks = {
   },
 
   customer: {
-    getByTax: `${url3rdParty}`,
+    // getByTax: `${url3rdParty}`,
     get: `${url}/api/Customer`,
-    getById: `${url}/api/Customer`,
+    getProfile: `${url}/api/Customer/Profile`,
     create: `${url}/api/Customer`,
     update: `${url}/api/Customer`,
     delete: `${url}/api/Customer`,
     getServerAllocationById: `${url}/api/Customer`,
     login: `${urlServerSide}/api/Customer/Login`,
-    changePassword: `${url}/api/Customer/Password`,
+    changePassword: `${url}/api/Customer/ChangePassword`,
   },
 
   requestUpgrade: {
@@ -151,8 +152,8 @@ const apiLinks = {
   },
 
   notification: {
-    get: `${url}/api/Notification`,
-    seenNotification: `${url}/api/Notification/SeenNotification`,
+    get: `${urlNoti}/api/Notification`,
+    seenNotification: `${urlNoti}/api/Notification/SeenNotify`,
   },
 
   informationDC: {

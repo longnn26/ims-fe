@@ -10,38 +10,14 @@ const BreadcrumbComponent: React.FC<Props> = (props) => {
   const { itemBreadcrumbs } = props;
   itemBreadcrumbs.forEach((element) => {
     switch (element.title) {
-      case "server":
-        element.title = "Server";
+      case "account":
+        element.title = "Account";
         break;
-      case "customer":
-        element.title = "Customer";
+      case "booking":
+        element.title = "Booking";
         break;
-      case "requestUpgrade":
-        element.title = "Hardware Upgrade Request";
-        break;
-      case "requestExpand":
-        element.title = "Server Allocation Request";
-        break;
-      case "area":
-        element.title = "Area";
-        break;
-      case "appointment":
-        element.title = "Appointment";
-        break;
-      case "ipSubnet":
-        element.title = "IP Subnet";
-        break;
-      case "requestHost":
-        element.title = "IP Request";
-        break;
-      case "incident":
-        element.title = "Incident";
-        break;
-      case "ipAddress":
-        element.title = "IP Address";
-        break;
-      case "rack":
-        element.title = "Rack";
+      case "support":
+        element.title = "Support";
         break;
     }
   });

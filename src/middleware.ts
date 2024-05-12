@@ -1,13 +1,6 @@
 import { getToken } from "next-auth/jwt";
 import { NextRequest, NextResponse } from "next/server";
-import { areInArray, isExpiredTimeToken } from "../utils/helpers";
-import {
-  ROLE_ADMIN,
-  ROLE_CUSTOMER,
-  ROLE_MANAGER,
-  ROLE_SALES,
-  ROLE_TECH,
-} from "@utils/constants";
+import { isExpiredTimeToken } from "../utils/helpers";
 
 export async function middleware(req: NextRequest) {
   const { pathname, origin } = req.nextUrl;
@@ -16,89 +9,6 @@ export async function middleware(req: NextRequest) {
     secret: process.env.NEXTAUTH_SECRET,
   })) as any;
 
-  if (req.url.includes(`/server`)) {
-    if (!token || !isExpiredTimeToken(token.loginDate, token.expiresIn)) {
-      return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/signin`);
-    } else {
-      if (!areInArray(token?.roles, ROLE_TECH, ROLE_SALES, ROLE_CUSTOMER)) {
-        return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/empty`);
-      }
-    }
-  }
-  if (req.url.includes(`/ipSubnet`)) {
-    if (!token || !isExpiredTimeToken(token.loginDate, token.expiresIn)) {
-      return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/signin`);
-    } else {
-      if (!areInArray(token?.roles, ROLE_TECH)) {
-        return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/empty`);
-      }
-    }
-  }
-  if (req.url.includes(`/requestUpgrade`)) {
-    if (!token || !isExpiredTimeToken(token.loginDate, token.expiresIn)) {
-      return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/signin`);
-    } else {
-      if (!areInArray(token?.roles, ROLE_TECH, ROLE_SALES, ROLE_CUSTOMER)) {
-        return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/empty`);
-      }
-    }
-  }
-  if (req.url.includes(`/appointment`)) {
-    if (!token || !isExpiredTimeToken(token.loginDate, token.expiresIn)) {
-      return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/signin`);
-    } else {
-      if (!areInArray(token?.roles, ROLE_TECH, ROLE_SALES, ROLE_CUSTOMER)) {
-        return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/empty`);
-      }
-    }
-  }
-  if (req.url.includes(`/area`)) {
-    if (!token || !isExpiredTimeToken(token.loginDate, token.expiresIn)) {
-      return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/signin`);
-    } else {
-      if (!areInArray(token?.roles, ROLE_TECH)) {
-        return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/empty`);
-      }
-    }
-  }
-  if (req.url.includes(`/requestHost`)) {
-    if (!token || !isExpiredTimeToken(token.loginDate, token.expiresIn)) {
-      return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/signin`);
-    } else {
-      if (!areInArray(token?.roles, ROLE_TECH, ROLE_SALES, ROLE_CUSTOMER)) {
-        return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/empty`);
-      }
-    }
-  }
-  if (req.url.includes(`/customer`)) {
-    if (!token || !isExpiredTimeToken(token.loginDate, token.expiresIn)) {
-      return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/signin`);
-    } else {
-      if (!areInArray(token?.roles, ROLE_TECH, ROLE_SALES, ROLE_MANAGER)) {
-        return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/empty`);
-      }
-    }
-  }
-  if (req.url.includes(`/requestExpand`)) {
-    if (!token || !isExpiredTimeToken(token.loginDate, token.expiresIn)) {
-      return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/signin`);
-    }
-  }
-  if (req.url.includes(`/myAccount`)) {
-    if (!token || !isExpiredTimeToken(token.loginDate, token.expiresIn)) {
-      return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/signin`);
-    }
-  }
-
-  if (req.url.includes(`/statistic`)) {
-    if (!token || !isExpiredTimeToken(token.loginDate, token.expiresIn)) {
-      return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/signin`);
-    } else {
-      if (!areInArray(token?.roles, ROLE_SALES, ROLE_MANAGER)) {
-        return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/empty`);
-      }
-    }
-  }
   switch (pathname) {
     case "/signin":
       if (token && isExpiredTimeToken(token.loginDate, token.expiresIn))
@@ -107,65 +17,22 @@ export async function middleware(req: NextRequest) {
     case "/":
       if (!token || !isExpiredTimeToken(token.loginDate, token.expiresIn)) {
         return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/signin`);
-      } else {
-        if (areInArray(token?.roles, ROLE_ADMIN)) {
-          return NextResponse.redirect(
-            `${process.env.NEXTAUTH_URL}/staffAccount`
-          );
-        } else {
-          if (areInArray(token?.roles, ROLE_MANAGER)) {
-            return NextResponse.redirect(
-              `${process.env.NEXTAUTH_URL}/customer`
-            );
-          } else {
-            return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/server`);
-          }
-        }
       }
-    case "/component":
+    case "/profile":
       if (!token || !isExpiredTimeToken(token.loginDate, token.expiresIn)) {
         return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/signin`);
-      } else {
-        if (!areInArray(token?.roles, ROLE_TECH)) {
-          return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/empty`);
-        }
       }
-      break;
-    case "/staffAccount":
+    case "/account":
       if (!token || !isExpiredTimeToken(token.loginDate, token.expiresIn)) {
         return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/signin`);
-      } else {
-        if (!areInArray(token?.roles, ROLE_ADMIN)) {
-          return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/empty`);
-        }
       }
-      break;
-    case "/staffAccount":
+    case "/booking":
       if (!token || !isExpiredTimeToken(token.loginDate, token.expiresIn)) {
         return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/signin`);
-      } else {
-        if (!areInArray(token?.roles, ROLE_ADMIN)) {
-          return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/empty`);
-        }
       }
-      break;
-    case "/informationDC":
+    case "/support":
       if (!token || !isExpiredTimeToken(token.loginDate, token.expiresIn)) {
         return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/signin`);
-      } else {
-        if (!areInArray(token?.roles, ROLE_ADMIN)) {
-          return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/empty`);
-        }
       }
-      break;
-    case "/statistic":
-      if (!token || !isExpiredTimeToken(token.loginDate, token.expiresIn)) {
-        return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/signin`);
-      } else {
-        if (!areInArray(token?.roles, ROLE_SALES, ROLE_MANAGER)) {
-          return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/empty`);
-        }
-      }
-      break;
   }
 }

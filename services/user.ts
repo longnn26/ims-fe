@@ -29,9 +29,9 @@ const getUserTechData = async (
   return response.data;
 };
 
-const seenCurrenNoticeCount = async (token: string): Promise<User> => {
+const seenCurrentNoticeCount = async (token: string): Promise<User> => {
   const response = await httpClient.post({
-    url: apiLinks.user.seenCurrenNoticeCount,
+    url: apiLinks.user.seenCurrentNoticeCount,
     token: token,
   });
   return response.data;
@@ -123,7 +123,7 @@ const changePassword = async (
 const authService = {
   login,
   getUserTechData,
-  seenCurrenNoticeCount,
+  seenCurrentNoticeCount,
   getUserData,
   getUserDetailData,
   create,

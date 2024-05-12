@@ -23,13 +23,14 @@ export default NextAuth({
             id: result.userId,
             name: result.userName,
             access_token: result.access_token,
-            expiresIn: result.expires_in,
+            expiresIn: result.expiresIn,
             loginDate: moment().format(),
             userId: result.userId,
             userName: result.userName,
             tokenType: result.tokenType,
             currenNoticeCount: result.currenNoticeCount,
             roles: result.roles,
+            email: result.email,
           } as User;
           return user;
         } else {
@@ -55,12 +56,13 @@ export default NextAuth({
             id: result.userId,
             name: result.userName,
             access_token: result.access_token,
-            expiresIn: result.expires_in,
+            expiresIn: result.expiresIn,
             loginDate: moment().format(),
             userId: result.userId,
             userName: result.userName,
             tokenType: result.tokenType,
             currenNoticeCount: result.currenNoticeCount,
+            email: result.email,
             roles: result.roles,
           } as User;
           return user;
@@ -76,7 +78,7 @@ export default NextAuth({
         token.access_token = user.access_token;
         token.expiresIn = user.expiresIn;
         token.loginDate = user.loginDate;
-        // token.email = user.email;
+        token.email = user.email;
         token.userId = user.userId;
         token.userName = user.userName;
         token.currenNoticeCount = user.currenNoticeCount;

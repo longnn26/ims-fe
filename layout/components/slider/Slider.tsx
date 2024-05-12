@@ -6,7 +6,6 @@ import { sliderMenu } from "@utils/global";
 import useDispatch from "@hooks/use-dispatch";
 import { setSliderMenuItemSelectedKey } from "@slices/global";
 import { useRouter } from "next/router";
-import { ROLE_TECH } from "@utils/constants";
 import { useSession } from "next-auth/react";
 import { areInArray } from "@utils/helpers";
 

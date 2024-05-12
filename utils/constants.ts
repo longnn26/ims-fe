@@ -7,11 +7,8 @@ export const formatPublicView = "MMM Do YYYY";
 export const NEW_NOTIFY = "newNotify";
 export const NEW_NOTIFY_COUNT = "newNotifyCount";
 
-export const ROLE_SALES = "Sale";
-export const ROLE_TECH = "Tech";
 export const ROLE_ADMIN = "Admin";
 export const ROLE_CUSTOMER = "Customer";
-export const ROLE_MANAGER = "Manager";
 
 export const LIST_PAGE_SIZE = [5, 10, 20, 30, 40, 50];
 

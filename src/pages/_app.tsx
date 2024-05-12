@@ -22,7 +22,7 @@ export default function App({
       theme={{
         token: {
           // Seed Token
-          colorPrimary: "#ee4623",
+          colorPrimary: "#01a0e9",
           borderRadius: 2,
           // Alias Token
           // colorBgContainer: "#f6ffed",

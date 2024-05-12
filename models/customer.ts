@@ -2,18 +2,13 @@ import { Base, PagingModel, ParamGet } from "./base";
 
 export interface Customer extends Base {
   id: string;
-  companyName: string;
-  address: string;
-  taxNumber: string;
-  email: string;
   phoneNumber: string;
-  representator: string;
-  representatorPosition: string;
-  contractNumber: string;
-  contacts: Contacts[];
-  isDeleted: boolean;
-  saleStaff: string;
-  dateContract: string;
+  userName: string;
+  name: string;
+  email: string;
+  address: string;
+  avatar: string;
+  gender: string;
 }
 
 export interface CustomerData extends PagingModel {
@@ -58,4 +53,10 @@ export interface Contacts {
   email: string;
   forAppointment: boolean;
   cccd: string;
+}
+
+export interface ChangePassword {
+  email: string;
+  currentPassword: string;
+  newPassword: string;
 }

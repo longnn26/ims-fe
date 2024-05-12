@@ -4,6 +4,7 @@ import {
   CustomerUpdateModel,
   CustomerData,
   CusParam,
+  ChangePassword,
 } from "@models/customer";
 import {LoginResponse} from "@models/user"
 import apiLinks from "@utils/api-links";
@@ -21,80 +22,20 @@ const getData = async (
   return response.data;
 };
 
-const getCustomerById = async (
+const getCustomerProfile = async (
   token: string,
-  id: string,
 ): Promise<any> => {
   const response = await httpClient.get({
-    url: apiLinks.customer.get + `/${id}`,
+    url: apiLinks.customer.getProfile,
     token: token,
   });
   return response.data;
 };
-
-const getCompanyByTax = async (
-  taxNumber: string
-): Promise<any> => {
-  const response = await httpClient.get({
-    url: apiLinks.customer.getByTax + `/${taxNumber}`,
-    data: taxNumber,
-  });
-  return response.data;
-};
-
-const getServerById = async (
-  token: string,
-  id: string,
-  params?: ParamGet,
-): Promise<any> => {
-  const response = await httpClient.get({
-    token: token,
-    url: apiLinks.customer.getServerAllocationById + `/${id}/ServerAllocation`,
-    params: params,
-  });
-  return response.data;
-}
-
-const createData = async (
-  token: string,
-  data: CustomerCreateModel
-): Promise<any> => {
-  const response = await httpClient.post({
-    token: token,
-    url: apiLinks.customer.create,
-    data: data,
-  });
-  return response.data;
-};
-
-const updateData = async (
-  token: string,
-  data: CustomerUpdateModel
-): Promise<any> => {
-  const response = await httpClient.put({
-    token: token,
-    url: apiLinks.customer.update,
-    data: data,
-  });
-  return response.data;
-};
-
-const deleteData = async (token: string, id: string): Promise<any> => {
-  const response = await httpClient.delete({
-    url: apiLinks.customer.delete + `/${id}`,
-    token: token,
-  });
-  return response.data;
-};
-
-const changePassword = async (token: string, currentPass: string, password: string): Promise<any> => {
+const changePassword = async (token: string, model: ChangePassword): Promise<any> => {
   const response = await httpClient.put({
     url: apiLinks.customer.changePassword,
     token: token,
-    data: {
-      currentPassword: currentPass,
-      password: password
-    }
+    data: model
   });
   return response.data;
 };
@@ -114,13 +55,7 @@ const login = async (
 };
 
 const customer = {
-  getData,
-  updateData,
-  deleteData,
-  createData,
-  getCompanyByTax,
-  getCustomerById,
-  getServerById,
+  getCustomerProfile,
   login,
   changePassword
 };

@@ -22,27 +22,20 @@ const AccountDetail: React.FC<Props> = (props) => {
       <Descriptions className="p-5" layout="vertical">
         {isCustomer === true ? (
           <>
-            <Descriptions.Item label="Contract with Data Center">
-              {customerAccountDetail?.contractNumber}
+            <Descriptions.Item label="Phone number">
+              {customerAccountDetail?.phoneNumber}
             </Descriptions.Item>
-            <Descriptions.Item label="Company Name">
-              {customerAccountDetail?.companyName}
+            <Descriptions.Item label="Username">
+              {customerAccountDetail?.userName}
             </Descriptions.Item>
-            <Descriptions.Item label="Tax Number">
-              {customerAccountDetail?.taxNumber}
-            </Descriptions.Item>
-
-            <Descriptions.Item label="Representator">
-              {customerAccountDetail?.representator}
-            </Descriptions.Item>
-            <Descriptions.Item label="Representator Position">
-              {customerAccountDetail?.representatorPosition}
+            <Descriptions.Item label="Name">
+              {customerAccountDetail?.name}
             </Descriptions.Item>
             <Descriptions.Item label="Email">
               {customerAccountDetail?.email}
             </Descriptions.Item>
-            <Descriptions.Item label="Phone Number">
-              {customerAccountDetail?.phoneNumber}
+            <Descriptions.Item label="Gender">
+              {customerAccountDetail?.gender}
             </Descriptions.Item>
             <Descriptions.Item label="Address" span={4}>
               {customerAccountDetail?.address}
