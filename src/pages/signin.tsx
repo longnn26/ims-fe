@@ -81,7 +81,7 @@ const Signin: React.FC<Props> = (props) => {
           >
             <Form.Item
               name="username"
-              label="Username or Email"
+              label="Username"
               rules={[{ required: true }, { type: "string" }]}
             >
               <Input placeholder="username" className="h-9" />
