@@ -1,43 +1,10 @@
 import NextAuth, { User } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import userService from "@services/user";
 import moment from "moment";
 import customer from "@services/customer";
 
 export default NextAuth({
   providers: [
-    CredentialsProvider({
-      name: "Credentials",
-      credentials: {
-        username: { label: "Username", type: "text" },
-        password: { label: "Password", type: "password" },
-      },
-      async authorize(credentials) {
-        var result = await userService.login(
-          credentials?.username!,
-          credentials?.password!
-        );
-
-        if (result) {
-          const user = {
-            id: result.userId,
-            name: result.userName,
-            access_token: result.access_token,
-            expiresIn: result.expiresIn,
-            loginDate: moment().format(),
-            userId: result.userId,
-            userName: result.userName,
-            tokenType: result.tokenType,
-            currenNoticeCount: result.currenNoticeCount,
-            roles: result.roles,
-            email: result.email,
-          } as User;
-          return user;
-        } else {
-          return null;
-        }
-      },
-    }),
     CredentialsProvider({
       id: "cus_credentials",
       name: "CusCredentials",

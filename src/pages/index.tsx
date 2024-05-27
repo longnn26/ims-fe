@@ -5,18 +5,11 @@ import { Modal } from "antd";
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
 });
-const { confirm } = Modal;
 
-const Customer: React.FC = () => {
+const HomePage: React.FC = () => {
   return (
-    <AntdLayoutNoSSR
-      content={
-        <>
-          <div className="flex justify-between mb-4 p-2 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50"></div>
-        </>
-      }
-    />
+   <div>HomePage</div>
   );
 };
 
-export default Customer;
+export default HomePage;

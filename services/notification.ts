@@ -28,9 +28,18 @@ const seenNotifications = async (
   return response.data;
 };
 
+const seenAllNotifications = async (token: string): Promise<number> => {
+  const response = await httpClient.put({
+    token: token,
+    url: `${apiLinks.notification.seenAllNotification}`,
+  });
+  return response.data;
+};
+
 const notification = {
   getNotifications,
   seenNotifications,
+  seenAllNotifications,
 };
 
 export default notification;

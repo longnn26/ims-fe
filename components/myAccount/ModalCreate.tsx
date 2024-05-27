@@ -53,7 +53,7 @@ const ModalCreate: React.FC<Props> = (props) => {
                   async onOk() {
                     const formData = {
                       userName: form.getFieldValue("userName"),
-                      password: "P@ssword123",
+                      password: "password123@",
                       email: form.getFieldValue("email"),
                       fullname: form.getFieldValue("fullname"),
                       address: form.getFieldValue("address"),

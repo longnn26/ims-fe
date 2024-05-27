@@ -8,7 +8,7 @@ export const NEW_NOTIFY = "newNotify";
 export const NEW_NOTIFY_COUNT = "newNotifyCount";
 
 export const ROLE_ADMIN = "Admin";
-export const ROLE_CUSTOMER = "Customer";
+export const ROLE_STAFF = "Staff";
 
 export const LIST_PAGE_SIZE = [5, 10, 20, 30, 40, 50];
 
@@ -174,5 +174,24 @@ export const customerStatus = [
     value: true,
     label: "Removed",
     color: "#ed1c24",
+  },
+];
+
+export const NAV_ITEMS_GENERAL = [
+  {
+    nameItem: "Giới thiệu",
+    path: "/#",
+  },
+  {
+    nameItem: "Dịch vụ",
+    path: "/#",
+  },
+  {
+    nameItem: "Tuyển dụng",
+    path: "/recruitment",
+  },
+  {
+    nameItem: "Liên hệ",
+    path: "/contact",
   },
 ];

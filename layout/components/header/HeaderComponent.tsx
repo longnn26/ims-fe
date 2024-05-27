@@ -14,13 +14,13 @@ import Head from "next/head";
 import { IoMdNotifications } from "react-icons/io";
 import signalR from "@signalR/hub";
 import notificationService from "@services/notification";
-import userService from "@services/user";
 import { Notification } from "@models/notification";
 import InfiniteScroll from "react-infinite-scroll-component";
 import moment from "moment";
 import { FaDotCircle } from "react-icons/fa";
 import { TypeOptions, toast } from "react-toastify";
 import { parseJwt } from "@utils/helpers";
+import { IoCheckmarkDone } from "react-icons/io5";
 
 const { Header } = Layout;
 
@@ -63,29 +63,31 @@ const HeaderComponent: React.FC<Props> = (props) => {
       });
   };
 
-  const seenCurrenNoticeCount = async () => {
-    await userService
-      .seenCurrentNoticeCount(session?.user.access_token!)
-      .then(async (data) => {
-        setNewNotifyCount(0);
-        const newSession = {
-          ...session,
-          user: {
-            ...session?.user,
-            currenNoticeCount: 0,
-          },
-        };
-        await sessionUpdate({ ...newSession });
-      });
-  };
-
   const seenNotification = async (id: number) => {
     await notificationService
       .seenNotifications(session?.user.access_token!, id)
       .then((data) => {
         var noti = notifications.findIndex((_) => _.id == data);
         notifications[noti].seen = true;
+        if (newNotifyCount > 0) {
+          setNewNotifyCount(newNotifyCount - 1);
+        }
         setNotifications([...notifications]);
+      });
+  };
+
+  const seenAllNotifications = async () => {
+    await notificationService
+      .seenAllNotifications(session?.user.access_token!)
+      .then((data) => {
+        const updatedNotifications = notifications.map((notification) => ({
+          ...notification,
+          seen: true,
+        }));
+        if (newNotifyCount > 0) {
+          setNewNotifyCount(0);
+        }
+        setNotifications(updatedNotifications);
       });
   };
 
@@ -93,10 +95,6 @@ const HeaderComponent: React.FC<Props> = (props) => {
     // console.log("noti:", notification);
     switch (notification.data.key) {
       case "Account":
-        // var model = JSON.parse(
-        //   notification.data.value
-        // ) as ServerAllocationParseJson;
-        // router.push(`/account/${model.id}`);
         break;
       default:
         break;
@@ -126,7 +124,8 @@ const HeaderComponent: React.FC<Props> = (props) => {
       label: (
         <span
           onClick={() => {
-            dispatch(setSliderMenuItemSelectedKey("support"));
+            dispatch(setSliderMenuItemSelectedKey(""));
+            router.push("/");
             signOut();
           }}
         >
@@ -139,11 +138,20 @@ const HeaderComponent: React.FC<Props> = (props) => {
 
   useEffect(() => {
     switch (router.pathname) {
-      case "/booking":
-        dispatch(setSliderMenuItemSelectedKey("booking"));
+      case "/dashboard":
+        dispatch(setSliderMenuItemSelectedKey("dashboard"));
         break;
       case "/account":
         dispatch(setSliderMenuItemSelectedKey("account"));
+        break;
+      case "/booking":
+        dispatch(setSliderMenuItemSelectedKey("booking"));
+        break;
+      case "/emergency":
+        dispatch(setSliderMenuItemSelectedKey("emergency"));
+        break;
+      case "/configuration":
+        dispatch(setSliderMenuItemSelectedKey("configuration"));
         break;
       case "/support":
         dispatch(setSliderMenuItemSelectedKey("support"));
@@ -245,13 +253,11 @@ const HeaderComponent: React.FC<Props> = (props) => {
         <div className="max-w-screen-xl inline-block flex-wrap items-center justify-between">
           <div className="flex items-center">
             <img
-              src="/images/logo.png"
-              className="h-14 mr-3"
+              src="/images/logo_with_line_text.png"
+              className="h-10 mr-3"
               alt="FlowBite Logo"
             />
-            <span className="self-center text-2xl font-semibold whitespace-nowrap">
-              SRH
-            </span>
+           
           </div>
         </div>
       </div>
@@ -267,7 +273,6 @@ const HeaderComponent: React.FC<Props> = (props) => {
           className="m-2 hover:cursor-pointer relative"
           onClick={() => {
             setShowNotification(!showNotification);
-            newNotifyCount > 0 && seenCurrenNoticeCount();
           }}
         >
           <Badge count={newNotifyCount}>
@@ -284,8 +289,14 @@ const HeaderComponent: React.FC<Props> = (props) => {
             className=" top-[80px] z-20 absolute w-full max-w-sm bg-white divide-y divide-gray-100 rounded-lg shadow"
             aria-labelledby="dropdownNotificationButton"
           >
-            <div className="block px-4 py-2 font-medium text-center text-[#01a0e9] rounded-t-lg bg-gray-50">
+            <div className="block px-4 py-2 relative font-medium text-center text-[#01a0e9] rounded-t-lg bg-gray-50">
               Notifications
+              <div
+                className="absolute -top-3 right-3"
+                onClick={seenAllNotifications}
+              >
+                <IoCheckmarkDone className="w-5 h-5 cursor-pointer" />
+              </div>
             </div>
             <InfiniteScroll
               dataLength={notifications?.length!}
@@ -304,14 +315,14 @@ const HeaderComponent: React.FC<Props> = (props) => {
                 {notifications?.map((noti, index) => (
                   <div
                     key={index}
-                    className="h-24 flex px-4 py-3 hover:bg-gray-100 hover:cursor-pointer"
+                    className={`h-fit flex px-4 py-3 hover:bg-gray-100 hover:cursor-pointer
+                  ${!noti.seen && "bg-blue-100"} `}
                     onClick={() => {
                       handleNotification(noti);
                       seenNotification(noti.id);
                     }}
                   >
-                    <div className="flex-shrink-0"></div>
-                    <div className="w-full pl-3">
+                    <div className="w-full pl-2">
                       <div className="text-gray-500 text-sm mb-1.5">
                         <span className="font-semibold text-gray-900">
                           {`${noti.title} `}

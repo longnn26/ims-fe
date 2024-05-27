@@ -14,10 +14,6 @@ export async function middleware(req: NextRequest) {
       if (token && isExpiredTimeToken(token.loginDate, token.expiresIn))
         return NextResponse.redirect(`${origin}`);
       break;
-    case "/":
-      if (!token || !isExpiredTimeToken(token.loginDate, token.expiresIn)) {
-        return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/signin`);
-      }
     case "/profile":
       if (!token || !isExpiredTimeToken(token.loginDate, token.expiresIn)) {
         return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/signin`);
@@ -31,6 +27,18 @@ export async function middleware(req: NextRequest) {
         return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/signin`);
       }
     case "/support":
+      if (!token || !isExpiredTimeToken(token.loginDate, token.expiresIn)) {
+        return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/signin`);
+      }
+    case "/dashboard":
+      if (!token || !isExpiredTimeToken(token.loginDate, token.expiresIn)) {
+        return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/signin`);
+      }
+    case "/emergency":
+      if (!token || !isExpiredTimeToken(token.loginDate, token.expiresIn)) {
+        return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/signin`);
+      }
+    case "/configuration":
       if (!token || !isExpiredTimeToken(token.loginDate, token.expiresIn)) {
         return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/signin`);
       }

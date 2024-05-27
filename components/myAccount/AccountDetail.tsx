@@ -24,10 +24,7 @@ const AccountDetail: React.FC<Props> = (props) => {
           <>
             <Descriptions.Item label="Phone number">
               {customerAccountDetail?.phoneNumber}
-            </Descriptions.Item>
-            <Descriptions.Item label="Username">
-              {customerAccountDetail?.userName}
-            </Descriptions.Item>
+            </Descriptions.Item>          
             <Descriptions.Item label="Name">
               {customerAccountDetail?.name}
             </Descriptions.Item>
