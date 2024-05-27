@@ -3,62 +3,151 @@
 @tailwind utilities;
 
 .ant-btn-primary {
-    background-color: #01a0e9 !important;
+  background-color: #01a0e9 !important;
+}
+
+html,
+body,
+div,
+span,
+applet,
+object,
+iframe,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+a,
+abbr,
+acronym,
+address,
+big,
+cite,
+code,
+del,
+dfn,
+em,
+img,
+ins,
+kbd,
+q,
+s,
+samp,
+small,
+strike,
+strong,
+sub,
+sup,
+tt,
+var,
+b,
+u,
+i,
+center,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td,
+article,
+aside,
+canvas,
+details,
+embed,
+figure,
+figcaption,
+footer,
+header,
+hgroup,
+menu,
+nav,
+output,
+ruby,
+section,
+summary,
+time,
+mark,
+audio,
+video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
 }
 
 @layer components {
-    .btn-submit {
-        /* background-color: #ee4623; */
-        /* color: white; */
-        font-weight: 500;
-        border-radius: 0.5rem;
-        font-size: 0.875rem
-            /* 14px */
-        ;
-        line-height: 1.25rem
-            /* 20px */
-        ;
-        padding-left: 1.25rem
-            /* 20px */
-        ;
-        padding-right: 1.25rem
-            /* 20px */
-        ;
-        padding-top: 0.625rem
-            /* 10px */
-        ;
-        padding-bottom: 0.625rem
-            /* 10px */
-        ;
-        text-align: center;
-        display: inline-flex;
-        align-items: center;
-        margin-right: 0.5rem
-            /* 8px */
-        ;
-    }
+  .btn-submit {
+    /* background-color: #ee4623; */
+    /* color: white; */
+    font-weight: 500;
+    border-radius: 0.5rem;
+    font-size: 0.875rem /* 14px */;
+    line-height: 1.25rem /* 20px */;
+    padding-left: 1.25rem /* 20px */;
+    padding-right: 1.25rem /* 20px */;
+    padding-top: 0.625rem /* 10px */;
+    padding-bottom: 0.625rem /* 10px */;
+    text-align: center;
+    display: inline-flex;
+    align-items: center;
+    margin-right: 0.5rem /* 8px */;
+  }
 
-    .btn-submit:hover {
-        background-color: "#01a0e9";
-        color: white !important;
-
-    }
+  .btn-submit:hover {
+    background-color: "#01a0e9";
+    color: white !important;
+  }
 }
 
 .swiper {
-    width: 100%;
-    padding-top: 50px;
-    padding-bottom: 50px;
+  width: 100%;
+  padding-top: 50px;
+  padding-bottom: 50px;
+}
+
+.swiper-slide {
+  background-position: center;
+  background-size: cover;
+  width: 300px;
+  height: 300px;
+}
+
+.swiper-slide img {
+  display: block;
+  width: 100%;
+}
+
+.container {
+  width: 100%;
+  margin: 0 auto;
+}
+
+@media (min-width: 1200px) {
+  .container {
+    max-width: 1140px;
   }
-  
-  .swiper-slide {
-    background-position: center;
-    background-size: cover;
-    width: 300px;
-    height: 300px;
+}
+
+@media (min-width: 1400px) {
+  .container {
+    max-width: 1320px;
   }
-  
-  .swiper-slide img {
-    display: block;
-    width: 100%;
-  }
+}

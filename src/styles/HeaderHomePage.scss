@@ -1,0 +1,116 @@
+.general-header-container {
+  background-color: white;
+  border-bottom: 1px solid rgba(128, 128, 128, 0.436);
+
+  .brand-name {
+    color: #01a0e9;
+    font-size: 20px;
+    font-weight: bold;
+    letter-spacing: 0.05rem;
+  }
+
+  a {
+    color: #01a0e9;
+    font-size: 16px;
+    text-decoration: none;
+  }
+
+  .search-container {
+    position: relative;
+    --size-button: 40px;
+    color: #01a0e9;
+
+    .input {
+      padding-left: var(--size-button);
+      height: var(--size-button);
+      font-size: 13px;
+      border: none;
+      color: #fff;
+      outline: none;
+      width: var(--size-button);
+      -webkit-transition: all ease 0.3s;
+      transition: all ease 0.3s;
+      background-color: #191a1e;
+      border: 1.5px solid var(--gray-color);
+      border-radius: 50px;
+      cursor: pointer;
+    }
+
+    .input:hover {
+      border-color: var(--white-color);
+    }
+
+    .input:focus,
+    .input:not(:invalid) {
+      width: 200px;
+      cursor: text;
+    }
+
+    .input:focus + .icon,
+    .input:not(:invalid) + .icon {
+      pointer-events: all;
+      cursor: pointer;
+    }
+
+    .icon {
+      position: absolute;
+      width: var(--size-button);
+      height: var(--size-button);
+      top: 0;
+      left: 0;
+      padding: 8px;
+      pointer-events: none;
+    }
+
+    .icon svg {
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  .btn-signup,
+  .btn-login {
+    text-transform: none;
+    font-size: 16px;
+    font-weight: normal;
+    border-radius: 15px;
+  }
+
+  .btn-signup {
+    -webkit-transition: all ease 0.3s;
+    transition: all ease 0.3s;
+    padding: 10px 20px;
+    background-color: #01a0e9;
+    border: 1px solid #01a0e9;
+
+    span {
+      color: white;
+      font-size: 15px;
+    }
+  }
+
+  .btn-signup:hover {
+    background-color: white;
+
+    span {
+      color: #01a0e9;
+    }
+  }
+
+  .nav-items {
+    a {
+      -webkit-transition: all ease 0.3s;
+      transition: all ease 0.3s;
+    }
+
+    a:hover {
+      color: orange;
+    }
+
+    .active {
+      color: orange;
+      text-decoration: underline;
+      text-underline-offset: 10px;
+    }
+  }
+}

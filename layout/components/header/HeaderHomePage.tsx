@@ -1,13 +1,10 @@
 "use client";
 import React from "react";
 import Link from "next/link";
-import { Typography } from "@material-tailwind/react";
 
-import "./style.scss";
 import { usePathname, useRouter } from "next/navigation";
 import { NAV_ITEMS_GENERAL } from "@utils/constants";
 import Image from "next/image";
-import logo_remove_bg from "@/src/assets/logo.png";
 
 const HeaderHomePage = () => {
   const router = useRouter();
@@ -15,7 +12,7 @@ const HeaderHomePage = () => {
   const pathName = usePathname();
 
   const handleChangePage = () => {
-    router.push("/login");
+    router.push("/signin");
   };
 
   const getNavItems = () => {
@@ -32,11 +29,7 @@ const HeaderHomePage = () => {
   const navList = (
     <ul className="mt-2 mb-4 flex flex-col gap-2 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
       {getNavItems().map((item, index) => (
-        <Typography
-          key={index}
-          as="li"
-          variant="small"
-          color="white"
+        <p
           className="p-1 font-normal nav-items"
         >
           <Link
@@ -47,7 +40,7 @@ const HeaderHomePage = () => {
           >
             {item?.nameItem}
           </Link>
-        </Typography>
+        </p>
       ))}
     </ul>
   );
@@ -59,8 +52,8 @@ const HeaderHomePage = () => {
           href="/"
           className="mr-4 cursor-pointer py-1.5 font-medium brand-name flex items-center gap-2"
         >
-          <Image src={logo_remove_bg} width={55} height={55} alt="logo" />
-          <p className="text-xl brand">SecureRideHome</p>
+          <Image src="/images/logo_with_line_text.png" width={200} height={55} alt="logo" />
+          {/* <p className="text-xl brand">SecureRideHome</p> */}
         </Link>
         <div className="flex items-center gap-4">
           <div className="mr-4 hidden lg:block">{navList}</div>
@@ -70,7 +63,7 @@ const HeaderHomePage = () => {
               className="hidden lg:inline-block btn-signup"
               onClick={handleChangePage}
             >
-              <span className="text-black">Login</span>
+              <span className="text-black">Đăng nhập</span>
             </button>
           </div>
         </div>

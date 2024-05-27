@@ -1,4 +1,7 @@
 import "@/styles/globals.css";
+import "@/styles/HeaderHomePage.scss";
+import "@/styles/HomeDefault.scss";
+import "@/styles/Recruitment.scss";
 import "react-toastify/dist/ReactToastify.css";
 import "swiper/css";
 import "swiper/css/effect-coverflow";
@@ -11,6 +14,8 @@ import { persistStore } from "redux-persist";
 import { Provider } from "react-redux";
 import store from "@store/index";
 import { ConfigProvider } from "antd";
+import { Inter } from "next/font/google";
+const inter = Inter({ subsets: ["latin"] });
 
 let persistor = persistStore(store);
 export default function App({
@@ -46,7 +51,9 @@ export default function App({
         <ToastContainer />
         <Provider store={store}>
           {/* <PersistGate persistor={persistor} loading={null}> */}
-          <Component {...pageProps} />
+          <div className={inter.className}>
+            <Component {...pageProps} />
+          </div>
           {/* </PersistGate> */}
         </Provider>
       </SessionProvider>

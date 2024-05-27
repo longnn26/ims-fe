@@ -1,0 +1,65 @@
+.general-management__menu {
+    padding: 0 30px;
+    position: relative;
+    border-bottom: 1px solid rgba(48, 51, 58, 0.1);
+  
+    ul {
+      display: flex;
+      margin-bottom: 0px;
+  
+      li {
+        position: relative;
+        display: block;
+        margin-right: 16px;
+        transition: all 0.3s ease;
+        border-radius: 10px;
+  
+        a {
+          cursor: pointer;
+          display: block;
+          padding: 12px 8px 8px;
+          font-size: 15px;
+          line-height: 20px;
+          font-weight: 500;
+          color: rgba(48, 51, 58, 0.86);
+          text-decoration: none;
+  
+          &.active {
+            font-weight: bold;
+            color: #01a0e9;
+          }
+  
+          &.active::after {
+            content: "";
+            display: block;
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            border-radius: 8px 8px 0 0;
+            background-color: #01a0e9;
+            transition: all 0.3s ease;
+          }
+        }
+  
+        &:hover {
+          a {
+            &::after {
+              content: "";
+              display: block;
+              position: absolute;
+              bottom: -1px;
+              left: 0;
+              width: 100%;
+              height: 3px;
+              border-radius: 8px 8px 0 0;
+              background-color: #01a0e9;
+              transition: all 0.3s ease;
+            }
+          }
+        }
+      }
+    }
+  }
+  
