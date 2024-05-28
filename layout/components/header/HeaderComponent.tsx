@@ -68,10 +68,13 @@ const HeaderComponent: React.FC<Props> = (props) => {
       .seenNotifications(session?.user.access_token!, id)
       .then((data) => {
         var noti = notifications.findIndex((_) => _.id == data);
-        notifications[noti].seen = true;
-        if (newNotifyCount > 0) {
-          setNewNotifyCount(newNotifyCount - 1);
+        if (notifications[noti].seen == false) {
+          if (newNotifyCount > 0) {
+            setNewNotifyCount(newNotifyCount - 1);
+          }
         }
+        notifications[noti].seen = true;
+
         setNotifications([...notifications]);
       });
   };
@@ -93,8 +96,9 @@ const HeaderComponent: React.FC<Props> = (props) => {
 
   const handleNotification = async (notification: Notification) => {
     // console.log("noti:", notification);
-    switch (notification.data.key) {
-      case "Account":
+    switch (notification.typeModel) {
+      case "WalletWithDrawFunds":
+        router.push("/support");
         break;
       default:
         break;
@@ -156,6 +160,9 @@ const HeaderComponent: React.FC<Props> = (props) => {
       case "/support":
         dispatch(setSliderMenuItemSelectedKey("support"));
         break;
+      case "/request":
+        dispatch(setSliderMenuItemSelectedKey("request"));
+        break;
       case "/profile":
         dispatch(setSliderMenuItemSelectedKey("profile"));
         break;
@@ -177,6 +184,7 @@ const HeaderComponent: React.FC<Props> = (props) => {
           newConnection.on("newNotify", async (data: any) => {
             // if (showNotification) {
             var list = notifications.reverse();
+            console.log("data", data);
             list.push(data);
             setNotifications(list.reverse());
             // }
@@ -197,7 +205,7 @@ const HeaderComponent: React.FC<Props> = (props) => {
                     <div className="text-sm font-semibold text-gray-900 dark:text-white">
                       {data?.subject}
                     </div>
-                    <div className="text-sm font-normal">{`${data?.action} ${data?.body}`}</div>
+                    <div className="text-sm font-normal">{`${data?.body}`}</div>
                     <span className="text-xs font-medium text-blue-600 dark:text-blue-500">
                       a few seconds ago
                     </span>
@@ -257,7 +265,6 @@ const HeaderComponent: React.FC<Props> = (props) => {
               className="h-10 mr-3"
               alt="FlowBite Logo"
             />
-           
           </div>
         </div>
       </div>

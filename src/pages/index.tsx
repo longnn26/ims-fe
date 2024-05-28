@@ -28,7 +28,7 @@ const HomePage: React.FC = () => {
                 </p>
 
                 <p
-                  className="w-10/12 text-justify text-lg pt-5 pb-3"
+                  className="w-10/12 text-justify text-lg pt-7 pb-5"
                   style={{ width: "80%" }}
                 >
                   Ứng dụng của chúng tôi cung cấp dịch vụ lái xe hộ cho những
@@ -43,7 +43,7 @@ const HomePage: React.FC = () => {
                     onClick={() => router.push("/#")}
                   >
                     <span></span>
-                    <p className="relative z-10 text-black">Tìm hiểu thêm</p>
+                    <p className="relative z-10 text-black my-2">Tìm hiểu thêm</p>
                   </button>
                 </div>
               </div>

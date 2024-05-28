@@ -12,7 +12,7 @@ const HeaderHomePage = () => {
   const pathName = usePathname();
 
   const handleChangePage = () => {
-    router.push("/signin");
+    router.push("/dashboard");
   };
 
   const getNavItems = () => {
@@ -29,9 +29,7 @@ const HeaderHomePage = () => {
   const navList = (
     <ul className="mt-2 mb-4 flex flex-col gap-2 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
       {getNavItems().map((item, index) => (
-        <p
-          className="p-1 font-normal nav-items"
-        >
+        <p className="p-1 font-normal nav-items" key={index}>
           <Link
             href={item?.path}
             className={`flex items-center ${
@@ -52,18 +50,23 @@ const HeaderHomePage = () => {
           href="/"
           className="mr-4 cursor-pointer py-1.5 font-medium brand-name flex items-center gap-2"
         >
-          <Image src="/images/logo_with_line_text.png" width={200} height={55} alt="logo" />
+          <Image
+            src="/images/logo_with_line_text.png"
+            width={200}
+            height={55}
+            alt="logo"
+          />
           {/* <p className="text-xl brand">SecureRideHome</p> */}
         </Link>
         <div className="flex items-center gap-4">
           <div className="mr-4 hidden lg:block">{navList}</div>
 
-          <div className="flex items-center justify-between gap-2">
-            <button
-              className="hidden lg:inline-block btn-signup"
-              onClick={handleChangePage}
-            >
-              <span className="text-black">Đăng nhập</span>
+          <div
+            className="flex items-center justify-between gap-2"
+            onClick={handleChangePage}
+          >
+            <button className="hidden lg:inline-block btn-signup cursor-pointer">
+              <span>Đăng nhập</span>
             </button>
           </div>
         </div>

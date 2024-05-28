@@ -1,14 +1,16 @@
 import React, { useRef, useState, useEffect } from "react";
 import { Button, Input, Modal, Select, Space, Card, message } from "antd";
-import { Form } from "antd";
+import { Form, DatePicker } from "antd";
 import { CloseOutlined } from "@ant-design/icons";
 import { UserUpdateModel, User } from "@models/user";
 import useSelector from "@hooks/use-selector";
 import { ChangePassword, Customer } from "@models/customer";
 import customerService from "@services/customer";
+import supportService from "@services/support";
 import { useSession } from "next-auth/react";
 const { Option } = Select;
 const { confirm } = Modal;
+const { RangePicker } = DatePicker;
 
 interface Props {
   open: boolean;
@@ -43,6 +45,7 @@ const ModalRecruitmentForm: React.FC<Props> = (props) => {
             Thông tin ứng viên Tài xế Taxi tại SecureRideHome
           </p>
         }
+        centered
         width={1152}
         open={open}
         confirmLoading={confirmLoading}
@@ -57,9 +60,28 @@ const ModalRecruitmentForm: React.FC<Props> = (props) => {
             onClick={async () => {
               if (!(await disabled()))
                 confirm({
-                  title: "Do you want to update your password?",
+                  title: "Bạn có chắc muốn nộp đơn ứng tuyển?",
                   async onOk() {
                     setLoadingSubmit(true);
+
+                    await supportService.createSupport(
+                      session?.user.access_token!,
+                      {
+                        fullName: form.getFieldValue("fullName"),
+                        email: form.getFieldValue("email"),
+                        phoneNumber: form.getFieldValue("phoneNumber"),
+                        identityCardNumber:
+                          form.getFieldValue("identityCardNumber"),
+                        birthPlace: form.getFieldValue("birthPlace"),
+                        address: form.getFieldValue("address"),
+                        drivingLicenseNumber: form.getFieldValue(
+                          "drivingLicenseNumber"
+                        ),
+                        drivingLicenseType:
+                          form.getFieldValue("drivingLicenseType"),
+                        msgContent: form.getFieldValue("msgContent"),
+                      }
+                    );
 
                     await customerService
                       .changePassword(session?.user.access_token!, {
@@ -83,134 +105,211 @@ const ModalRecruitmentForm: React.FC<Props> = (props) => {
                 });
             }}
           >
-            Update
+            Đăng kí
           </Button>,
         ]}
       >
-        <div className="my-6">
-          <div className="container">
-            <div>
-              <p className="text-lg">
-                Cảm ơn bạn đã tham gia ứng tuyển cho vị trí Tài xế của
-                SecureRideHome.
-                <br />
-                <span className="font-semibold">
-                  SAU KHI HOÀN TẤT FORM NÀY, BẠN CÓ THỂ ĐẾN THAM GIA PHỎNG VẤN
-                  TRỰC TIẾP TẠI VĂN PHÒNG ĐỘI XE TỪ THỨ 2 ĐẾN THỨ 7
-                </span>
-                <br />
-                <span className="font-semibold">
-                  - Thời gian phỏng vấn: Sáng từ 08h30-11h00, chiều từ 13h30-
-                  16h30
-                </span>
-                <br />
-                <span className="font-semibold">
-                  - Vui lòng mang theo CCCD và Bằng lái xe bản gốc, mặc áo ngắn
-                  tay có cổ, đi giày và mang theo bút viết khi tham gia phỏng
-                  vấn
-                </span>
-                <br />
-                Hẹn gặp lại bạn tại buổi phỏng vấn.
-              </p>
+        <div className="mx-6">
+          <div className="my-6">
+            <div className="container">
+              <div>
+                <p className="text-lg">
+                  Cảm ơn bạn đã tham gia ứng tuyển cho vị trí Tài xế của
+                  SecureRideHome.
+                  <br />
+                  <span className="font-semibold">
+                    SAU KHI HOÀN TẤT FORM NÀY, BẠN CÓ THỂ ĐẾN PHỎNG VẤN TRỰC
+                    TIẾP TẠI VĂN PHÒNG ĐỘI XE TỪ THỨ 2 ĐẾN THỨ 7
+                  </span>
+                  <br />
+                  <span className="font-semibold">
+                    - Thời gian phỏng vấn: Sáng từ 08h30-11h00, chiều từ 13h30-
+                    16h30
+                  </span>
+                  <br />
+                  <span className="font-semibold">
+                    - Vui lòng mang theo CCCD và Bằng lái xe bản gốc, mặc áo
+                    ngắn tay có cổ, đi giày và mang theo bút viết khi tham gia
+                    phỏng vấn
+                  </span>
+                  <br />
+                  Hẹn gặp lại bạn tại buổi phỏng vấn.
+                </p>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div className="mt-5">
-          <p className="text-base">
-            <span className="text-red-700 ">*</span> Những ô bắt buộc
-          </p>
-          <div className="form grid grid-cols-2 gap-6 mt-6"></div>
-        </div>
+          <div className="mt-5">
+            <p className="text-lg">
+              <span className="text-red-600">*</span> Những ô bắt buộc
+            </p>
 
-        <div className="flex max-w-md flex-col gap-4 m-auto">
-          <Form
-            ref={formRef}
-            form={form}
-            labelCol={{ span: 10 }}
-            wrapperCol={{ span: 16 }}
-            style={{ width: "100%" }}
-          >
-            <Form.Item
-              name="currentPass"
-              label="Current Password"
-              rules={[{ required: true, type: "string", min: 6, max: 25 }]}
-              // rules={[{ required: true, type: "string", min: 8, max: 25 }]}
+            <Form
+              ref={formRef}
+              form={form}
+              labelCol={{ span: 10 }}
+              wrapperCol={{ span: 16 }}
+              style={{ width: "100%" }}
+              layout="vertical"
             >
-              <Input.Password placeholder="Your Password" className="h-9" />
-            </Form.Item>
-            <Form.Item
-              name="password"
-              label="Password"
-              rules={[
-                { required: true, min: 8, max: 25 },
-                {
-                  pattern: /^(?=.*[A-Z])/gm,
-                  message: "Password must have at least 1 uppercase letter",
-                },
-                {
-                  pattern: /^(?=.*[a-z])/gm,
-                  message: "Password must have at least 1 lowercase letter",
-                },
-                {
-                  pattern: /^(?=.*\d)/gm,
-                  message: "Password must have at least 1 number",
-                },
-                {
-                  pattern: /^(?=.*[@$!%*?&#^\/])/gm,
-                  message: "Password must have at least 1 special character",
-                },
-                {
-                  validator: async (_, value) => {
-                    if (value) {
-                      if (value === form.getFieldValue("currentPass")) {
-                        return Promise.reject(
-                          new Error(
-                            "The password must be different to the current password!"
-                          )
-                        );
-                      } else if (value === "Password@123")
-                        return Promise.reject(
-                          new Error(
-                            "The password must be different to the default password!"
-                          )
-                        );
-                    }
-                    return Promise.resolve();
+              <div className="grid grid-cols-2 ">
+                {/* Họ và tên */}
+
+                <Form.Item
+                  name="fullName"
+                  label="Họ và tên"
+                  rules={[
+                    { required: true, message: "Vui lòng nhập họ và tên" },
+                    { type: "string" },
+                  ]}
+                  className="mx-3"
+                >
+                  <Input
+                    placeholder="Vui lòng nhập họ và tên"
+                    className="h-9"
+                  />
+                </Form.Item>
+
+                {/* Email */}
+                <Form.Item
+                  name="email"
+                  label="Email"
+                  rules={[
+                    { required: true, message: "Vui lòng nhập email" },
+                    { type: "string" },
+                    {
+                      pattern:
+                        /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/,
+                      message: "Vui lòng nhập email hợp lệ",
+                    },
+                  ]}
+                  className="mx-3"
+                >
+                  <Input placeholder="Vui lòng nhập email" className="h-9" />
+                </Form.Item>
+                {/* Số điện thoại */}
+                <Form.Item
+                  name="phoneNumber"
+                  label="Số điện thoại"
+                  rules={[
+                    { required: true, message: "Vui lòng nhập số điện thoại" },
+                    { type: "string" },
+                  ]}
+                  className="mx-3"
+                >
+                  <Input
+                    placeholder="Vui lòng nhập số điện thoại"
+                    className="h-9"
+                  />
+                </Form.Item>
+                {/* CCCD */}
+                <Form.Item
+                  name="identityCardNumber"
+                  label="Số CCCD"
+                  rules={[
+                    { required: true, message: "Vui lòng nhập số CCCD" },
+                    { type: "string" },
+                  ]}
+                  className="mx-3"
+                >
+                  <Input placeholder="Vui lòng nhập số CCCD" className="h-9" />
+                </Form.Item>
+                {/* ngày sinh */}
+                {/* <Form.Item
+                label="DatePicker"
+                name="DatePicker"
+                rules={[{ required: true, message: "Please input!" }]}
+              >
+                <DatePicker />
+              </Form.Item> */}
+
+                {/* Nơi sinh */}
+                <Form.Item
+                  name="birthPlace"
+                  label="Nơi sinh"
+                  rules={[
+                    { required: true, message: "Vui lòng nhập nơi sinh" },
+                    { type: "string" },
+                  ]}
+                  className="mx-3"
+                >
+                  <Input placeholder="Vui lòng nhập nơi sinh" className="h-9" />
+                </Form.Item>
+
+                {/* Nơi sinh */}
+                <Form.Item
+                  name="address"
+                  label="Địa chỉ thường trú"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Vui lòng nhập địa chỉ thường trú",
+                    },
+                    { type: "string" },
+                  ]}
+                  className="mx-3"
+                >
+                  <Input
+                    placeholder="Vui lòng nhập địa chỉ thường trú"
+                    className="h-9"
+                  />
+                </Form.Item>
+
+                {/* số bằng lái xe */}
+                <Form.Item
+                  name="drivingLicenseNumber"
+                  label="Số bằng lái xe"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Vui lòng nhập số bằng lái xe",
+                    },
+                    { type: "string" },
+                  ]}
+                  className="mx-3"
+                >
+                  <Input
+                    placeholder="Vui lòng nhập số bằng lái xe"
+                    className="h-9"
+                  />
+                </Form.Item>
+
+                {/* loại bằng lái xe */}
+                <Form.Item
+                  name="drivingLicenseType"
+                  label="Loại chứng chỉ lái xe của bạn"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Vui lòng chọn loại bằng",
+                    },
+                  ]}
+                  className="mx-3"
+                >
+                  <Select className="h-9">
+                    <Select.Option value="Hạng B2">Hạng B2</Select.Option>
+                    <Select.Option value="Hạng C">Hạng C</Select.Option>
+                    <Select.Option value=">Hạng D">Hạng D</Select.Option>
+                    <Select.Option value="Hạng E">Hạng E</Select.Option>
+                  </Select>
+                </Form.Item>
+              </div>
+
+              <Form.Item
+                name="msgContent"
+                label="Nội dung nhắn khác"
+                rules={[
+                  {
+                    required: false,
                   },
-                },
-              ]}
-            >
-              <Input.Password
-                placeholder="Password"
-                type="password"
-                className="h-9"
-              />
-            </Form.Item>
-            <Form.Item
-              name="confirmPassword"
-              label="Confirm new password"
-              rules={[
-                { required: true, type: "string", min: 8, max: 25 },
-                {
-                  validator: async (_, value) => {
-                    if (value && value !== form.getFieldValue("password")) {
-                      return Promise.reject(
-                        new Error("The confirm password is not match!")
-                      );
-                    }
-                    return Promise.resolve();
-                  },
-                },
-              ]}
-            >
-              <Input
-                placeholder="Confirm password"
-                type="password"
-                className="h-9"
-              />
-            </Form.Item>
-          </Form>
+                  { type: "string" },
+                ]}
+                className="mx-3"
+              >
+                <Input.TextArea placeholder="" className="h-9" />
+              </Form.Item>
+            </Form>
+          </div>
         </div>
       </Modal>
     </>

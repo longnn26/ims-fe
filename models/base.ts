@@ -24,8 +24,8 @@ export interface ParamGet {
   SortKey: string;
   SortOrder: string;
   SearchValue: string;
-  DateStart: string;
-  DateEnd: string;
+  DateStart?: string;
+  DateEnd?: string;
   CustomerId?: string;
   UserId?: string;
 }

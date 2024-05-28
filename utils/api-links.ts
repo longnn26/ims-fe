@@ -28,6 +28,15 @@ const apiLinks = {
     seenNotification: `${urlNoti}/api/Notification/SeenNotify`,
     seenAllNotification: `${urlNoti}/api/Notification/SeenAllNotify`,
   },
+
+  support: {
+    createSupport: `${url}/api/Support`,
+    getById: `${url}/api/Support`,
+    getAll: `${url}/api/Support`,
+    changeToInProcess: `${url}/api/Support/ChangeStatusToInProcess`,
+    changeToSolved: `${url}/api/Support/ChangeStatusToSolved`,
+    changeToCantSolved: `${url}/api/Support/ChangeStatusToCantSolved`,
+  },
 };
 
 export default apiLinks;

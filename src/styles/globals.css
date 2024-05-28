@@ -151,3 +151,7 @@ video {
     max-width: 1320px;
   }
 }
+
+.ant-col-16 {
+  max-width: 100% !important;
+}

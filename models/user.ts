@@ -15,13 +15,20 @@ export interface LoginResponse {
 export interface User extends Base {
   id: string;
   phoneNumber?: string;
-  userName: string;
+  userName?: string;
   fullname?: string;
-  email: string;
+  email?: string;
   address?: string;
   currenNoticeCount: number;
-  positions: string[];
-  roles: string[];
+  roles?: string[];
+  name?: string;
+  star?: number;
+  priority?: number;
+  avatar?: string;
+  gender?: string;
+  dob?: string;
+  isPublicGender?: boolean;
+  isActive?: boolean;
 }
 
 export interface UserTechData extends PagingModel {
@@ -33,9 +40,9 @@ export interface UserData extends PagingModel {
 }
 
 export interface UserCreateModel {
-  userName: string,
-  password: string,
-  email: string,
+  userName: string;
+  password: string;
+  email: string;
   fullname?: string;
   address?: string;
   phoneNumber?: string;
@@ -43,15 +50,15 @@ export interface UserCreateModel {
 }
 
 export interface UserUpdateModel {
-  id: string,
-  password: string,
-  email: string,
+  id: string;
+  password: string;
+  email: string;
   fullname?: string;
   address?: string;
   phoneNumber?: string;
 }
 
 export interface UserUpdateRole {
-  id: string,
+  id: string;
   roles: string[];
 }

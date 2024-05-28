@@ -26,6 +26,10 @@ export async function middleware(req: NextRequest) {
       if (!token || !isExpiredTimeToken(token.loginDate, token.expiresIn)) {
         return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/signin`);
       }
+    case "/request":
+      if (!token || !isExpiredTimeToken(token.loginDate, token.expiresIn)) {
+        return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/signin`);
+      }
     case "/support":
       if (!token || !isExpiredTimeToken(token.loginDate, token.expiresIn)) {
         return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/signin`);

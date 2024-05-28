@@ -6,6 +6,7 @@ import { TbLayoutDashboard } from "react-icons/tb";
 import { GrDocumentConfig } from "react-icons/gr";
 import { PiSirenThin } from "react-icons/pi";
 import { MdOutlineTravelExplore } from "react-icons/md";
+import { MdOutlineRequestPage } from "react-icons/md";
 
 import { ROLE_ADMIN, ROLE_STAFF } from "./constants";
 
@@ -40,6 +41,12 @@ export const sliderMenu = [
     icon: <PiSirenThin />,
     label: "Emergency",
     roles: [ROLE_STAFF, ROLE_ADMIN],
+  },
+  {
+    key: "request",
+    icon: <MdOutlineRequestPage />,
+    label: "Request Management",
+    roles: [ROLE_ADMIN],
   },
   {
     key: "support",
