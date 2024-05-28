@@ -28,7 +28,7 @@ const AntdLayout: React.FC<Props> = (props) => {
             marginLeft: "10px",
             marginRight: "10px",
             background: colorBgContainer,
-          }}
+          }}    
         >
           <div className="">{content}</div>
         </Content>

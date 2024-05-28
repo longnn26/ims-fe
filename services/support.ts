@@ -1,11 +1,14 @@
 import { ParamGet, ParamGetWithId } from "@models/base";
-import { Support, SupportCantSolved } from "@models/support";
+import { SupportType, SupportCantSolved, SupportListData } from "@models/support";
 import { LoginResponse } from "@models/user";
 import apiLinks from "@utils/api-links";
 import httpClient from "@utils/http-client";
 
-const createSupport = async (token: string, model: Support): Promise<any> => {
-  const response = await httpClient.put({
+const createSupport = async (
+  token: string,
+  model: SupportType
+): Promise<any> => {
+  const response = await httpClient.post({
     url: apiLinks.support.createSupport,
     token: token,
     data: model,
@@ -24,7 +27,7 @@ const getSupportById = async (token: string, id?: string): Promise<any> => {
 const getAllSupportByAdmin = async (
   token: string,
   params?: ParamGet
-): Promise<Support[]> => {
+): Promise<SupportListData> => {
   const response = await httpClient.get({
     url: `${apiLinks.support.getAll}`,
     token: token,
@@ -36,7 +39,7 @@ const getAllSupportByAdmin = async (
 const changeToInProcessStatus = async (
   token: string,
   id?: string
-): Promise<Support[]> => {
+): Promise<SupportType[]> => {
   const response = await httpClient.put({
     url: `${apiLinks.support.changeToInProcess}/${id}`,
     token: token,
@@ -47,7 +50,7 @@ const changeToInProcessStatus = async (
 const changeToSolvedStatus = async (
   token: string,
   id?: string
-): Promise<Support[]> => {
+): Promise<SupportType[]> => {
   const response = await httpClient.put({
     url: `${apiLinks.support.changeToSolved}/${id}`,
     token: token,
@@ -58,7 +61,7 @@ const changeToSolvedStatus = async (
 const changeToCantSolvedStatus = async (
   token: string,
   model: SupportCantSolved
-): Promise<Support[]> => {
+): Promise<SupportType[]> => {
   const response = await httpClient.put({
     url: `${apiLinks.support.changeToCantSolved}`,
     token: token,

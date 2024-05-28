@@ -12,15 +12,3 @@ export interface Emergency {
   status: string
   emergencyType: string
 }
-
-export enum EmergencyStatus {
-  Pending = "Pending",
-  Processing = "Processing",
-  Solved = "Solved",
-}
-
-export enum EmergencyType {
-  Chat = "Chat",
-  Call = "Call",
-  Police = "Police",
-}

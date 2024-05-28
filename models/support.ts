@@ -1,6 +1,6 @@
 import { Base, PagingModel, ParamGet } from "./base";
 
-export interface Support {
+export interface SupportType {
   id?: string;
   bookingId?: string;
   fullName?: string;
@@ -13,28 +13,15 @@ export interface Support {
   drivingLicenseType?: string;
   msgContent?: string;
   supportStatus?: string;
-  supportType?: string;
+  supportType: string;
   dateCreated?: string;
 }
 
-export interface SupportData extends PagingModel {
-  data: Support[];
+export interface SupportListData extends PagingModel {
+  data?: SupportType[];
 }
 
 export interface SupportCantSolved {
   supportId: string;
   note: string;
-}
-
-export enum SupportTypeModel {
-  RECRUITMENT = "Recruitment",
-  SUPPORT_ISSUE = "SupportIssue",
-  BOOKING_ISSUE = "BookingIssue",
-}
-
-export enum SupportStatus {
-  NEW = "New",
-  IN_PROCESS = "InProcess",
-  SOLVED = "Solved",
-  CANT_SOLVED = "CantSolved",
 }

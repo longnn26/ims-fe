@@ -8,6 +8,9 @@ import { ChangePassword, Customer } from "@models/customer";
 import customerService from "@services/customer";
 import supportService from "@services/support";
 import { useSession } from "next-auth/react";
+import { emailRegex, idCardRegex, phoneNumberRegex } from "@utils/constants";
+import { SupportType } from "@models/support";
+import { SupportTypeModelEnum } from "@utils/enum";
 const { Option } = Select;
 const { confirm } = Modal;
 const { RangePicker } = DatePicker;
@@ -26,6 +29,17 @@ const ModalRecruitmentForm: React.FC<Props> = (props) => {
 
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [loadingSubmit, setLoadingSubmit] = useState<boolean>(false);
+
+  const [maxLength, setMaxLength] = useState(10);
+
+  const handleChangePhoneNumber = (e) => {
+    const value = e.target.value;
+    if (value.startsWith("84")) {
+      setMaxLength(11);
+    } else if (value.startsWith("0")) {
+      setMaxLength(10);
+    }
+  };
 
   const disabled = async () => {
     var result = false;
@@ -64,9 +78,8 @@ const ModalRecruitmentForm: React.FC<Props> = (props) => {
                   async onOk() {
                     setLoadingSubmit(true);
 
-                    await supportService.createSupport(
-                      session?.user.access_token!,
-                      {
+                    await supportService
+                      .createSupport(session?.user.access_token!, {
                         fullName: form.getFieldValue("fullName"),
                         email: form.getFieldValue("email"),
                         phoneNumber: form.getFieldValue("phoneNumber"),
@@ -80,21 +93,16 @@ const ModalRecruitmentForm: React.FC<Props> = (props) => {
                         drivingLicenseType:
                           form.getFieldValue("drivingLicenseType"),
                         msgContent: form.getFieldValue("msgContent"),
-                      }
-                    );
-
-                    await customerService
-                      .changePassword(session?.user.access_token!, {
-                        email: session?.user.email,
-                        currentPassword: form.getFieldValue("currentPass"),
-                        newPassword: form.getFieldValue("password"),
-                      } as ChangePassword)
+                        supportType: SupportTypeModelEnum.RECRUITMENT,
+                      } as SupportType)
                       .then((res) => {
-                        message.success("Update password successfully!", 1.5);
+                        console.log("res: ", res);
+                        message.success("Nộp đơn ứng tuyển thành công!", 1.5);
                         form.resetFields();
                         onClose();
                       })
                       .catch((errors) => {
+                        console.log(errors);
                         message.error(errors.response.data, 1.5);
                       })
                       .finally(() => {
@@ -175,17 +183,16 @@ const ModalRecruitmentForm: React.FC<Props> = (props) => {
                   name="email"
                   label="Email"
                   rules={[
-                    { required: true, message: "Vui lòng nhập email" },
+                    { required: true, message: "Vui lòng nhập email!" },
                     { type: "string" },
                     {
-                      pattern:
-                        /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/,
-                      message: "Vui lòng nhập email hợp lệ",
+                      pattern: emailRegex,
+                      message: "Vui lòng nhập email hợp lệ!",
                     },
                   ]}
                   className="mx-3"
                 >
-                  <Input placeholder="Vui lòng nhập email" className="h-9" />
+                  <Input placeholder="Vui lòng nhập email!" className="h-9" />
                 </Form.Item>
                 {/* Số điện thoại */}
                 <Form.Item
@@ -194,12 +201,22 @@ const ModalRecruitmentForm: React.FC<Props> = (props) => {
                   rules={[
                     { required: true, message: "Vui lòng nhập số điện thoại" },
                     { type: "string" },
+                    {
+                      pattern: idCardRegex,
+                      message: "Số điện thoại không bao gồm kí tự chữ!",
+                    },
+                    {
+                      pattern: phoneNumberRegex,
+                      message: "Vui lòng nhập số điện thoại hợp lệ!",
+                    },
                   ]}
                   className="mx-3"
                 >
                   <Input
                     placeholder="Vui lòng nhập số điện thoại"
                     className="h-9"
+                    maxLength={maxLength}
+                    onChange={handleChangePhoneNumber}
                   />
                 </Form.Item>
                 {/* CCCD */}
@@ -209,10 +226,22 @@ const ModalRecruitmentForm: React.FC<Props> = (props) => {
                   rules={[
                     { required: true, message: "Vui lòng nhập số CCCD" },
                     { type: "string" },
+                    {
+                      pattern: idCardRegex,
+                      message: "CCCD không bao gồm kí tự chữ!",
+                    },
+                    {
+                      min: 12,
+                      message: "Vui lòng nhập CCCD hợp lệ!",
+                    },
                   ]}
                   className="mx-3"
                 >
-                  <Input placeholder="Vui lòng nhập số CCCD" className="h-9" />
+                  <Input
+                    placeholder="Vui lòng nhập số CCCD"
+                    className="h-9"
+                    maxLength={12}
+                  />
                 </Form.Item>
                 {/* ngày sinh */}
                 {/* <Form.Item
@@ -265,12 +294,21 @@ const ModalRecruitmentForm: React.FC<Props> = (props) => {
                       message: "Vui lòng nhập số bằng lái xe",
                     },
                     { type: "string" },
+                    {
+                      pattern: idCardRegex,
+                      message: "Số bằng lái xe không bao gồm kí tự chữ!",
+                    },
+                    {
+                      min: 12,
+                      message: "Vui lòng nhập số bằng lái xe hợp lệ!",
+                    },
                   ]}
                   className="mx-3"
                 >
                   <Input
                     placeholder="Vui lòng nhập số bằng lái xe"
                     className="h-9"
+                    maxLength={12}
                   />
                 </Form.Item>
 

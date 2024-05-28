@@ -19,15 +19,15 @@ export interface PagingModel {
 }
 
 export interface ParamGet {
-  PageIndex: number;
-  PageSize: number;
-  SortKey: string;
-  SortOrder: string;
-  SearchValue: string;
-  DateStart?: string;
-  DateEnd?: string;
-  CustomerId?: string;
-  UserId?: string;
+  pageIndex: number;
+  pageSize: number;
+  sortKey: string;
+  sortOrder: string;
+  searchValue?: string;
+  dateStart?: string;
+  dateEnd?: string;
+  customerId?: string;
+  userId?: string;
 }
 
 export interface ParamGetWithId extends ParamGet {

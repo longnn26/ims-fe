@@ -39,3 +39,55 @@ export const areInArray = (arr: any[], ...elements: any[]) => {
   }
   return false;
 };
+
+export const formatDate = (inputDate: string | undefined) => {
+  if (!inputDate) {
+    return "(Chưa cập nhập)";
+  }
+
+  const date = new Date(inputDate);
+  const day = date.getDate().toString().padStart(2, "0");
+  const month = (date.getMonth() + 1).toString().padStart(2, "0");
+  const year = date.getFullYear();
+
+  return `${day}/${month}/${year}`;
+};
+
+export const getColorByStatus = (status: string): string => {
+  switch (status) {
+    case "Pending":
+    case "OnGoing":
+      return "bg-blue-200 text-blue-900";
+    case "Public":
+    case "New":
+    case "Arrived":
+      return "bg-violet-200 text-violet-900";
+    case "Xác thực":
+    case "Processing":
+    case "InProcess":
+      return "bg-yellow-200 text-yellow-900";
+    case "Done":
+    case "Active":
+    case "Đang hoạt động":
+    case "Solved":
+    case "Accept":
+    case "Complete":
+      return "bg-green-200 text-green-900";
+    case "Expired":
+    case "Đã bị ban":
+    case "CantSolved":
+      return "bg-red-200 text-red-900";
+    case "End":
+    case "Chưa xác thực":
+      return "bg-gray-200 text-gray-900";
+    case "Rejected":
+    case "Cancel":
+      return "bg-red-200 text-red-900";
+    case "CheckIn":
+    case "CheckOut":
+    case "PayBooking":
+      return "bg-orange-200 text-orange-900";
+    default:
+      return "bg-orange-200 text-orange-900";
+  }
+};
