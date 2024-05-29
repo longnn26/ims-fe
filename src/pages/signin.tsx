@@ -52,9 +52,9 @@ const Signin: React.FC<Props> = (props) => {
       });
     }
     if (res.error) {
-      return message.error("Wrong login account information!", 1.5);
+      return message.error("Sai thông tin đăng nhập!", 1.5);
     } else {
-      message.success("Login successfully", 1.5);
+      message.success("Đăng nhập thành công!", 1.5);
       return router.push("/dashboard");
     }
   };
@@ -131,7 +131,7 @@ const Signin: React.FC<Props> = (props) => {
                         disabled={!submittable}
                         className="w-full h-9 mt-3"
                       >
-                        Login
+                        Đăng nhập
                       </Button>
                     </Form.Item>
                   </Form>

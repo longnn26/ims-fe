@@ -38,7 +38,7 @@ export default function App({
       <SessionProvider session={session}>
         <ToastContainer
           position="top-right"
-          autoClose={false}
+          autoClose={5000}
           hideProgressBar={false}
           newestOnTop={false}
           closeOnClick={true}

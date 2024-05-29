@@ -139,9 +139,7 @@ const HeaderComponent: React.FC<Props> = (props) => {
             dispatch(setSliderMenuItemSelectedKey(""));
             await customerService
               .changeStaffStatusOffline(session?.user.access_token!)
-              .then((res) => {
-                console.log("change offline ok");
-              })
+              .then((res) => {})
               .catch((errors) => {
                 console.log("errors change offline status", errors);
               });
@@ -149,7 +147,7 @@ const HeaderComponent: React.FC<Props> = (props) => {
             signOut();
           }}
         >
-          Logout
+          Đăng xuất
         </span>
       ),
       key: "2",
@@ -161,7 +159,6 @@ const HeaderComponent: React.FC<Props> = (props) => {
       await customerService
         .changeStaffStatusOnline(session?.user.access_token!)
         .then((res) => {
-          console.log("change online ok");
           setIsOnline(true);
         })
         .catch((errors) => {
@@ -171,7 +168,6 @@ const HeaderComponent: React.FC<Props> = (props) => {
       await customerService
         .changeStaffStatusOffline(session?.user.access_token!)
         .then((res) => {
-          console.log("change offline ok");
           setIsOnline(false);
         })
         .catch((errors) => {
@@ -233,9 +229,7 @@ const HeaderComponent: React.FC<Props> = (props) => {
   const autoTurnOnline = async () => {
     await customerService
       .changeStaffStatusOnline(session?.user.access_token!)
-      .then((res) => {
-        console.log("change online ok");
-      })
+      .then((res) => {})
       .catch((errors) => {
         console.log("errors change online status", errors);
       });
@@ -291,11 +285,11 @@ const HeaderComponent: React.FC<Props> = (props) => {
                 </>,
                 {
                   position: "top-center",
+                  autoClose: false,
                 }
               );
             } else {
               //toast không dành cho emergency
-              console.log("come here");
               toast(
                 <div
                   id="toast-notification"
@@ -380,19 +374,22 @@ const HeaderComponent: React.FC<Props> = (props) => {
       </div>
 
       <div className="flex w-1/3 justify-end pr-3 items-center">
-        {/* button switch */}
-        <div className="toggle-button-cover">
-          <div className="button r" id="button-3">
-            <input
-              type="checkbox"
-              className="checkbox"
-              checked={isOnline}
-              onChange={onChangeStaffStatus}
-            />
-            <div className="layer"></div>
-            <div className="knobs"></div>
+        {/* button switch status*/}
+
+        {!session?.user.roles.includes("Admin") && (
+          <div className="toggle-button-cover">
+            <div className="button r" id="button-3">
+              <input
+                type="checkbox"
+                className="checkbox"
+                checked={isOnline}
+                onChange={onChangeStaffStatus}
+              />
+              <div className="layer"></div>
+              <div className="knobs"></div>
+            </div>
           </div>
-        </div>
+        )}
 
         <Space
           className="m-2 hover:cursor-pointer relative"

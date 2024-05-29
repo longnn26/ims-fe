@@ -184,7 +184,6 @@ const Emergency: React.FC = () => {
   const [sortedInfo, setSortedInfo] = useState<Sorts>({});
 
   const getEmergencyListData = async () => {
-    console.log("session?.user", session?.user)
     setLoading(true);
     await emergencyService
       .getAllEmergency(session?.user.access_token!, {
@@ -192,7 +191,6 @@ const Emergency: React.FC = () => {
         pageIndex: tablePagination.pageIndex,
       } as ParamGet)
       .then((res) => {
-        console.log("res", res.data);
         setTablePagination({
           ...tablePagination,
           pageSize: res.pageSize,
