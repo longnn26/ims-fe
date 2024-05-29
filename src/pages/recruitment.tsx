@@ -1,8 +1,6 @@
 "use client";
 
 import ModalRecruitmentForm from "@components/recruitment/ModelRecruitmentForm";
-import HomeLayout from "@layout/HomeLayout";
-import HeaderHomePage from "@layout/components/header/HeaderHomePage";
 import { Select } from "antd";
 import dynamic from "next/dynamic";
 import React from "react";
@@ -25,69 +23,6 @@ const OPTION_HEADER = [
 const Recruitment = () => {
   const [selectedMenu, setSelectedMenu] = React.useState("ĐĂNG KÝ TRỰC TIẾP");
   const [openModalForm, setOpenModalForm] = React.useState<boolean>(false);
-
-  const [isLoading, setIsLoading] = React.useState(false);
-  const [formData, setFormData] = React.useState({
-    fullName: "",
-    email: "",
-    phoneNumber: "",
-    identityCardNumber: "",
-    birthPlace: "",
-    address: "",
-    drivingLicenseNumber: "",
-    drivingLicenseType: "",
-    msgContent: "",
-    supportStatus: "New",
-    supportType: "Recruitment",
-  });
-
-  const handleOnChange = (e: any) => {
-    const { name, value } = e.target;
-
-    if (
-      name === "phoneNumber" ||
-      name === "identityCardNumber" ||
-      name === "drivingLicenseNumber"
-    ) {
-      if (/^\d*$/.test(value)) {
-        setFormData({
-          ...formData,
-          [name]: value,
-        });
-      }
-    } else {
-      setFormData({
-        ...formData,
-        [name]: value,
-      });
-    }
-  };
-
-  // const handleSendRecruitmentSupport = () => {
-  //   setIsLoading(true);
-  //   dispatch(createSupport(formData)).then((resCreate) => {
-  //     if (createSupport.fulfilled.match(resCreate)) {
-  //       toast.success("Gửi đơn ứng tuyển thành công!");
-  //       setIsOpenModalForm(false);
-  //       setFormData({
-  //         fullName: "",
-  //         email: "",
-  //         phoneNumber: "",
-  //         identityCardNumber: "",
-  //         birthPlace: "",
-  //         address: "",
-  //         drivingLicenseNumber: "",
-  //         drivingLicenseType: "B2",
-  //         msgContent: "",
-  //         supportStatus: "New",
-  //         supportType: "Recruitment",
-  //       });
-  //     } else {
-  //       toast.error("Đã có lỗi xảy ra vui lòng thử lại sau!");
-  //     }
-  //     setIsLoading(false);
-  //   });
-  // };
 
   const handleClickMenuItem = (nameItem: string) => {
     setSelectedMenu(nameItem);

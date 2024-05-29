@@ -21,6 +21,8 @@ const apiLinks = {
     getServerAllocationById: `${url}/api/Customer`,
     login: `${urlServerSide}/api/Admin/Login`,
     changePassword: `${url}/api/Customer/ChangePassword`,
+    changeStaffStatusOnline: `${url}/api/Admin/UpdateStaffStatusOnline`,
+    changeStaffStatusOffline: `${url}/api/Admin/UpdateStaffStatusOffline`,
   },
 
   notification: {
@@ -36,6 +38,13 @@ const apiLinks = {
     changeToInProcess: `${url}/api/Support/ChangeStatusToInProcess`,
     changeToSolved: `${url}/api/Support/ChangeStatusToSolved`,
     changeToCantSolved: `${url}/api/Support/ChangeStatusToCantSolved`,
+  },
+
+  emergency: {
+    getById: `${url}/api/Emergency`,
+    getAll: `${url}/api/Emergency`,
+    changeToProcessing: `${url}/api/Emergency/Processing`,
+    changeToSolved: `${url}/api/Emergency/Solved`,
   },
 };
 

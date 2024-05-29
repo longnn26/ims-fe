@@ -7,7 +7,7 @@ const MyDocument = () => {
     <Html lang="en">
       <Head />
       
-      <body className="m-0">
+      <body className="overflow-y-hidden m-0">
         <Main />
         <NextScript></NextScript>
         <script

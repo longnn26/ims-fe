@@ -2,6 +2,7 @@ import "@/styles/globals.css";
 import "@/styles/HeaderHomePage.scss";
 import "@/styles/HomeDefault.scss";
 import "@/styles/Recruitment.scss";
+import "@/styles/SwitchOnlOffStatus.scss";
 import "react-toastify/dist/ReactToastify.css";
 import "swiper/css";
 import "swiper/css/effect-coverflow";
@@ -37,18 +38,18 @@ export default function App({
       <SessionProvider session={session}>
         <ToastContainer
           position="top-right"
-          autoClose={5000}
+          autoClose={false}
           hideProgressBar={false}
           newestOnTop={false}
-          closeOnClick
+          closeOnClick={true}
           rtl={false}
           pauseOnFocusLoss
           draggable
           pauseOnHover
           theme="light"
+          className="custom-toast-container"
         />
         {/* Same as */}
-        <ToastContainer />
         <Provider store={store}>
           {/* <PersistGate persistor={persistor} loading={null}> */}
           <div className={inter.className}>

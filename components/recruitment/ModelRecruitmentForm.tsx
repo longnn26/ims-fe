@@ -96,13 +96,11 @@ const ModalRecruitmentForm: React.FC<Props> = (props) => {
                         supportType: SupportTypeModelEnum.RECRUITMENT,
                       } as SupportType)
                       .then((res) => {
-                        console.log("res: ", res);
                         message.success("Nộp đơn ứng tuyển thành công!", 1.5);
                         form.resetFields();
                         onClose();
                       })
                       .catch((errors) => {
-                        console.log(errors);
                         message.error(errors.response.data, 1.5);
                       })
                       .finally(() => {

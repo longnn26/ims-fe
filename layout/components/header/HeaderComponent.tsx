@@ -2,7 +2,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
-import { Layout, Button, theme, Badge, Divider } from "antd";
+import { Layout, Button, theme, Badge, Divider, Switch } from "antd";
 import useSelector from "@hooks/use-selector";
 import { setCollapsed, setSliderMenuItemSelectedKey } from "@slices/global";
 import useDispatch from "@hooks/use-dispatch";
@@ -21,6 +21,9 @@ import { FaDotCircle } from "react-icons/fa";
 import { TypeOptions, toast } from "react-toastify";
 import { parseJwt } from "@utils/helpers";
 import { IoCheckmarkDone } from "react-icons/io5";
+import customerService from "@services/customer";
+import emergencyService from "@services/emergency";
+import { BiCheckCircle } from "react-icons/bi";
 
 const { Header } = Layout;
 
@@ -45,6 +48,9 @@ const HeaderComponent: React.FC<Props> = (props) => {
   const [newNotifyCount, setNewNotifyCount] = useState<number>(
     session?.user.currenNoticeCount!
   );
+
+  // sửa lại default
+  const [isOnline, setIsOnline] = useState<boolean>(true);
 
   const getNotifications = async () => {
     await notificationService
@@ -100,6 +106,8 @@ const HeaderComponent: React.FC<Props> = (props) => {
       case "WalletWithDrawFunds":
         router.push("/support");
         break;
+      case "Emergency":
+        router.push("/emergency");
       default:
         break;
     }
@@ -127,8 +135,16 @@ const HeaderComponent: React.FC<Props> = (props) => {
     {
       label: (
         <span
-          onClick={() => {
+          onClick={async () => {
             dispatch(setSliderMenuItemSelectedKey(""));
+            await customerService
+              .changeStaffStatusOffline(session?.user.access_token!)
+              .then((res) => {
+                console.log("change offline ok");
+              })
+              .catch((errors) => {
+                console.log("errors change offline status", errors);
+              });
             router.push("/");
             signOut();
           }}
@@ -139,6 +155,45 @@ const HeaderComponent: React.FC<Props> = (props) => {
       key: "2",
     },
   ];
+
+  const onChangeStaffStatus = async () => {
+    if (!isOnline) {
+      await customerService
+        .changeStaffStatusOnline(session?.user.access_token!)
+        .then((res) => {
+          console.log("change online ok");
+          setIsOnline(true);
+        })
+        .catch((errors) => {
+          console.log("errors change online status", errors);
+        });
+    } else {
+      await customerService
+        .changeStaffStatusOffline(session?.user.access_token!)
+        .then((res) => {
+          console.log("change offline ok");
+          setIsOnline(false);
+        })
+        .catch((errors) => {
+          console.log("errors change offline status", errors);
+        });
+    }
+  };
+
+  const handleChangeEmergencyStatus = async (emergencyId: string) => {
+    await emergencyService
+      .changeToProcessingStatus(session?.user.access_token!, emergencyId)
+      .then((res) => {
+        console.log("res emergency", res);
+        console.log("change emergency status");
+      })
+      .catch((errors) => {
+        console.log("errors to change emergency status", errors);
+      })
+      .finally(() => {
+        router.push("/emergency");
+      });
+  };
 
   useEffect(() => {
     switch (router.pathname) {
@@ -175,6 +230,21 @@ const HeaderComponent: React.FC<Props> = (props) => {
     session && getNotifications();
   }, [session]);
 
+  const autoTurnOnline = async () => {
+    await customerService
+      .changeStaffStatusOnline(session?.user.access_token!)
+      .then((res) => {
+        console.log("change online ok");
+      })
+      .catch((errors) => {
+        console.log("errors change online status", errors);
+      });
+  };
+
+  useEffect(() => {
+    autoTurnOnline();
+  }, []);
+
   useEffect(() => {
     if (session != null) {
       const newConnection = signalR.connectionServer(session.user.access_token);
@@ -182,41 +252,75 @@ const HeaderComponent: React.FC<Props> = (props) => {
         .start()
         .then(() => {
           newConnection.on("newNotify", async (data: any) => {
-            // if (showNotification) {
             var list = notifications.reverse();
-            console.log("data", data);
+            console.log("data noti", data);
             list.push(data);
             setNotifications(list.reverse());
-            // }
-            toast(
-              <div
-                id="toast-notification"
-                className="w-full max-w-xs p-4 text-gray-900 bg-white"
-                role="alert"
-                onClick={() => handleNotification(data)}
-              >
-                <div className="flex items-center mb-3">
-                  <span className="mb-1 text-sm font-semibold text-gray-900 dark:text-white">
-                    {data.title}
-                  </span>
-                </div>
-                <div className="flex items-center">
-                  <div className="ml-3 text-sm font-normal">
-                    <div className="text-sm font-semibold text-gray-900 dark:text-white">
-                      {data?.subject}
+
+            //convert từ string về object để lấy data xử lý tiếp
+            const parsedData = JSON.parse(data.data);
+
+            if (data.typeModel == "Emergency") {
+              toast(
+                <>
+                  <div
+                    id="toast-notification"
+                    className="w-full max-w-xs p-4 text-gray-900 bg-white"
+                    role="alert"
+                    onClick={() => handleNotification(data)}
+                  >
+                    <div className="flex items-center">
+                      <div className="ml-3 text-sm font-normal">
+                        <div className="text-sm font-semibold uppercase text-gray-900">
+                          <p>{data?.title}</p>
+                        </div>
+                        <div className="text-sm uppercase font-normal">{`${data?.body}`}</div>
+                      </div>
                     </div>
-                    <div className="text-sm font-normal">{`${data?.body}`}</div>
-                    <span className="text-xs font-medium text-blue-600 dark:text-blue-500">
-                      a few seconds ago
-                    </span>
                   </div>
-                </div>
-              </div>,
-              {
-                type: "success" as TypeOptions,
-                position: "top-right",
-              }
-            );
+                  {/* tiến hành xử lý */}
+                  <div className="flex justify-center items-center">
+                    <Button
+                      icon={<BiCheckCircle />}
+                      type="primary"
+                      onClick={() => handleChangeEmergencyStatus(parsedData.Id)}
+                    >
+                      Tiến hành xử lý
+                    </Button>
+                  </div>
+                </>,
+                {
+                  position: "top-center",
+                }
+              );
+            } else {
+              //toast không dành cho emergency
+              console.log("come here");
+              toast(
+                <div
+                  id="toast-notification"
+                  className="w-full max-w-xs p-4 text-gray-900 bg-white"
+                  role="alert"
+                  onClick={() => handleNotification(data)}
+                >
+                  <div className="flex items-center">
+                    <div className="ml-3 text-sm font-normal">
+                      <div className="text-sm font-semibold text-gray-900 dark:text-white">
+                        {data?.title}
+                      </div>
+                      <div className="text-sm font-normal">{`${data?.body}`}</div>
+                      <span className="text-xs font-medium text-blue-600 dark:text-blue-500">
+                        a few seconds ago
+                      </span>
+                    </div>
+                  </div>
+                </div>,
+                {
+                  type: "success" as TypeOptions,
+                  position: "top-right",
+                }
+              );
+            }
           });
           newConnection.on("newNotifyCount", async (data: number) => {
             setNewNotifyCount(data);
@@ -275,7 +379,21 @@ const HeaderComponent: React.FC<Props> = (props) => {
         </span>
       </div>
 
-      <div className="flex w-1/3 justify-end pr-3">
+      <div className="flex w-1/3 justify-end pr-3 items-center">
+        {/* button switch */}
+        <div className="toggle-button-cover">
+          <div className="button r" id="button-3">
+            <input
+              type="checkbox"
+              className="checkbox"
+              checked={isOnline}
+              onChange={onChangeStaffStatus}
+            />
+            <div className="layer"></div>
+            <div className="knobs"></div>
+          </div>
+        </div>
+
         <Space
           className="m-2 hover:cursor-pointer relative"
           onClick={() => {
@@ -291,6 +409,7 @@ const HeaderComponent: React.FC<Props> = (props) => {
             />
           </Badge>
         </Space>
+
         {showNotification && (
           <div
             className=" top-[80px] z-20 absolute w-full max-w-sm bg-white divide-y divide-gray-100 rounded-lg shadow"

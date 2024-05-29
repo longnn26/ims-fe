@@ -18,7 +18,7 @@ const AntdLayout: React.FC<Props> = (props) => {
   } = theme.useToken();
 
   return (
-    <Layout className="min-h-screen">
+    <Layout className="max-h-screen">
       <HeaderComponent />
       <Layout>
         <SliderComponent />
@@ -28,7 +28,8 @@ const AntdLayout: React.FC<Props> = (props) => {
             marginLeft: "10px",
             marginRight: "10px",
             background: colorBgContainer,
-          }}    
+          }}
+          className="overflow-y-auto webkit-scrollbar"
         >
           <div className="">{content}</div>
         </Content>

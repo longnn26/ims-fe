@@ -93,7 +93,7 @@ video {
   font-size: 100%;
 }
 
-@layer components {
+@knobs components {
   .btn-submit {
     /* background-color: #ee4623; */
     /* color: white; */
@@ -155,3 +155,24 @@ video {
 .ant-col-16 {
   max-width: 100% !important;
 }
+
+.ant-table-cell {
+  padding: 10px !important;
+}
+
+.ant-switch-checked {
+  background-color: #22c55e !important; 
+}
+
+.webkit-scrollbar {
+  scrollbar-color: #ccc #f3f4f7;
+  scrollbar-width: thin;
+}
+
+.custom-toast-container {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  position: fixed;
+}
+

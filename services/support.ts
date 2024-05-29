@@ -1,6 +1,5 @@
 import { ParamGet, ParamGetWithId } from "@models/base";
 import { SupportType, SupportCantSolved, SupportListData } from "@models/support";
-import { LoginResponse } from "@models/user";
 import apiLinks from "@utils/api-links";
 import httpClient from "@utils/http-client";
 
@@ -39,7 +38,7 @@ const getAllSupportByAdmin = async (
 const changeToInProcessStatus = async (
   token: string,
   id?: string
-): Promise<SupportType[]> => {
+): Promise<SupportType> => {
   const response = await httpClient.put({
     url: `${apiLinks.support.changeToInProcess}/${id}`,
     token: token,
@@ -50,7 +49,7 @@ const changeToInProcessStatus = async (
 const changeToSolvedStatus = async (
   token: string,
   id?: string
-): Promise<SupportType[]> => {
+): Promise<SupportType> => {
   const response = await httpClient.put({
     url: `${apiLinks.support.changeToSolved}/${id}`,
     token: token,
@@ -61,7 +60,7 @@ const changeToSolvedStatus = async (
 const changeToCantSolvedStatus = async (
   token: string,
   model: SupportCantSolved
-): Promise<SupportType[]> => {
+): Promise<SupportType> => {
   const response = await httpClient.put({
     url: `${apiLinks.support.changeToCantSolved}`,
     token: token,

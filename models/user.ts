@@ -21,7 +21,7 @@ export interface User extends Base {
   address?: string;
   currenNoticeCount: number;
   roles?: string[];
-  name?: string;
+  name: string;
   star?: number;
   priority?: number;
   avatar?: string;

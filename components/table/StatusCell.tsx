@@ -1,4 +1,5 @@
-import { getColorByStatus } from "@utils/helpers";
+import { getColorByStatus } from "../../utils/helpers";
+
 
 const StatusCell: React.FC<{ status: string }> = ({ status }) => {
   return (

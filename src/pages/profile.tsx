@@ -27,15 +27,14 @@ const MyAccountPage: React.FC = () => {
   );
 
   const [paramGet, setParamGet] = useState<ParamGet>({
-    PageIndex: 1,
-    PageSize: 10,
+    pageIndex: 1,
+    pageSize: 10,
   } as ParamGet);
 
   const getData = async () => {
     customerService
       .getCustomerProfile(session?.user.access_token!)
       .then((res) => {
-        console.log(res);
         setIsCustomer(true);
         setCustomerDetail(res);
         setStaffAccountDetail(undefined);

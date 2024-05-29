@@ -166,7 +166,6 @@ const Support: React.FC = () => {
         pageIndex: tablePagination.pageIndex,
       } as ParamGet)
       .then((res) => {
-        console.log(res.data);
         setTablePagination({
           ...tablePagination,
           pageSize: res.pageSize,
@@ -174,9 +173,12 @@ const Support: React.FC = () => {
           totalSize: res.totalSize,
         });
 
-        console.log("res", res);
-
         setSupportsListData(res.data);
+      })
+      .catch((errors) => {
+        console.log("errors get support", errors);
+      })
+      .finally(() => {
         setLoading(false);
       });
   };
@@ -191,7 +193,6 @@ const Support: React.FC = () => {
     filters,
     sorter
   ) => {
-    console.log("filters", filters);
     setTablePagination({
       ...tablePagination,
       pageIndex: pagination.current ?? 1,
@@ -212,7 +213,7 @@ const Support: React.FC = () => {
         <>
           <div className="mb-4 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
             <div className="flex w-full justify-end">
-              <Space style={{ margin: '16px' }}>
+              <Space style={{ margin: "16px" }}>
                 <Button onClick={clearAll}>Clear </Button>
               </Space>
             </div>

@@ -6,36 +6,26 @@ import {
   CusParam,
   ChangePassword,
 } from "@models/customer";
-import {LoginResponse} from "@models/user"
+import { LoginResponse } from "@models/user";
 import apiLinks from "@utils/api-links";
 import httpClient from "@utils/http-client";
 
-const getData = async (
-  token: string,
-  params: CusParam
-): Promise<CustomerData> => {
-  const response = await httpClient.get({
-    token: token,
-    url: apiLinks.customer.get,
-    params: params,
-  });
-  return response.data;
-};
-
-const getCustomerProfile = async (
-  token: string,
-): Promise<any> => {
+const getCustomerProfile = async (token: string): Promise<any> => {
   const response = await httpClient.get({
     url: apiLinks.customer.getProfile,
     token: token,
   });
   return response.data;
 };
-const changePassword = async (token: string, model: ChangePassword): Promise<any> => {
+
+const changePassword = async (
+  token: string,
+  model: ChangePassword
+): Promise<any> => {
   const response = await httpClient.put({
     url: apiLinks.customer.changePassword,
     token: token,
-    data: model
+    data: model,
   });
   return response.data;
 };
@@ -54,10 +44,28 @@ const login = async (
   return response.data;
 };
 
+const changeStaffStatusOnline = async (token: string): Promise<any> => {
+  const response = await httpClient.put({
+    url: apiLinks.customer.changeStaffStatusOnline,
+    token: token,
+  });
+  return response.data;
+};
+
+const changeStaffStatusOffline = async (token: string): Promise<any> => {
+  const response = await httpClient.put({
+    url: apiLinks.customer.changeStaffStatusOffline,
+    token: token,
+  });
+  return response.data;
+};
+
 const customer = {
   getCustomerProfile,
   login,
-  changePassword
+  changePassword,
+  changeStaffStatusOnline,
+  changeStaffStatusOffline,
 };
 
 export default customer;
