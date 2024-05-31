@@ -24,7 +24,7 @@ import { IoCheckmarkDone } from "react-icons/io5";
 import customerService from "@services/customer";
 import emergencyService from "@services/emergency";
 import { BiCheckCircle } from "react-icons/bi";
-import { formatDateTimeToVnFormat } from "@utils/constants";
+import { formatDateTimeToVnFormat } from "@utils/helpers";
 
 const { Header } = Layout;
 
@@ -240,7 +240,9 @@ const HeaderComponent: React.FC<Props> = (props) => {
   };
 
   useEffect(() => {
-    autoTurnOnline();
+    if (!session?.user.roles.includes("Admin")) {
+      autoTurnOnline();
+    }
   }, []);
 
   useEffect(() => {

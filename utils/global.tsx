@@ -22,7 +22,7 @@ export const sliderMenu = [
     key: "dashboard",
     icon: <TbLayoutDashboard />,
     label: "Thống kê",
-    roles: [ROLE_STAFF, ROLE_ADMIN],
+    roles: [ROLE_ADMIN],
   },
   {
     key: "account",

@@ -48,6 +48,15 @@ const apiLinks = {
     changeToProcessing: `${url}/api/Emergency/Processing`,
     changeToSolved: `${url}/api/Emergency/Solved`,
   },
+
+  statistics: {
+    getOverview: `${url}/api/Admin/Statistic/GetAdminOverview`,
+    getAdminRevenueMonthlyIncome: `${url}/api/Admin/Statistic/GetAdminRevenueMonthlyIncome`,
+    getAdminProfitMonthlyIncome: `${url}/api/Admin/Statistic/GetAdminProfitMonthlyIncome`,
+  },
+
+
+
 };
 
 export default apiLinks;
