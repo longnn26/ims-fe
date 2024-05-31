@@ -49,6 +49,8 @@ const ModalCreate: React.FC<Props> = (props) => {
             onClick={async () => {
               if (!(await disabled()))
                 confirm({
+                  cancelText: "Hủy",
+                  okText: "Xác nhận",
                   title: "Do you want to save?",
                   async onOk() {
                     const formData = {

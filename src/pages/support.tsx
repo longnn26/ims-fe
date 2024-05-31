@@ -214,7 +214,7 @@ const Support: React.FC = () => {
           <div className="mb-4 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
             <div className="flex w-full justify-end">
               <Space style={{ margin: "16px" }}>
-                <Button onClick={clearAll}>Clear </Button>
+                <Button onClick={clearAll}>Xóa bộ lọc </Button>
               </Space>
             </div>
 

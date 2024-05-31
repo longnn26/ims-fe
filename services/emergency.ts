@@ -29,7 +29,7 @@ const getAllEmergency = async (
 
 const changeToProcessingStatus = async (
   token: string,
-  id: string
+  id?: string
 ): Promise<EmergencyType> => {
   const response = await httpClient.put({
     url: `${apiLinks.emergency.changeToProcessing}/${id}`,
@@ -42,6 +42,7 @@ const changeToSolvedStatus = async (
   token: string,
   model: EmergencySolved
 ): Promise<EmergencyType> => {
+  console.log("model", model);
   const response = await httpClient.put({
     url: `${apiLinks.emergency.changeToSolved}`,
     token: token,

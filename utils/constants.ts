@@ -203,5 +203,3 @@ export const emailRegex =
 export const idCardRegex = /^\d+$/;
 
 export const phoneNumberRegex = /^(84\d{9}|0\d{9})$/;
-
-

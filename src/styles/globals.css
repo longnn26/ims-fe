@@ -160,8 +160,8 @@ video {
   padding: 10px !important;
 }
 
-.ant-switch-checked {
-  background-color: #22c55e !important; 
+.ant-rate-star:not(:last-child) {
+  margin-inline-end: 0px !important;
 }
 
 .webkit-scrollbar {
@@ -169,10 +169,7 @@ video {
   scrollbar-width: thin;
 }
 
-.custom-toast-container {
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  position: fixed;
+.Toastify__toast-container--top-center {
+  width: fit-content !important;
+  top: 30% !important;
 }
-

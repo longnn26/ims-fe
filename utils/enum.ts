@@ -24,3 +24,11 @@ export enum EmergencyTypeEnum {
   Call = "Call",
   Police = "Police",
 }
+
+//liên quan đến bấm action hiển thị detail
+export enum CategoriesDetailEnum {
+  EMERGENCY_INFO = "EmergencyInfo",
+  BOOKING_INFO = "BookingInfo",
+  CUSTOMER_INFO = "CustomerInfo",
+  DRIVER_INFO = "DriverInfo",
+}

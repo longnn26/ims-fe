@@ -19,11 +19,12 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import moment from "moment";
 import { FaDotCircle } from "react-icons/fa";
 import { TypeOptions, toast } from "react-toastify";
-import { parseJwt } from "@utils/helpers";
+import { getEmergencyTypeName, parseJwt } from "@utils/helpers";
 import { IoCheckmarkDone } from "react-icons/io5";
 import customerService from "@services/customer";
 import emergencyService from "@services/emergency";
 import { BiCheckCircle } from "react-icons/bi";
+import { formatDateTimeToVnFormat } from "@utils/constants";
 
 const { Header } = Layout;
 
@@ -66,7 +67,8 @@ const HeaderComponent: React.FC<Props> = (props) => {
         // setPageIndexNoti(data.pageIndex);
         // setNotifications([...notifications, ...data.data]);
         setNotifications([...notifications, ...data]);
-      });
+      })
+      .catch((err) => console.log("err when get noti: ", err));
   };
 
   const seenNotification = async (id: number) => {
@@ -82,7 +84,8 @@ const HeaderComponent: React.FC<Props> = (props) => {
         notifications[noti].seen = true;
 
         setNotifications([...notifications]);
-      });
+      })
+      .catch((err) => console.log("err when seen noti: ", err));
   };
 
   const seenAllNotifications = async () => {
@@ -97,7 +100,8 @@ const HeaderComponent: React.FC<Props> = (props) => {
           setNewNotifyCount(0);
         }
         setNotifications(updatedNotifications);
-      });
+      })
+      .catch((err) => console.log("err when seen all noti: ", err));
   };
 
   const handleNotification = async (notification: Notification) => {
@@ -253,37 +257,85 @@ const HeaderComponent: React.FC<Props> = (props) => {
 
             //convert từ string về object để lấy data xử lý tiếp
             const parsedData = JSON.parse(data.data);
+            console.log("parsedData", parsedData);
 
             if (data.typeModel == "Emergency") {
               toast(
                 <>
                   <div
                     id="toast-notification"
-                    className="w-full max-w-xs p-4 text-gray-900 bg-white"
+                    className="w-full mx-3 max-w-3xl text-gray-900 bg-white"
                     role="alert"
                     onClick={() => handleNotification(data)}
                   >
-                    <div className="flex items-center">
-                      <div className="ml-3 text-sm font-normal">
-                        <div className="text-sm font-semibold uppercase text-gray-900">
+                    <div className="flex flex-row items-center">
+                      <div className="text-sm font-normal">
+                        <div className="text-lg mb-3 font-semibold uppercase text-red-700">
                           <p>{data?.title}</p>
                         </div>
                         <div className="text-sm uppercase font-normal">{`${data?.body}`}</div>
                       </div>
+                      <Button
+                        icon={<BiCheckCircle />}
+                        type="primary"
+                        onClick={() =>
+                          handleChangeEmergencyStatus(parsedData.Id)
+                        }
+                        className="ml-3"
+                      >
+                        Tiến hành xử lý
+                      </Button>
                     </div>
                   </div>
                   {/* tiến hành xử lý */}
-                  <div className="flex justify-center items-center">
-                    <Button
-                      icon={<BiCheckCircle />}
-                      type="primary"
-                      onClick={() => handleChangeEmergencyStatus(parsedData.Id)}
-                    >
-                      Tiến hành xử lý
-                    </Button>
+                  <Divider
+                    style={{
+                      margin: "10px 12px",
+                      borderWidth: "medium",
+                      borderColor: "#EEEEEE",
+                    }}
+                  />
+                  <div className="flex mx-3 flex-col justify-center text-sm">
+                    <p>
+                      Người gửi:{" "}
+                      <span className="text-black">
+                        {parsedData.Sender.Name}
+                      </span>
+                    </p>
+                    <p>
+                      Số điện thoại:{" "}
+                      <span className="text-black">
+                        {parsedData.Sender.PhoneNumber}
+                      </span>
+                    </p>
+                    <p>
+                      Nơi gửi:{" "}
+                      <span className="text-black">
+                        {parsedData.SenderAddress}
+                      </span>
+                    </p>
+                    <p>
+                      Loại khẩn cấp:{" "}
+                      <span className="text-black">
+                        {getEmergencyTypeName(
+                          parsedData.EmergencyType as number
+                        )}
+                      </span>
+                    </p>
+                    <p>
+                      Note:{" "}
+                      <span className="text-black">{parsedData.Note}</span>
+                    </p>
+                    <p>
+                      Thời gian tạo:{" "}
+                      <span className="text-black">
+                        {formatDateTimeToVnFormat(parsedData.DateCreated)}
+                      </span>
+                    </p>
                   </div>
                 </>,
                 {
+                  type: "error" as TypeOptions,
                   position: "top-center",
                   autoClose: false,
                 }
@@ -328,7 +380,7 @@ const HeaderComponent: React.FC<Props> = (props) => {
             await sessionUpdate({ ...newSession });
           });
         })
-        .catch((err) => console.log(err));
+        .catch((err) => console.log("Error when connected socket: ", err));
       return () => {
         newConnection
           .stop()
@@ -413,7 +465,7 @@ const HeaderComponent: React.FC<Props> = (props) => {
             aria-labelledby="dropdownNotificationButton"
           >
             <div className="block px-4 py-2 relative font-medium text-center text-[#01a0e9] rounded-t-lg bg-gray-50">
-              Notifications
+              Thông báo
               <div
                 className="absolute -top-3 right-3"
                 onClick={seenAllNotifications}

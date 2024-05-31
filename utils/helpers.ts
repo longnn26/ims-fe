@@ -53,6 +53,23 @@ export const formatDate = (inputDate: string | undefined) => {
   return `${day}/${month}/${year}`;
 };
 
+export const formatDateTimeToVnFormat = (inputString: string): string => {
+  const date = new Date(inputString);
+  if (isNaN(date.getTime())) {
+    throw new Error("Invalid date format");
+  }
+
+  const padZero = (num: number) => num.toString().padStart(2, "0");
+
+  const hours = padZero(date.getHours());
+  const minutes = padZero(date.getMinutes());
+  const day = padZero(date.getDate());
+  const month = padZero(date.getMonth() + 1); // Months are zero-based
+  const year = date.getFullYear();
+
+  return `${hours}:${minutes} - ${day}/${month}/${year}`;
+};
+
 export const getColorByStatus = (status: string): string => {
   switch (status) {
     case "Pending":
@@ -86,4 +103,40 @@ export const getColorByStatus = (status: string): string => {
     default:
       return "bg-orange-200 text-orange-900";
   }
+};
+
+export const splitString = (inputString: string): string => {
+  if (inputString === null) {
+    return "";
+  }
+
+  if (inputString.length > 60) {
+    return inputString.substring(0, 60) + "...";
+  } else {
+    return inputString;
+  }
+};
+
+export const getEmergencyTypeName = (type: number): string => {
+  switch (type) {
+    case 0:
+      return "Chat";
+    case 1:
+      return "Call";
+    case 2:
+      return "Police";
+    default:
+      return "Unknown emergency type";
+  }
+};
+
+export const removeHyphens = (str: string): string => {
+  return str.replace(/-/g, "");
+};
+
+export const formatCurrency = (num: number): string => {
+  return new Intl.NumberFormat("vi-VN", {
+    style: "currency",
+    currency: "VND",
+  }).format(num);
 };

@@ -10,13 +10,21 @@ export interface EmergencyType extends Base {
   solution: string;
   status: string;
   emergencyType: string;
+  senderAddress: string;
+  senderLatitude: number;
+  senderLongitude: number;
+  isStopTrip: boolean;
+  bookingCancelReason?: string;
+  dateCreated: string;
 }
 
 export interface EmergencyListData extends PagingModel {
-  data?: EmergencyType[];
+  data: EmergencyType[];
 }
 
 export interface EmergencySolved {
   emergencyId: string;
   solution: string;
+  bookingCancelReason: string;
+  isStopTrip: boolean;
 }

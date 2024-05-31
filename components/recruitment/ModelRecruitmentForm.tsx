@@ -74,6 +74,8 @@ const ModalRecruitmentForm: React.FC<Props> = (props) => {
             onClick={async () => {
               if (!(await disabled()))
                 confirm({
+                  cancelText: "Hủy",
+                  okText: "Xác nhận",
                   title: "Bạn có chắc muốn nộp đơn ứng tuyển?",
                   async onOk() {
                     setLoadingSubmit(true);
