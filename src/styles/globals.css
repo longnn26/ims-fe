@@ -160,8 +160,8 @@ video {
   padding: 10px !important;
 }
 
-.ant-switch-checked {
-  background-color: #22c55e !important; 
+.ant-rate-star:not(:last-child) {
+  margin-inline-end: 0px !important;
 }
 
 .webkit-scrollbar {
@@ -169,10 +169,60 @@ video {
   scrollbar-width: thin;
 }
 
-.custom-toast-container {
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  position: fixed;
+.Toastify__toast-container--top-center {
+  width: fit-content !important;
+  top: 30% !important;
 }
 
+.status-pending,
+.status-ongoing {
+  background-color: #bfdbfe; /* bg-blue-200 */
+  color: #1e40af; /* text-blue-900 */
+}
+
+.status-public,
+.status-new,
+.status-arrived {
+  background-color: #ddd6fe; /* bg-violet-200 */
+  color: #4c1d95; /* text-violet-900 */
+}
+
+.status-processing,
+.status-inprocess {
+  background-color: #fef08a; /* bg-yellow-200 */
+  color: #713f12; /* text-yellow-900 */
+}
+
+.status-done,
+.status-active,
+.status-solved,
+.status-accept,
+.status-complete {
+  background-color: #bbf7d0; /* bg-green-200 */
+  color: #166534; /* text-green-900 */
+}
+
+.status-expired,
+.status-cantsolved,
+.status-rejected,
+.status-cancel {
+  background-color: #fecaca; /* bg-red-200 */
+  color: #b91c1c; /* text-red-900 */
+}
+
+.status-end {
+  background-color: #e5e7eb; /* bg-gray-200 */
+  color: #111827; /* text-gray-900 */
+}
+
+.status-checkin,
+.status-checkout,
+.status-paybooking {
+  background-color: #fed7aa; /* bg-orange-200 */
+  color: #9a3412; /* text-orange-900 */
+}
+
+.status-default {
+  background-color: #fed7aa; /* bg-orange-200 */
+  color: #9a3412; /* text-orange-900 */
+}

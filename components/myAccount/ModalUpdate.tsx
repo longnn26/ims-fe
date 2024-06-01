@@ -61,7 +61,9 @@ const ModalUpdate: React.FC<Props> = (props) => {
             onClick={async () => {
               if (!(await disabled()))
                 confirm({
-                  title: "Do you want to update your password?",
+                  cancelText: "Hủy",
+                  okText: "Xác nhận",
+                  title: "Bạn có chắc muốn thay đổi mật khẩu?",
                   async onOk() {
                     setLoadingSubmit(true);
                     if (isCustomer === true) {

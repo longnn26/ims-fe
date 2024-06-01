@@ -2,7 +2,7 @@ import { Base, PagingModel, ParamGet } from "./base";
 import { User } from "./user";
 import { Vehicle } from "./vehicle";
 
-export interface Booking {
+export interface BookingType {
   id: string;
   searchRequestId: string;
   driverId: string;
@@ -20,7 +20,7 @@ export interface Booking {
 }
 
 export interface BookingListData extends PagingModel {
-  data: Booking[];
+  data: BookingType[];
 }
 
 export interface SearchRequest {

@@ -1,6 +1,5 @@
 import React from "react";
 import { Descriptions, Divider, Modal, Tag } from "antd";
-import { dateAdvFormat, requestUpgradeStatus } from "@utils/constants";
 import moment from "moment";
 import { User } from "@models/user";
 import { Customer } from "@models/customer";
@@ -17,7 +16,7 @@ const AccountDetail: React.FC<Props> = (props) => {
   return (
     <div className="m-5 rounded-md">
       <Divider orientation="left" plain>
-        <h3>My Account Page</h3>
+        <h3>Trang thông tin cá nhân</h3>
       </Divider>
       <Descriptions className="p-5" layout="vertical">
         {isCustomer === true ? (

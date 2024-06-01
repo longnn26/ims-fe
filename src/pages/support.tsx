@@ -1,7 +1,7 @@
 "use client";
 import dynamic from "next/dynamic";
 import React, { useEffect, useState } from "react";
-import { Button, Dropdown, Modal, Space } from "antd";
+import { Button, Dropdown, Menu, Modal, Space } from "antd";
 import { EllipsisOutlined } from "@ant-design/icons";
 import { IoMdPersonAdd } from "react-icons/io";
 import { GrTransaction } from "react-icons/gr";
@@ -12,137 +12,26 @@ import { SupportType, SupportListData } from "@models/support";
 import supportService from "@services/support";
 import { ParamGet } from "@models/base";
 import { useSession } from "next-auth/react";
-import { formatDate, getColorByStatus } from "@utils/helpers";
+import {
+  formatDate,
+  translateStatusToVnLanguage,
+  translateTypeToVnLanguage,
+} from "@utils/helpers";
 import { SupportStatusEnum, SupportTypeModelEnum } from "@utils/enum";
 import StatusCell from "@components/table/StatusCell";
+import { items } from "@components/support/SupportConstant";
 
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
 });
 const { confirm } = Modal;
+const { Column } = Table;
 
 type OnChange = NonNullable<TableProps<SupportType>["onChange"]>;
 type Filters = Parameters<OnChange>[1];
 
 type GetSingle<T> = T extends (infer U)[] ? U : never;
 type Sorts = GetSingle<Parameters<OnChange>[2]>;
-
-const columns: TableColumnsType<SupportType> = [
-  {
-    title: "Fullname",
-    dataIndex: "fullName",
-    sorter: (a: any, b: any) => a?.fullName - b.fullName,
-  },
-  {
-    title: "Phone number",
-    dataIndex: "phoneNumber",
-  },
-  {
-    title: "Support type",
-    dataIndex: "supportType",
-    filters: [
-      {
-        text: SupportTypeModelEnum.RECRUITMENT,
-        value: SupportTypeModelEnum.RECRUITMENT,
-      },
-      {
-        text: SupportTypeModelEnum.BOOKING_ISSUE,
-        value: SupportTypeModelEnum.BOOKING_ISSUE,
-      },
-      {
-        text: SupportTypeModelEnum.SUPPORT_ISSUE,
-        value: SupportTypeModelEnum.SUPPORT_ISSUE,
-      },
-    ],
-    sorter: (a: SupportType, b: SupportType) =>
-      a?.supportType.localeCompare(b.supportType),
-    onFilter: (value, record) => record.supportType.startsWith(value as string),
-    // filterSearch: true,
-    // width: "40%",
-  },
-  {
-    title: "Support status",
-    dataIndex: "supportStatus",
-    filters: [
-      {
-        text: SupportStatusEnum.NEW,
-        value: SupportStatusEnum.NEW,
-      },
-      {
-        text: "In Process",
-        value: SupportStatusEnum.IN_PROCESS,
-      },
-      {
-        text: SupportStatusEnum.SOLVED,
-        value: SupportStatusEnum.SOLVED,
-      },
-      {
-        text: "Can't Solved",
-        value: SupportStatusEnum.CANT_SOLVED,
-      },
-    ],
-    onFilter: (value, record) =>
-      (record.supportStatus || "").startsWith(value as string),
-    render: (text: string) => <StatusCell status={text} />,
-  },
-  {
-    title: "Date Created",
-    dataIndex: "dateCreated",
-    sorter: (a: SupportType, b: SupportType) =>
-      (a?.dateCreated || "").localeCompare(b?.dateCreated || ""),
-    render: (text: string) => formatDate(text),
-  },
-  {
-    title: "Action",
-    dataIndex: "",
-    key: "x",
-    render: () => (
-      <Dropdown menu={{ items }} trigger={["click"]}>
-        <a onClick={(e) => e.preventDefault()}>
-          <EllipsisOutlined style={{ fontSize: "20px" }} />
-        </a>
-      </Dropdown>
-    ),
-  },
-];
-
-const items: MenuProps["items"] = [
-  {
-    key: "1",
-    label: <p>Chi tiết</p>,
-    icon: <BiDetail />,
-  },
-  {
-    key: "2",
-    label: <p>Tạo tài khoản</p>,
-    icon: <IoMdPersonAdd />,
-  },
-  {
-    key: "3",
-    label: <p>Đang tiến hành</p>,
-    icon: <GrTransaction />,
-  },
-  {
-    key: "4",
-    label: <p>Đánh dấu đã giải quyết</p>,
-    icon: <GrTransaction />,
-  },
-  {
-    key: "5",
-    label: <p>Đánh dấu không thể giải quyết</p>,
-    icon: <GrTransaction />,
-  },
-  {
-    key: "6",
-    label: <p>Đánh dấu đã giải quyết</p>,
-    icon: <BiCheck />,
-  },
-  // {
-  //   key: "2",
-  //   danger: true,
-  //   label: "a danger item",
-  // },
-];
 
 const Support: React.FC = () => {
   const { data: session } = useSession();
@@ -157,6 +46,12 @@ const Support: React.FC = () => {
   });
   const [filteredInfo, setFilteredInfo] = useState<Filters>({});
   const [sortedInfo, setSortedInfo] = useState<Sorts>({});
+  const [selectedAccount, setSelectedSupport] = useState<SupportType | null>(
+    null
+  );
+  const [loadingSubmit, setLoadingSubmit] = useState<boolean>(false);
+  const [openModalSupportDetail, setOpenModalSupportDetail] =
+    useState<boolean>(false);
 
   const getSupportsListData = async () => {
     setLoading(true);
@@ -203,6 +98,59 @@ const Support: React.FC = () => {
     setSortedInfo(sorter as Sorts);
   };
 
+  //xử lý khi click vào item trong list action
+  const createMenu = (record: SupportType) => {
+    const { supportStatus } = record;
+
+    let filteredItems;
+
+    if (supportStatus === SupportStatusEnum.NEW) {
+      filteredItems = items?.filter(
+        (item) => item?.key === "1" || item?.key === "2" || item?.key === "3"
+      );
+    } else if (supportStatus === SupportStatusEnum.IN_PROCESS) {
+      filteredItems = items?.filter(
+        (item) => item?.key === "1" || item?.key === "4" || item?.key === "5"
+      );
+    } else if (supportStatus === SupportStatusEnum.SOLVED) {
+      filteredItems = items?.filter((item) => item?.key === "1");
+    } else if (supportStatus === SupportStatusEnum.CANT_SOLVED) {
+      filteredItems = items?.filter(
+        (item) => item?.key === "1" || item?.key === "4"
+      );
+    }
+
+    return (
+      <Menu onClick={({ key }) => handleMenuClick(key, record)}>
+        {filteredItems?.map((item: any) => (
+          <Menu.Item key={item?.key} icon={item?.icon}>
+            {item?.label}
+          </Menu.Item>
+        ))}
+      </Menu>
+    );
+  };
+
+  const handleMenuClick = async (key: string, record: SupportType) => {
+    console.log("record", record);
+    setSelectedSupport(record);
+    switch (key) {
+      case "1":
+        setOpenModalSupportDetail(true);
+        break;
+      case "2":
+        break;
+      case "3":
+        break;
+      case "4":
+        break;
+      case "5":
+        break;
+      default:
+        break;
+    }
+  };
+
   useEffect(() => {
     session && getSupportsListData();
   }, [session, tablePagination?.pageIndex, tablePagination?.pageSize]);
@@ -214,12 +162,12 @@ const Support: React.FC = () => {
           <div className="mb-4 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
             <div className="flex w-full justify-end">
               <Space style={{ margin: "16px" }}>
-                <Button onClick={clearAll}>Clear </Button>
+                <Button onClick={clearAll}>Xóa bộ lọc </Button>
               </Space>
             </div>
 
             <Table
-              columns={columns}
+              // columns={columns}
               dataSource={supportsListData}
               onChange={onChangeTable}
               loading={loading}
@@ -227,7 +175,107 @@ const Support: React.FC = () => {
                 pageSize: tablePagination.pageSize,
                 total: tablePagination.totalSize,
               }}
-            />
+            >
+              <Column
+                title="Họ và tên"
+                dataIndex="fullName"
+                key="fullName"
+                sorter={(a: any, b: any) => a?.fullName - b.fullName}
+              />
+              <Column
+                title="Số điện thoại"
+                dataIndex="phoneNumber"
+                key="phoneNumber"
+              />
+              <Column
+                title="Loại hỗ trợ"
+                dataIndex="supportType"
+                key="supportType"
+                filters={[
+                  {
+                    text: translateTypeToVnLanguage(
+                      SupportTypeModelEnum.RECRUITMENT
+                    ),
+                    value: SupportTypeModelEnum.RECRUITMENT,
+                  },
+                  {
+                    text: translateTypeToVnLanguage(
+                      SupportTypeModelEnum.BOOKING_ISSUE
+                    ),
+                    value: SupportTypeModelEnum.BOOKING_ISSUE,
+                  },
+                  {
+                    text: translateTypeToVnLanguage(
+                      SupportTypeModelEnum.SUPPORT_ISSUE
+                    ),
+                    value: SupportTypeModelEnum.SUPPORT_ISSUE,
+                  },
+                ]}
+                sorter={(a: SupportType, b: SupportType) =>
+                  a?.supportType.localeCompare(b.supportType)
+                }
+                onFilter={(value, record) =>
+                  record.supportType.startsWith(value as string)
+                }
+                render={(text, record) =>
+                  translateTypeToVnLanguage(record.supportType)
+                }
+              />
+              <Column
+                title="Trạng thái hỗ trợ"
+                dataIndex="supportStatus"
+                key="supportStatus"
+                filters={[
+                  {
+                    text: translateStatusToVnLanguage(SupportStatusEnum.NEW),
+                    value: SupportStatusEnum.NEW,
+                  },
+                  {
+                    text: translateStatusToVnLanguage(
+                      SupportStatusEnum.IN_PROCESS
+                    ),
+                    value: SupportStatusEnum.IN_PROCESS,
+                  },
+                  {
+                    text: translateStatusToVnLanguage(SupportStatusEnum.SOLVED),
+                    value: SupportStatusEnum.SOLVED,
+                  },
+                  {
+                    text: "Can't Solved",
+                    value: SupportStatusEnum.CANT_SOLVED,
+                  },
+                ]}
+                onFilter={(value, record: SupportType) =>
+                  (record?.supportStatus || "").startsWith(value as string)
+                }
+                render={(text) => <StatusCell status={text} />}
+              />
+              <Column
+                title="Thời gian tạo"
+                dataIndex="dateCreated"
+                key="dateCreated"
+                sorter={(a: SupportType, b: SupportType) =>
+                  (a?.dateCreated || "").localeCompare(b?.dateCreated || "")
+                }
+                render={(text: string) => formatDate(text)}
+              />
+              <Column
+                title="Hành động"
+                dataIndex=""
+                key="action"
+                render={(text, record: SupportType) => (
+                  <>
+                    <Dropdown overlay={createMenu(record)} trigger={["click"]}>
+                      <a onClick={(e) => e.preventDefault()}>
+                        <EllipsisOutlined style={{ fontSize: "20px" }} />
+                      </a>
+                    </Dropdown>
+                  </>
+                )}
+                width="100px"
+                align="center"
+              />
+            </Table>
           </div>
         </>
       }

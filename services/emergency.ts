@@ -29,7 +29,7 @@ const getAllEmergency = async (
 
 const changeToProcessingStatus = async (
   token: string,
-  id: string
+  id?: string
 ): Promise<EmergencyType> => {
   const response = await httpClient.put({
     url: `${apiLinks.emergency.changeToProcessing}/${id}`,

@@ -17,7 +17,7 @@ const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
 const MyAccountPage: React.FC = () => {
   const { data: session } = useSession();
   const [openModalUpdate, setOpenModalUpdate] = useState<boolean>(false);
-  useState<boolean>(false);
+
   const [isCustomer, setIsCustomer] = useState<boolean>(false);
   const [staffAccountDetail, setStaffAccountDetail] = useState<
     User | undefined

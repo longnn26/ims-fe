@@ -21,6 +21,7 @@ export interface User extends Base {
   address?: string;
   currenNoticeCount: number;
   roles?: string[];
+  role?: string;
   name: string;
   star?: number;
   priority?: number;
@@ -31,7 +32,7 @@ export interface User extends Base {
   isActive?: boolean;
 }
 
-export interface UserTechData extends PagingModel {
+export interface UserListData extends PagingModel {
   data: User[];
 }
 
@@ -61,4 +62,8 @@ export interface UserUpdateModel {
 export interface UserUpdateRole {
   id: string;
   roles: string[];
+}
+
+export interface UserId {
+  userId: string;
 }
