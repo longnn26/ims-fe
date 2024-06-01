@@ -18,7 +18,7 @@ export const items: MenuProps["items"] = [
   },
   {
     key: "3",
-    label: <p className="text-green-600">Hủy ban tài khoản</p>,
+    label: <p className="text-green-600">Gỡ ban tài khoản</p>,
     icon: <BiCheck className="text-green-600" />,
   },
 ];

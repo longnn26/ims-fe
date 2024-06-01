@@ -1,11 +1,11 @@
 import { ParamGet, ParamGetWithId } from "@models/base";
-import { Configuration } from "@models/configuration";
+import { ConfigurationType } from "@models/configuration";
 import apiLinks from "@utils/api-links";
 import httpClient from "@utils/http-client";
 
 const getAllConfigurationByAdmin = async (
   token: string
-): Promise<Configuration> => {
+): Promise<ConfigurationType> => {
   const response = await httpClient.get({
     url: `${apiLinks.configuration.getPriceConfiguration}`,
     token: token,
@@ -15,8 +15,8 @@ const getAllConfigurationByAdmin = async (
 
 const updatePriceConfigurationByAdmin = async (
   token: string,
-  model: Configuration
-): Promise<Configuration> => {
+  model: ConfigurationType
+): Promise<ConfigurationType> => {
   const response = await httpClient.put({
     url: `${apiLinks.configuration.updatePriceConfiguration}`,
     token: token,

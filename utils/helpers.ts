@@ -230,3 +230,66 @@ export const formatCurrency = (num: number): string => {
     currency: "VND",
   }).format(num);
 };
+
+export const translateConfigurationPriceToVietnamese = (
+  typePrice: string
+): string => {
+  switch (typePrice) {
+    case "baseFareFirst3km":
+      return "Giá mở cửa";
+    case "fareFerAdditionalKm":
+      return "Giá trên mỗi km";
+    case "driverProfit":
+      return "Lợi nhuận tài xế";
+    case "appProfit":
+      return "Lợi nhuận app";
+    case "peakHours":
+      return "Giá giờ cao điểm";
+    case "nightSurcharge":
+      return "Phí ban đêm";
+    case "waitingSurcharge":
+      return "Phí chờ đợi";
+    case "weatherFee":
+      return "Phí thời tiết";
+    case "customerCancelFee":
+      return "Phí khi khách hàng hủy quá nhiều";
+    default:
+      return "Unknown configuration price text";
+  }
+};
+
+export const translateVietnameseToConfigurationPrice = (
+  vietnameseText: string
+): string => {
+  switch (vietnameseText) {
+    case "Giá mở cửa":
+      return "baseFareFirst3km";
+    case "Giá trên mỗi km":
+      return "fareFerAdditionalKm";
+    case "Lợi nhuận tài xế":
+      return "driverProfit";
+    case "Lợi nhuận app":
+      return "appProfit";
+    case "Giá giờ cao điểm":
+      return "peakHours";
+    case "Phí ban đêm":
+      return "nightSurcharge";
+    case "Phí chờ đợi":
+      return "waitingSurcharge";
+    case "Phí thời tiết":
+      return "weatherFee";
+    case "Phí khi khách hàng hủy quá nhiều":
+      return "customerCancelFee";
+    default:
+      return "Unknown Vietnamese configuration price text";
+  }
+};
+
+export const anotherOptionConfigurationPrice = (anotherOption: string) => {
+  switch (anotherOption) {
+    case "time":
+      return "Khoảng thời gian tính";
+    case "perMinutes":
+      return "Giá trên phút";
+  }
+};

@@ -64,7 +64,7 @@ const apiLinks = {
 
   configuration: {
     getPriceConfiguration: `${url}/api/PriceConfiguration`,
-    updatePriceConfiguration: `${url}/api/PriceConfiguration`,
+    updatePriceConfiguration: `${url}/api/Admin/PriceConfiguration`,
   },
 
   transaction: {
