@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Descriptions, Divider, Modal, Avatar, Rate } from "antd";
 import { categoriesDetail } from "./AccountConstant";
-import { CategoriesDetailEnum, ProfileDetailEnum } from "@utils/enum";
+import { CategoriesDetailEnum } from "@utils/enum";
 import { UserOutlined, StarOutlined } from "@ant-design/icons";
 import { urlImageLinkHost } from "@utils/api-links";
 import {
@@ -20,7 +20,7 @@ interface Props {
 const ModalAccountDetail: React.FC<Props> = (props) => {
   const { open, dataAccount, onClose } = props;
   const [selectedCategory, setSelectedCategory] = useState<any>(
-    ProfileDetailEnum.ACCOUNT_INFO
+    CategoriesDetailEnum.ACCOUNT_INFO
   );
 
   console.log(dataAccount);
@@ -29,22 +29,22 @@ const ModalAccountDetail: React.FC<Props> = (props) => {
     switch (role) {
       case "Customer":
         return [
-          ProfileDetailEnum.ACCOUNT_INFO,
-          ProfileDetailEnum.IDENTITY_CARD_INFO,
-          ProfileDetailEnum.VEHICLE_INFO,
-          ProfileDetailEnum.LINKED_ACCOUNT_INFO,
+          CategoriesDetailEnum.ACCOUNT_INFO,
+          CategoriesDetailEnum.IDENTITY_CARD_INFO,
+          CategoriesDetailEnum.VEHICLE_INFO,
+          CategoriesDetailEnum.LINKED_ACCOUNT_INFO,
         ];
       case "Driver":
         return [
-          ProfileDetailEnum.ACCOUNT_INFO,
-          ProfileDetailEnum.IDENTITY_CARD_INFO,
-          ProfileDetailEnum.DRIVING_LICENSE_INFO,
-          ProfileDetailEnum.LINKED_ACCOUNT_INFO,
+          CategoriesDetailEnum.ACCOUNT_INFO,
+          CategoriesDetailEnum.IDENTITY_CARD_INFO,
+          CategoriesDetailEnum.DRIVING_LICENSE_INFO,
+          CategoriesDetailEnum.LINKED_ACCOUNT_INFO,
         ];
       case "Staff":
         return [
-          ProfileDetailEnum.ACCOUNT_INFO,
-          ProfileDetailEnum.IDENTITY_CARD_INFO,
+          CategoriesDetailEnum.ACCOUNT_INFO,
+          CategoriesDetailEnum.IDENTITY_CARD_INFO,
         ];
       default:
         return [];
@@ -57,7 +57,7 @@ const ModalAccountDetail: React.FC<Props> = (props) => {
 
   const renderContent = () => {
     switch (selectedCategory) {
-      case ProfileDetailEnum.ACCOUNT_INFO:
+      case CategoriesDetailEnum.ACCOUNT_INFO:
         return (
           <div className="flex flex-row px-5">
             <div>
@@ -108,7 +108,7 @@ const ModalAccountDetail: React.FC<Props> = (props) => {
         footer={false}
         onCancel={() => {
           onClose();
-          setSelectedCategory(ProfileDetailEnum.ACCOUNT_INFO);
+          setSelectedCategory(CategoriesDetailEnum.ACCOUNT_INFO);
         }}
       >
         <div className="flex flex-row gap-3 mb-7">

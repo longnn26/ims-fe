@@ -70,6 +70,12 @@ const apiLinks = {
   transaction: {
     getAllWalletTransactionByAdmin: `${url}/api/Wallet/WalletTransaction`,
   },
+
+  request: {
+    getAllRequestWithdrawFundsByAdmin: `${url}/api/Admin/WithdrawFundsRequest`,
+    acceptWithdrawFundsRequest: `${url}/api/Wallet/AcceptWithdrawFundsRequest`,
+    rejectWithdrawFundsRequest: `${url}/api/Wallet/RejectWithdrawFundsRequest`,
+  },
 };
 
 export default apiLinks;

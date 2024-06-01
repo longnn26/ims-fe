@@ -56,7 +56,7 @@ export const formatDate = (inputDate: string | undefined) => {
 export const formatDateTimeToVnFormat = (inputString: string): string => {
   const date = new Date(inputString);
   if (isNaN(date.getTime())) {
-    throw new Error("Invalid date format");
+    console.log("Không đúng format");
   }
 
   const padZero = (num: number) => num.toString().padStart(2, "0");
@@ -70,38 +70,121 @@ export const formatDateTimeToVnFormat = (inputString: string): string => {
   return `${hours}:${minutes} - ${day}/${month}/${year}`;
 };
 
-export const getColorByStatus = (status: string): string => {
+export const convertToVietnamTimeInBooking = (utcTime: string | null) => {
+  if (!utcTime || utcTime === "0001-01-01T00:00:00") {
+    return "";
+  }
+
+  const dateUtc = new Date(utcTime);
+  const vietnamTime = new Date(dateUtc.getTime());
+
+  const formattedTime = `${("0" + vietnamTime.getHours()).slice(-2)}:${(
+    "0" + vietnamTime.getMinutes()
+  ).slice(-2)} - ${("0" + vietnamTime.getDate()).slice(-2)}/${(
+    "0" +
+    (vietnamTime.getMonth() + 1)
+  ).slice(-2)}/${vietnamTime.getFullYear()}`;
+
+  return formattedTime;
+};
+
+export const getColorByStatusClass = (status: string): string => {
   switch (status) {
     case "Pending":
     case "OnGoing":
-      return "bg-blue-200 text-blue-900";
+      return "status-pending";
     case "Public":
     case "New":
     case "Arrived":
-      return "bg-violet-200 text-violet-900";
+      return "status-public";
     case "Processing":
     case "InProcess":
-      return "bg-yellow-200 text-yellow-900";
+      return "status-processing";
     case "Done":
     case "Active":
     case "Solved":
     case "Accept":
     case "Complete":
-      return "bg-green-200 text-green-900";
+    case "Success":
+      return "status-done";
     case "Expired":
     case "CantSolved":
-      return "bg-red-200 text-red-900";
-    case "End":
-      return "bg-gray-200 text-gray-900";
     case "Rejected":
     case "Cancel":
-      return "bg-red-200 text-red-900";
+    case "Failure":
+      return "status-expired";
+    case "End":
+      return "status-end";
     case "CheckIn":
     case "CheckOut":
     case "PayBooking":
-      return "bg-orange-200 text-orange-900";
+      return "status-checkin";
     default:
-      return "bg-orange-200 text-orange-900";
+      return "status-default";
+  }
+};
+
+export const translateTypeToVnLanguage = (type: string): string => {
+  switch (type) {
+    case "AddFunds":
+      return "Nạp tiền vào ví";
+    case "WithdrawFunds":
+      return "Yêu cầu rút tiền";
+    case "Income":
+      return "Thu nhập từ chuyến đi";
+    case "DriverIncome":
+      return "Thu nhập của tài xế";
+    case "Pay":
+      return "Thanh toán chuyến đi";
+    case "Refund":
+      return "Hoàn tiền khi hủy chuyến";
+    case "Recruitment":
+      return "Đơn ứng tuyển";
+    case "BookingIssue":
+      return "Sự cố chuyến đi";
+    case "SupportIssue":
+      return "Hỗ trợ vấn đề";
+    default:
+      return type;
+  }
+};
+
+export const translateStatusToVnLanguage = (status: string): string => {
+  switch (status) {
+    case "Accept":
+      return "Đã chấp nhận";
+    case "Arrived":
+      return "Đã đến điểm đón";
+    case "CheckIn":
+      return "Đang chụp xác nhận";
+    case "OnGoing":
+      return "Đang di chuyển";
+    case "CheckOut":
+      return "Đang chụp xác nhận";
+    case "Waiting":
+    case "InProcess":
+    case "Processing":
+      return "Đang xử lý";
+    case "Success":
+      return "Thành công";
+    case "Complete":
+      return "Hoàn thành";
+    case "PayBooking":
+      return "Đang thanh toán";
+    case "Cancel":
+      return "Đã hủy cuốc";
+    case "Failure":
+      return "Không thành công";
+    case "New":
+      return "Mới";
+    case "Pending":
+      return "Đang chờ";
+    case "Solved":
+      return "Đã xử lý";
+    case "CantSolved":
+      return "Không thể xử lý";
+    default:
+      return status;
   }
 };
 

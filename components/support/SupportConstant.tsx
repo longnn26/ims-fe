@@ -7,23 +7,27 @@ import { MdOutlineCancel } from "react-icons/md";
 export const items: MenuProps["items"] = [
   {
     key: "1",
-    label: <p>Thông tin chi tiết</p>,
+    label: <p>Chi tiết</p>,
     icon: <BiDetail />,
   },
   {
     key: "2",
-    label: <p>Tiến hành giải quyết</p>,
-    icon: <GrTransaction />,
+    label: <p>Tạo tài khoản</p>,
+    icon: <IoMdPersonAdd />,
   },
   {
     key: "3",
+    label: <p>Chuyển sang đang tiến hành</p>,
+    icon: <GrTransaction />,
+  },
+  {
+    key: "4",
     label: <p className="text-green-600">Đánh dấu đã giải quyết</p>,
     icon: <BiCheck className="text-green-600" />,
   },
   {
-    key: "4",
-    danger: true,
-    label: <p className="text-red-600">Hủy chuyến ngay</p>,
+    key: "5",
+    label: <p className="text-red-600">Đánh dấu không thể giải quyết</p>,
     icon: <MdOutlineCancel className="text-red-600" />,
   },
 ];

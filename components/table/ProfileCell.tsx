@@ -6,7 +6,7 @@ import { urlImageLinkHost } from "@utils/api-links";
 import { truncateString } from "@utils/helpers";
 
 interface ProfileCellProps {
-  user: User;
+  user: any;
 }
 
 const ProfileCell: React.FC<ProfileCellProps> = ({ user }) => {

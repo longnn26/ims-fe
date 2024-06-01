@@ -1,16 +1,21 @@
 import { PagingModel } from "./base";
+import { LinkedAccountType } from "./linked_account";
 
-export interface Transaction {
+export interface TransactionType {
   id: string;
   totalMoney: number;
   typeWalletTransaction: string;
-  paymentType: any;
+  paymentType: string | null;
   status: string;
   dateCreated: string;
-  linkedAccount: any;
-  linkedAccountId: any;
+  linkedAccount: LinkedAccountType;
+  linkedAccountId: string;
 }
 
 export interface TransactionListData extends PagingModel {
-  data: Transaction[];
+  data: TransactionType[];
+}
+
+export interface WithdrawFundsId {
+  withdrawFundsId: string;
 }

@@ -12,7 +12,7 @@ import { EmergencyType, EmergencyListData } from "@models/emergency";
 import emergencyService from "@services/emergency";
 import { PagingModel, ParamGet } from "@models/base";
 import { useSession } from "next-auth/react";
-import { formatDate, getColorByStatus, splitString } from "@utils/helpers";
+import { formatDate, getColorByStatusClass, splitString } from "@utils/helpers";
 import {
   EmergencyStatusEnum,
   EmergencyTypeEnum,
@@ -215,7 +215,7 @@ const Emergency: React.FC = () => {
           <div className="mb-4 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
             <div className="flex w-full justify-end">
               <Space style={{ margin: "16px" }}>
-                <Button onClick={clearAll}>Clear </Button>
+                <Button onClick={clearAll}>Xóa bộ lọc </Button>
               </Space>
             </div>
 

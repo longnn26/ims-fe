@@ -1,11 +1,11 @@
 import { Base, PagingModel, ParamGet } from "./base";
-import { Booking } from "./booking";
+import { BookingType } from "./booking";
 import { User } from "./user";
 
 export interface EmergencyType extends Base {
   sender: User;
   handler: User;
-  booking: Booking;
+  booking: BookingType;
   note: string;
   solution: string;
   status: string;

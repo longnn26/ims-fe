@@ -3,27 +3,16 @@ import dynamic from "next/dynamic";
 import React, { useEffect, useState } from "react";
 import { Button, Dropdown, Menu, Modal, Space } from "antd";
 import { EllipsisOutlined } from "@ant-design/icons";
-import { IoMdPersonAdd } from "react-icons/io";
-import { GrTransaction } from "react-icons/gr";
-import { BiCheck, BiDetail } from "react-icons/bi";
 import { Table } from "antd";
-import type { MenuProps, TableColumnsType, TableProps } from "antd";
+import type { TableProps } from "antd";
 import { User, UserListData } from "@models/user";
 import accountService from "@services/customer";
 import { PagingModel, ParamGet } from "@models/base";
 import { useSession } from "next-auth/react";
-import { formatDate, getColorByStatus, splitString } from "@utils/helpers";
-import {
-  EmergencyStatusEnum,
-  EmergencyTypeEnum,
-  SupportStatusEnum,
-  SupportTypeModelEnum,
-} from "@utils/enum";
 import StatusCell from "@components/table/StatusCell";
 import { formatDateTimeToVnFormat } from "@utils/helpers";
 import { items } from "@components/account/AccountConstant";
 import { TypeOptions, toast } from "react-toastify";
-import { error } from "console";
 import TextNotUpdate from "@components/table/TextNotUpdate";
 import ModalAccountDetail from "@components/account/ModalAccountDetail";
 import ProfileCell from "@components/table/ProfileCell";
@@ -251,7 +240,7 @@ const Account: React.FC = () => {
           <div className="mb-4 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
             <div className="flex w-full justify-end">
               <Space style={{ margin: "16px" }}>
-                <Button onClick={clearAll}>Clear </Button>
+                <Button onClick={clearAll}>Xóa bộ lọc </Button>
               </Space>
             </div>
 
