@@ -7,6 +7,7 @@ import { GrDocumentConfig } from "react-icons/gr";
 import { PiSirenThin } from "react-icons/pi";
 import { MdOutlineTravelExplore } from "react-icons/md";
 import { MdOutlineRequestPage } from "react-icons/md";
+import { GrTransaction } from "react-icons/gr";
 
 import { ROLE_ADMIN, ROLE_STAFF } from "./constants";
 
@@ -53,6 +54,12 @@ export const sliderMenu = [
     icon: <MdOutlineSupportAgent />,
     label: "Hỗ trợ vấn đề",
     roles: [ROLE_STAFF, ROLE_ADMIN],
+  },
+  {
+    key: "transaction",
+    icon: <GrTransaction />,
+    label: "Giao dịch",
+    roles: [ROLE_ADMIN],
   },
   {
     key: "configuration",

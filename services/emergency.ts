@@ -42,7 +42,6 @@ const changeToSolvedStatus = async (
   token: string,
   model: EmergencySolved
 ): Promise<EmergencyType> => {
-  console.log("model", model);
   const response = await httpClient.put({
     url: `${apiLinks.emergency.changeToSolved}`,
     token: token,

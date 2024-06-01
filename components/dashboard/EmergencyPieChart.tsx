@@ -24,7 +24,7 @@ const EmergencyPieChart: React.FC<Props> = ({ dataEmergency }) => {
   };
 
   return (
-    <div className="w-80 h-80">
+    <div className="">
       <Doughnut data={data} />
     </div>
   );

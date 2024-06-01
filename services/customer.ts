@@ -6,7 +6,7 @@ import {
   CusParam,
   ChangePassword,
 } from "@models/customer";
-import { LoginResponse } from "@models/user";
+import { LoginResponse, UserId, UserListData } from "@models/user";
 import apiLinks from "@utils/api-links";
 import httpClient from "@utils/http-client";
 
@@ -60,12 +60,45 @@ const changeStaffStatusOffline = async (token: string): Promise<any> => {
   return response.data;
 };
 
+const getAllUserByAdmin = async (
+  token: string,
+  params?: ParamGet
+): Promise<UserListData> => {
+  const response = await httpClient.get({
+    url: apiLinks.customer.getAllUserByAdmin,
+    token: token,
+    params: params,
+  });
+  return response.data;
+};
+
+const banAccount = async (token: string, model: UserId): Promise<any> => {
+  const response = await httpClient.put({
+    url: apiLinks.customer.banAccount,
+    token: token,
+    data: model,
+  });
+  return response.data;
+};
+
+const unBanAccount = async (token: string, model: UserId): Promise<any> => {
+  const response = await httpClient.put({
+    url: apiLinks.customer.unBanAccount,
+    token: token,
+    data: model,
+  });
+  return response.data;
+};
+
 const customer = {
   getCustomerProfile,
   login,
   changePassword,
   changeStaffStatusOnline,
   changeStaffStatusOffline,
+  getAllUserByAdmin,
+  unBanAccount,
+  banAccount
 };
 
 export default customer;

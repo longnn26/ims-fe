@@ -117,6 +117,13 @@ export const splitString = (inputString: string): string => {
   }
 };
 
+export const truncateString = (input: string, maxLength: number): string => {
+  if (input?.length > maxLength) {
+    return `${input?.substring(0, maxLength)}...`;
+  }
+  return input;
+};
+
 export const getEmergencyTypeName = (type: number): string => {
   switch (type) {
     case 0:

@@ -9,10 +9,10 @@ interface Props {
 }
 
 const TripPieChart: React.FC<Props> = ({ dataTrip }) => {
-  const backgroundColors = ["#bbf7d0", "#fecaca", "#e5e7eb"];
+  const backgroundColors = ["#fecaca", "#bbf7d0", "#e5e7eb"];
 
   const data = {
-    labels: ["Hoàn thành", "Huỷ chuyến", "Khác"],
+    labels: ["Hủy chuyến", "Hoàn thành", "Trạng thái khác"],
     datasets: [
       {
         label: "Tỉ lệ",
@@ -24,7 +24,7 @@ const TripPieChart: React.FC<Props> = ({ dataTrip }) => {
   };
 
   return (
-    <div className="w-80 h-80">
+    <div className="">
       <Doughnut data={data} />
     </div>
   );

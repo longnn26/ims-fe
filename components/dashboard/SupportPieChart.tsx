@@ -24,7 +24,7 @@ const SupportPieChart: React.FC<Props> = ({ dataSupport }) => {
   };
 
   return (
-    <div className="w-80 h-80">
+    <div className="">
       <Doughnut data={data} />
     </div>
   );

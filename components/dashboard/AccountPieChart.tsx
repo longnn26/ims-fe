@@ -12,7 +12,7 @@ const AccountPieChart: React.FC<Props> = ({ dataAccount }) => {
   const backgroundColors = ["#bfdbfe", "#ddd6fe", "rgb(153 246 228)"];
 
   const data = {
-    labels: ["Khách hàng", "Tài xế", "Nhân viên"],
+    labels: ["Tài xế", "Khách hàng", "Nhân viên"],
     datasets: [
       {
         label: "Số lượng",
@@ -24,7 +24,7 @@ const AccountPieChart: React.FC<Props> = ({ dataAccount }) => {
   };
 
   return (
-    <div className="w-80 h-80">
+    <div className=" ">
       <Doughnut data={data} />
     </div>
   );

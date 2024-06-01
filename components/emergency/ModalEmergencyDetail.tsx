@@ -72,9 +72,10 @@ const ModalEmergencyDetail: React.FC<Props> = (props) => {
                 <Avatar
                   shape="square"
                   size={80}
-                  icon={<UserOutlined />}
                   src={`${urlImageLinkHost + dataEmergency?.handler.avatar}`}
-                />
+                >
+                  {dataEmergency?.handler?.name?.charAt(0)}
+                </Avatar>
               </div>
               <Descriptions className="px-5" layout="horizontal">
                 <Descriptions.Item label="Họ và tên">
@@ -177,7 +178,6 @@ const ModalEmergencyDetail: React.FC<Props> = (props) => {
               <p style={{ color: "#00000073" }}>
                 Ảnh khách hàng trước chuyến đi:
               </p>
-
             </div>
 
             <div className="ml-8">
@@ -192,12 +192,13 @@ const ModalEmergencyDetail: React.FC<Props> = (props) => {
               <Avatar
                 shape="square"
                 size={80}
-                icon={<UserOutlined />}
                 src={`${
                   urlImageLinkHost +
                   dataEmergency?.booking?.searchRequest?.customer?.avatar
                 }`}
-              />
+              >
+                {dataEmergency?.booking?.searchRequest?.customer?.name?.charAt(0)}
+              </Avatar>
             </div>
             <Descriptions className="px-5" layout="horizontal">
               <Descriptions.Item label="Họ và tên">
@@ -237,7 +238,9 @@ const ModalEmergencyDetail: React.FC<Props> = (props) => {
                 src={`${
                   urlImageLinkHost + dataEmergency?.booking?.driver?.avatar
                 }`}
-              />
+              >
+                {dataEmergency?.booking?.driver?.name?.charAt(0)}
+              </Avatar>
               <div className="flex items-center justify-center mt-2">
                 <Rate
                   disabled

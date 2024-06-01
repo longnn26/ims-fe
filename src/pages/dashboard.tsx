@@ -108,7 +108,7 @@ const Dashboard: React.FC = () => {
         <>
           <div className="h-full mt-5 mb-10">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 p-4 gap-4">
-              <div className="bg-blue-500 dark:bg-gray-800 shadow-lg rounded-md flex items-center justify-between p-3 border-b-4 border-blue-600 dark:border-gray-600 text-white font-medium group">
+              <div className="bg-blue-500 shadow-lg rounded-md flex items-center justify-between p-3 border-b-4 border-blue-600  text-white font-medium group">
                 <div className="flex justify-center items-center w-14 h-14 bg-white rounded-full transition-all duration-300 transform group-hover:rotate-12">
                   <svg
                     width="30"
@@ -116,7 +116,7 @@ const Dashboard: React.FC = () => {
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
-                    className="stroke-current text-blue-800 dark:text-gray-800 transform transition-transform duration-500 ease-in-out"
+                    className="stroke-current text-blue-800 transform transition-transform duration-500 ease-in-out"
                   >
                     <path
                       strokeLinecap="round"
@@ -131,7 +131,7 @@ const Dashboard: React.FC = () => {
                   <p>Tài khoản</p>
                 </div>
               </div>
-              <div className="bg-blue-500 dark:bg-gray-800 shadow-lg rounded-md flex items-center justify-between p-3 border-b-4 border-blue-600 dark:border-gray-600 text-white font-medium group">
+              <div className="bg-blue-500 shadow-lg rounded-md flex items-center justify-between p-3 border-b-4 border-blue-600 text-white font-medium group">
                 <div className="flex justify-center items-center w-14 h-14 bg-white rounded-full transition-all duration-300 transform group-hover:rotate-12">
                   <BiTrip className="text-blue-800 h-7 w-7" />
                 </div>
@@ -140,7 +140,7 @@ const Dashboard: React.FC = () => {
                   <p>Chuyến đi</p>
                 </div>
               </div>
-              <div className="bg-blue-500 dark:bg-gray-800 shadow-lg rounded-md flex items-center justify-between p-3 border-b-4 border-blue-600 dark:border-gray-600 text-white font-medium group">
+              <div className="bg-blue-500 shadow-lg rounded-md flex items-center justify-between p-3 border-b-4 border-blue-600 text-white font-medium group">
                 <div className="flex justify-center items-center w-14 h-14 bg-white rounded-full transition-all duration-300 transform group-hover:rotate-12">
                   <BiSupport className="text-blue-800 h-7 w-7" />
                 </div>
@@ -151,7 +151,7 @@ const Dashboard: React.FC = () => {
                   <p>Hỗ trợ</p>
                 </div>
               </div>
-              <div className="bg-blue-500 dark:bg-gray-800 shadow-lg rounded-md flex items-center justify-between p-3 border-b-4 border-blue-600 dark:border-gray-600 text-white font-medium group">
+              <div className="bg-blue-500 shadow-lg rounded-md flex items-center justify-between p-3 border-b-4 border-blue-600  text-white font-medium group">
                 <div className="flex justify-center items-center w-14 h-14 bg-white rounded-full transition-all duration-300 transform group-hover:rotate-12">
                   <RiAlarmWarningLine className="text-blue-800 h-7 w-7" />
                 </div>
@@ -164,24 +164,17 @@ const Dashboard: React.FC = () => {
               </div>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 p-4 gap-4">
-              <div className="px-7 m-auto">
-                <AccountPieChart
-                  dataAccount={dataStatistics?.accountDetails ?? []}
-                />
-              </div>
-              <div className="px-7 m-auto">
-                <TripPieChart dataTrip={dataStatistics?.tripStatistics ?? []} />
-              </div>
-              <div className="px-7 m-auto">
-                <SupportPieChart
-                  dataSupport={dataStatistics?.supportStatusDetails ?? []}
-                />
-              </div>
-              <div className="px-7 m-auto">
-                <EmergencyPieChart
-                  dataEmergency={dataStatistics?.emergencyStatusDetails ?? []}
-                />
-              </div>
+              <AccountPieChart
+                dataAccount={dataStatistics?.accountDetails ?? []}
+              />
+              <TripPieChart dataTrip={dataStatistics?.tripStatistics ?? []} />
+              <SupportPieChart
+                dataSupport={dataStatistics?.supportStatusDetails ?? []}
+              />
+
+              <EmergencyPieChart
+                dataEmergency={dataStatistics?.emergencyStatusDetails ?? []}
+              />
             </div>
 
             {/* chart line */}

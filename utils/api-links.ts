@@ -25,6 +25,9 @@ const apiLinks = {
     changePassword: `${url}/api/Customer/ChangePassword`,
     changeStaffStatusOnline: `${url}/api/Admin/UpdateStaffStatusOnline`,
     changeStaffStatusOffline: `${url}/api/Admin/UpdateStaffStatusOffline`,
+    getAllUserByAdmin: `${url}/api/Admin/User/All`,
+    banAccount: `${url}/api/Admin/User/BanAccount`,
+    unBanAccount: `${url}/api/Admin/User/UnBanAccount`,
   },
 
   notification: {
@@ -55,8 +58,18 @@ const apiLinks = {
     getAdminProfitMonthlyIncome: `${url}/api/Admin/Statistic/GetAdminProfitMonthlyIncome`,
   },
 
+  booking: {
+    getAllBookingByAdmin: `${url}/api/Admin/Booking/All`,
+  },
 
+  configuration: {
+    getPriceConfiguration: `${url}/api/PriceConfiguration`,
+    updatePriceConfiguration: `${url}/api/PriceConfiguration`,
+  },
 
+  transaction: {
+    getAllWalletTransactionByAdmin: `${url}/api/Wallet/WalletTransaction`,
+  },
 };
 
 export default apiLinks;

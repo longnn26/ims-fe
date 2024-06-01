@@ -32,3 +32,11 @@ export enum CategoriesDetailEnum {
   CUSTOMER_INFO = "CustomerInfo",
   DRIVER_INFO = "DriverInfo",
 }
+
+export enum ProfileDetailEnum {
+  ACCOUNT_INFO = "AccountInfo",
+  IDENTITY_CARD_INFO = "IdentityCardInfo",
+  VEHICLE_INFO = "VehicleInfo",
+  DRIVING_LICENSE_INFO = "DrivingLicenseInfo",
+  LINKED_ACCOUNT_INFO = "LinkedAccountInfo",
+}
