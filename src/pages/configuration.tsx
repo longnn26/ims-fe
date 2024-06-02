@@ -1,7 +1,7 @@
 "use client";
 import dynamic from "next/dynamic";
 import React, { useEffect, useState } from "react";
-import { Button, Input, Modal, Table, Switch } from "antd";
+import { Button, Input, Modal, Table, Switch, TimePicker } from "antd";
 import { useSession } from "next-auth/react";
 import { ConfigurationType } from "@models/configuration";
 import configurationService from "@services/configuration";
@@ -13,6 +13,8 @@ import { CiEdit } from "react-icons/ci";
 import { FiSave } from "react-icons/fi";
 import { MdOutlineCancel } from "react-icons/md";
 import { TypeOptions, toast } from "react-toastify";
+import moment from "moment";
+import dayjs, { Dayjs } from "dayjs";
 
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
@@ -28,6 +30,11 @@ const Configuration: React.FC = () => {
   const [dataSource, setDataSource] = useState<any>(null);
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [loadingSubmit, setLoadingSubmit] = useState<boolean>(false);
+
+  const [tmpStartTime, setTmpStartTime] = useState<Dayjs | null>(null);
+  const [tmpEndTime, setTmpEndTime] = useState<Dayjs | null>(null);
+
+  const [tmpMinutesTime, setTmpMinutesTime] = useState<Dayjs | null>(null);
 
   const getConfigurationPriceData = async () => {
     setLoading(true);
@@ -172,10 +179,33 @@ const Configuration: React.FC = () => {
     }
   };
 
+  const convertMinutesToDayjs = (minutes: number): dayjs.Dayjs => {
+    const hours = Math.floor(minutes / 60);
+    const remainingMinutes = minutes % 60;
+    return dayjs()
+      .set("hour", hours)
+      .set("minute", remainingMinutes)
+      .startOf("minute");
+  };
+
   const editConfig = (record: any) => {
-    console.log();
+    console.log(record);
     setEditingKey(record.key);
     setEditableData({ ...record });
+
+    if (record.optionName === "time") {
+      if (!tmpStartTime || !tmpEndTime) {
+        const optionValues = (record.optionValue || "")?.split("-");
+        const startTime = optionValues[0];
+        const endTime = optionValues[1];
+        setTmpStartTime(startTime ? dayjs(startTime, "HH:mm") : null);
+        setTmpEndTime(endTime ? dayjs(endTime, "HH:mm") : null);
+      }
+    }
+
+    if (record.optionName === "perMinutes") {
+      setTmpMinutesTime(convertMinutesToDayjs(record.optionValue));
+    }
   };
 
   const saveConfig = () => {
@@ -185,6 +215,10 @@ const Configuration: React.FC = () => {
       }
       return item;
     });
+
+    const optionValue = `${tmpStartTime?.format("HH:mm")}-${tmpEndTime?.format(
+      "HH:mm"
+    )}`;
 
     console.log("editableData", editableData);
     console.log("newData", newData);
@@ -199,10 +233,14 @@ const Configuration: React.FC = () => {
         await configurationService
           .updatePriceConfigurationByAdmin(
             session?.user.access_token!,
-            convertEditableDataToConfiguration(editableData)
+            convertEditableDataToConfiguration({ ...editableData, optionValue })
           )
           .then((res) => {
-            convertEditableDataToConfiguration;
+            setEditableData({
+              ...editableData,
+              optionValue: optionValue,
+            });
+
             toast(`Cập nhập cấu hình thành công!`, {
               type: "success" as TypeOptions,
               position: "top-right",
@@ -238,6 +276,41 @@ const Configuration: React.FC = () => {
     field: string
   ) => {
     setEditableData({ ...editableData, [field]: e.target.value });
+  };
+
+  const handleStartTimeChange = (time: Dayjs | null) => {
+    setTmpStartTime(time);
+
+    const optionValue = `${time?.format("HH:mm")}-${tmpEndTime?.format(
+      "HH:mm"
+    )}`;
+
+    setEditableData({
+      ...editableData,
+      optionValue: optionValue,
+    });
+  };
+
+  const handleEndTimeChange = (time: Dayjs | null) => {
+    setTmpEndTime(time);
+
+    const optionValue = `${tmpStartTime?.format("HH:mm")}-${time?.format(
+      "HH:mm"
+    )}`;
+
+    setEditableData({
+      ...editableData,
+      optionValue: optionValue,
+    });
+  };
+
+  const handleMinuteTimeChange = (time: Dayjs | null) => {
+    setTmpMinutesTime(time);
+
+    setEditableData({
+      ...editableData,
+      optionValue: time?.format("mm"),
+    });
   };
 
   const handleSwitchChange = (checked: boolean) => {
@@ -300,10 +373,32 @@ const Configuration: React.FC = () => {
                   editingKey === record.key &&
                   editableData.optionName &&
                   editableData.optionValue ? (
-                    <Input
-                      value={editableData.optionValue}
-                      onChange={(e) => handleInputChange(e, "optionValue")}
-                    />
+                    <>
+                      {editableData.optionName === "time" ? (
+                        <>
+                          <TimePicker
+                            value={tmpStartTime}
+                            onChange={handleStartTimeChange}
+                            format="HH:mm"
+                            style={{ marginRight: 8 }}
+                            placeholder="Bắt đầu"
+                          />
+                          <TimePicker
+                            value={tmpEndTime}
+                            onChange={handleEndTimeChange}
+                            format="HH:mm"
+                            placeholder="Kết thúc"
+                          />
+                        </>
+                      ) : (
+                        <TimePicker
+                          value={tmpMinutesTime}
+                          onChange={handleMinuteTimeChange}
+                          placeholder="Chọn phút"
+                          format="mm"
+                        />
+                      )}
+                    </>
                   ) : record.optionName && record.optionValue ? (
                     `${anotherOptionConfigurationPrice(record.optionName)}: ${
                       record.optionValue

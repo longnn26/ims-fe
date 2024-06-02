@@ -8,8 +8,8 @@ export const isExpiredTimeToken = (loginDate: string, exp: number): boolean => {
   return tokenExpiredTime > currentDate;
 };
 
-export const convertDatePicker = (date: string) => {
-  return dayjs(moment(date).format(dateAdvFormat), dateAdvFormat);
+export const convertDatePicker = (date: string, format: any) => {
+  return dayjs(moment(date).format(format), format);
 };
 
 export const customJsonParse = (jsonString: string) => {
@@ -290,6 +290,6 @@ export const anotherOptionConfigurationPrice = (anotherOption: string) => {
     case "time":
       return "Khoảng thời gian tính";
     case "perMinutes":
-      return "Giá trên phút";
+      return "Số phút tính tiền một lần";
   }
 };
