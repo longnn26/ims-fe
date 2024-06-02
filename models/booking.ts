@@ -19,6 +19,17 @@ export interface BookingType {
   dateCreated: string;
 }
 
+export interface ImageBookingType {
+  id: string;
+  bookingId: string;
+  booking: BookingType;
+  imageUrl: string;
+  //Front, Left, Behind, Right
+  bookingImageType: string;
+  //CheckOut, CheckIn
+  bookingImageTime: string;
+  dateCreated: string;
+}
 export interface BookingListData extends PagingModel {
   data: BookingType[];
 }

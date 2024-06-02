@@ -1,4 +1,5 @@
 export interface IdentityCardModel {
+  id?: string;
   fullName: string;
   dob: string;
   gender: string;
@@ -12,6 +13,8 @@ export interface IdentityCardModel {
 
 export interface IdentityCardImageModel {
   identityCardId: string;
-  file: any;
+  file?: any;
   isFront: boolean;
+  imageUrl?: string;
+  id?: string;
 }

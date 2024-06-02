@@ -9,7 +9,6 @@ import { User, UserListData } from "@models/user";
 import accountService from "@services/customer";
 import { PagingModel, ParamGet } from "@models/base";
 import { useSession } from "next-auth/react";
-import StatusCell from "@components/table/StatusCell";
 import {
   formatDateTimeToVnFormat,
   translateGenderToVietnamese,
@@ -22,6 +21,8 @@ import ProfileCell from "@components/table/ProfileCell";
 import { IoIosAdd } from "react-icons/io";
 import ModalCreateDriverAccount from "@components/ModalCreateDriverAccount";
 import ModalCreateStaffAccount from "@components/ModalCreateStaffAccount";
+
+import { IdentityCardModel } from "@models/identityCard";
 
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
@@ -51,12 +52,15 @@ const Account: React.FC = () => {
 
   const [selectedAccount, setSelectedAccount] = useState<User | null>(null);
 
+
   const [loadingSubmit, setLoadingSubmit] = useState<boolean>(false);
 
   // xử lý tạo account
   const [showRoleButtons, setShowRoleButtons] = useState(false);
-  const [openModalCreateDriverAccount, setOpenModalCreateDriverAccount] = useState(false);
-  const [openModalCreateStaffAccount, setOpenModalCreateStaffAccount] = useState(false);
+  const [openModalCreateDriverAccount, setOpenModalCreateDriverAccount] =
+    useState(false);
+  const [openModalCreateStaffAccount, setOpenModalCreateStaffAccount] =
+    useState(false);
 
   const handleCreateAccountClick = () => {
     if (session?.user.roles.includes("Admin")) {
@@ -94,7 +98,6 @@ const Account: React.FC = () => {
         pageIndex: tablePagination.pageIndex,
       } as ParamGet)
       .then((res: UserListData) => {
-        console.log("res", res.data);
         setTablePagination({
           ...tablePagination,
           pageSize: res.pageSize,
@@ -182,6 +185,7 @@ const Account: React.FC = () => {
     switch (key) {
       case "1":
         setOpenModalAccountDetail(true);
+
         break;
       case "2":
         confirm({

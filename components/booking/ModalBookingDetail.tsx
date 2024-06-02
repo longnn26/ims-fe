@@ -1,6 +1,6 @@
-import React, { useState } from "react";
-import { Avatar, Descriptions, Divider, Modal, Rate } from "antd";
-import { BookingType } from "@models/booking";
+import React, { useEffect, useState } from "react";
+import { Avatar, Descriptions, Divider, Image, Modal, Rate } from "antd";
+import { BookingType, ImageBookingType } from "@models/booking";
 import {
   formatCurrency,
   formatDateTimeToVnFormat,
@@ -10,6 +10,9 @@ import { CategoriesDetailEnum } from "@utils/enum";
 import { categoriesDetail } from "./BookingConstant";
 import { urlImageLinkHost } from "@utils/api-links";
 import { UserOutlined, StarOutlined } from "@ant-design/icons";
+import bookingService from "@services/booking";
+import { useSession } from "next-auth/react";
+import StatusCell from "@components/table/StatusCell";
 
 interface Props {
   open: boolean;
@@ -22,6 +25,13 @@ const ModalBookingDetail: React.FC<Props> = (props) => {
   const [selectedCategory, setSelectedCategory] = useState<any>(
     CategoriesDetailEnum.BOOKING_INFO
   );
+  const [loading, setLoading] = useState(false);
+  const { data: session } = useSession();
+
+  const [listCheckInBookingImg, setListCheckInBookingImg] =
+    useState<ImageBookingType[]>();
+  const [listCheckOutBookingImg, setListCheckOutBookingImg] =
+    useState<ImageBookingType[]>();
 
   const renderContent = () => {
     switch (selectedCategory) {
@@ -50,7 +60,7 @@ const ModalBookingDetail: React.FC<Props> = (props) => {
                 {dataBooking?.searchRequest?.bookingType}
               </Descriptions.Item>
               <Descriptions.Item label="Trạng thái" className="px-3">
-                {dataBooking?.status}
+                <StatusCell status={dataBooking?.status ?? ""} />
               </Descriptions.Item>
               <Descriptions.Item
                 label="Phương thức thanh toán"
@@ -89,26 +99,62 @@ const ModalBookingDetail: React.FC<Props> = (props) => {
               </Descriptions.Item>
             </Descriptions>
 
-            <Divider
-              className=""
-              style={{
-                marginTop: "12px",
-                borderWidth: "medium",
-                borderColor: "#EEEEEE",
-              }}
-            ></Divider>
-
-            {/* <h3 className="ml-3 mb-5">Ảnh checkin</h3>
-
-            <div className="ml-8">
-              <p style={{ color: "#00000073" }}>
-                Ảnh khách hàng trước chuyến đi:
-              </p>
-            </div>
-
-            <div className="ml-8">
-              <p style={{ color: "#00000073" }}>Ảnh xe rước chuyến đi:</p>
-            </div> */}
+            {listCheckInBookingImg?.length != 0 && (
+              <>
+                <Divider
+                  className=""
+                  style={{
+                    marginTop: "12px",
+                    borderWidth: "medium",
+                    borderColor: "#EEEEEE",
+                  }}
+                ></Divider>
+                <h3 className="ml-3 mb-5">Ảnh checkin</h3>
+                <div className="flex flex-row px-5 justify-center items-center">
+                  {listCheckInBookingImg?.map((image, index) => (
+                    <div
+                      key={index}
+                      style={{ marginRight: 20, textAlign: "center" }}
+                    >
+                      <Image
+                        src={`${urlImageLinkHost}${image.imageUrl}`}
+                        alt={bookingImageTypeText[image.bookingImageType]}
+                        style={{ width: 200, height: "auto" }}
+                      />
+                      <div>{bookingImageTypeText[image.bookingImageType]}</div>
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
+            {listCheckOutBookingImg?.length != 0 && (
+              <>
+                <Divider
+                  className=""
+                  style={{
+                    marginTop: "12px",
+                    borderWidth: "medium",
+                    borderColor: "#EEEEEE",
+                  }}
+                ></Divider>
+                <h3 className="ml-3 mb-5">Ảnh checkout</h3>
+                <div className="flex flex-row px-5 justify-center items-center">
+                  {listCheckOutBookingImg?.map((image, index) => (
+                    <div
+                      key={index}
+                      style={{ marginRight: 20, textAlign: "center" }}
+                    >
+                      <Image
+                        src={`${urlImageLinkHost}${image.imageUrl}`}
+                        alt={bookingImageTypeText[image.bookingImageType]}
+                        style={{ width: 200, height: "auto" }}
+                      />
+                      <div>{bookingImageTypeText[image.bookingImageType]}</div>
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
           </>
         );
       case CategoriesDetailEnum.CUSTOMER_INFO:
@@ -204,6 +250,49 @@ const ModalBookingDetail: React.FC<Props> = (props) => {
     }
   };
 
+  const bookingImageTypeText = {
+    Customer: "Ảnh khách hàng",
+    Front: "Ảnh xe mặt trước",
+    Behind: "Ảnh xe mặt sau",
+    Left: "Ảnh xe mặt trái",
+    Right: "Ảnh xe mặt phải",
+  };
+
+  const getBookingImgListData = async () => {
+    setLoading(true);
+    await bookingService
+      .getAllCheckInBookingImage(session?.user.access_token!, dataBooking?.id)
+      .then((res) => {
+        setListCheckInBookingImg(res);
+        console.log("res: ", res);
+        setLoading(false);
+      })
+      .catch((errors) => {
+        console.log("errors get list checkin booking img", errors);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+
+    await bookingService
+      .getAllCheckOutBookingImage(session?.user.access_token!, dataBooking?.id)
+      .then((res) => {
+        setListCheckOutBookingImg(res);
+        console.log("res: ", res);
+        setLoading(false);
+      })
+      .catch((errors) => {
+        console.log("errors get list checkout booking img", errors);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
+
+  useEffect(() => {
+    dataBooking && getBookingImgListData();
+  }, [dataBooking]);
+
   return (
     <>
       <Modal
@@ -213,6 +302,9 @@ const ModalBookingDetail: React.FC<Props> = (props) => {
         footer={false}
         onCancel={() => {
           onClose();
+          setSelectedCategory(CategoriesDetailEnum.BOOKING_INFO);
+          setListCheckInBookingImg([]);
+          setListCheckOutBookingImg([]);
         }}
       >
         <div className="flex flex-row gap-3 mb-7">
