@@ -10,7 +10,10 @@ import accountService from "@services/customer";
 import { PagingModel, ParamGet } from "@models/base";
 import { useSession } from "next-auth/react";
 import StatusCell from "@components/table/StatusCell";
-import { formatDateTimeToVnFormat } from "@utils/helpers";
+import {
+  formatDateTimeToVnFormat,
+  translateGenderToVietnamese,
+} from "@utils/helpers";
 import { items } from "@components/account/AccountConstant";
 import { TypeOptions, toast } from "react-toastify";
 import TextNotUpdate from "@components/table/TextNotUpdate";
@@ -101,18 +104,34 @@ const Account: React.FC = () => {
 
   //xử lý khi click vào item trong list action
   const createMenu = (record: User) => {
-    const { isActive } = record;
+    const { isActive, role } = record;
 
     let filteredItems;
 
-    if (isActive) {
-      filteredItems = items?.filter(
-        (item) => item?.key === "1" || item?.key === "2"
-      );
-    } else {
-      filteredItems = items?.filter(
-        (item) => item?.key === "1" || item?.key === "3"
-      );
+    if (session?.user.roles.includes("Admin")) {
+      if (isActive) {
+        filteredItems = items?.filter(
+          (item) => item?.key === "1" || item?.key === "2"
+        );
+      } else {
+        filteredItems = items?.filter(
+          (item) => item?.key === "1" || item?.key === "3"
+        );
+      }
+    } else if (session?.user.roles.includes("Staff")) {
+      if (role === "Staff") {
+        filteredItems = items?.filter((item) => item?.key === "1");
+      } else {
+        if (isActive) {
+          filteredItems = items?.filter(
+            (item) => item?.key === "1" || item?.key === "2"
+          );
+        } else {
+          filteredItems = items?.filter(
+            (item) => item?.key === "1" || item?.key === "3"
+          );
+        }
+      }
     }
 
     return (
@@ -127,7 +146,6 @@ const Account: React.FC = () => {
   };
 
   const handleMenuClick = async (key: string, record: User) => {
-    console.log("record", record);
     setSelectedAccount(record);
     switch (key) {
       case "1":
@@ -258,7 +276,11 @@ const Account: React.FC = () => {
                 dataIndex="name"
                 key="name"
                 render={(text, record: User) => <ProfileCell user={record} />}
-                sorter={(a: User, b: User) => a.name.localeCompare(b.name)}
+                sorter={(a: User, b: User) => {
+                  const nameA = a.name || "";
+                  const nameB = b.name || "";
+                  return nameA.localeCompare(nameB);
+                }}
               />
               <Column
                 title="Số điện thoại"
@@ -277,9 +299,17 @@ const Account: React.FC = () => {
                 title="Giới tính"
                 dataIndex="gender"
                 key="gender"
-                render={(text, record: User) =>
-                  record.gender || <TextNotUpdate />
-                }
+                render={(text, record: User) => {
+                  const translatedGender = translateGenderToVietnamese(
+                    record?.gender ?? ""
+                  );
+
+                  if (translatedGender === "(Chưa cập nhập)") {
+                    return <TextNotUpdate />;
+                  }
+
+                  return translatedGender;
+                }}
                 sorter={(a: User, b: User) => {
                   const genderA = a.gender || "";
                   const genderB = b.gender || "";

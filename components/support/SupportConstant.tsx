@@ -17,7 +17,7 @@ export const items: MenuProps["items"] = [
   },
   {
     key: "3",
-    label: <p>Chuyển sang đang tiến hành</p>,
+    label: <p>Chuyển sang đang xử lý</p>,
     icon: <GrTransaction />,
   },
   {
@@ -27,14 +27,11 @@ export const items: MenuProps["items"] = [
   },
   {
     key: "5",
-    label: <p className="text-red-600">Đánh dấu không thể giải quyết</p>,
+    label: <p className="text-red-600">Đánh dấu tạm thời không thể giải quyết</p>,
     icon: <MdOutlineCancel className="text-red-600" />,
   },
 ];
 
 export const categoriesDetail = [
-  { key: "EmergencyInfo", label: "Thông tin khẩn cấp" },
-  { key: "BookingInfo", label: "Thông tin chuyến đi" },
-  { key: "CustomerInfo", label: "Thông tin khách hàng" },
-  { key: "DriverInfo", label: "Thông tin tài xế" },
+  { key: "SupportInfo", label: "Thông tin cần hỗ trợ" },
 ];

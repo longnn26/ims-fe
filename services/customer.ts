@@ -6,8 +6,15 @@ import {
   CusParam,
   ChangePassword,
 } from "@models/customer";
-import { LoginResponse, UserId, UserListData } from "@models/user";
+import {
+  DriverCreateModel,
+  LoginResponse,
+  User,
+  UserId,
+  UserListData,
+} from "@models/user";
 import apiLinks from "@utils/api-links";
+import { ContentTypeEnum } from "@utils/enum";
 import httpClient from "@utils/http-client";
 
 const getCustomerProfile = async (token: string): Promise<any> => {
@@ -90,6 +97,29 @@ const unBanAccount = async (token: string, model: UserId): Promise<any> => {
   return response.data;
 };
 
+const createDriverAccount = async (
+  token: string,
+  model: DriverCreateModel
+): Promise<any> => {
+  const response = await httpClient.post({
+    contentType: ContentTypeEnum.MULTIPART,
+    url: apiLinks.customer.createDriver,
+    token: token,
+    data: model,
+  });
+  return response.data;
+};
+
+const createStaffAccount = async (token: string, model: User): Promise<any> => {
+  const response = await httpClient.post({
+    contentType: ContentTypeEnum.MULTIPART,
+    url: apiLinks.customer.createDriver,
+    token: token,
+    data: model,
+  });
+  return response.data;
+};
+
 const customer = {
   getCustomerProfile,
   login,
@@ -98,7 +128,9 @@ const customer = {
   changeStaffStatusOffline,
   getAllUserByAdmin,
   unBanAccount,
-  banAccount
+  banAccount,
+  createDriverAccount,
+  createStaffAccount,
 };
 
 export default customer;

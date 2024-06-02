@@ -12,6 +12,13 @@ export const convertDatePicker = (date: string, format: any) => {
   return dayjs(moment(date).format(format), format);
 };
 
+export const formatDobToYYYYMMDD = (dob: any) => {
+  if (!dob || !dob.$d) {
+    return '';
+  }
+  return dayjs(dob.$d).format("YYYY-MM-DD");
+};
+
 export const customJsonParse = (jsonString: string) => {
   return JSON.parse(jsonString, (key, value) => {
     if (typeof key === "string") {
@@ -38,6 +45,14 @@ export const areInArray = (arr: any[], ...elements: any[]) => {
     }
   }
   return false;
+};
+
+export const disableFutureDates = (current) => {
+  return current && current > moment().endOf("day");
+};
+
+export const disablePastDates = (current) => {
+  return current && current < moment().endOf("day");
 };
 
 export const formatDate = (inputDate: string | undefined) => {
@@ -108,7 +123,7 @@ export const getColorByStatusClass = (status: string): string => {
     case "Success":
       return "status-done";
     case "Expired":
-    case "CantSolved":
+    case "Pause":
     case "Rejected":
     case "Cancel":
     case "Failure":
@@ -181,8 +196,8 @@ export const translateStatusToVnLanguage = (status: string): string => {
       return "Đang chờ";
     case "Solved":
       return "Đã xử lý";
-    case "CantSolved":
-      return "Không thể xử lý";
+    case "Pause":
+      return "Tạm thời không thể xử lý";
     default:
       return status;
   }
@@ -221,7 +236,7 @@ export const getEmergencyTypeName = (type: number): string => {
 };
 
 export const removeHyphens = (str: string): string => {
-  return str.replace(/-/g, "");
+  return str?.replace(/-/g, "");
 };
 
 export const formatCurrency = (num: number): string => {
@@ -282,6 +297,19 @@ export const translateVietnameseToConfigurationPrice = (
       return "customerCancelFee";
     default:
       return "Unknown Vietnamese configuration price text";
+  }
+};
+
+export const translateGenderToVietnamese = (vietnameseText: string): string => {
+  switch (vietnameseText) {
+    case "Male":
+      return "Nam";
+    case "Female":
+      return "Nữ";
+    case "Other":
+      return "Khác";
+    default:
+      return "(Chưa cập nhập)";
   }
 };
 

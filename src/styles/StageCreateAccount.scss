@@ -1,0 +1,54 @@
+.stage-header {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+  margin-bottom: 7px;
+}
+
+.stage {
+  text-align: center;
+  cursor: pointer;
+  padding: 10px 20px;
+  transition: background-color 0.3s ease;
+  color: #01a0e9;
+  font-weight: bold;
+  border: none;
+
+  &.active {
+    border-bottom: 2px solid #01a0e9;
+    color: #01a0e9;
+  }
+
+  &.disabled {
+    opacity: 0.65;
+    pointer-events: none;
+    color: #acaaaa;
+  }
+
+  &:hover {
+    border-bottom: 2px solid #01a0e9;
+    color: #01a0e9;
+  }
+}
+
+.btn-cancel {
+  border: 1px solid transparent;
+  transition: border-radius 0.3s, border 0.3s;
+
+  &:hover {
+    border-radius: 10px;
+    border: 1px solid #d6d6d6;
+  }
+}
+
+.btn-continue {
+  border-radius: 10px;
+  border: 1px solid #01a0e9;
+  color: #01a0e9;
+  transition: color 0.3s, background-color 0.3s;
+
+  &:hover {
+    color: white;
+    background-color: #01a0e9;
+  }
+}

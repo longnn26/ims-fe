@@ -28,6 +28,8 @@ const apiLinks = {
     getAllUserByAdmin: `${url}/api/Admin/User/All`,
     banAccount: `${url}/api/Admin/User/BanAccount`,
     unBanAccount: `${url}/api/Admin/User/UnBanAccount`,
+    createDriver: `${url}/api/Admin/Driver/Register`,
+    createStaff: `${url}/api/Admin/Staff/Register`,
   },
 
   notification: {
@@ -42,7 +44,7 @@ const apiLinks = {
     getAll: `${url}/api/Support`,
     changeToInProcess: `${url}/api/Support/ChangeStatusToInProcess`,
     changeToSolved: `${url}/api/Support/ChangeStatusToSolved`,
-    changeToCantSolved: `${url}/api/Support/ChangeStatusToCantSolved`,
+    changeToPause: `${url}/api/Support/ChangeStatusToPause`,
   },
 
   emergency: {
@@ -75,6 +77,16 @@ const apiLinks = {
     getAllRequestWithdrawFundsByAdmin: `${url}/api/Admin/WithdrawFundsRequest`,
     acceptWithdrawFundsRequest: `${url}/api/Wallet/AcceptWithdrawFundsRequest`,
     rejectWithdrawFundsRequest: `${url}/api/Wallet/RejectWithdrawFundsRequest`,
+  },
+
+  identityCard: {
+    createIdentityCardByAdmin: `${url}/api/Admin/IdentityCard`,
+    addIdentityCardImageByAdmin: `${url}/api/Admin/IdentityCard/IdentityCardImage`,
+  },
+
+  drivingLicense: {
+    createDrivingLicenseByAdmin: `${url}/api/Admin/DrivingLicense`,
+    addDrivingLicenseImageByAdmin: `${url}/api/Admin/DrivingLicense/DrivingLicenseImage`,
   },
 };
 

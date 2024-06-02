@@ -20,6 +20,11 @@ import {
 import { SupportStatusEnum, SupportTypeModelEnum } from "@utils/enum";
 import StatusCell from "@components/table/StatusCell";
 import { items } from "@components/support/SupportConstant";
+import supportServices from "@services/support";
+import { TypeOptions, toast } from "react-toastify";
+import ModalPauseSupport from "@components/support/ModalPauseSupport";
+import ModalCreateDriverAccount from "@components/ModalCreateDriverAccount";
+import ModalSupportDetail from "@components/support/ModalSupportDetail";
 
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
@@ -36,7 +41,7 @@ type Sorts = GetSingle<Parameters<OnChange>[2]>;
 const Support: React.FC = () => {
   const { data: session } = useSession();
   const [loading, setLoading] = useState(false);
-  const [supportsListData, setSupportsListData] = useState<SupportType[]>();
+  const [supportsListData, setSupportsListData] = useState<SupportType[]>([]);
   const [tablePagination, setTablePagination] = useState<SupportListData>({
     pageIndex: 1,
     pageSize: 10,
@@ -46,11 +51,19 @@ const Support: React.FC = () => {
   });
   const [filteredInfo, setFilteredInfo] = useState<Filters>({});
   const [sortedInfo, setSortedInfo] = useState<Sorts>({});
-  const [selectedAccount, setSelectedSupport] = useState<SupportType | null>(
+  const [selectedSupport, setSelectedSupport] = useState<SupportType | null>(
     null
   );
   const [loadingSubmit, setLoadingSubmit] = useState<boolean>(false);
+
+  //state khi ấn action dropdown
   const [openModalSupportDetail, setOpenModalSupportDetail] =
+    useState<boolean>(false);
+
+  const [openModalPauseSupport, setOpenModalPauseSupport] =
+    useState<boolean>(false);
+
+  const [openModalCreateDriverAccount, setOpenModalCreateDriverAccount] =
     useState<boolean>(false);
 
   const getSupportsListData = async () => {
@@ -68,7 +81,7 @@ const Support: React.FC = () => {
           totalSize: res.totalSize,
         });
 
-        setSupportsListData(res.data);
+        setSupportsListData(res.data ?? []);
       })
       .catch((errors) => {
         console.log("errors get support", errors);
@@ -100,18 +113,32 @@ const Support: React.FC = () => {
 
   //xử lý khi click vào item trong list action
   const createMenu = (record: SupportType) => {
-    const { supportStatus } = record;
+    const { supportStatus, supportType } = record;
 
     let filteredItems;
 
     if (supportStatus === SupportStatusEnum.NEW) {
       filteredItems = items?.filter(
-        (item) => item?.key === "1" || item?.key === "2" || item?.key === "3"
+        (item) => item?.key === "1" || item?.key === "3"
       );
+
+      if (supportType === SupportTypeModelEnum.RECRUITMENT) {
+        filteredItems = [
+          ...filteredItems,
+          ...(items?.filter((item) => item?.key === "2") || []),
+        ];
+      }
     } else if (supportStatus === SupportStatusEnum.IN_PROCESS) {
       filteredItems = items?.filter(
         (item) => item?.key === "1" || item?.key === "4" || item?.key === "5"
       );
+
+      if (supportType === SupportTypeModelEnum.RECRUITMENT) {
+        filteredItems = [
+          ...filteredItems,
+          ...(items?.filter((item) => item?.key === "2") || []),
+        ];
+      }
     } else if (supportStatus === SupportStatusEnum.SOLVED) {
       filteredItems = items?.filter((item) => item?.key === "1");
     } else if (supportStatus === SupportStatusEnum.CANT_SOLVED) {
@@ -132,19 +159,87 @@ const Support: React.FC = () => {
   };
 
   const handleMenuClick = async (key: string, record: SupportType) => {
-    console.log("record", record);
     setSelectedSupport(record);
     switch (key) {
       case "1":
         setOpenModalSupportDetail(true);
         break;
       case "2":
+        //tạo tài khoản với support là ứng tuyển
+        setOpenModalCreateDriverAccount(true);
         break;
       case "3":
+        //chuyển sang đang tiến hành
+        await supportServices
+          .changeToInProcessStatus(session?.user.access_token!, record.id)
+          .then((res) => {
+            toast(`Chuyển trạng thái sang đang xử lý thành công`, {
+              type: "success" as TypeOptions,
+              position: "top-right",
+            });
+
+            setSupportsListData((prevData: any) =>
+              prevData.map((item: SupportType) =>
+                item.id === record.id
+                  ? { ...item, supportStatus: SupportStatusEnum.IN_PROCESS }
+                  : item
+              )
+            );
+            setLoading(false);
+          })
+          .catch((errors) => {
+            toast(`${errors.response.data}`, {
+              type: "error" as TypeOptions,
+              position: "top-right",
+            });
+            console.log("errors to change support status", errors);
+          })
+          .finally(() => {
+            setLoading(false);
+          });
         break;
       case "4":
+        // đánh dấu đã giải quyết
+        confirm({
+          cancelText: "Hủy",
+          okText: "Xác nhận",
+          title: "Bạn có chắc là đã xử lý xong đơn hỗ trợ này?",
+          async onOk() {
+            setLoadingSubmit(true);
+
+            await supportService
+              .changeToSolvedStatus(session?.user.access_token!, record.id)
+              .then((res) => {
+                setSupportsListData((prevData: any) =>
+                  prevData.map((item: SupportType) =>
+                    item.id === record.id
+                      ? { ...item, supportStatus: SupportStatusEnum.SOLVED }
+                      : item
+                  )
+                );
+
+                toast(`Chuyển trạng thái sang đã xử lý thành công!`, {
+                  type: "success" as TypeOptions,
+                  position: "top-right",
+                });
+              })
+              .catch((errors) => {
+                toast(`${errors.response.data}`, {
+                  type: "error" as TypeOptions,
+                  position: "top-right",
+                });
+                console.log("errors to change support status", errors);
+              })
+              .finally(() => {
+                setLoadingSubmit(false);
+              });
+          },
+          onCancel() {},
+        });
         break;
       case "5":
+        // đánh dấu tạm thời không thể giải quyết
+        setOpenModalPauseSupport(true);
         break;
       default:
         break;
@@ -277,6 +372,32 @@ const Support: React.FC = () => {
               />
             </Table>
           </div>
+
+          {selectedSupport && (
+            <ModalPauseSupport
+              open={openModalPauseSupport}
+              dataSupport={selectedSupport}
+              onClose={() => setOpenModalPauseSupport(false)}
+              setSupportsListData={setSupportsListData}
+            />
+          )}
+
+          {selectedSupport && (
+            <ModalCreateDriverAccount
+              open={openModalCreateDriverAccount}
+              dataSupport={selectedSupport}
+              onClose={() => setOpenModalCreateDriverAccount(false)}
+              setSupportsListData={setSupportsListData}
+            />
+          )}
+
+          {selectedSupport && (
+            <ModalSupportDetail
+              open={openModalSupportDetail}
+              dataSupport={selectedSupport}
+              onClose={() => setOpenModalSupportDetail(false)}
+            />
+          )}
         </>
       }
     />

@@ -332,6 +332,16 @@ const Configuration: React.FC = () => {
                 title="Loại giá"
                 dataIndex="type"
                 key="type"
+                render={(text, record: any) =>
+                  editingKey === record.key ? (
+                    <Input
+                      value={editableData.type}
+                      onChange={(e) => handleInputChange(e, "type")}
+                    />
+                  ) : (
+                    text
+                  )
+                }
               />
               <Column
                 width={"20%"}
@@ -350,7 +360,7 @@ const Configuration: React.FC = () => {
                 }
               />
               <Column
-                width={"20%"}
+                width={"15%"}
                 title="Tính theo phần trăm"
                 dataIndex="isPercent"
                 key="isPercent"
@@ -366,7 +376,7 @@ const Configuration: React.FC = () => {
                 }
               />
               <Column
-                width={"20%"}
+                width={"25%"}
                 title="Cấu hình khác"
                 key="option"
                 render={(_, record: any) =>

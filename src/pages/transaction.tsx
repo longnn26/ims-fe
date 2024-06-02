@@ -126,7 +126,6 @@ const Transaction: React.FC = () => {
   };
 
   const handleMenuClick = async (key: string, record: TransactionType) => {
-    console.log("record", record);
     setSelectedBooking(record);
     switch (key) {
       case "1":
