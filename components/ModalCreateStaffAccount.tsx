@@ -165,10 +165,12 @@ const ModalCreateStaffAccount: React.FC<Props> = (props) => {
         }}
         footer={[
           <div
+            key="footer-buttons"
             className="flex justify-end gap-5"
             style={{ marginRight: "18px" }}
           >
             <div
+              key="btn-create"
               className="font-semibold btn-continue px-4 py-2 cursor-pointer"
               onClick={handleSubmitCreateStaffForm}
             >
