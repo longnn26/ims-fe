@@ -10,12 +10,18 @@ import accountService from "@services/customer";
 import { PagingModel, ParamGet } from "@models/base";
 import { useSession } from "next-auth/react";
 import StatusCell from "@components/table/StatusCell";
-import { formatDateTimeToVnFormat } from "@utils/helpers";
+import {
+  formatDateTimeToVnFormat,
+  translateGenderToVietnamese,
+} from "@utils/helpers";
 import { items } from "@components/account/AccountConstant";
 import { TypeOptions, toast } from "react-toastify";
 import TextNotUpdate from "@components/table/TextNotUpdate";
 import ModalAccountDetail from "@components/account/ModalAccountDetail";
 import ProfileCell from "@components/table/ProfileCell";
+import { IoIosAdd } from "react-icons/io";
+import ModalCreateDriverAccount from "@components/ModalCreateDriverAccount";
+import ModalCreateStaffAccount from "@components/ModalCreateStaffAccount";
 
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
@@ -46,6 +52,35 @@ const Account: React.FC = () => {
   const [selectedAccount, setSelectedAccount] = useState<User | null>(null);
 
   const [loadingSubmit, setLoadingSubmit] = useState<boolean>(false);
+
+  // xử lý tạo account
+  const [showRoleButtons, setShowRoleButtons] = useState(false);
+  const [openModalCreateDriverAccount, setOpenModalCreateDriverAccount] = useState(false);
+  const [openModalCreateStaffAccount, setOpenModalCreateStaffAccount] = useState(false);
+
+  const handleCreateAccountClick = () => {
+    if (session?.user.roles.includes("Admin")) {
+      setShowRoleButtons(true);
+    } else if (session?.user.roles.includes("Staff")) {
+      setOpenModalCreateDriverAccount(true);
+    }
+  };
+
+  const handleDriverClick = () => {
+    setOpenModalCreateDriverAccount(true);
+    setShowRoleButtons(false);
+  };
+
+  const handleStaffClick = () => {
+    setOpenModalCreateStaffAccount(true);
+    setShowRoleButtons(false);
+  };
+
+  const closeRoleButtons = () => {
+    setShowRoleButtons(false);
+  };
+
+  // /////////////////////////////
 
   //quản lý các state cho action
   const [openModalAccountDetail, setOpenModalAccountDetail] =
@@ -101,18 +136,34 @@ const Account: React.FC = () => {
 
   //xử lý khi click vào item trong list action
   const createMenu = (record: User) => {
-    const { isActive } = record;
+    const { isActive, role } = record;
 
     let filteredItems;
 
-    if (isActive) {
-      filteredItems = items?.filter(
-        (item) => item?.key === "1" || item?.key === "2"
-      );
-    } else {
-      filteredItems = items?.filter(
-        (item) => item?.key === "1" || item?.key === "3"
-      );
+    if (session?.user.roles.includes("Admin")) {
+      if (isActive) {
+        filteredItems = items?.filter(
+          (item) => item?.key === "1" || item?.key === "2"
+        );
+      } else {
+        filteredItems = items?.filter(
+          (item) => item?.key === "1" || item?.key === "3"
+        );
+      }
+    } else if (session?.user.roles.includes("Staff")) {
+      if (role === "Staff") {
+        filteredItems = items?.filter((item) => item?.key === "1");
+      } else {
+        if (isActive) {
+          filteredItems = items?.filter(
+            (item) => item?.key === "1" || item?.key === "2"
+          );
+        } else {
+          filteredItems = items?.filter(
+            (item) => item?.key === "1" || item?.key === "3"
+          );
+        }
+      }
     }
 
     return (
@@ -127,7 +178,6 @@ const Account: React.FC = () => {
   };
 
   const handleMenuClick = async (key: string, record: User) => {
-    console.log("record", record);
     setSelectedAccount(record);
     switch (key) {
       case "1":
@@ -238,10 +288,57 @@ const Account: React.FC = () => {
       content={
         <>
           <div className="mb-4 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
-            <div className="flex w-full justify-end">
+            <div className="flex w-full justify-between">
+              <Space style={{ margin: "16px" }}>
+                <Button
+                  onClick={handleCreateAccountClick}
+                  className="flex justify-center items-center gap-2"
+                >
+                  <IoIosAdd />
+                  Tạo tài khoản
+                </Button>
+              </Space>
               <Space style={{ margin: "16px" }}>
                 <Button onClick={clearAll}>Xóa bộ lọc </Button>
               </Space>
+              {showRoleButtons && (
+                <div
+                  className="fixed inset-0 flex justify-center items-center bg-gray-500 bg-opacity-50 z-50"
+                  style={{ backdropFilter: "blur(5px)" }}
+                  onClick={closeRoleButtons}
+                >
+                  <button
+                    className="absolute top-0 right-0 m-4 text-xl font-bold cursor-pointer"
+                    onClick={closeRoleButtons}
+                  >
+                    X
+                  </button>
+                  <div className="relative p-8 rounded">
+                    <div className="flex justify-center items-center gap-4">
+                      <Button onClick={handleDriverClick} size="large">
+                        Tài xế
+                      </Button>
+                      <Button onClick={handleStaffClick} size="large">
+                        Nhân viên
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              )}
+              {openModalCreateDriverAccount && (
+                <ModalCreateDriverAccount
+                  open={openModalCreateDriverAccount}
+                  onClose={() => setOpenModalCreateDriverAccount(false)}
+                  functionResetListDataAccount={getAccountListData}
+                />
+              )}
+              {openModalCreateStaffAccount && (
+                <ModalCreateStaffAccount
+                  open={openModalCreateStaffAccount}
+                  onClose={() => setOpenModalCreateStaffAccount(false)}
+                  functionResetListDataAccount={getAccountListData}
+                />
+              )}
             </div>
 
             <Table
@@ -258,7 +355,11 @@ const Account: React.FC = () => {
                 dataIndex="name"
                 key="name"
                 render={(text, record: User) => <ProfileCell user={record} />}
-                sorter={(a: User, b: User) => a.name.localeCompare(b.name)}
+                sorter={(a: User, b: User) => {
+                  const nameA = a.name || "";
+                  const nameB = b.name || "";
+                  return nameA.localeCompare(nameB);
+                }}
               />
               <Column
                 title="Số điện thoại"
@@ -277,9 +378,17 @@ const Account: React.FC = () => {
                 title="Giới tính"
                 dataIndex="gender"
                 key="gender"
-                render={(text, record: User) =>
-                  record.gender || <TextNotUpdate />
-                }
+                render={(text, record: User) => {
+                  const translatedGender = translateGenderToVietnamese(
+                    record?.gender ?? ""
+                  );
+
+                  if (translatedGender === "(Chưa cập nhập)") {
+                    return <TextNotUpdate />;
+                  }
+
+                  return translatedGender;
+                }}
                 sorter={(a: User, b: User) => {
                   const genderA = a.gender || "";
                   const genderB = b.gender || "";

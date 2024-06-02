@@ -203,7 +203,7 @@ video {
 }
 
 .status-expired,
-.status-cantsolved,
+.status-pause,
 .status-rejected,
 .status-cancel {
   background-color: #fecaca; /* bg-red-200 */
@@ -226,3 +226,4 @@ video {
   background-color: #fed7aa; /* bg-orange-200 */
   color: #9a3412; /* text-orange-900 */
 }
+

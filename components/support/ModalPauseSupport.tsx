@@ -1,27 +1,30 @@
 import React, { useRef, useState, useEffect } from "react";
 import { Button, Input, Modal, message, Checkbox, CheckboxProps } from "antd";
 import { Form } from "antd";
+import useSelector from "@hooks/use-selector";
 import { useSession } from "next-auth/react";
-import { EmergencyType } from "@models/emergency";
+import { SupportType } from "@models/support";
 const { confirm } = Modal;
-import emergencyService from "@services/emergency";
+import supportService from "@services/support";
+import { EmergencyStatusEnum, SupportStatusEnum } from "@utils/enum";
+import { TypeOptions, toast } from "react-toastify";
 
 interface Props {
   open: boolean;
   onClose: () => void;
-  dataEmergency: EmergencyType | undefined;
+  dataSupport: SupportType | undefined;
   onSubmit?: () => void;
-  setEmergencyListData: React.Dispatch<React.SetStateAction<EmergencyType[]>>;
+  setSupportsListData: React.Dispatch<React.SetStateAction<SupportType[]>>;
 }
 
-const ModalCancelBookingImmediately: React.FC<Props> = (props) => {
+const ModalPauseSupport: React.FC<Props> = (props) => {
   const formRef = useRef(null);
   const { data: session } = useSession();
   const [form] = Form.useForm();
-  const { onSubmit, open, onClose, dataEmergency, setEmergencyListData } =
-    props;
+  const { onSubmit, open, onClose, dataSupport, setSupportsListData } = props;
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [loadingSubmit, setLoadingSubmit] = useState<boolean>(false);
+  const [isStopTrip, setIsStopTrip] = useState<boolean>(false);
 
   const disabled = async () => {
     var result = false;
@@ -36,11 +39,6 @@ const ModalCancelBookingImmediately: React.FC<Props> = (props) => {
   return (
     <>
       <Modal
-        title={
-          <span className="inline-block m-auto">
-            Form hủy chuyến ngay lập tức
-          </span>
-        }
         width={700}
         open={open}
         confirmLoading={confirmLoading}
@@ -59,40 +57,41 @@ const ModalCancelBookingImmediately: React.FC<Props> = (props) => {
                   cancelText: "Hủy",
                   okText: "Xác nhận",
                   title:
-                    "Bạn có chắc là hủy chuyến ngay lập tức cho chuyến đi này?",
+                    "Bạn có chắc là tạm thời không thể giải quyết đơn hỗ trợ này?",
                   async onOk() {
                     setLoadingSubmit(true);
 
-                    await emergencyService
-                      .changeToSolvedStatus(session?.user.access_token!, {
-                        emergencyId: dataEmergency?.id || "",
-                        solution: dataEmergency?.solution || "",
-                        isStopTrip: true,
-                        bookingCancelReason: form.getFieldValue(
-                          "bookingCancelReason"
-                        ),
+                    await supportService
+                      .changeToPauseStatus(session?.user.access_token!, {
+                        supportId: dataSupport?.id ?? "",
+                        note: form.getFieldValue("note"),
                       })
                       .then((res) => {
-                        message.success("Thay đổi trạng thái thành công!", 1.5);
-
-                        setEmergencyListData((prevData: any) =>
-                          prevData.map((item: EmergencyType) =>
-                            item.id === dataEmergency?.id
+                        setSupportsListData((prevData: any) =>
+                          prevData.map((item: SupportType) =>
+                            item.id === dataSupport?.id ?? ""
                               ? {
                                   ...item,
-                                  isStopTrip: true,
+                                  supportStatus: SupportStatusEnum.CANT_SOLVED,
                                 }
                               : item
                           )
                         );
 
-                        form.resetFields();
-                        onClose();
+                        toast(`Đánh dấu tạm thời chưa giải quyết thành công!`, {
+                          type: "success" as TypeOptions,
+                          position: "top-right",
+                        });
                       })
                       .catch((errors) => {
-                        message.error(errors.response.data, 1.5);
+                        toast(`${errors.response.data}`, {
+                          type: "error" as TypeOptions,
+                          position: "top-right",
+                        });
+                        console.log("errors to change support status", errors);
                       })
                       .finally(() => {
+                        onClose();
                         setLoadingSubmit(false);
                       });
                   },
@@ -100,7 +99,7 @@ const ModalCancelBookingImmediately: React.FC<Props> = (props) => {
                 });
             }}
           >
-            Xác nhận
+            Gửi
           </Button>,
         ]}
       >
@@ -113,19 +112,19 @@ const ModalCancelBookingImmediately: React.FC<Props> = (props) => {
             style={{ width: "100%" }}
           >
             <Form.Item
-              name="bookingCancelReason"
-              label="Lý do hủy chuyến"
+              name="note"
+              label="Lý do: "
               rules={[
                 {
                   required: true,
-                  message: "Vui lòng nhập lý do hủy chuyến",
+                  message: "Vui lòng nhập lý do!",
                 },
                 { type: "string" },
               ]}
               style={{marginLeft: "12px", marginRight:"12px"}}
             >
               <Input.TextArea
-                placeholder="Vui lòng nhập lý do hủy chuyến"
+                placeholder="Vui lòng nhập lý do"
                 className="h-9"
               />
             </Form.Item>
@@ -136,4 +135,4 @@ const ModalCancelBookingImmediately: React.FC<Props> = (props) => {
   );
 };
 
-export default ModalCancelBookingImmediately;
+export default ModalPauseSupport;

@@ -1,3 +1,9 @@
+//content type
+export enum ContentTypeEnum {
+  MULTIPART = "multipart/form-data",
+  APPLICATION_JSON_PATCH = "application/json-patch+json"
+}
+
 //support
 export enum SupportTypeModelEnum {
   RECRUITMENT = "Recruitment",
@@ -9,7 +15,7 @@ export enum SupportStatusEnum {
   NEW = "New",
   IN_PROCESS = "InProcess",
   SOLVED = "Solved",
-  CANT_SOLVED = "CantSolved",
+  CANT_SOLVED = "Pause",
 }
 
 //emergency
@@ -34,6 +40,7 @@ export enum RequestStatusEnum {
 
 //liên quan đến bấm action hiển thị detail
 export enum CategoriesDetailEnum {
+  SUPPORT_INFO = "SupportInfo",
   EMERGENCY_INFO = "EmergencyInfo",
   BOOKING_INFO = "BookingInfo",
   CUSTOMER_INFO = "CustomerInfo",

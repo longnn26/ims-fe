@@ -1,7 +1,7 @@
 "use client";
 import dynamic from "next/dynamic";
 import React, { useEffect, useState } from "react";
-import { Button, Input, Modal, Table, Switch } from "antd";
+import { Button, Input, Modal, Table, Switch, TimePicker } from "antd";
 import { useSession } from "next-auth/react";
 import { ConfigurationType } from "@models/configuration";
 import configurationService from "@services/configuration";
@@ -13,6 +13,8 @@ import { CiEdit } from "react-icons/ci";
 import { FiSave } from "react-icons/fi";
 import { MdOutlineCancel } from "react-icons/md";
 import { TypeOptions, toast } from "react-toastify";
+import moment from "moment";
+import dayjs, { Dayjs } from "dayjs";
 
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
@@ -29,6 +31,12 @@ const Configuration: React.FC = () => {
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [loadingSubmit, setLoadingSubmit] = useState<boolean>(false);
 
+  const [tmpStartTime, setTmpStartTime] = useState<Dayjs | null>(null);
+  const [tmpEndTime, setTmpEndTime] = useState<Dayjs | null>(null);
+
+  const [tmpMinutesTime, setTmpMinutesTime] = useState<Dayjs | null>(null);
+
+  //load data config
   const getConfigurationPriceData = async () => {
     setLoading(true);
     await configurationService
@@ -105,6 +113,14 @@ const Configuration: React.FC = () => {
                 price: res?.customerCancelFee?.price,
                 isPercent: res?.customerCancelFee?.isPercent,
               },
+              {
+                key: "10",
+                type: translateConfigurationPriceToVietnamese("searchRadius"),
+                price: "",
+                isPercent: "",
+                optionName: "distance",
+                optionValue: res?.searchRadius?.distance,
+              },
             ]
           : [];
         setDataSource(dataSource);
@@ -172,10 +188,33 @@ const Configuration: React.FC = () => {
     }
   };
 
+  const convertMinutesToDayjs = (minutes: number): dayjs.Dayjs => {
+    const hours = Math.floor(minutes / 60);
+    const remainingMinutes = minutes % 60;
+    return dayjs()
+      .set("hour", hours)
+      .set("minute", remainingMinutes)
+      .startOf("minute");
+  };
+
   const editConfig = (record: any) => {
-    console.log();
+    console.log(record);
     setEditingKey(record.key);
     setEditableData({ ...record });
+
+    if (record.optionName === "time") {
+      if (!tmpStartTime || !tmpEndTime) {
+        const optionValues = (record.optionValue || "")?.split("-");
+        const startTime = optionValues[0];
+        const endTime = optionValues[1];
+        setTmpStartTime(startTime ? dayjs(startTime, "HH:mm") : null);
+        setTmpEndTime(endTime ? dayjs(endTime, "HH:mm") : null);
+      }
+    }
+
+    if (record.optionName === "perMinutes") {
+      setTmpMinutesTime(convertMinutesToDayjs(record.optionValue));
+    }
   };
 
   const saveConfig = () => {
@@ -185,6 +224,10 @@ const Configuration: React.FC = () => {
       }
       return item;
     });
+
+    const optionValue = `${tmpStartTime?.format("HH:mm")}-${tmpEndTime?.format(
+      "HH:mm"
+    )}`;
 
     console.log("editableData", editableData);
     console.log("newData", newData);
@@ -199,10 +242,14 @@ const Configuration: React.FC = () => {
         await configurationService
           .updatePriceConfigurationByAdmin(
             session?.user.access_token!,
-            convertEditableDataToConfiguration(editableData)
+            convertEditableDataToConfiguration({ ...editableData, optionValue })
           )
           .then((res) => {
-            convertEditableDataToConfiguration;
+            setEditableData({
+              ...editableData,
+              optionValue: optionValue,
+            });
+
             toast(`Cập nhập cấu hình thành công!`, {
               type: "success" as TypeOptions,
               position: "top-right",
@@ -240,6 +287,41 @@ const Configuration: React.FC = () => {
     setEditableData({ ...editableData, [field]: e.target.value });
   };
 
+  const handleStartTimeChange = (time: Dayjs | null) => {
+    setTmpStartTime(time);
+
+    const optionValue = `${time?.format("HH:mm")}-${tmpEndTime?.format(
+      "HH:mm"
+    )}`;
+
+    setEditableData({
+      ...editableData,
+      optionValue: optionValue,
+    });
+  };
+
+  const handleEndTimeChange = (time: Dayjs | null) => {
+    setTmpEndTime(time);
+
+    const optionValue = `${tmpStartTime?.format("HH:mm")}-${time?.format(
+      "HH:mm"
+    )}`;
+
+    setEditableData({
+      ...editableData,
+      optionValue: optionValue,
+    });
+  };
+
+  const handleMinuteTimeChange = (time: Dayjs | null) => {
+    setTmpMinutesTime(time);
+
+    setEditableData({
+      ...editableData,
+      optionValue: time?.format("mm"),
+    });
+  };
+
   const handleSwitchChange = (checked: boolean) => {
     setEditableData({ ...editableData, isPercent: checked });
   };
@@ -259,17 +341,11 @@ const Configuration: React.FC = () => {
                 title="Loại giá"
                 dataIndex="type"
                 key="type"
-              />
-              <Column
-                width={"20%"}
-                title="Tính tiền"
-                dataIndex="price"
-                key="price"
                 render={(text, record: any) =>
                   editingKey === record.key ? (
                     <Input
-                      value={editableData.price}
-                      onChange={(e) => handleInputChange(e, "price")}
+                      value={editableData.type}
+                      onChange={(e) => handleInputChange(e, "type")}
                     />
                   ) : (
                     text
@@ -278,32 +354,85 @@ const Configuration: React.FC = () => {
               />
               <Column
                 width={"20%"}
+                title="Tính tiền"
+                dataIndex="price"
+                key="price"
+                render={(text, record: any) =>
+                  record.price !== null &&
+                  record.price !== "" &&
+                  record.price !== undefined ? (
+                    editingKey === record.key ? (
+                      <Input
+                        value={editableData.price}
+                        onChange={(e) => handleInputChange(e, "price")}
+                      />
+                    ) : (
+                      text
+                    )
+                  ) : null
+                }
+              />
+
+              <Column
+                width={"15%"}
                 title="Tính theo phần trăm"
                 dataIndex="isPercent"
                 key="isPercent"
                 render={(text, record: any) =>
-                  editingKey === record.key ? (
-                    <Switch
-                      checked={editableData.isPercent}
-                      onChange={handleSwitchChange}
-                    />
-                  ) : (
-                    <Switch checked={record.isPercent} disabled />
-                  )
+                  record.isPercent !== "" &&
+                  record.isPercent !== null &&
+                  record.isPercent !== undefined ? (
+                    editingKey === record.key ? (
+                      <Switch
+                        checked={editableData.isPercent}
+                        onChange={handleSwitchChange}
+                      />
+                    ) : (
+                      <Switch checked={record.isPercent} disabled />
+                    )
+                  ) : null
                 }
               />
+
               <Column
-                width={"20%"}
+                width={"25%"}
                 title="Cấu hình khác"
                 key="option"
                 render={(_, record: any) =>
                   editingKey === record.key &&
                   editableData.optionName &&
                   editableData.optionValue ? (
-                    <Input
-                      value={editableData.optionValue}
-                      onChange={(e) => handleInputChange(e, "optionValue")}
-                    />
+                    <>
+                      {editableData.optionName === "time" ? (
+                        <>
+                          <TimePicker
+                            value={tmpStartTime}
+                            onChange={handleStartTimeChange}
+                            format="HH:mm"
+                            style={{ marginRight: 8 }}
+                            placeholder="Bắt đầu"
+                          />
+                          <TimePicker
+                            value={tmpEndTime}
+                            onChange={handleEndTimeChange}
+                            format="HH:mm"
+                            placeholder="Kết thúc"
+                          />
+                        </>
+                      ) : editableData.optionName === "distance" ? (
+                        <Input
+                          value={editableData.optionValue}
+                          onChange={(e) => handleInputChange(e, "optionValue")}
+                        />
+                      ) : (
+                        <TimePicker
+                          value={tmpMinutesTime}
+                          onChange={handleMinuteTimeChange}
+                          placeholder="Chọn phút"
+                          format="mm"
+                        />
+                      )}
+                    </>
                   ) : record.optionName && record.optionValue ? (
                     `${anotherOptionConfigurationPrice(record.optionName)}: ${
                       record.optionValue
@@ -311,6 +440,7 @@ const Configuration: React.FC = () => {
                   ) : null
                 }
               />
+
               <Column
                 title="Thao tác"
                 key="action"
@@ -325,9 +455,11 @@ const Configuration: React.FC = () => {
                       </Button>
                     </>
                   ) : (
-                    <Button onClick={() => editConfig(record)} type="link">
-                      <CiEdit className="w-5 h-5" />
-                    </Button>
+                    record.key !== "10" && (
+                      <Button onClick={() => editConfig(record)} type="link">
+                        <CiEdit className="w-5 h-5" />
+                      </Button>
+                    )
                   )
                 }
               />

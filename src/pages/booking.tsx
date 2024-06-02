@@ -13,6 +13,7 @@ import StatusCell from "@components/table/StatusCell";
 import {
   convertToVietnamTimeInBooking,
   getColorByStatusClass,
+  removeHyphens,
 } from "@utils/helpers";
 import { items } from "@components/account/AccountConstant";
 import { TypeOptions, toast } from "react-toastify";
@@ -100,7 +101,8 @@ const Booking: React.FC = () => {
       pageSize: pagination.pageSize ?? 10,
       totalPage: pagination.total ?? 0,
     });
-    setFilteredInfo(filters);
+    console.log("filters: ", filters);
+
     setSortedInfo(sorter as Sorts);
   };
 
@@ -124,7 +126,6 @@ const Booking: React.FC = () => {
   };
 
   const handleMenuClick = async (key: string, record: BookingType) => {
-    console.log("record", record);
     setSelectedBooking(record);
     switch (key) {
       case "1":
@@ -165,6 +166,14 @@ const Booking: React.FC = () => {
                 total: tablePagination.totalSize,
               }}
             >
+              <Column
+                title="Mã chuyến đi"
+                dataIndex="id"
+                key="id"
+                render={(text, record: BookingType) =>
+                  removeHyphens(record?.id)
+                }
+              />
               <Column
                 title="Khách hàng"
                 dataIndex="customer"

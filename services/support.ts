@@ -1,5 +1,5 @@
 import { ParamGet, ParamGetWithId } from "@models/base";
-import { SupportType, SupportCantSolved, SupportListData } from "@models/support";
+import { SupportType, SupportPause, SupportListData } from "@models/support";
 import apiLinks from "@utils/api-links";
 import httpClient from "@utils/http-client";
 
@@ -57,12 +57,12 @@ const changeToSolvedStatus = async (
   return response.data;
 };
 
-const changeToCantSolvedStatus = async (
+const changeToPauseStatus = async (
   token: string,
-  model: SupportCantSolved
+  model: SupportPause
 ): Promise<SupportType> => {
   const response = await httpClient.put({
-    url: `${apiLinks.support.changeToCantSolved}`,
+    url: `${apiLinks.support.changeToPause}`,
     token: token,
     data: model,
   });
@@ -75,7 +75,7 @@ const support = {
   getAllSupportByAdmin,
   changeToInProcessStatus,
   changeToSolvedStatus,
-  changeToCantSolvedStatus,
+  changeToPauseStatus,
 };
 
 export default support;

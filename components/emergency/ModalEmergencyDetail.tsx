@@ -172,7 +172,7 @@ const ModalEmergencyDetail: React.FC<Props> = (props) => {
               }}
             ></Divider>
 
-            <h3 className="ml-3 mb-5">Ảnh checkin</h3>
+            {/* <h3 className="ml-3 mb-5">Ảnh checkin</h3>
 
             <div className="ml-8">
               <p style={{ color: "#00000073" }}>
@@ -181,8 +181,8 @@ const ModalEmergencyDetail: React.FC<Props> = (props) => {
             </div>
 
             <div className="ml-8">
-              <p style={{ color: "#00000073" }}>Ảnh xe rước chuyến đi:</p>
-            </div>
+              <p style={{ color: "#00000073" }}>Ảnh xe trước chuyến đi:</p>
+            </div> */}
           </>
         );
       case CategoriesDetailEnum.CUSTOMER_INFO:

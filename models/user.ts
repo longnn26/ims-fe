@@ -67,3 +67,14 @@ export interface UserUpdateRole {
 export interface UserId {
   userId: string;
 }
+
+export interface DriverCreateModel {
+  name: string;
+  userName: string;
+  email: string;
+  phoneNumber: string;
+  address: string;
+  gender: string;
+  dob: string;
+  file: any;
+}

@@ -1,5 +1,5 @@
 import { PagingModel } from "./base";
-import { LinkedAccountType } from "./linked_account";
+import { LinkedAccountType } from "./linkedAccount";
 
 export interface TransactionType {
   id: string;

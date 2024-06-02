@@ -12,7 +12,12 @@ import { EmergencyType, EmergencyListData } from "@models/emergency";
 import emergencyService from "@services/emergency";
 import { PagingModel, ParamGet } from "@models/base";
 import { useSession } from "next-auth/react";
-import { formatDate, getColorByStatusClass, splitString } from "@utils/helpers";
+import {
+  formatDate,
+  getColorByStatusClass,
+  removeHyphens,
+  splitString,
+} from "@utils/helpers";
 import {
   EmergencyStatusEnum,
   EmergencyTypeEnum,
@@ -114,6 +119,7 @@ const Emergency: React.FC = () => {
       pageSize: pagination.pageSize ?? 10,
       totalPage: pagination.total ?? 0,
     });
+
     setFilteredInfo(filters);
     setSortedInfo(sorter as Sorts);
   };
@@ -258,7 +264,7 @@ const Emergency: React.FC = () => {
                 dataIndex="booking"
                 key="bookingId"
                 render={(text, record: EmergencyType) =>
-                  record.booking.id || "(Chưa cập nhập)"
+                  removeHyphens(record.booking.id || "(Chưa cập nhập)")
                 }
                 sorter={(a: EmergencyType, b: EmergencyType) => {
                   const bookingA = a.booking.id || "";

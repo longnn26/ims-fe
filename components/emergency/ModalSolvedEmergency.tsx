@@ -127,7 +127,7 @@ const ModalSolvedEmergency: React.FC<Props> = (props) => {
                 },
                 { type: "string" },
               ]}
-              className="mx-3"
+              style={{marginLeft: "12px", marginRight:"12px"}}
             >
               <Input.TextArea
                 placeholder="Vui lòng nhập cách giải quyết"
@@ -138,7 +138,7 @@ const ModalSolvedEmergency: React.FC<Props> = (props) => {
               name="isStopTrip"
               label="Dừng chuyến ngay"
               rules={[{ type: "boolean" }]}
-              className="mx-3"
+              style={{marginLeft: "12px", marginRight:"12px"}}
               valuePropName="isStopTrip"
             >
               <Checkbox
@@ -157,7 +157,7 @@ const ModalSolvedEmergency: React.FC<Props> = (props) => {
                   },
                   { type: "string" },
                 ]}
-                className="mx-3"
+                style={{marginLeft: "12px", marginRight:"12px"}}
               >
                 <Input.TextArea
                   placeholder="Vui lòng nhập lý do hủy chuyến"
