@@ -3,7 +3,7 @@ import "@/styles/HeaderHomePage.scss";
 import "@/styles/HomeDefault.scss";
 import "@/styles/Recruitment.scss";
 import "@/styles/SwitchOnlOffStatus.scss";
-import "@/styles/stageCreateAccount.scss";
+import "@/styles/StageCreateAccount.scss";
 import "react-toastify/dist/ReactToastify.css";
 import "swiper/css";
 import "swiper/css/effect-coverflow";
