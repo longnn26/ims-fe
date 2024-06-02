@@ -322,11 +322,13 @@ const ModalCreateDriverAccount: React.FC<Props> = (props) => {
         }}
         footer={[
           <div
+            key="footer-buttons"
             className="flex justify-end gap-5"
             style={{ marginRight: "18px" }}
           >
             {currentStage > 1 && (
               <div
+                key="btn-back"
                 className="font-semibold btn-cancel px-4 py-2 cursor-pointer"
                 onClick={handleBackStage}
               >
@@ -336,6 +338,7 @@ const ModalCreateDriverAccount: React.FC<Props> = (props) => {
 
             {currentStage < 3 && (
               <div
+                key="btn-continue"
                 className="font-semibold btn-continue px-4 py-2 cursor-pointer"
                 onClick={handleContinueStage}
               >
@@ -345,6 +348,7 @@ const ModalCreateDriverAccount: React.FC<Props> = (props) => {
 
             {currentStage === 3 && (
               <div
+                key="btn-confirm"
                 className="font-semibold btn-continue px-4 py-2 cursor-pointer"
                 onClick={handleSubmitCreateDriverForm}
               >
@@ -357,9 +361,9 @@ const ModalCreateDriverAccount: React.FC<Props> = (props) => {
         <div className="container">
           <div className="w-full flex justify-center">
             <div className="stage-header w-3/5">
-              {[1, 2, 3].map((stageNum) => (
+              {[1, 2, 3].map((stageNum, index) => (
                 <div
-                  key={stageNum}
+                  key={index}
                   className={`stage btn ${
                     stageEnabled[stageNum] ? "" : "disabled"
                   } ${currentStage === stageNum ? "active" : ""}`}
