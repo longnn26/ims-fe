@@ -55,24 +55,24 @@ const Account: React.FC = () => {
 
   // xử lý tạo account
   const [showRoleButtons, setShowRoleButtons] = useState(false);
-  const [showDriverModal, setShowDriverModal] = useState(false);
-  const [showStaffModal, setShowStaffModal] = useState(false);
+  const [openModalCreateDriverAccount, setOpenModalCreateDriverAccount] = useState(false);
+  const [openModalCreateStaffAccount, setOpenModalCreateStaffAccount] = useState(false);
 
   const handleCreateAccountClick = () => {
     if (session?.user.roles.includes("Admin")) {
       setShowRoleButtons(true);
     } else if (session?.user.roles.includes("Staff")) {
-      setShowDriverModal(true);
+      setOpenModalCreateDriverAccount(true);
     }
   };
 
   const handleDriverClick = () => {
-    setShowDriverModal(true);
+    setOpenModalCreateDriverAccount(true);
     setShowRoleButtons(false);
   };
 
   const handleStaffClick = () => {
-    setShowStaffModal(true);
+    setOpenModalCreateStaffAccount(true);
     setShowRoleButtons(false);
   };
 
@@ -325,16 +325,18 @@ const Account: React.FC = () => {
                   </div>
                 </div>
               )}
-              {showDriverModal && (
+              {openModalCreateDriverAccount && (
                 <ModalCreateDriverAccount
-                  open={showDriverModal}
-                  onClose={() => setShowDriverModal(false)}
+                  open={openModalCreateDriverAccount}
+                  onClose={() => setOpenModalCreateDriverAccount(false)}
+                  functionResetListDataAccount={getAccountListData}
                 />
               )}
-              {showStaffModal && (
+              {openModalCreateStaffAccount && (
                 <ModalCreateStaffAccount
-                  open={showStaffModal}
-                  onClose={() => setShowStaffModal(false)}
+                  open={openModalCreateStaffAccount}
+                  onClose={() => setOpenModalCreateStaffAccount(false)}
+                  functionResetListDataAccount={getAccountListData}
                 />
               )}
             </div>

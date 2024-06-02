@@ -20,10 +20,12 @@ interface Props {
   onClose: () => void;
   dataSupport?: SupportType | undefined;
   onSubmit?: () => void;
+  functionResetListDataAccount?: () => Promise<void>;
 }
 
 const ModalCreateDriverAccount: React.FC<Props> = (props) => {
-  const { onSubmit, open, onClose, dataSupport } = props;
+  const { onSubmit, open, onClose, dataSupport, functionResetListDataAccount } =
+    props;
   const { data: session } = useSession();
   const formAccountRef = useRef(null);
   const [formAccount] = Form.useForm();
@@ -260,6 +262,9 @@ const ModalCreateDriverAccount: React.FC<Props> = (props) => {
           formIdentityCard.resetFields();
           formDrivingLicense.resetFields();
 
+          if (functionResetListDataAccount) {
+            await functionResetListDataAccount();
+          }
           onClose();
         } catch (errors) {
           console.log("errors:", errors);
@@ -297,7 +302,7 @@ const ModalCreateDriverAccount: React.FC<Props> = (props) => {
         title={
           <span className="inline-block m-auto">
             {" "}
-            Form tạo tài khoản cho tài xế
+            Form tạo tài khoản cho Tài xế
           </span>
         }
         width={900}

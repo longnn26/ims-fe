@@ -5,120 +5,198 @@ import useSelector from "@hooks/use-selector";
 import { useSession } from "next-auth/react";
 import { SupportType } from "@models/support";
 const { confirm } = Modal;
-import supportService from "@services/support";
+import customerService from "@services/customer";
 import { EmergencyStatusEnum, SupportStatusEnum } from "@utils/enum";
 import { TypeOptions, toast } from "react-toastify";
+import FirstStageCreate from "./stageCreateAccount/FirstStageCreate";
+import { formatDobToYYYYMMDD } from "@utils/helpers";
 
 interface Props {
   open: boolean;
   onClose: () => void;
   onSubmit?: () => void;
+  functionResetListDataAccount?: () => Promise<void>;
 }
 
 const ModalCreateStaffAccount: React.FC<Props> = (props) => {
-  const formRef = useRef(null);
+  const { onSubmit, open, onClose, functionResetListDataAccount } = props;
   const { data: session } = useSession();
-  const [form] = Form.useForm();
-  const { onSubmit, open, onClose } = props;
+  const formAccountRef = useRef(null);
+  const [formAccount] = Form.useForm();
+
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [loadingSubmit, setLoadingSubmit] = useState<boolean>(false);
 
-  const disabled = async () => {
-    var result = false;
-    try {
-      await form.validateFields();
-    } catch (errorInfo) {
-      result = true;
+  //   quản lý trạng thái chuyển trang
+  const [currentStage, setCurrentStage] = useState(1);
+  const [stageEnabled, setStageEnabled] = useState<Record<number, boolean>>({
+    1: true,
+  });
+
+  const getStageName = (stage: any) => {
+    switch (stage) {
+      case 1:
+        return "Thông tin nhân viên";
+      // case 2:
+      //   return "CCCD";
+      // case 3:
+      //   return "Bằng lái xe";
+      default:
+        return "";
     }
-    return result;
+  };
+
+  const getStageContent = (stage: any) => {
+    switch (stage) {
+      case 1:
+        return (
+          <FirstStageCreate
+            formAccountRef={formAccountRef}
+            formAccount={formAccount}
+          />
+        );
+      // case 2:
+      //   return (
+      //     <SecondStageCreate
+      //       formIdentityCardRef={formIdentityCardRef}
+      //       formIdentityCard={formIdentityCard}
+      //       data={dataSupport}
+      //       formAccount={formAccount}
+      //     />
+      //   );
+      default:
+        return null;
+    }
+  };
+
+  // xử lý api
+  const handleSubmitCreateStaffForm = async () => {
+    try {
+      formAccount.validateFields();
+    } catch (errorInfo) {
+      console.log("Validation Failed:", errorInfo);
+    }
+    confirm({
+      cancelText: "Hủy",
+      okText: "Xác nhận tạo",
+      title:
+        "Bạn có chắc muốn tạo tài khoản Nhân viên với những thông tin vừa điền?",
+      async onOk() {
+        try {
+          setLoadingSubmit(true);
+
+          const resCreateStaff = await customerService.createStaffAccount(
+            session?.user.access_token!,
+            {
+              name: formAccount.getFieldValue("fullName"),
+              userName: formAccount.getFieldValue("email"),
+              email: formAccount.getFieldValue("email"),
+              phoneNumber: formAccount.getFieldValue("phoneNumber"),
+              address: formAccount.getFieldValue("address"),
+              gender: formAccount.getFieldValue("gender"),
+              dob: formatDobToYYYYMMDD(formAccount.getFieldValue("dob")),
+              file: formAccount.getFieldValue("avatar")[0]?.originFileObj,
+            }
+          );
+
+          toast("Tạo nhân viên thành công!", {
+            type: "success" as TypeOptions,
+            position: "top-right",
+          });
+          setStageEnabled({
+            1: true,
+          });
+          setCurrentStage(1);
+
+          formAccount.resetFields();
+
+          if (functionResetListDataAccount) {
+            await functionResetListDataAccount();
+          }
+          onClose();
+        } catch (errors) {
+          console.log("errors:", errors);
+          toast("Có lỗi xảy ra!", {
+            type: "error" as TypeOptions,
+            position: "top-right",
+          });
+          showToastMessage(errors);
+        } finally {
+          setLoadingSubmit(false);
+        }
+      },
+      onCancel() {},
+    });
+  };
+
+  const showToastMessage = (errors) => {
+    let message;
+    if (Array.isArray(errors.response.data)) {
+      message = errors.response.data.join(", ");
+    } else {
+      message = errors.response.data;
+    }
+
+    toast(message, {
+      type: "error" as TypeOptions,
+      position: "top-right",
+    });
   };
 
   return (
     <>
       <Modal
+        centered
         title={
-          <span className="inline-block m-auto">Tạo tài khoản tài xế</span>
+          <span className="inline-block m-auto">
+            Form tạo tài khoản cho Nhân viên
+          </span>
         }
-        width={1100}
+        width={900}
         open={open}
         confirmLoading={confirmLoading}
         onCancel={() => {
           onClose();
-
-          form.resetFields();
+          setStageEnabled({
+            1: true,
+          });
+          setCurrentStage(1);
+          formAccount.resetFields();
         }}
         footer={[
-          <Button
-            className="btn-submit"
-            key="submit"
-            onClick={async () => {
-              if (!(await disabled()))
-                confirm({
-                  cancelText: "Hủy",
-                  okText: "Xác nhận",
-                  title:
-                    "Bạn có chắc là tạm thời không thể giải quyết đơn hỗ trợ này?",
-                  async onOk() {
-                    setLoadingSubmit(true);
-
-                    // await supportService
-                    //   .changeToCantSolvedStatus(session?.user.access_token!, {
-                       
-                    //   })
-                    //   .then((res) => {
-                       
-
-                    //     toast(`Đánh dấu tạm thời chưa giải quyết thành công!`, {
-                    //       type: "success" as TypeOptions,
-                    //       position: "top-right",
-                    //     });
-                    //   })
-                    //   .catch((errors) => {
-                    //     toast(`${errors.response.data}`, {
-                    //       type: "error" as TypeOptions,
-                    //       position: "top-right",
-                    //     });
-                    //     console.log("errors to change support status", errors);
-                    //   })
-                    //   .finally(() => {
-                    //     onClose();
-                    //     setLoadingSubmit(false);
-                    //   });
-                  },
-                  onCancel() {},
-                });
-            }}
+          <div
+            className="flex justify-end gap-5"
+            style={{ marginRight: "18px" }}
           >
-            Gửi
-          </Button>,
+            <div
+              className="font-semibold btn-continue px-4 py-2 cursor-pointer"
+              onClick={handleSubmitCreateStaffForm}
+            >
+              Khởi tạo
+            </div>
+          </div>,
         ]}
       >
-        <div className="relative -left-16 flex justify-center flex-col gap-4 m-auto">
-          <Form
-            ref={formRef}
-            form={form}
-            labelCol={{ span: 10 }}
-            wrapperCol={{ span: 16 }}
-            style={{ width: "100%" }}
-          >
-            <Form.Item
-              name="note"
-              label="Lý do: "
-              rules={[
-                {
-                  required: true,
-                  message: "Vui lòng nhập lý do!",
-                },
-                { type: "string" },
-              ]}
-              style={{marginLeft: "12px", marginRight:"12px"}}
+        <div className="container">
+          <div className="w-full flex justify-center">
+            <div
+              className="stage-header"
+              style={{ display: "flex", justifyContent: "center" }}
             >
-              <Input.TextArea
-                placeholder="Vui lòng nhập lý do"
-                className="h-9"
-              />
-            </Form.Item>
-          </Form>
+              {[1].map((stageNum) => (
+                <div
+                  key={stageNum}
+                  className={`stage btn ${
+                    stageEnabled[stageNum] ? "" : "disabled"
+                  } ${currentStage === stageNum ? "active" : ""}`}
+                >
+                  {getStageName(stageNum)}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="container py-4">{getStageContent(currentStage)}</div>
         </div>
       </Modal>
     </>

@@ -110,10 +110,13 @@ const createDriverAccount = async (
   return response.data;
 };
 
-const createStaffAccount = async (token: string, model: User): Promise<any> => {
+const createStaffAccount = async (
+  token: string,
+  model: DriverCreateModel
+): Promise<any> => {
   const response = await httpClient.post({
     contentType: ContentTypeEnum.MULTIPART,
-    url: apiLinks.customer.createDriver,
+    url: apiLinks.customer.createStaff,
     token: token,
     data: model,
   });
