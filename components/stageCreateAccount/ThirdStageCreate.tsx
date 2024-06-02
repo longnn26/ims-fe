@@ -74,7 +74,7 @@ const ThirdStageCreate: React.FC<ThirdStageProps> = (props) => {
                 message: "Vui lòng nhập GPLX hợp lệ!",
               },
             ]}
-            className="mx-3"
+            style={{marginLeft: "12px", marginRight:"12px"}}
           >
             <Input
               placeholder="Vui lòng nhập số GPLX"
@@ -89,7 +89,7 @@ const ThirdStageCreate: React.FC<ThirdStageProps> = (props) => {
             initialValue={data?.drivingLicenseType}
             name="type"
             rules={[{ required: true, message: "Vui lòng chọn loại bằng" }]}
-            className="mx-3"
+            style={{marginLeft: "12px", marginRight:"12px"}}
           >
             <Select
               className="h-9"
@@ -113,7 +113,7 @@ const ThirdStageCreate: React.FC<ThirdStageProps> = (props) => {
                 message: "Vui lòng chọn ngày sinh",
               },
             ]}
-            className="mx-3"
+            style={{marginLeft: "12px", marginRight:"12px"}}
           >
             <DatePicker
               className="h-9"
@@ -133,7 +133,7 @@ const ThirdStageCreate: React.FC<ThirdStageProps> = (props) => {
                 message: "Vui lòng chọn ngày hết hạn",
               },
             ]}
-            className="mx-3"
+            style={{marginLeft: "12px", marginRight:"12px"}}
           >
             <DatePicker
               className="h-9"
@@ -150,7 +150,7 @@ const ThirdStageCreate: React.FC<ThirdStageProps> = (props) => {
             valuePropName="file"
             getValueFromEvent={normFile}
             rules={[{ required: true, message: "Vui lòng chọn ảnh mặt trước" }]}
-            className="mx-3"
+            style={{marginLeft: "12px", marginRight:"12px"}}
           >
             <Upload
               name="imageFront"
@@ -172,7 +172,7 @@ const ThirdStageCreate: React.FC<ThirdStageProps> = (props) => {
             valuePropName="file"
             getValueFromEvent={normFile}
             rules={[{ required: true, message: "Vui lòng chọn ảnh mặt sau" }]}
-            className="mx-3"
+            style={{marginLeft: "12px", marginRight:"12px"}}
           >
             <Upload
               name="imageBehind"

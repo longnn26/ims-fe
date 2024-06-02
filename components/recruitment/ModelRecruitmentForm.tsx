@@ -170,7 +170,7 @@ const ModalRecruitmentForm: React.FC<Props> = (props) => {
                     { required: true, message: "Vui lòng nhập họ và tên" },
                     { type: "string" },
                   ]}
-                  className="mx-3"
+                  style={{marginLeft: "12px", marginRight:"12px"}}
                 >
                   <Input
                     placeholder="Vui lòng nhập họ và tên"
@@ -190,7 +190,7 @@ const ModalRecruitmentForm: React.FC<Props> = (props) => {
                       message: "Vui lòng nhập email hợp lệ!",
                     },
                   ]}
-                  className="mx-3"
+                  style={{marginLeft: "12px", marginRight:"12px"}}
                 >
                   <Input placeholder="Vui lòng nhập email!" className="h-9" />
                 </Form.Item>
@@ -210,7 +210,7 @@ const ModalRecruitmentForm: React.FC<Props> = (props) => {
                       message: "Vui lòng nhập số điện thoại hợp lệ!",
                     },
                   ]}
-                  className="mx-3"
+                  style={{marginLeft: "12px", marginRight:"12px"}}
                 >
                   <Input
                     placeholder="Vui lòng nhập số điện thoại"
@@ -235,7 +235,7 @@ const ModalRecruitmentForm: React.FC<Props> = (props) => {
                       message: "Vui lòng nhập CCCD hợp lệ!",
                     },
                   ]}
-                  className="mx-3"
+                  style={{marginLeft: "12px", marginRight:"12px"}}
                 >
                   <Input
                     placeholder="Vui lòng nhập số CCCD"
@@ -260,7 +260,7 @@ const ModalRecruitmentForm: React.FC<Props> = (props) => {
                     { required: true, message: "Vui lòng nhập nơi sinh" },
                     { type: "string" },
                   ]}
-                  className="mx-3"
+                  style={{marginLeft: "12px", marginRight:"12px"}}
                 >
                   <Input placeholder="Vui lòng nhập nơi sinh" className="h-9" />
                 </Form.Item>
@@ -276,7 +276,7 @@ const ModalRecruitmentForm: React.FC<Props> = (props) => {
                     },
                     { type: "string" },
                   ]}
-                  className="mx-3"
+                  style={{marginLeft: "12px", marginRight:"12px"}}
                 >
                   <Input
                     placeholder="Vui lòng nhập địa chỉ thường trú"
@@ -303,7 +303,7 @@ const ModalRecruitmentForm: React.FC<Props> = (props) => {
                       message: "Vui lòng nhập số bằng lái xe hợp lệ!",
                     },
                   ]}
-                  className="mx-3"
+                  style={{marginLeft: "12px", marginRight:"12px"}}
                 >
                   <Input
                     placeholder="Vui lòng nhập số bằng lái xe"
@@ -322,7 +322,7 @@ const ModalRecruitmentForm: React.FC<Props> = (props) => {
                       message: "Vui lòng chọn loại bằng",
                     },
                   ]}
-                  className="mx-3"
+                  style={{marginLeft: "12px", marginRight:"12px"}}
                 >
                   <Select className="h-9">
                     <Select.Option value="Hạng B2">Hạng B2</Select.Option>
@@ -342,7 +342,7 @@ const ModalRecruitmentForm: React.FC<Props> = (props) => {
                   },
                   { type: "string" },
                 ]}
-                className="mx-3"
+                style={{marginLeft: "12px", marginRight:"12px"}}
               >
                 <Input.TextArea placeholder="" className="h-9" />
               </Form.Item>

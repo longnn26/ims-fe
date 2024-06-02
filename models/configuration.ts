@@ -8,6 +8,7 @@ export interface ConfigurationType {
   waitingSurcharge?: PerMinutesConfiguration;
   weatherFee?: GeneralConfigData;
   customerCancelFee?: GeneralConfigData;
+  searchRadius?: RadiusConfig;
 }
 
 export interface GeneralConfigData {
@@ -21,4 +22,9 @@ export interface TimeConfiguration extends GeneralConfigData {
 
 export interface PerMinutesConfiguration extends GeneralConfigData {
   perMinutes: number;
+}
+
+export interface RadiusConfig {
+  distance: number;
+  unit: string;
 }

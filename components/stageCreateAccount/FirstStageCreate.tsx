@@ -69,7 +69,7 @@ const FirstStageCreate: React.FC<FirstStageProps> = (props) => {
               { required: true, message: "Vui lòng nhập họ và tên" },
               { type: "string" },
             ]}
-            className="mx-3"
+            style={{ marginLeft: "12px", marginRight: "12px" }}
           >
             <Input placeholder="Vui lòng nhập họ và tên" className="h-9" />
           </Form.Item>
@@ -87,7 +87,7 @@ const FirstStageCreate: React.FC<FirstStageProps> = (props) => {
                 message: "Vui lòng nhập email hợp lệ!",
               },
             ]}
-            className="mx-3"
+            style={{ marginLeft: "12px", marginRight: "12px" }}
           >
             <Input placeholder="Vui lòng nhập email!" className="h-9" />
           </Form.Item>
@@ -108,7 +108,7 @@ const FirstStageCreate: React.FC<FirstStageProps> = (props) => {
                 message: "Vui lòng nhập số điện thoại hợp lệ!",
               },
             ]}
-            className="mx-3"
+            style={{ marginLeft: "12px", marginRight: "12px" }}
           >
             <Input
               placeholder="Vui lòng nhập số điện thoại"
@@ -123,7 +123,7 @@ const FirstStageCreate: React.FC<FirstStageProps> = (props) => {
             label="Giới tính"
             name="gender"
             rules={[{ required: true, message: "Vui lòng chọn giới tính" }]}
-            className="mx-3"
+            style={{ marginLeft: "12px", marginRight: "12px" }}
           >
             <Select className="h-9" placeholder="Chọn giới tính" allowClear>
               <Select.Option value="Male">Nam</Select.Option>
@@ -137,7 +137,7 @@ const FirstStageCreate: React.FC<FirstStageProps> = (props) => {
             label="Ngày sinh"
             name="dob"
             rules={[{ required: true, message: "Vui lòng nhập ngày sinh!" }]}
-            className="mx-3"
+            style={{ marginLeft: "12px", marginRight: "12px" }}
           >
             <DatePicker
               className="h-9"
@@ -156,7 +156,7 @@ const FirstStageCreate: React.FC<FirstStageProps> = (props) => {
             valuePropName="file"
             getValueFromEvent={normFile}
             rules={[{ required: true, message: "Vui lòng chọn ảnh đại diện" }]}
-            className="mx-3"
+            style={{ marginLeft: "12px", marginRight: "12px" }}
           >
             <Upload
               name="avatar"

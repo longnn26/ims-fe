@@ -18,13 +18,12 @@ import { formatDobToYYYYMMDD } from "@utils/helpers";
 interface Props {
   open: boolean;
   onClose: () => void;
-  dataSupport: SupportType | undefined;
+  dataSupport?: SupportType | undefined;
   onSubmit?: () => void;
-  setSupportsListData: React.Dispatch<React.SetStateAction<SupportType[]>>;
 }
 
 const ModalCreateDriverAccount: React.FC<Props> = (props) => {
-  const { onSubmit, open, onClose, dataSupport, setSupportsListData } = props;
+  const { onSubmit, open, onClose, dataSupport } = props;
   const { data: session } = useSession();
   const formAccountRef = useRef(null);
   const [formAccount] = Form.useForm();

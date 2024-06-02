@@ -121,7 +121,7 @@ const ModalPauseSupport: React.FC<Props> = (props) => {
                 },
                 { type: "string" },
               ]}
-              className="mx-3"
+              style={{marginLeft: "12px", marginRight:"12px"}}
             >
               <Input.TextArea
                 placeholder="Vui lòng nhập lý do"

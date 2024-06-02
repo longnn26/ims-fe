@@ -387,7 +387,6 @@ const Support: React.FC = () => {
               open={openModalCreateDriverAccount}
               dataSupport={selectedSupport}
               onClose={() => setOpenModalCreateDriverAccount(false)}
-              setSupportsListData={setSupportsListData}
             />
           )}
 

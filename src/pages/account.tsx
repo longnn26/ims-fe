@@ -19,6 +19,9 @@ import { TypeOptions, toast } from "react-toastify";
 import TextNotUpdate from "@components/table/TextNotUpdate";
 import ModalAccountDetail from "@components/account/ModalAccountDetail";
 import ProfileCell from "@components/table/ProfileCell";
+import { IoIosAdd } from "react-icons/io";
+import ModalCreateDriverAccount from "@components/ModalCreateDriverAccount";
+import ModalCreateStaffAccount from "@components/ModalCreateStaffAccount";
 
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
@@ -49,6 +52,35 @@ const Account: React.FC = () => {
   const [selectedAccount, setSelectedAccount] = useState<User | null>(null);
 
   const [loadingSubmit, setLoadingSubmit] = useState<boolean>(false);
+
+  // xử lý tạo account
+  const [showRoleButtons, setShowRoleButtons] = useState(false);
+  const [showDriverModal, setShowDriverModal] = useState(false);
+  const [showStaffModal, setShowStaffModal] = useState(false);
+
+  const handleCreateAccountClick = () => {
+    if (session?.user.roles.includes("Admin")) {
+      setShowRoleButtons(true);
+    } else if (session?.user.roles.includes("Staff")) {
+      setShowDriverModal(true);
+    }
+  };
+
+  const handleDriverClick = () => {
+    setShowDriverModal(true);
+    setShowRoleButtons(false);
+  };
+
+  const handleStaffClick = () => {
+    setShowStaffModal(true);
+    setShowRoleButtons(false);
+  };
+
+  const closeRoleButtons = () => {
+    setShowRoleButtons(false);
+  };
+
+  // /////////////////////////////
 
   //quản lý các state cho action
   const [openModalAccountDetail, setOpenModalAccountDetail] =
@@ -256,10 +288,55 @@ const Account: React.FC = () => {
       content={
         <>
           <div className="mb-4 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
-            <div className="flex w-full justify-end">
+            <div className="flex w-full justify-between">
+              <Space style={{ margin: "16px" }}>
+                <Button
+                  onClick={handleCreateAccountClick}
+                  className="flex justify-center items-center gap-2"
+                >
+                  <IoIosAdd />
+                  Tạo tài khoản
+                </Button>
+              </Space>
               <Space style={{ margin: "16px" }}>
                 <Button onClick={clearAll}>Xóa bộ lọc </Button>
               </Space>
+              {showRoleButtons && (
+                <div
+                  className="fixed inset-0 flex justify-center items-center bg-gray-500 bg-opacity-50 z-50"
+                  style={{ backdropFilter: "blur(5px)" }}
+                  onClick={closeRoleButtons}
+                >
+                  <button
+                    className="absolute top-0 right-0 m-4 text-xl font-bold cursor-pointer"
+                    onClick={closeRoleButtons}
+                  >
+                    X
+                  </button>
+                  <div className="relative p-8 rounded">
+                    <div className="flex justify-center items-center gap-4">
+                      <Button onClick={handleDriverClick} size="large">
+                        Tài xế
+                      </Button>
+                      <Button onClick={handleStaffClick} size="large">
+                        Nhân viên
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              )}
+              {showDriverModal && (
+                <ModalCreateDriverAccount
+                  open={showDriverModal}
+                  onClose={() => setShowDriverModal(false)}
+                />
+              )}
+              {showStaffModal && (
+                <ModalCreateStaffAccount
+                  open={showStaffModal}
+                  onClose={() => setShowStaffModal(false)}
+                />
+              )}
             </div>
 
             <Table

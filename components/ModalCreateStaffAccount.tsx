@@ -22,7 +22,6 @@ const ModalCreateStaffAccount: React.FC<Props> = (props) => {
   const { onSubmit, open, onClose } = props;
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [loadingSubmit, setLoadingSubmit] = useState<boolean>(false);
-  const [isStopTrip, setIsStopTrip] = useState<boolean>(false);
 
   const disabled = async () => {
     var result = false;
@@ -112,7 +111,7 @@ const ModalCreateStaffAccount: React.FC<Props> = (props) => {
                 },
                 { type: "string" },
               ]}
-              className="mx-3"
+              style={{marginLeft: "12px", marginRight:"12px"}}
             >
               <Input.TextArea
                 placeholder="Vui lòng nhập lý do"

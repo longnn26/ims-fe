@@ -75,7 +75,7 @@ const SecondStageCreate: React.FC<SecondStageProps> = (props) => {
                 message: "Vui lòng nhập CCCD hợp lệ!",
               },
             ]}
-            className="mx-3"
+            style={{marginLeft: "12px", marginRight:"12px"}}
           >
             <Input
               placeholder="Vui lòng nhập số CCCD"
@@ -93,7 +93,7 @@ const SecondStageCreate: React.FC<SecondStageProps> = (props) => {
               { required: true, message: "Vui lòng nhập họ và tên" },
               { type: "string" },
             ]}
-            className="mx-3"
+            style={{marginLeft: "12px", marginRight:"12px"}}
           >
             <Input placeholder="Vui lòng nhập họ và tên" className="h-9" />
           </Form.Item>
@@ -106,7 +106,7 @@ const SecondStageCreate: React.FC<SecondStageProps> = (props) => {
               { required: true, message: "Vui lòng nhập quốc tịch" },
               { type: "string" },
             ]}
-            className="mx-3"
+            style={{marginLeft: "12px", marginRight:"12px"}}
           >
             <Input placeholder="Vui lòng nhập quốc tịch" className="h-9" />
           </Form.Item>
@@ -119,7 +119,7 @@ const SecondStageCreate: React.FC<SecondStageProps> = (props) => {
               { required: true, message: "Vui lòng nhập quê quán" },
               { type: "string" },
             ]}
-            className="mx-3"
+            style={{marginLeft: "12px", marginRight:"12px"}}
           >
             <Input placeholder="Vui lòng nhập quê quán" className="h-9" />
           </Form.Item>
@@ -133,7 +133,7 @@ const SecondStageCreate: React.FC<SecondStageProps> = (props) => {
               { required: true, message: "Vui lòng nhập nơi thường trú" },
               { type: "string" },
             ]}
-            className="mx-3"
+            style={{marginLeft: "12px", marginRight:"12px"}}
           >
             <Input placeholder="Vui lòng nhập nơi thường trú" className="h-9" />
           </Form.Item>
@@ -146,7 +146,7 @@ const SecondStageCreate: React.FC<SecondStageProps> = (props) => {
               { required: true, message: "Vui lòng nhập đặc điểm nhận dạng" },
               { type: "string" },
             ]}
-            className="mx-3"
+            style={{marginLeft: "12px", marginRight:"12px"}}
           >
             <Input
               placeholder="Vui lòng nhập đặc điểm nhận dạng"
@@ -165,7 +165,7 @@ const SecondStageCreate: React.FC<SecondStageProps> = (props) => {
                 message: "Vui lòng chọn ngày sinh",
               },
             ]}
-            className="mx-3"
+            style={{marginLeft: "12px", marginRight:"12px"}}
           >
             <DatePicker
               className="h-9"
@@ -185,7 +185,7 @@ const SecondStageCreate: React.FC<SecondStageProps> = (props) => {
                 message: "Vui lòng chọn ngày hết hạn",
               },
             ]}
-            className="mx-3"
+            style={{marginLeft: "12px", marginRight:"12px"}}
           >
             <DatePicker
               className="h-9"
@@ -202,7 +202,7 @@ const SecondStageCreate: React.FC<SecondStageProps> = (props) => {
             valuePropName="file"
             getValueFromEvent={normFile}
             rules={[{ required: true, message: "Vui lòng chọn ảnh mặt trước" }]}
-            className="mx-3"
+            style={{marginLeft: "12px", marginRight:"12px"}}
           >
             <Upload
               name="imageFront"
@@ -224,7 +224,7 @@ const SecondStageCreate: React.FC<SecondStageProps> = (props) => {
             valuePropName="file"
             getValueFromEvent={normFile}
             rules={[{ required: true, message: "Vui lòng chọn ảnh mặt sau" }]}
-            className="mx-3"
+            style={{marginLeft: "12px", marginRight:"12px"}}
           >
             <Upload
               name="imageBehind"
