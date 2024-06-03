@@ -4,12 +4,10 @@ import apiLinks from "@utils/api-links";
 import httpClient from "@utils/http-client";
 
 const createSupport = async (
-  token: string,
   model: SupportType
 ): Promise<any> => {
   const response = await httpClient.post({
     url: apiLinks.support.createSupport,
-    token: token,
     data: model,
   });
   return response.data;
