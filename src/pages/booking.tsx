@@ -165,6 +165,7 @@ const Booking: React.FC = () => {
                 pageSize: tablePagination.pageSize,
                 total: tablePagination.totalSize,
               }}
+              scroll={{ x: 2000 }}
             >
               <Column
                 title="Mã chuyến đi"
@@ -173,6 +174,7 @@ const Booking: React.FC = () => {
                 render={(text, record: BookingType) =>
                   removeHyphens(record?.id)
                 }
+                fixed="left"
               />
               <Column
                 title="Khách hàng"
@@ -181,9 +183,8 @@ const Booking: React.FC = () => {
                 render={(text, record: BookingType) => (
                   <ProfileCell user={record.searchRequest?.customer} />
                 )}
-                sorter={(a: BookingType, b: BookingType) =>
-                  a.customer.name.localeCompare(b.customer.name)
-                }
+                fixed="left"
+                width={"15%"}
               />
               <Column
                 title="Tài xế"
@@ -195,6 +196,7 @@ const Booking: React.FC = () => {
                 sorter={(a: BookingType, b: BookingType) =>
                   a.driver.name.localeCompare(b.driver.name)
                 }
+                width={"15%"}
               />
               <Column
                 title="Nơi đặt"
@@ -230,6 +232,8 @@ const Booking: React.FC = () => {
                   a.status.localeCompare(b.status)
                 }
                 render={(text) => <StatusCell status={text} />}
+                width={"5%"}
+                fixed="right"
               />
 
               <Column
@@ -247,6 +251,7 @@ const Booking: React.FC = () => {
                 )}
                 width="100px"
                 align="center"
+                fixed="right"
               />
             </Table>
           </div>

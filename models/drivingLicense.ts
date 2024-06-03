@@ -3,10 +3,13 @@ export interface DrivingLicenseCardModel {
   type: string;
   issueDate: string;
   expiredDate: string;
+  id?: string;
 }
 
 export interface DrivingLicenseImageCard {
   drivingLicenseId: string;
-  file: any;
+  file?: any;
   isFront: boolean;
+  imageUrl?: string;
+  id?: string;
 }

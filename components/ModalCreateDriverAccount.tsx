@@ -171,19 +171,20 @@ const ModalCreateDriverAccount: React.FC<Props> = (props) => {
             await identityCardService.createIdentityCardByAdmin(
               session?.user.access_token!,
               {
-                fullName: formAccount.getFieldValue("fullName"),
-                dob: formatDobToYYYYMMDD(formAccount.getFieldValue("dob")),
-                gender: formAccount.getFieldValue("gender"),
-                nationality: formAccount.getFieldValue("nationality"),
-                placeOrigin: formAccount.getFieldValue("placeOrigin"),
-                placeResidence: formAccount.getFieldValue("placeResidence"),
-                personalIdentification: formAccount.getFieldValue(
+                fullName: formIdentityCard.getFieldValue("fullName"),
+                dob: formatDobToYYYYMMDD(formIdentityCard.getFieldValue("dob")),
+                gender: formIdentityCard.getFieldValue("gender"),
+                nationality: formIdentityCard.getFieldValue("nationality"),
+                placeOrigin: formIdentityCard.getFieldValue("placeOrigin"),
+                placeResidence:
+                  formIdentityCard.getFieldValue("placeResidence"),
+                personalIdentification: formIdentityCard.getFieldValue(
                   "personalIdentification"
                 ),
                 identityCardNumber:
-                  formAccount.getFieldValue("identityCardNumber"),
+                  formIdentityCard.getFieldValue("identityCardNumber"),
                 expiredDate: formatDobToYYYYMMDD(
-                  formAccount.getFieldValue("expiredDate")
+                  formIdentityCard.getFieldValue("expiredDate")
                 ),
               },
               resCreateDriver.id

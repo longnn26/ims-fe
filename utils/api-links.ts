@@ -66,6 +66,8 @@ const apiLinks = {
 
   booking: {
     getAllBookingByAdmin: `${url}/api/Admin/Booking/All`,
+    getAllCheckInBookingImage: `${url}/api/BookingImage/CheckInImage`,
+    getAllCheckOutBookingImage: `${url}/api/BookingImage/CheckOutImage`,
   },
 
   configuration: {
@@ -84,12 +86,16 @@ const apiLinks = {
   },
 
   identityCard: {
+    getIdentityCard: `${url}/api/Admin/IdentityCard`,
     createIdentityCardByAdmin: `${url}/api/Admin/IdentityCard`,
+    getIdentityCardImage: `${url}/api/Admin/IdentityCard/IdentityCardImage`,
     addIdentityCardImageByAdmin: `${url}/api/Admin/IdentityCard/IdentityCardImage`,
   },
 
   drivingLicense: {
+    getDrivingLicense: `${url}/api/Admin/DrivingLicense`,
     createDrivingLicenseByAdmin: `${url}/api/Admin/DrivingLicense`,
+    getDrivingLicenseImage: `${url}/api/Admin/DrivingLicense/DrivingLicenseImage`,
     addDrivingLicenseImageByAdmin: `${url}/api/Admin/DrivingLicense/DrivingLicenseImage`,
   },
 };

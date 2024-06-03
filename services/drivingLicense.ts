@@ -6,6 +6,17 @@ import apiLinks from "@utils/api-links";
 import { ContentTypeEnum } from "@utils/enum";
 import httpClient from "@utils/http-client";
 
+const getDrivingLicense = async (
+  token: string,
+  driverId: string
+): Promise<any> => {
+  const response = await httpClient.get({
+    url: `${apiLinks.drivingLicense.getDrivingLicense}/${driverId}`,
+    token: token,
+  });
+  return response.data;
+};
+
 const createDrivingLicenseByAdmin = async (
   token: string,
   model: DrivingLicenseCardModel,
@@ -16,6 +27,17 @@ const createDrivingLicenseByAdmin = async (
     url: `${apiLinks.drivingLicense.createDrivingLicenseByAdmin}/${driverId}`,
     token: token,
     data: model,
+  });
+  return response.data;
+};
+
+const getDrivingLicenseImage = async (
+  token: string,
+  drivingLicenseId: string
+): Promise<any> => {
+  const response = await httpClient.get({
+    url: `${apiLinks.drivingLicense.getDrivingLicenseImage}/${drivingLicenseId}`,
+    token: token,
   });
   return response.data;
 };
@@ -34,6 +56,8 @@ const addDrivingLicenseImageByAdmin = async (
 };
 
 const drivingLicense = {
+  getDrivingLicense,
+  getDrivingLicenseImage,
   createDrivingLicenseByAdmin,
   addDrivingLicenseImageByAdmin,
 };
