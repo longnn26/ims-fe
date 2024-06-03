@@ -81,7 +81,7 @@ const ModalRecruitmentForm: React.FC<Props> = (props) => {
                     setLoadingSubmit(true);
 
                     await supportService
-                      .createSupport(session?.user.access_token!, {
+                      .createSupport({
                         fullName: form.getFieldValue("fullName"),
                         email: form.getFieldValue("email"),
                         phoneNumber: form.getFieldValue("phoneNumber"),
@@ -170,7 +170,7 @@ const ModalRecruitmentForm: React.FC<Props> = (props) => {
                     { required: true, message: "Vui lòng nhập họ và tên" },
                     { type: "string" },
                   ]}
-                  style={{marginLeft: "12px", marginRight:"12px"}}
+                  style={{ marginLeft: "12px", marginRight: "12px" }}
                 >
                   <Input
                     placeholder="Vui lòng nhập họ và tên"
@@ -190,7 +190,7 @@ const ModalRecruitmentForm: React.FC<Props> = (props) => {
                       message: "Vui lòng nhập email hợp lệ!",
                     },
                   ]}
-                  style={{marginLeft: "12px", marginRight:"12px"}}
+                  style={{ marginLeft: "12px", marginRight: "12px" }}
                 >
                   <Input placeholder="Vui lòng nhập email!" className="h-9" />
                 </Form.Item>
@@ -210,7 +210,7 @@ const ModalRecruitmentForm: React.FC<Props> = (props) => {
                       message: "Vui lòng nhập số điện thoại hợp lệ!",
                     },
                   ]}
-                  style={{marginLeft: "12px", marginRight:"12px"}}
+                  style={{ marginLeft: "12px", marginRight: "12px" }}
                 >
                   <Input
                     placeholder="Vui lòng nhập số điện thoại"
@@ -235,7 +235,7 @@ const ModalRecruitmentForm: React.FC<Props> = (props) => {
                       message: "Vui lòng nhập CCCD hợp lệ!",
                     },
                   ]}
-                  style={{marginLeft: "12px", marginRight:"12px"}}
+                  style={{ marginLeft: "12px", marginRight: "12px" }}
                 >
                   <Input
                     placeholder="Vui lòng nhập số CCCD"
@@ -260,7 +260,7 @@ const ModalRecruitmentForm: React.FC<Props> = (props) => {
                     { required: true, message: "Vui lòng nhập nơi sinh" },
                     { type: "string" },
                   ]}
-                  style={{marginLeft: "12px", marginRight:"12px"}}
+                  style={{ marginLeft: "12px", marginRight: "12px" }}
                 >
                   <Input placeholder="Vui lòng nhập nơi sinh" className="h-9" />
                 </Form.Item>
@@ -276,7 +276,7 @@ const ModalRecruitmentForm: React.FC<Props> = (props) => {
                     },
                     { type: "string" },
                   ]}
-                  style={{marginLeft: "12px", marginRight:"12px"}}
+                  style={{ marginLeft: "12px", marginRight: "12px" }}
                 >
                   <Input
                     placeholder="Vui lòng nhập địa chỉ thường trú"
@@ -303,7 +303,7 @@ const ModalRecruitmentForm: React.FC<Props> = (props) => {
                       message: "Vui lòng nhập số bằng lái xe hợp lệ!",
                     },
                   ]}
-                  style={{marginLeft: "12px", marginRight:"12px"}}
+                  style={{ marginLeft: "12px", marginRight: "12px" }}
                 >
                   <Input
                     placeholder="Vui lòng nhập số bằng lái xe"
@@ -322,7 +322,7 @@ const ModalRecruitmentForm: React.FC<Props> = (props) => {
                       message: "Vui lòng chọn loại bằng",
                     },
                   ]}
-                  style={{marginLeft: "12px", marginRight:"12px"}}
+                  style={{ marginLeft: "12px", marginRight: "12px" }}
                 >
                   <Select className="h-9">
                     <Select.Option value="Hạng B2">Hạng B2</Select.Option>
@@ -342,7 +342,7 @@ const ModalRecruitmentForm: React.FC<Props> = (props) => {
                   },
                   { type: "string" },
                 ]}
-                style={{marginLeft: "12px", marginRight:"12px"}}
+                style={{ marginLeft: "12px", marginRight: "12px" }}
               >
                 <Input.TextArea placeholder="" className="h-9" />
               </Form.Item>

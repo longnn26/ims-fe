@@ -1,5 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { Descriptions, Divider, Modal, Avatar, Rate, Image } from "antd";
+import {
+  Descriptions,
+  Divider,
+  Modal,
+  Avatar,
+  Rate,
+  Image,
+  Button,
+  Input,
+  DatePicker,
+  Select,
+} from "antd";
 import { categoriesDetail } from "./AccountConstant";
 import { CategoriesDetailEnum } from "@utils/enum";
 import { urlImageLinkHost } from "@utils/api-links";
@@ -10,13 +21,18 @@ import {
   IdentityCardImageModel,
   IdentityCardModel,
 } from "@models/identityCard";
-import { translateGenderToVietnamese } from "@utils/helpers";
+import { convertDatePicker, translateGenderToVietnamese } from "@utils/helpers";
 import identityCardService from "@services/identityCard";
 import drivingLicenseService from "@services/drivingLicense";
 import {
   DrivingLicenseCardModel,
   DrivingLicenseImageCard,
 } from "@models/drivingLicense";
+import moment from "moment"; // Import moment for date formatting
+import { dateFormat } from "@utils/constants";
+
+const { Option } = Select;
+
 interface Props {
   open: boolean;
   onClose: () => void;
@@ -42,6 +58,8 @@ const ModalAccountDetail: React.FC<Props> = (props) => {
 
   const [listDrivingLicenseImage, setListDrivingLicenseImage] =
     useState<DrivingLicenseImageCard[]>();
+
+  const [editMode, setEditMode] = useState(false);
 
   const getCategoryKeysByRole = (role: string) => {
     switch (role) {
@@ -85,59 +103,147 @@ const ModalAccountDetail: React.FC<Props> = (props) => {
               </Avatar>
             </div>
             <Descriptions className="px-5" layout="horizontal">
-              <Descriptions.Item label="Họ và tên">
-                {dataAccount?.name}
-              </Descriptions.Item>
-              <Descriptions.Item label="Số điện thoại">
-                {dataAccount?.phoneNumber}
-              </Descriptions.Item>
-              <Descriptions.Item label="Email">
-                {dataAccount?.email}
-              </Descriptions.Item>
-              <Descriptions.Item label="Giới tính">
-                {dataAccount?.gender}
-              </Descriptions.Item>
-              <Descriptions.Item label="Ngày sinh">
-                {dataAccount?.dob}
-              </Descriptions.Item>
-              <Descriptions.Item label="Địa chỉ">
-                {dataAccount?.address}
-              </Descriptions.Item>
-              <Descriptions.Item label="Tình trạng">
-                {dataAccount?.isActive ? "Đang hoạt động" : "Đã bị ban"}
-              </Descriptions.Item>
+              {editMode ? (
+                <>
+                  <Descriptions.Item label="Họ và tên">
+                    <Input defaultValue={dataAccount?.name} />
+                  </Descriptions.Item>
+                  <Descriptions.Item label="Số điện thoại">
+                    <Input defaultValue={dataAccount?.phoneNumber} />
+                  </Descriptions.Item>
+                  <Descriptions.Item label="Email">
+                    <Input defaultValue={dataAccount?.email} />
+                  </Descriptions.Item>
+                  <Descriptions.Item label="Giới tính">
+                    <Select defaultValue={dataAccount?.gender}>
+                      <Option value="Male">Nam</Option>
+                      <Option value="Female">Nữ</Option>
+                      <Option value="Other">Khác</Option>
+                    </Select>
+                  </Descriptions.Item>
+                  <Descriptions.Item label="Ngày sinh">
+                    <DatePicker format="YYYY-MM-DD" />
+                  </Descriptions.Item>
+                  <Descriptions.Item label="Địa chỉ">
+                    <Input defaultValue={dataAccount?.address} />
+                  </Descriptions.Item>
+                  <Descriptions.Item label="Tình trạng">
+                    <Select
+                      defaultValue={
+                        dataAccount?.isActive ? "Đang hoạt động" : "Đã bị ban"
+                      }
+                    >
+                      <Option value={true}>Đang hoạt động</Option>
+                      <Option value={false}>Đã bị ban</Option>
+                    </Select>
+                  </Descriptions.Item>
+                </>
+              ) : (
+                <>
+                  <Descriptions.Item label="Họ và tên">
+                    {dataAccount?.name}
+                  </Descriptions.Item>
+                  <Descriptions.Item label="Số điện thoại">
+                    {dataAccount?.phoneNumber}
+                  </Descriptions.Item>
+                  <Descriptions.Item label="Email">
+                    {dataAccount?.email}
+                  </Descriptions.Item>
+                  <Descriptions.Item label="Giới tính">
+                    {dataAccount?.gender}
+                  </Descriptions.Item>
+                  <Descriptions.Item label="Ngày sinh">
+                    {dataAccount?.dob}
+                  </Descriptions.Item>
+                  <Descriptions.Item label="Địa chỉ">
+                    {dataAccount?.address}
+                  </Descriptions.Item>
+                  <Descriptions.Item label="Tình trạng">
+                    {dataAccount?.isActive ? "Đang hoạt động" : "Đã bị ban"}
+                  </Descriptions.Item>
+                </>
+              )}
             </Descriptions>
           </div>
         );
 
+      // Similar updates for other cases
       case CategoriesDetailEnum.IDENTITY_CARD_INFO:
         return identityCard !== null || identityCard !== undefined ? (
           <>
             <div className="flex flex-row px-5">
               <Descriptions className="px-5" layout="horizontal">
                 <Descriptions.Item label="Số CCCD">
-                  {identityCard?.identityCardNumber}
+                  {editMode ? (
+                    <Input defaultValue={identityCard?.identityCardNumber} />
+                  ) : (
+                    identityCard?.identityCardNumber
+                  )}
                 </Descriptions.Item>
                 <Descriptions.Item label="Họ và tên">
-                  {identityCard?.fullName}
+                  {editMode ? (
+                    <Input defaultValue={identityCard?.fullName} />
+                  ) : (
+                    identityCard?.fullName
+                  )}
                 </Descriptions.Item>
                 <Descriptions.Item label="Giới tính">
-                  {translateGenderToVietnamese(identityCard?.gender ?? "")}
+                  {editMode ? (
+                    <Select defaultValue={identityCard?.gender}>
+                      <Option value="Male">Nam</Option>
+                      <Option value="Female">Nữ</Option>
+                      <Option value="Other">Khác</Option>
+                    </Select>
+                  ) : (
+                    translateGenderToVietnamese(identityCard?.gender ?? "")
+                  )}
                 </Descriptions.Item>
                 <Descriptions.Item label="Ngày sinh">
-                  {identityCard?.dob}
+                  {editMode ? (
+                    <DatePicker
+                      defaultValue={convertDatePicker(
+                        identityCard?.dob ?? "",
+                        dateFormat
+                      )}
+                      format="YYYY-MM-DD"
+                    />
+                  ) : (
+                    identityCard?.dob
+                  )}
                 </Descriptions.Item>
                 <Descriptions.Item label="Quốc tịch">
-                  {identityCard?.nationality}
+                  {editMode ? (
+                    <Input defaultValue={identityCard?.nationality} />
+                  ) : (
+                    identityCard?.nationality
+                  )}
                 </Descriptions.Item>
                 <Descriptions.Item label="Quê quán">
-                  {identityCard?.placeOrigin}
+                  {editMode ? (
+                    <Input defaultValue={identityCard?.placeOrigin} />
+                  ) : (
+                    identityCard?.placeOrigin
+                  )}
                 </Descriptions.Item>
                 <Descriptions.Item label="Địa chỉ thường trú">
-                  {identityCard?.placeResidence}
+                  {editMode ? (
+                    <Input defaultValue={identityCard?.placeResidence} />
+                  ) : (
+                    identityCard?.placeResidence
+                  )}
                 </Descriptions.Item>
                 <Descriptions.Item label="Ngày hết hạn">
-                  {identityCard?.expiredDate}
+                  {editMode ? (
+                    <DatePicker
+                      defaultValue={convertDatePicker(
+                        identityCard?.expiredDate ?? "",
+                        dateFormat
+                      )}
+                      format="YYYY-MM-DD"
+                    />
+                  ) : (
+                    identityCard?.expiredDate
+                  )}
                 </Descriptions.Item>
               </Descriptions>
             </div>
@@ -172,22 +278,53 @@ const ModalAccountDetail: React.FC<Props> = (props) => {
           <p className="px-5">Người dùng chưa cập nhập</p>
         );
 
+      // Similar updates for other cases
       case CategoriesDetailEnum.DRIVING_LICENSE_INFO:
         return drivingLicense !== null || drivingLicense !== undefined ? (
           <>
             <div className="flex flex-row px-5">
               <Descriptions className="px-5" layout="horizontal">
                 <Descriptions.Item label="Số GPLX">
-                  {drivingLicense?.drivingLicenseNumber}
+                  {editMode ? (
+                    <Input
+                      defaultValue={drivingLicense?.drivingLicenseNumber}
+                    />
+                  ) : (
+                    drivingLicense?.drivingLicenseNumber
+                  )}
                 </Descriptions.Item>
                 <Descriptions.Item label="Loại bằng">
-                  {drivingLicense?.type}
+                  {editMode ? (
+                    <Input defaultValue={drivingLicense?.type} />
+                  ) : (
+                    drivingLicense?.type
+                  )}
                 </Descriptions.Item>
                 <Descriptions.Item label="Ngày phát hành">
-                  {drivingLicense?.issueDate}
+                  {editMode ? (
+                    <DatePicker
+                      defaultValue={convertDatePicker(
+                        drivingLicense?.issueDate ?? "",
+                        dateFormat
+                      )}
+                      format="YYYY-MM-DD"
+                    />
+                  ) : (
+                    drivingLicense?.issueDate
+                  )}
                 </Descriptions.Item>
                 <Descriptions.Item label="Ngày hết hạn">
-                  {drivingLicense?.issueDate}
+                  {editMode ? (
+                    <DatePicker
+                      defaultValue={convertDatePicker(
+                        drivingLicense?.expiredDate ?? "",
+                        dateFormat
+                      )}
+                      format="YYYY-MM-DD"
+                    />
+                  ) : (
+                    drivingLicense?.expiredDate
+                  )}
                 </Descriptions.Item>
               </Descriptions>
             </div>
@@ -287,15 +424,32 @@ const ModalAccountDetail: React.FC<Props> = (props) => {
     }
   }, [selectedCategory]);
 
+  const toggleEditMode = () => {
+    setEditMode(!editMode);
+  };
+
   return (
     <>
       <Modal
         centered
         width={1200}
         open={open}
-        footer={false}
+        footer={
+          dataAccount?.role?.includes("Driver")
+            ? [
+                <Button
+                  className="btn-submit"
+                  key="submit"
+                  onClick={toggleEditMode}
+                >
+                  {editMode ? "Lưu" : "Chỉnh sửa thông tin"}
+                </Button>,
+              ]
+            : false
+        }
         onCancel={() => {
           onClose();
+          setEditMode(false);
           setSelectedCategory(CategoriesDetailEnum.ACCOUNT_INFO);
           setIdentityCard(null);
         }}

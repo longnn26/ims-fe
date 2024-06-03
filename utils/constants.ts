@@ -192,7 +192,7 @@ export const NAV_ITEMS_GENERAL = [
   },
   {
     nameItem: "Liên hệ",
-    path: "/#",
+    path: "/contact",
   },
 ];
 
