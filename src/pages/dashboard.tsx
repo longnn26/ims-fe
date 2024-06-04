@@ -2,6 +2,7 @@
 import dynamic from "next/dynamic";
 import React, { useCallback, useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/router";
 import statisticsService from "@services/statistics";
 
 import { Modal } from "antd";
@@ -26,6 +27,8 @@ interface YearOption {
 
 const Dashboard: React.FC = () => {
   const { data: session } = useSession();
+  const router = useRouter();
+
   const [loading, setLoading] = useState(false);
 
   const [dataStatistics, setDataStatistics] = useState<any>();
@@ -108,7 +111,10 @@ const Dashboard: React.FC = () => {
         <>
           <div className="h-full mt-5 mb-10">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 p-4 gap-4">
-              <div className="bg-blue-500 shadow-lg rounded-md flex items-center justify-between p-3 border-b-4 border-blue-600  text-white font-medium group">
+              <div
+                className="bg-blue-500 shadow-lg rounded-md flex items-center justify-between p-3 border-b-4 border-blue-600  text-white font-medium group cursor-pointer"
+                onClick={() => router.push("/account")}
+              >
                 <div className="flex justify-center items-center w-14 h-14 bg-white rounded-full transition-all duration-300 transform group-hover:rotate-12">
                   <svg
                     width="30"
@@ -131,7 +137,10 @@ const Dashboard: React.FC = () => {
                   <p>Tài khoản</p>
                 </div>
               </div>
-              <div className="bg-blue-500 shadow-lg rounded-md flex items-center justify-between p-3 border-b-4 border-blue-600 text-white font-medium group">
+              <div
+                className="bg-blue-500 shadow-lg rounded-md flex items-center justify-between p-3 border-b-4 border-blue-600 text-white font-medium group cursor-pointer"
+                onClick={() => router.push("/booking")}
+              >
                 <div className="flex justify-center items-center w-14 h-14 bg-white rounded-full transition-all duration-300 transform group-hover:rotate-12">
                   <BiTrip className="text-blue-800 h-7 w-7" />
                 </div>
@@ -140,7 +149,10 @@ const Dashboard: React.FC = () => {
                   <p>Chuyến đi</p>
                 </div>
               </div>
-              <div className="bg-blue-500 shadow-lg rounded-md flex items-center justify-between p-3 border-b-4 border-blue-600 text-white font-medium group">
+              <div
+                className="bg-blue-500 shadow-lg rounded-md flex items-center justify-between p-3 border-b-4 border-blue-600 text-white font-medium group cursor-pointer"
+                onClick={() => router.push("/support")}
+              >
                 <div className="flex justify-center items-center w-14 h-14 bg-white rounded-full transition-all duration-300 transform group-hover:rotate-12">
                   <BiSupport className="text-blue-800 h-7 w-7" />
                 </div>
@@ -151,7 +163,10 @@ const Dashboard: React.FC = () => {
                   <p>Hỗ trợ</p>
                 </div>
               </div>
-              <div className="bg-blue-500 shadow-lg rounded-md flex items-center justify-between p-3 border-b-4 border-blue-600  text-white font-medium group">
+              <div
+                className="bg-blue-500 shadow-lg rounded-md flex items-center justify-between p-3 border-b-4 border-blue-600  text-white font-medium group cursor-pointer"
+                onClick={() => router.push("/emergency")}
+              >
                 <div className="flex justify-center items-center w-14 h-14 bg-white rounded-full transition-all duration-300 transform group-hover:rotate-12">
                   <RiAlarmWarningLine className="text-blue-800 h-7 w-7" />
                 </div>

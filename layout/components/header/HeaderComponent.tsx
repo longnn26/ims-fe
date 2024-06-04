@@ -25,6 +25,8 @@ import customerService from "@services/customer";
 import emergencyService from "@services/emergency";
 import { BiCheckCircle } from "react-icons/bi";
 import { formatDateTimeToVnFormat } from "@utils/helpers";
+import { setStaffBusyStatus } from "@slices/staff";
+import { updateDataEmergencyListState } from "@slices/emergency";
 
 const { Header } = Layout;
 
@@ -34,9 +36,13 @@ const HeaderComponent: React.FC<Props> = (props) => {
   const { data: session, update: sessionUpdate } = useSession();
   const router = useRouter();
   const dispatch = useDispatch();
+
   const { collapsed, sliderMenuItemSelectedKey } = useSelector(
     (state) => state.global
   );
+  const { isFree } = useSelector((state) => state.staff);
+  const { dataEmergencyList } = useSelector((state) => state.emergency);
+
   const {
     token: { colorBgContainer },
   } = theme.useToken();
@@ -185,6 +191,7 @@ const HeaderComponent: React.FC<Props> = (props) => {
       .changeToProcessingStatus(session?.user.access_token!, emergencyId)
       .then((res) => {
         console.log("res emergency", res);
+        dispatch(setStaffBusyStatus(false));
         console.log("change emergency status");
       })
       .catch((errors) => {
@@ -192,6 +199,15 @@ const HeaderComponent: React.FC<Props> = (props) => {
       })
       .finally(() => {
         router.push("/emergency");
+      });
+  };
+
+  const autoTurnOnline = async () => {
+    await customerService
+      .changeStaffStatusOnline(session?.user.access_token!)
+      .then((res) => {})
+      .catch((errors) => {
+        console.log("errors change online status", errors);
       });
   };
 
@@ -233,15 +249,6 @@ const HeaderComponent: React.FC<Props> = (props) => {
     session && getNotifications();
   }, [session]);
 
-  const autoTurnOnline = async () => {
-    await customerService
-      .changeStaffStatusOnline(session?.user.access_token!)
-      .then((res) => {})
-      .catch((errors) => {
-        console.log("errors change online status", errors);
-      });
-  };
-
   useEffect(() => {
     if (!session?.user.roles.includes("Admin")) {
       autoTurnOnline();
@@ -261,90 +268,10 @@ const HeaderComponent: React.FC<Props> = (props) => {
             setNotifications(list.reverse());
 
             //convert từ string về object để lấy data xử lý tiếp
-            const parsedData = JSON.parse(data.data);
-            console.log("parsedData", parsedData);
 
-            if (data.typeModel == "Emergency") {
-              toast(
-                <>
-                  <div
-                    id="toast-notification"
-                    className="w-full mx-3 max-w-3xl text-gray-900 bg-white"
-                    role="alert"
-                    onClick={() => handleNotification(data)}
-                  >
-                    <div className="flex flex-row items-center">
-                      <div className="text-sm font-normal">
-                        <div className="text-lg mb-3 font-semibold uppercase text-red-700">
-                          <p>{data?.title}</p>
-                        </div>
-                        <div className="text-sm uppercase font-normal">{`${data?.body}`}</div>
-                      </div>
-                      <Button
-                        icon={<BiCheckCircle />}
-                        type="primary"
-                        onClick={() =>
-                          handleChangeEmergencyStatus(parsedData.Id)
-                        }
-                        className="ml-3"
-                      >
-                        Tiến hành xử lý
-                      </Button>
-                    </div>
-                  </div>
-                  {/* tiến hành xử lý */}
-                  <Divider
-                    style={{
-                      margin: "10px 12px",
-                      borderWidth: "medium",
-                      borderColor: "#EEEEEE",
-                    }}
-                  />
-                  <div className="flex mx-3 flex-col justify-center text-sm">
-                    <p>
-                      Người gửi:{" "}
-                      <span className="text-black">
-                        {parsedData.Sender.Name}
-                      </span>
-                    </p>
-                    <p>
-                      Số điện thoại:{" "}
-                      <span className="text-black">
-                        {parsedData.Sender.PhoneNumber}
-                      </span>
-                    </p>
-                    <p>
-                      Nơi gửi:{" "}
-                      <span className="text-black">
-                        {parsedData.SenderAddress}
-                      </span>
-                    </p>
-                    <p>
-                      Loại khẩn cấp:{" "}
-                      <span className="text-black">
-                        {getEmergencyTypeName(
-                          parsedData.EmergencyType as number
-                        )}
-                      </span>
-                    </p>
-                    <p>
-                      Note:{" "}
-                      <span className="text-black">{parsedData.Note}</span>
-                    </p>
-                    <p>
-                      Thời gian tạo:{" "}
-                      <span className="text-black">
-                        {formatDateTimeToVnFormat(parsedData.DateCreated)}
-                      </span>
-                    </p>
-                  </div>
-                </>,
-                {
-                  type: "error" as TypeOptions,
-                  position: "top-center",
-                  autoClose: false,
-                }
-              );
+            if (data.typeModel === "Emergency") {
+              dispatch(updateDataEmergencyListState(data));
+              // setEmergencyQueue((prevQueue) => [...prevQueue, data]);
             } else {
               //toast không dành cho emergency
               toast(
@@ -394,6 +321,89 @@ const HeaderComponent: React.FC<Props> = (props) => {
       };
     }
   }, [session]);
+
+  // xử lý Queue
+  useEffect(() => {
+    if (isFree && dataEmergencyList.length > 0) {
+      const emergencyData = dataEmergencyList[0];
+
+      const parsedData = JSON.parse(emergencyData?.data);
+      console.log("parsedData", parsedData);
+
+      toast(
+        <>
+          <div
+            id="toast-notification"
+            className="w-full mx-3 max-w-3xl text-gray-900 bg-white"
+            role="alert"
+            onClick={() => handleNotification(emergencyData)}
+          >
+            <div className="flex flex-row items-center">
+              <div className="text-sm font-normal">
+                <div className="text-lg mb-3 font-semibold uppercase text-red-700">
+                  <p>{emergencyData?.title}</p>
+                </div>
+                <div className="text-sm uppercase font-normal">{`${emergencyData?.body}`}</div>
+              </div>
+              <Button
+                icon={<BiCheckCircle />}
+                type="primary"
+                onClick={() => handleChangeEmergencyStatus(parsedData.Id)}
+                className="ml-3"
+              >
+                Tiến hành xử lý
+              </Button>
+            </div>
+          </div>
+          {/* tiến hành xử lý */}
+          <Divider
+            style={{
+              margin: "10px 12px",
+              borderWidth: "medium",
+              borderColor: "#EEEEEE",
+            }}
+          />
+          <div className="flex mx-3 flex-col justify-center text-sm">
+            <p>
+              Người gửi:{" "}
+              <span className="text-black">{parsedData.Sender.Name}</span>
+            </p>
+            <p>
+              Số điện thoại:{" "}
+              <span className="text-black">
+                {parsedData.Sender.PhoneNumber}
+              </span>
+            </p>
+            <p>
+              Nơi gửi:{" "}
+              <span className="text-black">{parsedData.SenderAddress}</span>
+            </p>
+            <p>
+              Loại khẩn cấp:{" "}
+              <span className="text-black">
+                {getEmergencyTypeName(parsedData.EmergencyType as number)}
+              </span>
+            </p>
+            <p>
+              Note: <span className="text-black">{parsedData.Note}</span>
+            </p>
+            <p>
+              Thời gian tạo:{" "}
+              <span className="text-black">
+                {formatDateTimeToVnFormat(parsedData.DateCreated)}
+              </span>
+            </p>
+          </div>
+        </>,
+        {
+          type: "error" as TypeOptions,
+          position: "top-center",
+          autoClose: false,
+        }
+      );
+    }
+  }, [isFree, dataEmergencyList]);
+
   return (
     <Header
       style={{ padding: 0, background: colorBgContainer }}
