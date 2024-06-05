@@ -25,12 +25,14 @@ import customerService from "@services/customer";
 import emergencyService from "@services/emergency";
 import { BiCheckCircle } from "react-icons/bi";
 import { formatDateTimeToVnFormat } from "@utils/helpers";
-import { setStaffBusyStatus } from "@slices/staff";
+import { setStaffIsFreeStatus } from "@slices/staff";
 import {
-  changeHaveNotiEmergency,
   removeFirstDataEmergency,
   updateDataEmergencyListState,
+  updateEmergencyStatusToProcessing,
+  updateHavingNotiEmergencyStatus,
 } from "@slices/emergency";
+import { EmergencyType } from "@models/emergency";
 
 const { Header } = Layout;
 
@@ -197,9 +199,9 @@ const HeaderComponent: React.FC<Props> = (props) => {
       .changeToProcessingStatus(session?.user.access_token!, emergencyId)
       .then((res) => {
         console.log("res emergency", res);
-        dispatch(setStaffBusyStatus(false));
-        dispatch(changeHaveNotiEmergency());
-        dispatch(removeFirstDataEmergency());
+        dispatch(setStaffIsFreeStatus(false));
+        dispatch(updateHavingNotiEmergencyStatus(false));
+        dispatch(updateEmergencyStatusToProcessing(emergencyId));
       })
       .catch((errors) => {
         console.log("errors to change emergency status", errors);
@@ -273,9 +275,6 @@ const HeaderComponent: React.FC<Props> = (props) => {
             console.log("data noti", data);
             list.push(data);
             setNotifications(list.reverse());
-            console.log("isFree: ", isFree);
-            console.log("dataEmergencyListInQueue: ", dataEmergencyListInQueue);
-            console.log("havingNotiEmergency: ", havingNotiEmergency);
 
             if (data.typeModel === "Emergency") {
               dispatch(updateDataEmergencyListState(data));
@@ -335,10 +334,8 @@ const HeaderComponent: React.FC<Props> = (props) => {
       const emergencyData = dataEmergencyListInQueue[0];
 
       const parsedData = JSON.parse(emergencyData?.data);
-      console.log("parsedData", parsedData);
-      console.log("isFree", isFree);
-      console.log("havingNotiEmergency", havingNotiEmergency);
-      dispatch(changeHaveNotiEmergency());
+
+      dispatch(updateHavingNotiEmergencyStatus(true));
 
       toast(
         <>
@@ -346,7 +343,10 @@ const HeaderComponent: React.FC<Props> = (props) => {
             id="toast-notification"
             className="w-full mx-3 max-w-3xl text-gray-900 bg-white"
             role="alert"
-            onClick={() => handleNotification(emergencyData)}
+            onClick={() => {
+              handleNotification(emergencyData);
+              handleChangeEmergencyStatus(parsedData.Id);
+            }}
           >
             <div className="flex flex-row items-center">
               <div className="text-sm font-normal">
@@ -355,12 +355,7 @@ const HeaderComponent: React.FC<Props> = (props) => {
                 </div>
                 <div className="text-sm uppercase font-normal">{`${emergencyData?.body}`}</div>
               </div>
-              <Button
-                icon={<BiCheckCircle />}
-                type="primary"
-                onClick={() => handleChangeEmergencyStatus(parsedData.Id)}
-                className="ml-3"
-              >
+              <Button icon={<BiCheckCircle />} type="primary" className="ml-3">
                 Tiến hành xử lý
               </Button>
             </div>

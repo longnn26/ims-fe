@@ -48,6 +48,10 @@ const FirstStageCreate: React.FC<FirstStageProps> = (props) => {
     return isImage || Upload.LIST_IGNORE;
   };
 
+  const customUploadRequest = ({ file, onSuccess, onError }: any) => {
+    console.log("Custom upload request: ", file);
+  };
+
   return (
     <div className="stage-container flex flex-col justify-center items-center">
       <Form
@@ -60,7 +64,6 @@ const FirstStageCreate: React.FC<FirstStageProps> = (props) => {
       >
         <div className="grid grid-cols-2 ">
           {/* Họ và tên */}
-
           <Form.Item
             name="fullName"
             label="Họ và tên"
@@ -146,6 +149,20 @@ const FirstStageCreate: React.FC<FirstStageProps> = (props) => {
               disabledDate={disableFutureDates}
             />
           </Form.Item>
+
+          {/* {address} */}
+          <Form.Item
+            name="address"
+            label="Địa chỉ:"
+            initialValue={data?.address}
+            rules={[
+              { required: true, message: "Vui lòng nhập địa chỉ" },
+              { type: "string" },
+            ]}
+            style={{ marginLeft: "12px", marginRight: "12px" }}
+          >
+            <Input placeholder="Vui lòng nhập địa chỉ" className="h-9" />
+          </Form.Item>
         </div>
 
         {/* avatar */}
@@ -159,6 +176,7 @@ const FirstStageCreate: React.FC<FirstStageProps> = (props) => {
             style={{ marginLeft: "12px", marginRight: "12px" }}
           >
             <Upload
+              action={""}
               name="avatar"
               listType="picture"
               maxCount={1}

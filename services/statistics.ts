@@ -15,7 +15,7 @@ const getAdminRevenueMonthlyIncome = async (
   token: string,
   year: number
 ): Promise<Statistic> => {
-  const response = await httpClient.put({
+  const response = await httpClient.get({
     url: `${apiLinks.statistics.getAdminRevenueMonthlyIncome}/${year}`,
     token: token,
   });
@@ -26,7 +26,7 @@ const getAdminProfitMonthlyIncome = async (
   token: string,
   year: number
 ): Promise<Statistic> => {
-  const response = await httpClient.put({
+  const response = await httpClient.get({
     url: `${apiLinks.statistics.getAdminProfitMonthlyIncome}/${year}`,
     token: token,
   });
