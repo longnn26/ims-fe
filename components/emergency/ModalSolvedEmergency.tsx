@@ -12,7 +12,7 @@ interface Props {
   open: boolean;
   onClose: () => void;
   dataEmergency: EmergencyType | undefined;
-  onSubmit?: () => void;
+  onSubmit: () => void;
   setEmergencyListData: React.Dispatch<React.SetStateAction<EmergencyType[]>>;
 }
 
@@ -77,6 +77,7 @@ const ModalSolvedEmergency: React.FC<Props> = (props) => {
                         ),
                       })
                       .then((res) => {
+                        onSubmit();
                         message.success("Thay đổi trạng thái thành công!", 1.5);
 
                         setEmergencyListData((prevData: any) =>

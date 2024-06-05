@@ -123,112 +123,117 @@ const ModalRequestDetail: React.FC<Props> = (props) => {
           setSelectedCategory(CategoriesDetailEnum.REQUEST_INFO);
         }}
         confirmLoading={confirmLoading}
-        footer={[
-          <>
-            <Button
-              danger
-              className="btn-submit"
-              key="submit"
-              type="text"
-              onClick={async () => {
-                confirm({
-                  cancelText: "Hủy",
-                  okText: "Xác nhận",
-                  title: "Bạn có chắc là muốn từ chối yêu cầu chuyển tiền này?",
-                  async onOk() {
-                    setLoadingSubmit(true);
+        footer={
+          dataRequest?.status === RequestStatusEnum.Waiting
+            ? [
+                <>
+                  <Button
+                    danger
+                    className="btn-submit"
+                    key="submit"
+                    type="text"
+                    onClick={async () => {
+                      confirm({
+                        cancelText: "Hủy",
+                        okText: "Xác nhận",
+                        title:
+                          "Bạn có chắc là muốn từ chối yêu cầu chuyển tiền này?",
+                        async onOk() {
+                          setLoadingSubmit(true);
 
-                    await requestService
-                      .rejectWithdrawFunds(session?.user.access_token!, {
-                        withdrawFundsId: dataRequest?.id ?? "",
-                      })
-                      .then((res) => {
-                        setRequestListData((prevData: any) =>
-                          prevData.map((item: TransactionType) =>
-                            item.id === dataRequest?.id
-                              ? {
-                                  ...item,
-                                  status: RequestStatusEnum.Failure,
-                                }
-                              : item
-                          )
-                        );
+                          await requestService
+                            .rejectWithdrawFunds(session?.user.access_token!, {
+                              withdrawFundsId: dataRequest?.id ?? "",
+                            })
+                            .then((res) => {
+                              setRequestListData((prevData: any) =>
+                                prevData.map((item: TransactionType) =>
+                                  item.id === dataRequest?.id
+                                    ? {
+                                        ...item,
+                                        status: RequestStatusEnum.Failure,
+                                      }
+                                    : item
+                                )
+                              );
 
-                        toast(`Từ chối thành công!`, {
-                          type: "success" as TypeOptions,
-                          position: "top-right",
-                        });
-                        onClose();
-                      })
-                      .catch((errors) => {
-                        console.log("errors", errors);
-                        toast(`${errors}`, {
-                          type: "error" as TypeOptions,
-                          position: "top-right",
-                        });
-                      })
-                      .finally(() => {
-                        setLoadingSubmit(false);
+                              toast(`Từ chối thành công!`, {
+                                type: "success" as TypeOptions,
+                                position: "top-right",
+                              });
+                              onClose();
+                            })
+                            .catch((errors) => {
+                              console.log("errors", errors);
+                              toast(`${errors}`, {
+                                type: "error" as TypeOptions,
+                                position: "top-right",
+                              });
+                            })
+                            .finally(() => {
+                              setLoadingSubmit(false);
+                            });
+                        },
+                        onCancel() {},
                       });
-                  },
-                  onCancel() {},
-                });
-              }}
-            >
-              Từ chối chuyển tiền
-            </Button>
+                    }}
+                  >
+                    Từ chối chuyển tiền
+                  </Button>
 
-            <Button
-              className="btn-submit"
-              key="submit"
-              onClick={async () => {
-                confirm({
-                  cancelText: "Chưa",
-                  okText: "Xác nhận đã chuyển",
-                  title:
-                    "Bạn có chắc là đã chuyển tiền cho tài khoản này chưa?",
-                  async onOk() {
-                    setLoadingSubmit(true);
-                    await requestService
-                      .acceptWithdrawFunds(session?.user.access_token!, {
-                        withdrawFundsId: dataRequest?.id ?? "",
-                      })
-                      .then((res) => {
-                        setRequestListData((prevData: any) =>
-                          prevData.map((item: TransactionType) =>
-                            item.id === dataRequest?.id
-                              ? {
-                                  ...item,
-                                  status: RequestStatusEnum.Success,
-                                }
-                              : item
-                          )
-                        );
-                        toast(`Chuyển trạng thái thành công!`, {
-                          type: "success" as TypeOptions,
-                          position: "top-right",
-                        });
-                        onClose();
-                      })
-                      .catch((errors) => {
-                        console.log("errors", errors);
-                        toast(`${errors}`, {
-                          type: "error" as TypeOptions,
-                          position: "top-right",
-                        });
-                      })
-                      .finally(() => {
-                        setLoadingSubmit(false);
+                  <Button
+                    className="btn-submit"
+                    key="submit"
+                    onClick={async () => {
+                      confirm({
+                        cancelText: "Chưa",
+                        okText: "Xác nhận đã chuyển",
+                        title:
+                          "Bạn có chắc là đã chuyển tiền cho tài khoản này chưa?",
+                        async onOk() {
+                          setLoadingSubmit(true);
+                          await requestService
+                            .acceptWithdrawFunds(session?.user.access_token!, {
+                              withdrawFundsId: dataRequest?.id ?? "",
+                            })
+                            .then((res) => {
+                              setRequestListData((prevData: any) =>
+                                prevData.map((item: TransactionType) =>
+                                  item.id === dataRequest?.id
+                                    ? {
+                                        ...item,
+                                        status: RequestStatusEnum.Success,
+                                      }
+                                    : item
+                                )
+                              );
+                              toast(`Chuyển trạng thái thành công!`, {
+                                type: "success" as TypeOptions,
+                                position: "top-right",
+                              });
+                              onClose();
+                            })
+                            .catch((errors) => {
+                              console.log("errors", errors);
+                              toast(`${errors}`, {
+                                type: "error" as TypeOptions,
+                                position: "top-right",
+                              });
+                            })
+                            .finally(() => {
+                              setLoadingSubmit(false);
+                            });
+                        },
+                        onCancel() {},
                       });
-                  },
-                  onCancel() {},
-                });
-              }}
-            >
-              Xác nhận đã chuyển tiền
-            </Button>
-          </>,
-        ]}
+                    }}
+                  >
+                    Xác nhận đã chuyển tiền
+                  </Button>
+                </>,
+              ]
+            : false
+        }
       >
         <div className="flex flex-row gap-3 mb-7">
           {categoriesDetail.map((category) => (

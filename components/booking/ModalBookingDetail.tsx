@@ -5,6 +5,7 @@ import {
   formatCurrency,
   formatDateTimeToVnFormat,
   removeHyphens,
+  translateBookingInfoTOVnLanguage,
 } from "@utils/helpers";
 import { CategoriesDetailEnum } from "@utils/enum";
 import { categoriesDetail } from "./BookingConstant";
@@ -57,7 +58,9 @@ const ModalBookingDetail: React.FC<Props> = (props) => {
               </Descriptions.Item>
 
               <Descriptions.Item label="Hình thức" className="px-3">
-                {dataBooking?.searchRequest?.bookingType}
+                {translateBookingInfoTOVnLanguage(
+                  dataBooking?.searchRequest?.bookingType ?? ""
+                )}
               </Descriptions.Item>
               <Descriptions.Item label="Trạng thái" className="px-3">
                 <StatusCell status={dataBooking?.status ?? ""} />

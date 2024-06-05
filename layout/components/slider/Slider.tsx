@@ -25,7 +25,7 @@ const SliderComponent: React.FC = () => {
       trigger={null}
       collapsible
       collapsed={collapsed}
-      width={245} // Set the width property
+      width={245} 
       style={{
         background: colorBgContainer,
         marginTop: 10,

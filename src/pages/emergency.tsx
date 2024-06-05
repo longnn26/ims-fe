@@ -3,35 +3,24 @@ import dynamic from "next/dynamic";
 import React, { useEffect, useState } from "react";
 import { Button, Dropdown, Menu, Modal, Space } from "antd";
 import { EllipsisOutlined } from "@ant-design/icons";
-import { IoMdPersonAdd } from "react-icons/io";
-import { GrTransaction } from "react-icons/gr";
-import { BiCheck, BiDetail } from "react-icons/bi";
+import useDispatch from "@hooks/use-dispatch";
 import { Table } from "antd";
-import type { MenuProps, TableColumnsType, TableProps } from "antd";
+import type { TableProps } from "antd";
 import { EmergencyType, EmergencyListData } from "@models/emergency";
 import emergencyService from "@services/emergency";
 import { PagingModel, ParamGet } from "@models/base";
 import { useSession } from "next-auth/react";
-import {
-  formatDate,
-  getColorByStatusClass,
-  removeHyphens,
-  splitString,
-} from "@utils/helpers";
-import {
-  EmergencyStatusEnum,
-  EmergencyTypeEnum,
-  SupportStatusEnum,
-  SupportTypeModelEnum,
-} from "@utils/enum";
+import { removeHyphens, splitString } from "@utils/helpers";
+import { EmergencyStatusEnum, EmergencyTypeEnum } from "@utils/enum";
 import StatusCell from "@components/table/StatusCell";
 import { formatDateTimeToVnFormat } from "@utils/helpers";
 import { items } from "@components/emergency/EmergencyConstant";
 import ModalEmergencyDetail from "@components/emergency/ModalEmergencyDetail";
 import { TypeOptions, toast } from "react-toastify";
-import { error } from "console";
 import ModalSolvedEmergency from "@components/emergency/ModalSolvedEmergency";
 import ModalCancelBookingImmediately from "@components/emergency/ModalCancelBookingImmediately";
+import { setStaffBusyStatus } from "@slices/staff";
+import { changeWithoutNotiEmergency, removeFirstDataEmergency } from "@slices/emergency";
 
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
@@ -47,6 +36,8 @@ type Sorts = GetSingle<Parameters<OnChange>[2]>;
 
 const Emergency: React.FC = () => {
   const { data: session } = useSession();
+  const dispatch = useDispatch();
+
   const [loading, setLoading] = useState(false);
   const [emergencyListData, setEmergencyListData] = useState<EmergencyType[]>(
     []
@@ -166,6 +157,7 @@ const Emergency: React.FC = () => {
         await emergencyService
           .changeToProcessingStatus(session?.user.access_token!, record.id)
           .then((res) => {
+            dispatch(setStaffBusyStatus(false));
             toast(`Chuyển trạng thái sang xử lý thành công`, {
               type: "success" as TypeOptions,
               position: "top-right",
@@ -396,7 +388,11 @@ const Emergency: React.FC = () => {
               }}
               dataEmergency={selectedEmergency}
               setEmergencyListData={setEmergencyListData}
-              onSubmit={() => {}}
+              onSubmit={() => {
+                removeFirstDataEmergency();
+                dispatch(setStaffBusyStatus(true));
+                dispatch(changeWithoutNotiEmergency());
+              }}
             />
           )}
 

@@ -105,6 +105,8 @@ const Account: React.FC = () => {
           totalSize: res.totalSize,
         });
 
+        console.log("res.data: ", res.data);
+
         setAccountListData(res.data);
 
         setLoading(false);
