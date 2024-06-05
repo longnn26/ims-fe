@@ -20,7 +20,6 @@ import { TypeOptions, toast } from "react-toastify";
 import ModalSolvedEmergency from "@components/emergency/ModalSolvedEmergency";
 import ModalCancelBookingImmediately from "@components/emergency/ModalCancelBookingImmediately";
 import { setStaffBusyStatus } from "@slices/staff";
-import { changeWithoutNotiEmergency, removeFirstDataEmergency } from "@slices/emergency";
 
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
@@ -389,9 +388,7 @@ const Emergency: React.FC = () => {
               dataEmergency={selectedEmergency}
               setEmergencyListData={setEmergencyListData}
               onSubmit={() => {
-                removeFirstDataEmergency();
-                dispatch(setStaffBusyStatus(true));
-                dispatch(changeWithoutNotiEmergency());
+               
               }}
             />
           )}
