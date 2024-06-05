@@ -20,7 +20,11 @@ import { TypeOptions, toast } from "react-toastify";
 import ModalSolvedEmergency from "@components/emergency/ModalSolvedEmergency";
 import ModalCancelBookingImmediately from "@components/emergency/ModalCancelBookingImmediately";
 import { setStaffIsFreeStatus } from "@slices/staff";
-import { setDataEmergencyListFromApi, updateEmergencyStatusToProcessing } from "@slices/emergency";
+import {
+  setDataEmergencyListFromApi,
+  updateEmergencyStatus,
+} from "@slices/emergency";
+import useSelector from "@hooks/use-selector";
 
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
@@ -37,11 +41,9 @@ type Sorts = GetSingle<Parameters<OnChange>[2]>;
 const Emergency: React.FC = () => {
   const { data: session } = useSession();
   const dispatch = useDispatch();
+  const { dataEmergencyListFromApi } = useSelector((state) => state.emergency);
 
   const [loading, setLoading] = useState(false);
-  const [emergencyListData, setEmergencyListData] = useState<EmergencyType[]>(
-    []
-  );
   const [tablePagination, setTablePagination] = useState<PagingModel>({
     pageIndex: 1,
     pageSize: 10,
@@ -82,8 +84,7 @@ const Emergency: React.FC = () => {
           totalSize: res.totalSize,
         });
 
-        setEmergencyListData(res.data);
-        setDataEmergencyListFromApi(res.data)
+        dispatch(setDataEmergencyListFromApi(res.data));
 
         setLoading(false);
       })
@@ -118,8 +119,8 @@ const Emergency: React.FC = () => {
 
   //xử lý khi click vào item trong list action
   const createMenu = (record: EmergencyType) => {
-    const { status, isStopTrip } = record;
-
+    const { status, isStopTrip, booking } = record;
+    console.log("record: ", booking);
     let filteredItems;
 
     if (status === EmergencyStatusEnum.Pending) {
@@ -131,9 +132,15 @@ const Emergency: React.FC = () => {
         (item) => item?.key === "1" || item?.key === "3"
       );
     } else if (status === EmergencyStatusEnum.Solved) {
-      filteredItems = items?.filter(
-        (item) => item?.key === "1" || (item?.key === "4" && !isStopTrip)
-      );
+      filteredItems = items?.filter((item) => {
+        if (item?.key === "1") {
+          return true;
+        }
+        if (item?.key === "4") {
+          return !(isStopTrip || booking?.status === "Cancel");
+        }
+        return false;
+      });
     }
 
     return (
@@ -163,18 +170,17 @@ const Emergency: React.FC = () => {
               type: "success" as TypeOptions,
               position: "top-right",
             });
-            dispatch(updateEmergencyStatusToProcessing(record.id));
-            setEmergencyListData((prevData: any) =>
-              prevData.map((item: EmergencyType) =>
-                item.id === record.id
-                  ? { ...item, status: EmergencyStatusEnum.Processing }
-                  : item
-              )
+            dispatch(
+              updateEmergencyStatus({
+                id: record.id,
+                status: EmergencyStatusEnum.Processing,
+              })
             );
+
             setLoading(false);
           })
           .catch((errors) => {
-            toast(`${errors.response.data}`, {
+            toast(`${errors?.response?.data}`, {
               type: "error" as TypeOptions,
               position: "top-right",
             });
@@ -219,7 +225,7 @@ const Emergency: React.FC = () => {
             </div>
 
             <Table
-              dataSource={emergencyListData}
+              dataSource={dataEmergencyListFromApi}
               onChange={onChangeTable}
               loading={loading}
               pagination={{
@@ -388,7 +394,6 @@ const Emergency: React.FC = () => {
                 setSelectedEmergency(null);
               }}
               dataEmergency={selectedEmergency}
-              setEmergencyListData={setEmergencyListData}
               onSubmit={() => {}}
             />
           )}
@@ -401,7 +406,6 @@ const Emergency: React.FC = () => {
                 setSelectedEmergency(null);
               }}
               dataEmergency={selectedEmergency}
-              setEmergencyListData={setEmergencyListData}
               onSubmit={() => {}}
             />
           )}

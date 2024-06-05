@@ -10,7 +10,7 @@ import { EmergencyStatusEnum } from "@utils/enum";
 import {
   updateHavingNotiEmergencyStatus,
   removeFirstDataEmergency,
-  updateEmergencyStatusToSolved,
+  updateEmergencyStatus,
 } from "@slices/emergency";
 import useDispatch from "@hooks/use-dispatch";
 import { setStaffIsFreeStatus } from "@slices/staff";
@@ -20,7 +20,6 @@ interface Props {
   onClose: () => void;
   dataEmergency: EmergencyType | undefined;
   onSubmit: () => void;
-  setEmergencyListData: React.Dispatch<React.SetStateAction<EmergencyType[]>>;
 }
 
 const ModalSolvedEmergency: React.FC<Props> = (props) => {
@@ -29,8 +28,7 @@ const ModalSolvedEmergency: React.FC<Props> = (props) => {
 
   const { data: session } = useSession();
   const [form] = Form.useForm();
-  const { onSubmit, open, onClose, dataEmergency, setEmergencyListData } =
-    props;
+  const { onSubmit, open, onClose, dataEmergency } = props;
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [loadingSubmit, setLoadingSubmit] = useState<boolean>(false);
   const [isStopTrip, setIsStopTrip] = useState<boolean>(false);
@@ -96,26 +94,25 @@ const ModalSolvedEmergency: React.FC<Props> = (props) => {
                         dispatch(setStaffIsFreeStatus(true));
                         dispatch(updateHavingNotiEmergencyStatus(false));
                         dispatch(
-                          updateEmergencyStatusToSolved(dataEmergency?.id ?? "")
+                          updateEmergencyStatus({
+                            id: dataEmergency?.id ?? "",
+                            status: EmergencyStatusEnum.Solved,
+                          })
                         );
 
-                        setEmergencyListData((prevData: any) =>
-                          prevData.map((item: EmergencyType) =>
-                            item.id === dataEmergency?.id
-                              ? {
-                                  ...item,
-                                  status: EmergencyStatusEnum.Solved,
-                                  isStopTrip: isStopTrip,
-                                }
-                              : item
-                          )
+                        dispatch(
+                          updateEmergencyStatus({
+                            id: dataEmergency?.id ?? "",
+                            status: EmergencyStatusEnum.Solved,
+                            isStopTrip,
+                          })
                         );
 
                         form.resetFields();
                         onClose();
                       })
                       .catch((errors) => {
-                        message.error(errors.response.data, 1.5);
+                        message.error(errors?.response?.data, 1.5);
                       })
                       .finally(() => {
                         setLoadingSubmit(false);

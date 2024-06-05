@@ -5,20 +5,23 @@ import { useSession } from "next-auth/react";
 import { EmergencyType } from "@models/emergency";
 const { confirm } = Modal;
 import emergencyService from "@services/emergency";
+import { updateEmergencyStatus } from "@slices/emergency";
+import useDispatch from "@hooks/use-dispatch";
 
 interface Props {
   open: boolean;
   onClose: () => void;
   dataEmergency: EmergencyType | undefined;
   onSubmit?: () => void;
-  setEmergencyListData: React.Dispatch<React.SetStateAction<EmergencyType[]>>;
 }
 
 const ModalCancelBookingImmediately: React.FC<Props> = (props) => {
   const formRef = useRef(null);
   const { data: session } = useSession();
   const [form] = Form.useForm();
-  const { onSubmit, open, onClose, dataEmergency, setEmergencyListData } =
+  const dispatch = useDispatch();
+
+  const { onSubmit, open, onClose, dataEmergency } =
     props;
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [loadingSubmit, setLoadingSubmit] = useState<boolean>(false);
@@ -75,15 +78,11 @@ const ModalCancelBookingImmediately: React.FC<Props> = (props) => {
                       .then((res) => {
                         message.success("Thay đổi trạng thái thành công!", 1.5);
 
-                        setEmergencyListData((prevData: any) =>
-                          prevData.map((item: EmergencyType) =>
-                            item.id === dataEmergency?.id
-                              ? {
-                                  ...item,
-                                  isStopTrip: true,
-                                }
-                              : item
-                          )
+                        dispatch(
+                          updateEmergencyStatus({
+                            id: dataEmergency?.id ?? "",
+                            isStopTrip: true,
+                          })
                         );
 
                         form.resetFields();
@@ -122,7 +121,7 @@ const ModalCancelBookingImmediately: React.FC<Props> = (props) => {
                 },
                 { type: "string" },
               ]}
-              style={{marginLeft: "12px", marginRight:"12px"}}
+              style={{ marginLeft: "12px", marginRight: "12px" }}
             >
               <Input.TextArea
                 placeholder="Vui lòng nhập lý do hủy chuyến"

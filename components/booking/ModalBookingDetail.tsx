@@ -300,7 +300,7 @@ const ModalBookingDetail: React.FC<Props> = (props) => {
   return (
     <>
       <Modal
-        centered
+        style={{top: 10}}
         width={1200}
         open={open}
         footer={false}

@@ -432,7 +432,7 @@ const ModalAccountDetail: React.FC<Props> = (props) => {
   return (
     <>
       <Modal
-        centered
+        
         width={1200}
         open={open}
         footer={

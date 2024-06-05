@@ -27,13 +27,13 @@ import { BiCheckCircle } from "react-icons/bi";
 import { formatDateTimeToVnFormat } from "@utils/helpers";
 import { setStaffIsFreeStatus } from "@slices/staff";
 import {
-  removeFirstDataEmergency,
-  updateDataEmergencyListState,
-  updateEmergencyStatusToProcessing,
+  updateDataEmergencyListStateInQueue,
+  updateEmergencyStatus,
   updateHavingNotiEmergencyStatus,
 } from "@slices/emergency";
 import { EmergencyType } from "@models/emergency";
 import { PagingModel, ParamGet } from "@models/base";
+import { EmergencyStatusEnum } from "@utils/enum";
 
 const { Header } = Layout;
 
@@ -207,7 +207,12 @@ const HeaderComponent: React.FC<Props> = (props) => {
         console.log("res emergency", res);
         dispatch(setStaffIsFreeStatus(false));
         dispatch(updateHavingNotiEmergencyStatus(false));
-        dispatch(updateEmergencyStatusToProcessing(emergencyId));
+        dispatch(
+          updateEmergencyStatus({
+            id: emergencyId,
+            status: EmergencyStatusEnum.Processing,
+          })
+        );
       })
       .catch((errors) => {
         console.log("errors to change emergency status", errors);
@@ -284,7 +289,7 @@ const HeaderComponent: React.FC<Props> = (props) => {
             setNotifications(list.reverse());
 
             if (data.typeModel === "Emergency") {
-              dispatch(updateDataEmergencyListState(data));
+              dispatch(updateDataEmergencyListStateInQueue(data));
             } else {
               //toast không dành cho emergency
               toast(

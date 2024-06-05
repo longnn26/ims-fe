@@ -1,5 +1,4 @@
 import { EmergencyType } from "@models/emergency";
-import { Notification } from "@models/notification";
 import { createSlice, PayloadAction, CaseReducer } from "@reduxjs/toolkit";
 import { EmergencyStatusEnum } from "@utils/enum";
 
@@ -15,13 +14,19 @@ const initialState: State = {
   havingNotiEmergency: false,
 };
 
+interface UpdateEmergencyPayload {
+  id: string;
+  status?: EmergencyStatusEnum;
+  isStopTrip?: boolean;
+}
+
 type CR<T> = CaseReducer<State, PayloadAction<T>>;
 
 const slice = createSlice({
   name: "emergency",
   initialState,
   reducers: {
-    updateDataEmergencyListState: (state, action) => {
+    updateDataEmergencyListStateInQueue: (state, action) => {
       state.dataEmergencyListInQueue.push(action.payload);
     },
     removeFirstDataEmergency: (state) => {
@@ -32,43 +37,35 @@ const slice = createSlice({
     updateHavingNotiEmergencyStatus: (state, action) => {
       state.havingNotiEmergency = action.payload;
     },
+    updateEmergencyStatus: (
+      state,
+      action: PayloadAction<UpdateEmergencyPayload>
+    ) => {
+      const { id, status, isStopTrip } = action.payload;
+      const index = state.dataEmergencyListFromApi.findIndex(
+        (emergency) => emergency.id === id
+      );
+
+      if (index !== -1) {
+        if (status !== undefined) {
+          state.dataEmergencyListFromApi[index].status = status;
+        }
+        if (isStopTrip !== undefined) {
+          state.dataEmergencyListFromApi[index].isStopTrip = isStopTrip;
+        }
+      }
+    },
     setDataEmergencyListFromApi: (state, action) => {
       state.dataEmergencyListFromApi = action.payload;
-    },
-    updateEmergencyStatusToSolved: (state, action: PayloadAction<string>) => {
-      if (state.dataEmergencyListFromApi.length > 0) {
-        const index = state.dataEmergencyListFromApi.findIndex(
-          (noti) => noti.id === action.payload
-        );
-        if (index !== -1) {
-          state.dataEmergencyListFromApi[index].status =
-            EmergencyStatusEnum.Solved;
-        }
-      }
-    },
-    updateEmergencyStatusToProcessing: (
-      state,
-      action: PayloadAction<string>
-    ) => {
-      if (state.dataEmergencyListFromApi.length > 0) {
-        const index = state.dataEmergencyListFromApi.findIndex(
-          (noti) => noti.id === action.payload
-        );
-        if (index !== -1) {
-          state.dataEmergencyListFromApi[index].status =
-            EmergencyStatusEnum.Processing;
-        }
-      }
     },
   },
 });
 
 export const {
-  updateDataEmergencyListState,
+  updateDataEmergencyListStateInQueue,
   removeFirstDataEmergency,
   updateHavingNotiEmergencyStatus,
-  updateEmergencyStatusToSolved,
-  updateEmergencyStatusToProcessing,
+  updateEmergencyStatus,
   setDataEmergencyListFromApi,
 } = slice.actions;
 
