@@ -34,6 +34,7 @@ const slice = createSlice({
     },
     removeFirstDataEmergency: (state) => {
       if (state.dataEmergencyListInQueue.length > 0) {
+
         state.dataEmergencyListInQueue.shift();
       }
     },

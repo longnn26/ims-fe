@@ -199,7 +199,7 @@ const HeaderComponent: React.FC<Props> = (props) => {
         console.log("res emergency", res);
         dispatch(setStaffBusyStatus(false));
         dispatch(changeHaveNotiEmergency());
-        removeFirstDataEmergency();
+        dispatch(removeFirstDataEmergency());
       })
       .catch((errors) => {
         console.log("errors to change emergency status", errors);
@@ -275,10 +275,10 @@ const HeaderComponent: React.FC<Props> = (props) => {
             setNotifications(list.reverse());
             console.log("isFree: ", isFree);
             console.log("dataEmergencyListInQueue: ", dataEmergencyListInQueue);
+            console.log("havingNotiEmergency: ", havingNotiEmergency);
 
             if (data.typeModel === "Emergency") {
               dispatch(updateDataEmergencyListState(data));
-              dispatch(changeHaveNotiEmergency());
             } else {
               //toast không dành cho emergency
               toast(
@@ -331,11 +331,14 @@ const HeaderComponent: React.FC<Props> = (props) => {
 
   // xử lý hiển thị lấy data từ trong Queue
   useEffect(() => {
-    if (isFree && dataEmergencyListInQueue.length > 0) {
+    if (isFree && dataEmergencyListInQueue.length > 0 && !havingNotiEmergency) {
       const emergencyData = dataEmergencyListInQueue[0];
 
       const parsedData = JSON.parse(emergencyData?.data);
       console.log("parsedData", parsedData);
+      console.log("isFree", isFree);
+      console.log("havingNotiEmergency", havingNotiEmergency);
+      dispatch(changeHaveNotiEmergency());
 
       toast(
         <>
@@ -409,7 +412,7 @@ const HeaderComponent: React.FC<Props> = (props) => {
         }
       );
     }
-  }, [isFree, dataEmergencyListInQueue, !havingNotiEmergency]);
+  }, [isFree, dataEmergencyListInQueue, havingNotiEmergency]);
 
   return (
     <Header

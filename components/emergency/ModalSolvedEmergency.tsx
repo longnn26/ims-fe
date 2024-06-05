@@ -7,6 +7,12 @@ import { EmergencyType } from "@models/emergency";
 const { confirm } = Modal;
 import emergencyService from "@services/emergency";
 import { EmergencyStatusEnum } from "@utils/enum";
+import {
+  changeWithoutNotiEmergency,
+  removeFirstDataEmergency,
+} from "@slices/emergency";
+import useDispatch from "@hooks/use-dispatch";
+import { setStaffBusyStatus } from "@slices/staff";
 
 interface Props {
   open: boolean;
@@ -18,6 +24,8 @@ interface Props {
 
 const ModalSolvedEmergency: React.FC<Props> = (props) => {
   const formRef = useRef(null);
+  const dispatch = useDispatch();
+
   const { data: session } = useSession();
   const [form] = Form.useForm();
   const { onSubmit, open, onClose, dataEmergency, setEmergencyListData } =
@@ -25,6 +33,9 @@ const ModalSolvedEmergency: React.FC<Props> = (props) => {
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [loadingSubmit, setLoadingSubmit] = useState<boolean>(false);
   const [isStopTrip, setIsStopTrip] = useState<boolean>(false);
+  const { dataEmergencyListInQueue, havingNotiEmergency } = useSelector(
+    (state) => state.emergency
+  );
 
   const disabled = async () => {
     var result = false;
@@ -79,7 +90,14 @@ const ModalSolvedEmergency: React.FC<Props> = (props) => {
                       .then((res) => {
                         onSubmit();
                         message.success("Thay đổi trạng thái thành công!", 1.5);
+                        dispatch(removeFirstDataEmergency());
+                        dispatch(setStaffBusyStatus(true));
+                        dispatch(changeWithoutNotiEmergency());
 
+                        console.log(
+                          " state.dataEmergencyListInQueue",
+                          dataEmergencyListInQueue
+                        );
                         setEmergencyListData((prevData: any) =>
                           prevData.map((item: EmergencyType) =>
                             item.id === dataEmergency?.id
@@ -128,7 +146,7 @@ const ModalSolvedEmergency: React.FC<Props> = (props) => {
                 },
                 { type: "string" },
               ]}
-              style={{marginLeft: "12px", marginRight:"12px"}}
+              style={{ marginLeft: "12px", marginRight: "12px" }}
             >
               <Input.TextArea
                 placeholder="Vui lòng nhập cách giải quyết"
@@ -139,7 +157,7 @@ const ModalSolvedEmergency: React.FC<Props> = (props) => {
               name="isStopTrip"
               label="Dừng chuyến ngay"
               rules={[{ type: "boolean" }]}
-              style={{marginLeft: "12px", marginRight:"12px"}}
+              style={{ marginLeft: "12px", marginRight: "12px" }}
               valuePropName="isStopTrip"
             >
               <Checkbox
@@ -158,7 +176,7 @@ const ModalSolvedEmergency: React.FC<Props> = (props) => {
                   },
                   { type: "string" },
                 ]}
-                style={{marginLeft: "12px", marginRight:"12px"}}
+                style={{ marginLeft: "12px", marginRight: "12px" }}
               >
                 <Input.TextArea
                   placeholder="Vui lòng nhập lý do hủy chuyến"
