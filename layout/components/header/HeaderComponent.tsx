@@ -2,7 +2,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
-import { Layout, Button, theme, Badge, Divider, Switch } from "antd";
+import { Layout, Button, theme, Badge, Divider } from "antd";
 import useSelector from "@hooks/use-selector";
 import { setCollapsed, setSliderMenuItemSelectedKey } from "@slices/global";
 import useDispatch from "@hooks/use-dispatch";
@@ -26,7 +26,11 @@ import emergencyService from "@services/emergency";
 import { BiCheckCircle } from "react-icons/bi";
 import { formatDateTimeToVnFormat } from "@utils/helpers";
 import { setStaffBusyStatus } from "@slices/staff";
-import { updateDataEmergencyListState } from "@slices/emergency";
+import {
+  changeHaveNotiEmergency,
+  removeFirstDataEmergency,
+  updateDataEmergencyListState,
+} from "@slices/emergency";
 
 const { Header } = Layout;
 
@@ -41,7 +45,9 @@ const HeaderComponent: React.FC<Props> = (props) => {
     (state) => state.global
   );
   const { isFree } = useSelector((state) => state.staff);
-  const { dataEmergencyList } = useSelector((state) => state.emergency);
+  const { dataEmergencyListInQueue, havingNotiEmergency } = useSelector(
+    (state) => state.emergency
+  );
 
   const {
     token: { colorBgContainer },
@@ -192,7 +198,8 @@ const HeaderComponent: React.FC<Props> = (props) => {
       .then((res) => {
         console.log("res emergency", res);
         dispatch(setStaffBusyStatus(false));
-        console.log("change emergency status");
+        dispatch(changeHaveNotiEmergency());
+        removeFirstDataEmergency();
       })
       .catch((errors) => {
         console.log("errors to change emergency status", errors);
@@ -266,12 +273,12 @@ const HeaderComponent: React.FC<Props> = (props) => {
             console.log("data noti", data);
             list.push(data);
             setNotifications(list.reverse());
-
-            //convert từ string về object để lấy data xử lý tiếp
+            console.log("isFree: ", isFree);
+            console.log("dataEmergencyListInQueue: ", dataEmergencyListInQueue);
 
             if (data.typeModel === "Emergency") {
               dispatch(updateDataEmergencyListState(data));
-              // setEmergencyQueue((prevQueue) => [...prevQueue, data]);
+              dispatch(changeHaveNotiEmergency());
             } else {
               //toast không dành cho emergency
               toast(
@@ -322,10 +329,10 @@ const HeaderComponent: React.FC<Props> = (props) => {
     }
   }, [session]);
 
-  // xử lý Queue
+  // xử lý hiển thị lấy data từ trong Queue
   useEffect(() => {
-    if (isFree && dataEmergencyList.length > 0) {
-      const emergencyData = dataEmergencyList[0];
+    if (isFree && dataEmergencyListInQueue.length > 0) {
+      const emergencyData = dataEmergencyListInQueue[0];
 
       const parsedData = JSON.parse(emergencyData?.data);
       console.log("parsedData", parsedData);
@@ -402,7 +409,7 @@ const HeaderComponent: React.FC<Props> = (props) => {
         }
       );
     }
-  }, [isFree, dataEmergencyList]);
+  }, [isFree, dataEmergencyListInQueue, !havingNotiEmergency]);
 
   return (
     <Header
