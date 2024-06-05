@@ -55,3 +55,12 @@ export interface SearchRequest {
   status: string;
   dateCreated: string;
 }
+
+export interface BookingCancelType {
+  id: string;
+  booking: BookingType;
+  cancelPerson: User;
+  imageUrls: any[];
+  cancelReason: string;
+  dateCreated: string;
+}

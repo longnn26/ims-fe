@@ -10,6 +10,7 @@ import {
   formatDateTimeToVnFormat,
   removeHyphens,
 } from "@utils/helpers";
+import StatusCell from "@components/table/StatusCell";
 
 interface Props {
   open: boolean;
@@ -44,7 +45,7 @@ const ModalEmergencyDetail: React.FC<Props> = (props) => {
                 {dataEmergency?.emergencyType}
               </Descriptions.Item>
               <Descriptions.Item label="Trạng thái">
-                {dataEmergency?.status}
+                <StatusCell status={dataEmergency?.status ?? ""} />
               </Descriptions.Item>
               <Descriptions.Item label="Chú thích">
                 {dataEmergency?.note}
@@ -119,7 +120,7 @@ const ModalEmergencyDetail: React.FC<Props> = (props) => {
                 {dataEmergency?.booking?.searchRequest?.bookingType}
               </Descriptions.Item>
               <Descriptions.Item label="Trạng thái" className="px-3">
-                {dataEmergency?.booking?.status}
+                <StatusCell status={dataEmergency?.booking?.status ?? ""} />
               </Descriptions.Item>
               <Descriptions.Item
                 label="Phương thức thanh toán"
@@ -197,7 +198,9 @@ const ModalEmergencyDetail: React.FC<Props> = (props) => {
                   dataEmergency?.booking?.searchRequest?.customer?.avatar
                 }`}
               >
-                {dataEmergency?.booking?.searchRequest?.customer?.name?.charAt(0)}
+                {dataEmergency?.booking?.searchRequest?.customer?.name?.charAt(
+                  0
+                )}
               </Avatar>
             </div>
             <Descriptions className="px-5" layout="horizontal">
@@ -285,7 +288,6 @@ const ModalEmergencyDetail: React.FC<Props> = (props) => {
   return (
     <>
       <Modal
-        centered
         width={1200}
         open={open}
         footer={false}

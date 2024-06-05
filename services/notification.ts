@@ -6,7 +6,7 @@ import httpClient from "../utils/http-client";
 const getNotifications = async (
   token: string,
   params?: ParamGet
-): Promise<Notification[]> => {
+): Promise<NotificationData> => {
   const response = await httpClient.get({
     token: token,
     url: apiLinks.notification.get,

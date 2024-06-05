@@ -14,7 +14,7 @@ import Head from "next/head";
 import { IoMdNotifications } from "react-icons/io";
 import signalR from "@signalR/hub";
 import notificationService from "@services/notification";
-import { Notification } from "@models/notification";
+import { Notification, NotificationData } from "@models/notification";
 import InfiniteScroll from "react-infinite-scroll-component";
 import moment from "moment";
 import { FaDotCircle } from "react-icons/fa";
@@ -27,12 +27,13 @@ import { BiCheckCircle } from "react-icons/bi";
 import { formatDateTimeToVnFormat } from "@utils/helpers";
 import { setStaffIsFreeStatus } from "@slices/staff";
 import {
-  removeFirstDataEmergency,
-  updateDataEmergencyListState,
-  updateEmergencyStatusToProcessing,
+  updateDataEmergencyListStateInQueue,
+  updateEmergencyStatus,
   updateHavingNotiEmergencyStatus,
 } from "@slices/emergency";
 import { EmergencyType } from "@models/emergency";
+import { PagingModel, ParamGet } from "@models/base";
+import { EmergencyStatusEnum } from "@utils/enum";
 
 const { Header } = Layout;
 
@@ -57,9 +58,14 @@ const HeaderComponent: React.FC<Props> = (props) => {
   const item = sliderMenu.find((_) => _.key === sliderMenuItemSelectedKey);
   const [showNotification, setShowNotification] = useState<boolean>(false);
   const [notifications, setNotifications] = useState<Notification[]>([]);
-  // const [pageSizeNoti, setPageSizeNoti] = useState<number>(6);
-  // const [totalPageNoti, setTotalPageNoti] = useState<number>(2);
-  // const [pageIndexNoti, setPageIndexNoti] = useState<number>(0);
+  const [tablePagination, setTablePagination] = useState<PagingModel>({
+    pageIndex: 1,
+    pageSize: 10,
+    pageSkip: 0,
+    totalPage: 0,
+    totalSize: 0,
+  });
+
   const [newNotifyCount, setNewNotifyCount] = useState<number>(
     session?.user.currenNoticeCount!
   );
@@ -67,20 +73,20 @@ const HeaderComponent: React.FC<Props> = (props) => {
   // sửa lại default
   const [isOnline, setIsOnline] = useState<boolean>(true);
 
-  const getNotifications = async () => {
+  const getNotifications = async (pageIndex: number, pageSize: number) => {
     await notificationService
-      .getNotifications(
-        session?.user.access_token!
-        //   , {
-        //   PageSize: pageSizeNoti,
-        //   PageIndex: pageIndexNoti + 1,
-        // } as ParamGet
-      )
+      .getNotifications(session?.user.access_token!, {
+        pageSize,
+        pageIndex,
+      } as ParamGet)
       .then(async (data) => {
-        // setTotalPageNoti(data.totalPage);
-        // setPageIndexNoti(data.pageIndex);
-        // setNotifications([...notifications, ...data.data]);
-        setNotifications([...notifications, ...data]);
+        setTablePagination({
+          ...tablePagination,
+          pageSize: data?.pageSize,
+          totalPage: data?.totalPage,
+          totalSize: data?.totalSize,
+        });
+        setNotifications([...notifications, ...data?.data]);
       })
       .catch((err) => console.log("err when get noti: ", err));
   };
@@ -198,10 +204,14 @@ const HeaderComponent: React.FC<Props> = (props) => {
     await emergencyService
       .changeToProcessingStatus(session?.user.access_token!, emergencyId)
       .then((res) => {
-        console.log("res emergency", res);
         dispatch(setStaffIsFreeStatus(false));
         dispatch(updateHavingNotiEmergencyStatus(false));
-        dispatch(updateEmergencyStatusToProcessing(emergencyId));
+        dispatch(
+          updateEmergencyStatus({
+            id: emergencyId,
+            status: EmergencyStatusEnum.Processing,
+          })
+        );
       })
       .catch((errors) => {
         console.log("errors to change emergency status", errors);
@@ -255,7 +265,8 @@ const HeaderComponent: React.FC<Props> = (props) => {
   }, []);
 
   useEffect(() => {
-    session && getNotifications();
+    session &&
+      getNotifications(tablePagination.pageIndex, tablePagination.pageSize);
   }, [session]);
 
   useEffect(() => {
@@ -277,7 +288,7 @@ const HeaderComponent: React.FC<Props> = (props) => {
             setNotifications(list.reverse());
 
             if (data.typeModel === "Emergency") {
-              dispatch(updateDataEmergencyListState(data));
+              dispatch(updateDataEmergencyListStateInQueue(data));
             } else {
               //toast không dành cho emergency
               toast(
@@ -495,14 +506,20 @@ const HeaderComponent: React.FC<Props> = (props) => {
             </div>
             <InfiniteScroll
               dataLength={notifications?.length!}
-              next={getNotifications}
+              next={() => {
+                getNotifications(
+                  tablePagination.pageIndex + 1,
+                  tablePagination.pageSize
+                );
+              }}
               height={"36rem"}
               style={{
                 display: "flex",
                 flexDirection: "column",
               }}
-              // hasMore={Boolean(pageIndexNoti < totalPageNoti)}
-              hasMore={false}
+              hasMore={Boolean(
+                tablePagination.pageIndex < tablePagination.totalPage
+              )}
               loader={<h4>Loading...</h4>}
               scrollableTarget="scrollableDiv"
             >

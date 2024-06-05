@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Avatar, Descriptions, Divider, Image, Modal, Rate } from "antd";
-import { BookingType, ImageBookingType } from "@models/booking";
+import {
+  BookingCancelType,
+  BookingType,
+  ImageBookingType,
+} from "@models/booking";
 import {
   formatCurrency,
   formatDateTimeToVnFormat,
@@ -23,7 +27,7 @@ interface Props {
 
 const ModalBookingDetail: React.FC<Props> = (props) => {
   const { open, dataBooking, onClose } = props;
-  // console.log("dataBooking",dataBooking);
+  console.log("dataBooking: ", dataBooking);
   const [selectedCategory, setSelectedCategory] = useState<any>(
     CategoriesDetailEnum.BOOKING_INFO
   );
@@ -34,6 +38,9 @@ const ModalBookingDetail: React.FC<Props> = (props) => {
     useState<ImageBookingType[]>();
   const [listCheckOutBookingImg, setListCheckOutBookingImg] =
     useState<ImageBookingType[]>();
+
+  const [bookingCancelData, setBookingCancelData] =
+    useState<BookingCancelType>();
 
   const renderContent = () => {
     switch (selectedCategory) {
@@ -66,6 +73,27 @@ const ModalBookingDetail: React.FC<Props> = (props) => {
               <Descriptions.Item label="Trạng thái" className="px-3">
                 <StatusCell status={dataBooking?.status ?? ""} />
               </Descriptions.Item>
+              {dataBooking?.status === "Cancel" && bookingCancelData && (
+                <>
+                  <Descriptions.Item label="Lý do hủy" className="px-3">
+                    {bookingCancelData?.cancelReason}
+                  </Descriptions.Item>
+                  <Descriptions.Item label="Người hủy" className="px-3">
+                    {bookingCancelData?.cancelPerson?.role === "Customer"
+                      ? "Khách hàng"
+                      : bookingCancelData?.cancelPerson?.role === "Driver"
+                      ? "Tài xế"
+                      : bookingCancelData?.cancelPerson?.role === "Staff"
+                      ? "Nhân viên"
+                      : "Unknown"}
+                  </Descriptions.Item>
+                  {bookingCancelData?.cancelPerson?.role === "Staff" && (
+                    <Descriptions.Item label="Nhân viên xử lý" className="px-3">
+                      {bookingCancelData?.cancelPerson?.name}
+                    </Descriptions.Item>
+                  )}
+                </>
+              )}
               <Descriptions.Item
                 label="Phương thức thanh toán"
                 className="px-3"
@@ -76,6 +104,59 @@ const ModalBookingDetail: React.FC<Props> = (props) => {
                 {formatCurrency(dataBooking?.searchRequest?.price ?? 0)}
               </Descriptions.Item>
             </Descriptions>
+
+            {dataBooking?.searchRequest?.bookingType === "Someone" && (
+              <>
+                <Divider
+                  className=""
+                  style={{
+                    marginTop: "12px",
+                    borderWidth: "medium",
+                    borderColor: "#EEEEEE",
+                  }}
+                ></Divider>
+
+                <h3 className="ml-3 mb-5">Thông tin người đặt hộ</h3>
+
+                <div className="flex flex-row px-8">
+                  <div>
+                    <Avatar
+                      shape="square"
+                      size={80}
+                      src={`${dataBooking?.searchRequest?.customerBookedOnBehalf?.imageUrl}`}
+                    >
+                      {dataBooking?.searchRequest?.customerBookedOnBehalf?.name?.charAt(
+                        0
+                      )}
+                    </Avatar>
+                  </div>
+                  <Descriptions className="px-5" layout="horizontal">
+                    <Descriptions.Item
+                      label="Họ và tên người đặt"
+                      className="px-3"
+                    >
+                      {dataBooking?.searchRequest?.customerBookedOnBehalf?.name}
+                    </Descriptions.Item>
+                    <Descriptions.Item label="Số điện thoại" className="px-3">
+                      {
+                        dataBooking?.searchRequest?.customerBookedOnBehalf
+                          ?.phoneNumber
+                      }
+                    </Descriptions.Item>
+
+                    {dataBooking?.searchRequest?.customerBookedOnBehalf
+                      ?.note !== "" && (
+                      <Descriptions.Item label="Chú thích" className="px-3">
+                        {
+                          dataBooking?.searchRequest?.customerBookedOnBehalf
+                            ?.note
+                        }
+                      </Descriptions.Item>
+                    )}
+                  </Descriptions>
+                </div>
+              </>
+            )}
 
             <Divider
               className=""
@@ -131,6 +212,7 @@ const ModalBookingDetail: React.FC<Props> = (props) => {
                 </div>
               </>
             )}
+
             {listCheckOutBookingImg?.length != 0 && (
               <>
                 <Divider
@@ -262,31 +344,39 @@ const ModalBookingDetail: React.FC<Props> = (props) => {
     Right: "Ảnh xe mặt phải",
   };
 
-  const getBookingImgListData = async () => {
+  const getBookingDetailData = async () => {
     setLoading(true);
     await bookingService
       .getAllCheckInBookingImage(session?.user.access_token!, dataBooking?.id)
       .then((res) => {
         setListCheckInBookingImg(res);
-        console.log("res: ", res);
         setLoading(false);
       })
       .catch((errors) => {
         console.log("errors get list checkin booking img", errors);
-      })
-      .finally(() => {
-        setLoading(false);
       });
 
     await bookingService
       .getAllCheckOutBookingImage(session?.user.access_token!, dataBooking?.id)
       .then((res) => {
         setListCheckOutBookingImg(res);
-        console.log("res: ", res);
         setLoading(false);
       })
       .catch((errors) => {
         console.log("errors get list checkout booking img", errors);
+      });
+
+    await bookingService
+      .getBookingCancelByBookingId(
+        session?.user.access_token!,
+        dataBooking?.id ?? ""
+      )
+      .then((res) => {
+        setBookingCancelData(res);
+        setLoading(false);
+      })
+      .catch((errors) => {
+        console.log("errors get booking cancel: ", errors);
       })
       .finally(() => {
         setLoading(false);
@@ -294,13 +384,15 @@ const ModalBookingDetail: React.FC<Props> = (props) => {
   };
 
   useEffect(() => {
-    dataBooking && getBookingImgListData();
+    if (dataBooking) {
+      getBookingDetailData();
+    }
   }, [dataBooking]);
 
   return (
     <>
       <Modal
-        centered
+        style={{ top: 10 }}
         width={1200}
         open={open}
         footer={false}

@@ -37,10 +37,22 @@ const getAllCheckOutBookingImage = async (
   return response.data;
 };
 
+const getBookingCancelByBookingId = async (
+  token: string,
+  bookingId: string
+): Promise<any> => {
+  const response = await httpClient.get({
+    url: `${apiLinks.booking.getBookingCancelByBookingId}/${bookingId}`,
+    token: token,
+  });
+  return response.data;
+};
+
 const booking = {
   getAllBookingByAdmin,
   getAllCheckInBookingImage,
   getAllCheckOutBookingImage,
+  getBookingCancelByBookingId
 };
 
 export default booking;
