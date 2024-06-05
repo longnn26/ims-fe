@@ -108,7 +108,7 @@ const HeaderComponent: React.FC<Props> = (props) => {
     // console.log("noti:", notification);
     switch (notification.typeModel) {
       case "WalletWithDrawFunds":
-        router.push("/support");
+        router.push("/request");
         break;
       case "Emergency":
         router.push("/emergency");

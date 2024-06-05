@@ -203,6 +203,17 @@ export const translateStatusToVnLanguage = (status: string): string => {
   }
 };
 
+export const translateBookingInfoTOVnLanguage = (status: string): string => {
+  switch (status) {
+    case "MySelf":
+      return "Đặt cá nhân";
+    case "Someone":
+      return "Đặt hộ";
+    default:
+      return status;
+  }
+};
+
 export const splitString = (inputString: string): string => {
   if (inputString === null) {
     return "";

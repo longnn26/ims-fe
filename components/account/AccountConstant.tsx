@@ -28,6 +28,5 @@ export const categoriesDetail = [
   { key: "IdentityCardInfo", label: "Căn cước công dân" },
   { key: "VehicleInfo", label: "Thông tin chiếc xe" },
   { key: "DrivingLicenseInfo", label: "Thông tin bằng lái xe" },
-  { key: "LinkedAccountInfo", label: "Thông tin liên kết" },
 ];
 
