@@ -204,7 +204,6 @@ const HeaderComponent: React.FC<Props> = (props) => {
     await emergencyService
       .changeToProcessingStatus(session?.user.access_token!, emergencyId)
       .then((res) => {
-        console.log("res emergency", res);
         dispatch(setStaffIsFreeStatus(false));
         dispatch(updateHavingNotiEmergencyStatus(false));
         dispatch(
