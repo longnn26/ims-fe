@@ -68,6 +68,7 @@ const apiLinks = {
     getAllBookingByAdmin: `${url}/api/Admin/Booking/All`,
     getAllCheckInBookingImage: `${url}/api/BookingImage/CheckInImage`,
     getAllCheckOutBookingImage: `${url}/api/BookingImage/CheckOutImage`,
+    getBookingCancelByBookingId: `${url}/api/Admin/BookingCancel`,
   },
 
   configuration: {
