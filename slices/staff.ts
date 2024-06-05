@@ -14,12 +14,12 @@ const slice = createSlice({
   name: "staff",
   initialState,
   reducers: {
-    setStaffBusyStatus: (state, action) => {
+    setStaffIsFreeStatus: (state, action) => {
       state.isFree = action.payload;
     },
   },
 });
 
-export const { setStaffBusyStatus } = slice.actions;
+export const { setStaffIsFreeStatus } = slice.actions;
 
 export default slice.reducer;

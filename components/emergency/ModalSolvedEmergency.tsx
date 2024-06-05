@@ -8,11 +8,12 @@ const { confirm } = Modal;
 import emergencyService from "@services/emergency";
 import { EmergencyStatusEnum } from "@utils/enum";
 import {
-  changeWithoutNotiEmergency,
+  updateHavingNotiEmergencyStatus,
   removeFirstDataEmergency,
+  updateEmergencyStatusToSolved,
 } from "@slices/emergency";
 import useDispatch from "@hooks/use-dispatch";
-import { setStaffBusyStatus } from "@slices/staff";
+import { setStaffIsFreeStatus } from "@slices/staff";
 
 interface Props {
   open: boolean;
@@ -36,6 +37,7 @@ const ModalSolvedEmergency: React.FC<Props> = (props) => {
   const { dataEmergencyListInQueue, havingNotiEmergency } = useSelector(
     (state) => state.emergency
   );
+  const { isFree } = useSelector((state) => state.staff);
 
   const disabled = async () => {
     var result = false;
@@ -91,13 +93,12 @@ const ModalSolvedEmergency: React.FC<Props> = (props) => {
                         onSubmit();
                         message.success("Thay đổi trạng thái thành công!", 1.5);
                         dispatch(removeFirstDataEmergency());
-                        dispatch(setStaffBusyStatus(true));
-                        dispatch(changeWithoutNotiEmergency());
-
-                        console.log(
-                          " state.dataEmergencyListInQueue",
-                          dataEmergencyListInQueue
+                        dispatch(setStaffIsFreeStatus(true));
+                        dispatch(updateHavingNotiEmergencyStatus(false));
+                        dispatch(
+                          updateEmergencyStatusToSolved(dataEmergency?.id ?? "")
                         );
+
                         setEmergencyListData((prevData: any) =>
                           prevData.map((item: EmergencyType) =>
                             item.id === dataEmergency?.id

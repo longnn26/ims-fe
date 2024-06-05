@@ -19,7 +19,8 @@ import ModalEmergencyDetail from "@components/emergency/ModalEmergencyDetail";
 import { TypeOptions, toast } from "react-toastify";
 import ModalSolvedEmergency from "@components/emergency/ModalSolvedEmergency";
 import ModalCancelBookingImmediately from "@components/emergency/ModalCancelBookingImmediately";
-import { setStaffBusyStatus } from "@slices/staff";
+import { setStaffIsFreeStatus } from "@slices/staff";
+import { setDataEmergencyListFromApi, updateEmergencyStatusToProcessing } from "@slices/emergency";
 
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
@@ -82,6 +83,7 @@ const Emergency: React.FC = () => {
         });
 
         setEmergencyListData(res.data);
+        setDataEmergencyListFromApi(res.data)
 
         setLoading(false);
       })
@@ -156,12 +158,12 @@ const Emergency: React.FC = () => {
         await emergencyService
           .changeToProcessingStatus(session?.user.access_token!, record.id)
           .then((res) => {
-            dispatch(setStaffBusyStatus(false));
+            dispatch(setStaffIsFreeStatus(false));
             toast(`Chuyển trạng thái sang xử lý thành công`, {
               type: "success" as TypeOptions,
               position: "top-right",
             });
-
+            dispatch(updateEmergencyStatusToProcessing(record.id));
             setEmergencyListData((prevData: any) =>
               prevData.map((item: EmergencyType) =>
                 item.id === record.id
@@ -387,9 +389,7 @@ const Emergency: React.FC = () => {
               }}
               dataEmergency={selectedEmergency}
               setEmergencyListData={setEmergencyListData}
-              onSubmit={() => {
-               
-              }}
+              onSubmit={() => {}}
             />
           )}
 

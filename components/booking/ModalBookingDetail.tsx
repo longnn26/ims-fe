@@ -23,6 +23,7 @@ interface Props {
 
 const ModalBookingDetail: React.FC<Props> = (props) => {
   const { open, dataBooking, onClose } = props;
+  // console.log("dataBooking",dataBooking);
   const [selectedCategory, setSelectedCategory] = useState<any>(
     CategoriesDetailEnum.BOOKING_INFO
   );

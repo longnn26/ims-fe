@@ -375,6 +375,7 @@ const ModalAccountDetail: React.FC<Props> = (props) => {
           session?.user.access_token!,
           dataAccount?.id ?? ""
         );
+        console.log("res identity: ", res)
         setIdentityCard(res);
 
         const resGetIdentityImg =
