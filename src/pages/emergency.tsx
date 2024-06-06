@@ -112,7 +112,7 @@ const Emergency: React.FC = () => {
       pageSize: pagination.pageSize ?? 10,
       totalPage: pagination.total ?? 0,
     });
-
+    console.log("filters: ", filters);
     setFilteredInfo(filters);
     setSortedInfo(sorter as Sorts);
   };
@@ -120,7 +120,6 @@ const Emergency: React.FC = () => {
   //xử lý khi click vào item trong list action
   const createMenu = (record: EmergencyType) => {
     const { status, isStopTrip, booking } = record;
-    console.log("record: ", booking);
     let filteredItems;
 
     if (status === EmergencyStatusEnum.Pending) {

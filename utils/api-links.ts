@@ -1,11 +1,11 @@
 export const url = "https://imsapi.hisoft.vn";
 export const urlNoti = "https://ims.hisoft.vn";
 
-export const urlServerSide = "http://192.168.40.83:8001";
+// export const urlServerSide = "http://192.168.40.83:8001";
 // chạy deploy thì sài url trên
 
 // chạy local thì sài url dưới
-// export const urlServerSide = "https://imsapi.hisoft.vn";
+export const urlServerSide = "https://imsapi.hisoft.vn";
 
 export const urlImageLinkHost = "https://imsapi.hisoft.vn/";
 
@@ -98,6 +98,10 @@ const apiLinks = {
     createDrivingLicenseByAdmin: `${url}/api/Admin/DrivingLicense`,
     getDrivingLicenseImage: `${url}/api/Admin/DrivingLicense/DrivingLicenseImage`,
     addDrivingLicenseImageByAdmin: `${url}/api/Admin/DrivingLicense/DrivingLicenseImage`,
+  },
+
+  linkedAccount: {
+    getLinkedAccountByAdmin: `${url}/api/`
   },
 };
 

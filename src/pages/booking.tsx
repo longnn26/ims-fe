@@ -101,7 +101,6 @@ const Booking: React.FC = () => {
       pageSize: pagination.pageSize ?? 10,
       totalPage: pagination.total ?? 0,
     });
-    console.log("filters: ", filters);
 
     setSortedInfo(sorter as Sorts);
   };

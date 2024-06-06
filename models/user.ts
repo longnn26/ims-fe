@@ -78,3 +78,24 @@ export interface DriverCreateModel {
   dob: string;
   file: any;
 }
+
+export interface RegisterDriverByAdminModel {
+    name: string;
+    userName: string;
+    email: string;
+    phoneNumber: string;
+    address: string;
+    gender: string;
+    dob: string;
+    file: any;
+    drivingLicenseNumber: string;
+    type: string; //type này là type của driving license
+    issueDate: string;
+    drivingLicenseExpiredDate: string;
+    nationality: string;
+    placeOrigin: string;
+    placeResidence: string;
+    personalIdentification: string;
+    identityCardNumber: string;
+    identityCardExpiredDate: string;
+}

@@ -52,7 +52,7 @@ const ModalEmergencyDetail: React.FC<Props> = (props) => {
               </Descriptions.Item>
               {dataEmergency?.status === "Solved" && (
                 <Descriptions.Item label="Cách giải quyết">
-                  <StatusCell status={dataEmergency?.solution ?? ""} />
+                {dataEmergency?.solution ?? ""}
                 </Descriptions.Item>
               )}
               {dataEmergency?.isStopTrip && (

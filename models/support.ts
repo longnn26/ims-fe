@@ -17,6 +17,7 @@ export interface SupportType {
   supportType: string;
   dateCreated?: string;
   handler?: User;
+  note?: string;
 }
 
 export interface SupportListData extends PagingModel {

@@ -24,10 +24,6 @@ export interface ParamGet {
   sortKey: string;
   sortOrder: string;
   searchValue?: string;
-  dateStart?: string;
-  dateEnd?: string;
-  customerId?: string;
-  userId?: string;
 }
 
 export interface ParamGetWithId extends ParamGet {
