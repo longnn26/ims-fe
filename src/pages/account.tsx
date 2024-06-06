@@ -52,7 +52,6 @@ const Account: React.FC = () => {
 
   const [selectedAccount, setSelectedAccount] = useState<User | null>(null);
 
-
   const [loadingSubmit, setLoadingSubmit] = useState<boolean>(false);
 
   // xử lý tạo account
@@ -90,13 +89,10 @@ const Account: React.FC = () => {
   const [openModalAccountDetail, setOpenModalAccountDetail] =
     useState<boolean>(false);
 
-  const getAccountListData = async () => {
+  const getAccountListData = async (params: ParamGet) => {
     setLoading(true);
     await accountService
-      .getAllUserByAdmin(session?.user.access_token!, {
-        pageSize: tablePagination.pageSize,
-        pageIndex: tablePagination.pageIndex,
-      } as ParamGet)
+      .getAllUserByAdmin(session?.user.access_token!, params)
       .then((res: UserListData) => {
         setTablePagination({
           ...tablePagination,
@@ -122,6 +118,14 @@ const Account: React.FC = () => {
   const clearAll = () => {
     setFilteredInfo({});
     setSortedInfo({});
+    const params: ParamGet = {
+      pageIndex: 1,
+      pageSize: 10,
+      sortKey: "DateCreated",
+      sortOrder: "DESC",
+    };
+
+    getAccountListData(params);
   };
 
   const onChangeTable: TableProps<User>["onChange"] = (
@@ -135,8 +139,23 @@ const Account: React.FC = () => {
       pageSize: pagination.pageSize ?? 10,
       totalPage: pagination.total ?? 0,
     });
+
+    console.log("filters: ", filters);
+
     setFilteredInfo(filters);
     setSortedInfo(sorter as Sorts);
+
+    console.log("sorter: ", sorter);
+
+    const params: ParamGet = {
+      pageIndex: pagination.current ?? 1,
+      pageSize: pagination.pageSize ?? 10,
+      sortKey: ((sorter as Sorts)?.field as string) || "dateCreated",
+      sortOrder: (sorter as Sorts)?.order === "ascend" ? "ASC" : "DESC",
+      searchValue: "",
+    };
+
+    getAccountListData(params);
   };
 
   //xử lý khi click vào item trong list action
@@ -286,8 +305,15 @@ const Account: React.FC = () => {
 
   // use effect
   useEffect(() => {
-    session && getAccountListData();
-  }, [session, tablePagination?.pageIndex, tablePagination?.pageSize]);
+    const params: ParamGet = {
+      pageIndex: 1,
+      pageSize: 10,
+      sortKey: "DateCreated",
+      sortOrder: "DESC",
+    };
+
+    getAccountListData(params);
+  }, []);
 
   return (
     <AntdLayoutNoSSR
@@ -331,7 +357,7 @@ const Account: React.FC = () => {
                   </div>
                 </div>
               )}
-              {openModalCreateDriverAccount && (
+              {/* {openModalCreateDriverAccount && (
                 <ModalCreateDriverAccount
                   open={openModalCreateDriverAccount}
                   onClose={() => setOpenModalCreateDriverAccount(false)}
@@ -344,7 +370,7 @@ const Account: React.FC = () => {
                   onClose={() => setOpenModalCreateStaffAccount(false)}
                   functionResetListDataAccount={getAccountListData}
                 />
-              )}
+              )} */}
             </div>
 
             <Table
