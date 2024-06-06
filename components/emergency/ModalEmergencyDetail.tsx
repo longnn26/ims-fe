@@ -44,12 +44,17 @@ const ModalEmergencyDetail: React.FC<Props> = (props) => {
               <Descriptions.Item label="Loại khẩn cấp">
                 {dataEmergency?.emergencyType}
               </Descriptions.Item>
-              <Descriptions.Item label="Trạng thái">
-                <StatusCell status={dataEmergency?.status ?? ""} />
-              </Descriptions.Item>
               <Descriptions.Item label="Chú thích">
                 {dataEmergency?.note}
               </Descriptions.Item>
+              <Descriptions.Item label="Trạng thái">
+                <StatusCell status={dataEmergency?.status ?? ""} />
+              </Descriptions.Item>
+              {dataEmergency?.status === "Solved" && (
+                <Descriptions.Item label="Cách giải quyết">
+                  <StatusCell status={dataEmergency?.solution ?? ""} />
+                </Descriptions.Item>
+              )}
               {dataEmergency?.isStopTrip && (
                 <Descriptions.Item label="Lý do hủy chuyến ngay">
                   {dataEmergency?.bookingCancelReason}
