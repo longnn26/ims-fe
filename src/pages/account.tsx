@@ -19,10 +19,6 @@ import TextNotUpdate from "@components/table/TextNotUpdate";
 import ModalAccountDetail from "@components/account/ModalAccountDetail";
 import ProfileCell from "@components/table/ProfileCell";
 import { IoIosAdd } from "react-icons/io";
-import ModalCreateDriverAccount from "@components/ModalCreateDriverAccount";
-import ModalCreateStaffAccount from "@components/ModalCreateStaffAccount";
-
-import { IdentityCardModel } from "@models/identityCard";
 
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
@@ -123,6 +119,7 @@ const Account: React.FC = () => {
       pageSize: 10,
       sortKey: "DateCreated",
       sortOrder: "DESC",
+      searchValue: "",
     };
 
     getAccountListData(params);
@@ -140,12 +137,8 @@ const Account: React.FC = () => {
       totalPage: pagination.total ?? 0,
     });
 
-    console.log("filters: ", filters);
-
     setFilteredInfo(filters);
     setSortedInfo(sorter as Sorts);
-
-    console.log("sorter: ", sorter);
 
     const params: ParamGet = {
       pageIndex: pagination.current ?? 1,
@@ -330,6 +323,7 @@ const Account: React.FC = () => {
                   Tạo tài khoản
                 </Button>
               </Space>
+
               <Space style={{ margin: "16px" }}>
                 <Button onClick={clearAll}>Xóa bộ lọc </Button>
               </Space>
@@ -400,11 +394,6 @@ const Account: React.FC = () => {
                 render={(text, record: User) =>
                   record.phoneNumber || <TextNotUpdate />
                 }
-                sorter={(a: User, b: User) => {
-                  const phoneA = a.phoneNumber || "";
-                  const phoneB = b.phoneNumber || "";
-                  return phoneA.localeCompare(phoneB);
-                }}
               />
               <Column
                 title="Giới tính"
@@ -426,17 +415,29 @@ const Account: React.FC = () => {
                   const genderB = b.gender || "";
                   return genderA.localeCompare(genderB);
                 }}
+                filters={[
+                  {
+                    text: "Nam",
+                    value: "Male",
+                  },
+                  {
+                    text: "Nữ",
+                    value: "Female",
+                  },
+                  {
+                    text: "Khác",
+                    value: "Other",
+                  },
+                ]}
+                onFilter={(value, record) =>
+                  record.gender?.indexOf(value as string) === 0
+                }
               />
               <Column
                 title="Ngày sinh"
                 dataIndex="dob"
                 key="dob"
                 render={(text, record: User) => record.dob || <TextNotUpdate />}
-                sorter={(a: User, b: User) => {
-                  const nameA = a.dob || "";
-                  const nameB = b.dob || "";
-                  return nameA.localeCompare(nameB);
-                }}
               />
               <Column
                 title="Trạng thái"
@@ -461,6 +462,28 @@ const Account: React.FC = () => {
                 dataIndex="role"
                 key="role"
                 render={(text) => text}
+                sorter={(a: User, b: User) => {
+                  const roleA = a.role || "";
+                  const roleB = b.role || "";
+                  return roleA.localeCompare(roleB);
+                }}
+                filters={[
+                  {
+                    text: "Khách hàng",
+                    value: "Customer",
+                  },
+                  {
+                    text: "Nhân viên",
+                    value: "Staff",
+                  },
+                  {
+                    text: "Tài xế",
+                    value: "Driver",
+                  },
+                ]}
+                onFilter={(value, record) =>
+                  record.role?.indexOf(value as string) === 0
+                }
               />
               <Column
                 title="Ngày khởi tạo"
@@ -469,6 +492,11 @@ const Account: React.FC = () => {
                 render={(text, record: User) =>
                   formatDateTimeToVnFormat(record.dateCreated)
                 }
+                sorter={(a: User, b: User) => {
+                  const createdDateA = a.dateCreated || "";
+                  const createdDateB = b.dateCreated || "";
+                  return createdDateA.localeCompare(createdDateB);
+                }}
               />
               <Column
                 title="Hành động"
