@@ -12,6 +12,7 @@ import {
   UploadFile,
   UploadProps,
   Spin,
+  Upload,
 } from "antd";
 import { Form } from "antd";
 import useSelector from "@hooks/use-selector";
@@ -22,9 +23,10 @@ import { BrandCarType } from "@models/car";
 import { getBrandLogoPath } from "@utils/helpers";
 import { CiEdit } from "react-icons/ci";
 import { BiPlus, BiTrash } from "react-icons/bi";
-import Upload, { RcFile } from "antd/es/upload";
+import { RcFile } from "antd/es/upload";
 import { TypeOptions, toast } from "react-toastify";
 import carService from "@services/car";
+const { Dragger } = Upload;
 
 interface Props {
   open: boolean;
@@ -88,7 +90,6 @@ const ModalManageBrandVehicle: React.FC<Props> = (props) => {
             //img
           })
           .then((res) => {
-
             const newBrand = { ...res };
             console.log("newBrand", newBrand);
             setDataBrandList([...dataBrandList, newBrand]);
