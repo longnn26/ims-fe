@@ -20,6 +20,7 @@ import { useSession } from "next-auth/react";
 import { TransactionType } from "@models/transaction";
 import { TypeOptions, toast } from "react-toastify";
 import { SupportType } from "@models/support";
+import StatusCell from "@components/table/StatusCell";
 const { confirm } = Modal;
 
 interface Props {
@@ -88,6 +89,15 @@ const ModalSupportDetail: React.FC<Props> = (props) => {
               <Descriptions.Item label="Ngày gửi">
                 {formatDate(dataSupport?.dateCreated)}
               </Descriptions.Item>
+              <Descriptions.Item label="Trạng thái xử lý">
+                <StatusCell status={dataSupport?.supportStatus ?? ""} />
+              </Descriptions.Item>
+
+              {dataSupport?.supportStatus == "Pause" && (
+                <Descriptions.Item label="Trạng thái xử lý">
+                  {dataSupport?.note ?? ""}
+                </Descriptions.Item>
+              )}
             </Descriptions>
 
             <Divider

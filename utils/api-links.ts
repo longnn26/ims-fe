@@ -99,6 +99,23 @@ const apiLinks = {
     getDrivingLicenseImage: `${url}/api/Admin/DrivingLicense/DrivingLicenseImage`,
     addDrivingLicenseImageByAdmin: `${url}/api/Admin/DrivingLicense/DrivingLicenseImage`,
   },
+
+  linkedAccount: {
+    getLinkedAccountByAdmin: `${url}/api/`,
+  },
+
+  car: {
+    //brand
+    addNewBrand: `${url}/api/BrandVehicle`,
+    getAllBrand: `${url}/api/BrandVehicle`,
+    deleteSelectedBrand: `${url}/api/BrandVehicle`,
+    updateSelectedBrand: `${url}/api/BrandVehicle`,
+    //model
+    addNewModel: `${url}/api/ModelVehicle`,
+    getAllModelByBrandVehicleId: `${url}/api/ModelVehicle/BrandVehicle`,
+    deleteSelectedModelByModelVehicleId: `${url}/api/ModelVehicle`,
+    updateSelectedModelByBrandVehicleId: `${url}/api/ModelVehicle`,
+  },
 };
 
 export default apiLinks;

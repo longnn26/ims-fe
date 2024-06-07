@@ -5,6 +5,7 @@ import { Button, Input, Modal, Table, Switch, TimePicker } from "antd";
 import { useSession } from "next-auth/react";
 import { ConfigurationType } from "@models/configuration";
 import configurationService from "@services/configuration";
+import carService from "@services/car";
 import {
   anotherOptionConfigurationPrice,
   translateConfigurationPriceToVietnamese,
@@ -13,8 +14,10 @@ import { CiEdit } from "react-icons/ci";
 import { FiSave } from "react-icons/fi";
 import { MdOutlineCancel } from "react-icons/md";
 import { TypeOptions, toast } from "react-toastify";
-import moment from "moment";
 import dayjs, { Dayjs } from "dayjs";
+import ModalManageBrandVehicle from "@components/configuration/ModalManageBrandVehicle";
+import { BrandCarType, ModelCarType } from "@models/car";
+import ModalManageModelVehicle from "@components/configuration/ModalManageModelVehicle";
 
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
@@ -127,6 +130,20 @@ const Configuration: React.FC = () => {
       })
       .catch((errors) => {
         console.log("errors get configuration", errors);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+
+    setLoading(true);
+    await carService
+      .getAllBrand(session?.user.access_token!)
+      .then((res) => {
+        setLoading(false);
+        setDataBrandList(res);
+      })
+      .catch((errors) => {
+        console.log("errors get all brand", errors);
       })
       .finally(() => {
         setLoading(false);
@@ -326,6 +343,14 @@ const Configuration: React.FC = () => {
     setEditableData({ ...editableData, isPercent: checked });
   };
 
+  // xử lý config brand và model car
+  const [openModalManageBrand, setOpenModalManageBrand] =
+    useState<boolean>(false);
+  const [openModalManageModel, setOpenModalManageModel] =
+    useState<boolean>(false);
+
+  const [dataBrandList, setDataBrandList] = useState<BrandCarType[]>([]);
+
   useEffect(() => {
     session && getConfigurationPriceData();
   }, [session]);
@@ -335,6 +360,26 @@ const Configuration: React.FC = () => {
       content={
         <>
           <div className="mb-4 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
+            <div className="mx-1 my-4 flex gap-4">
+              <Button
+                key="btn-brand"
+                onClick={() => {
+                  setOpenModalManageBrand(true);
+                }}
+              >
+                Các hãng xe hiện có
+              </Button>
+              <Button
+                key="btn-model"
+                onClick={() => {
+                  setOpenModalManageModel(true);
+                }}
+              >
+                Các mẫu xe hiện có
+              </Button>
+            </div>
+
+            <h3 className="mx-1 my-4">Bảng giá</h3>
             <Table dataSource={dataSource} loading={loading}>
               <Column
                 width={"20%"}
@@ -464,6 +509,26 @@ const Configuration: React.FC = () => {
                 }
               />
             </Table>
+
+            <ModalManageBrandVehicle
+              open={openModalManageBrand}
+              onClose={() => {
+                setOpenModalManageBrand(false);
+              }}
+              dataBrandList={dataBrandList}
+              setDataBrandList={setDataBrandList}
+              onSubmit={() => {}}
+            />
+
+            <ModalManageModelVehicle
+              open={openModalManageModel}
+              onClose={() => {
+                setOpenModalManageModel(false);
+              }}
+              dataBrandList={dataBrandList}
+              setDataBrandList={setDataBrandList}
+              onSubmit={() => {}}
+            />
           </div>
         </>
       }
