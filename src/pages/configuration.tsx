@@ -335,6 +335,7 @@ const Configuration: React.FC = () => {
       content={
         <>
           <div className="mb-4 bg-[#f8f9fa]/10 border border-gray-200 rounded-lg shadow-lg shadow-[#e7edf5]/50">
+            <h3 className="mx-1 my-4">Bảng giá</h3>
             <Table dataSource={dataSource} loading={loading}>
               <Column
                 width={"20%"}
@@ -464,6 +465,11 @@ const Configuration: React.FC = () => {
                 }
               />
             </Table>
+
+            <div className="mx-1 my-4">
+              <Button key="btn-brand">Các hãng xe hiện có</Button>
+              <Button key="btn-model ml-4">Các mẫu xe hiện có</Button>
+            </div>
           </div>
         </>
       }
