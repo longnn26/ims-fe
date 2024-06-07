@@ -101,7 +101,8 @@ const apiLinks = {
   },
 
   linkedAccount: {
-    getLinkedAccountByAdmin: `${url}/api/`,
+    getLinkedAccountByAdmin: `${url}/api/Admin/User/GetLinkedAccount`,
+    getAllBank: `https://api.vietqr.io/v2/banks`,
   },
 
   car: {
