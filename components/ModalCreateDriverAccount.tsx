@@ -14,6 +14,7 @@ import FirstStageCreate from "./stageCreateAccount/FirstStageCreate";
 import SecondStageCreate from "./stageCreateAccount/SecondStageCreate";
 import ThirdStageCreate from "./stageCreateAccount/ThirdStageCreate";
 import { formatDobToYYYYMMDD } from "@utils/helpers";
+import FourStageCreate from "./stageCreateAccount/FourStageCreate";
 
 interface Props {
   open: boolean;
@@ -29,10 +30,15 @@ const ModalCreateDriverAccount: React.FC<Props> = (props) => {
   const { data: session } = useSession();
   const formAccountRef = useRef(null);
   const [formAccount] = Form.useForm();
+
   const formIdentityCardRef = useRef(null);
   const [formIdentityCard] = Form.useForm();
+
   const formDrivingLicenseRef = useRef(null);
   const [formDrivingLicense] = Form.useForm();
+
+  const formLinkedAccountRef = useRef(null);
+  const [formLinkedAccount] = Form.useForm();
 
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [loadingSubmit, setLoadingSubmit] = useState<boolean>(false);
@@ -43,6 +49,7 @@ const ModalCreateDriverAccount: React.FC<Props> = (props) => {
     1: true,
     2: false,
     3: false,
+    4: false,
   });
 
   //function xử lý chuyển trang
@@ -53,11 +60,14 @@ const ModalCreateDriverAccount: React.FC<Props> = (props) => {
 
   const handleContinueStage = async () => {
     try {
-      if (currentStage === 1) {
-        await formAccount.validateFields();
-      } else if (currentStage === 2) {
-        await formIdentityCard.validateFields();
-      }
+      //TẠM THỜI ẨN
+      // if (currentStage === 1) {
+      //   await formAccount.validateFields();
+      // } else if (currentStage === 2) {
+      //   await formIdentityCard.validateFields();
+      // }else if (currentStage === 3) {
+      //   await formDrivingLicense.validateFields();
+      // }
 
       /////////////////////////////////////////////
 
@@ -81,6 +91,8 @@ const ModalCreateDriverAccount: React.FC<Props> = (props) => {
         return "CCCD";
       case 3:
         return "Bằng lái xe";
+      case 4:
+        return "Ngân hàng liên kết";
       default:
         return "";
     }
@@ -129,6 +141,14 @@ const ModalCreateDriverAccount: React.FC<Props> = (props) => {
           <ThirdStageCreate
             formDrivingLicenseRef={formDrivingLicenseRef}
             formDrivingLicense={formDrivingLicense}
+            data={dataSupport}
+          />
+        );
+      case 4:
+        return (
+          <FourStageCreate
+            formLinkedAccountRef={formLinkedAccountRef}
+            formLinkedAccount={formLinkedAccount}
             data={dataSupport}
           />
         );
@@ -256,6 +276,7 @@ const ModalCreateDriverAccount: React.FC<Props> = (props) => {
             1: true,
             2: false,
             3: false,
+            4: false
           });
           setCurrentStage(1);
 
@@ -315,6 +336,7 @@ const ModalCreateDriverAccount: React.FC<Props> = (props) => {
             1: true,
             2: false,
             3: false,
+            4: false
           });
           setCurrentStage(1);
           formAccount.resetFields();
@@ -337,7 +359,7 @@ const ModalCreateDriverAccount: React.FC<Props> = (props) => {
               </div>
             )}
 
-            {currentStage < 3 && (
+            {currentStage < 4 && (
               <div
                 key="btn-continue"
                 className="font-semibold btn-continue px-4 py-2 cursor-pointer"
@@ -347,7 +369,7 @@ const ModalCreateDriverAccount: React.FC<Props> = (props) => {
               </div>
             )}
 
-            {currentStage === 3 && (
+            {currentStage === 4 && (
               <div
                 key="btn-confirm"
                 className="font-semibold btn-continue px-4 py-2 cursor-pointer"
@@ -361,8 +383,8 @@ const ModalCreateDriverAccount: React.FC<Props> = (props) => {
       >
         <div className="container">
           <div className="w-full flex justify-center">
-            <div className="stage-header w-3/5">
-              {[1, 2, 3].map((stageNum, index) => (
+            <div className="stage-header w-full">
+              {[1, 2, 3, 4].map((stageNum, index) => (
                 <div
                   key={index}
                   className={`stage btn ${

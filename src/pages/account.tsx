@@ -13,12 +13,14 @@ import {
   formatDateTimeToVnFormat,
   translateGenderToVietnamese,
 } from "@utils/helpers";
-import { items } from "@components/account/AccountConstant";
+import { defaultParam, items } from "@components/account/AccountConstant";
 import { TypeOptions, toast } from "react-toastify";
 import TextNotUpdate from "@components/table/TextNotUpdate";
 import ModalAccountDetail from "@components/account/ModalAccountDetail";
 import ProfileCell from "@components/table/ProfileCell";
 import { IoIosAdd } from "react-icons/io";
+import ModalCreateDriverAccount from "@components/ModalCreateDriverAccount";
+import ModalCreateStaffAccount from "@components/ModalCreateStaffAccount";
 
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
@@ -351,20 +353,23 @@ const Account: React.FC = () => {
                   </div>
                 </div>
               )}
-              {/* {openModalCreateDriverAccount && (
+              {openModalCreateDriverAccount && (
                 <ModalCreateDriverAccount
                   open={openModalCreateDriverAccount}
                   onClose={() => setOpenModalCreateDriverAccount(false)}
-                  functionResetListDataAccount={getAccountListData}
+                  functionResetListDataAccount={() =>
+                    getAccountListData(defaultParam)
+                  }
                 />
               )}
               {openModalCreateStaffAccount && (
                 <ModalCreateStaffAccount
                   open={openModalCreateStaffAccount}
                   onClose={() => setOpenModalCreateStaffAccount(false)}
-                  functionResetListDataAccount={getAccountListData}
+                  functionResetListDataAccount={() =>
+                    getAccountListData(defaultParam)}
                 />
-              )} */}
+              )}
             </div>
 
             <Table

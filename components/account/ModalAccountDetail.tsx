@@ -43,7 +43,8 @@ const ModalAccountDetail: React.FC<Props> = (props) => {
   const { open, dataAccount, onClose } = props;
   const { data: session } = useSession();
   const [loading, setLoading] = useState(false);
-
+  console.log("dataAccount", dataAccount);
+  
   const [selectedCategory, setSelectedCategory] = useState<any>(
     CategoriesDetailEnum.ACCOUNT_INFO
   );
@@ -365,7 +366,6 @@ const ModalAccountDetail: React.FC<Props> = (props) => {
   };
 
   const handleCategoryClick = async (key) => {
-    console.log("key: ", key);
     setSelectedCategory(key);
 
     if (key === "IdentityCardInfo") {
@@ -375,7 +375,6 @@ const ModalAccountDetail: React.FC<Props> = (props) => {
           session?.user.access_token!,
           dataAccount?.id ?? ""
         );
-        console.log("res identity: ", res)
         setIdentityCard(res);
 
         const resGetIdentityImg =
@@ -383,7 +382,6 @@ const ModalAccountDetail: React.FC<Props> = (props) => {
             session?.user.access_token!,
             res?.id ?? ""
           );
-        console.log("resGetIdentityImg", resGetIdentityImg);
         setListIdentityCardImage(resGetIdentityImg);
       } catch (errors) {
         console.log("errors get identity", errors);
@@ -397,7 +395,6 @@ const ModalAccountDetail: React.FC<Props> = (props) => {
           session?.user.access_token!,
           dataAccount?.id ?? ""
         );
-        console.log("res dlc: ", resDlc);
         setDrivingLicense(resDlc[0]);
 
         const resGetDlcImg = await drivingLicenseService.getDrivingLicenseImage(
