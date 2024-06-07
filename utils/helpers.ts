@@ -338,3 +338,36 @@ export const anotherOptionConfigurationPrice = (anotherOption: string) => {
       return "Phạm vi (trên km)";
   }
 };
+
+export const getBrandLogoPath = (brandName: string): string => {
+  switch (brandName) {
+    case "Toyota":
+      return "/images/Toyota.png";
+    case "Audi":
+      return "/images/Audi.png";
+    case "BMW":
+      return "/images/BMW.png";
+    case "KIA":
+      return "/images/Kia.png";
+    case "Ford":
+      return "/images/Ford.png";
+    case "Honda":
+      return "/images/Honda.png";
+    case "Lexus":
+      return "/images/Lexus.png";
+    case "Mazda":
+      return "/images/Mazda.png";
+    case "Vinfast":
+      return "/images/Vinfast.png";
+    case "Suzuki":
+      return "/images/Suzuki.png";
+    case "Mercedes":
+      return "/images/Mercedes.png";
+    case "Daewoo":
+      return "/images/Daewoo.png";
+    case "Hyundai":
+      return "/images/Hyundai.png";
+    default:
+      return "/images/car_driving.png";
+  }
+};

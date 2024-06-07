@@ -101,7 +101,20 @@ const apiLinks = {
   },
 
   linkedAccount: {
-    getLinkedAccountByAdmin: `${url}/api/`
+    getLinkedAccountByAdmin: `${url}/api/`,
+  },
+
+  car: {
+    //brand
+    addNewBrand: `${url}/api/BrandVehicle`,
+    getAllBrand: `${url}/api/BrandVehicle`,
+    deleteSelectedBrand: `${url}/api/BrandVehicle`,
+    updateSelectedBrand: `${url}/api/BrandVehicle`,
+    //model
+    addNewModel: `${url}/api/ModelVehicle`,
+    getAllModelByBrandVehicleId: `${url}/api/ModelVehicle/BrandVehicle`,
+    deleteSelectedModelByModelVehicleId: `${url}/api/ModelVehicle`,
+    updateSelectedModelByBrandVehicleId: `${url}/api/ModelVehicle`,
   },
 };
 
