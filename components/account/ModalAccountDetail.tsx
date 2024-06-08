@@ -25,6 +25,7 @@ import { convertDatePicker, translateGenderToVietnamese } from "@utils/helpers";
 import identityCardService from "@services/identityCard";
 import drivingLicenseService from "@services/drivingLicense";
 import linkedAccountService from "@services/linkedAccount";
+import vehicleService from "@services/vehicle";
 import {
   DrivingLicenseCardModel,
   DrivingLicenseImageCard,
@@ -36,6 +37,8 @@ import { CiEdit } from "react-icons/ci";
 import { FiSave } from "react-icons/fi";
 import { MdOutlineCancel } from "react-icons/md";
 import { TypeOptions, toast } from "react-toastify";
+import { VehicleType } from "@models/vehicle";
+import TextNotUpdate from "@components/table/TextNotUpdate";
 
 const { Option } = Select;
 const { confirm } = Modal;
@@ -46,6 +49,13 @@ interface Props {
   dataAccount: User | undefined;
   setDataAccount: React.Dispatch<React.SetStateAction<User>>;
 }
+
+const vehicleImageTypeText = {
+  Front: "Ảnh xe mặt trước",
+  Behind: "Ảnh xe mặt sau",
+  Left: "Ảnh xe mặt trái",
+  Right: "Ảnh xe mặt phải",
+};
 
 const ModalAccountDetail: React.FC<Props> = (props) => {
   const { open, dataAccount, onClose, setDataAccount } = props;
@@ -72,6 +82,8 @@ const ModalAccountDetail: React.FC<Props> = (props) => {
 
   const [linkedAccountInfo, setLinkedAccountInfo] =
     useState<LinkedAccountType | null>(null);
+
+  const [vehicleInfo, setVehicleInfo] = useState<VehicleType[]>([]);
 
   const [editMode, setEditMode] = useState(false);
 
@@ -218,7 +230,7 @@ const ModalAccountDetail: React.FC<Props> = (props) => {
         );
 
       case CategoriesDetailEnum.IDENTITY_CARD_INFO:
-        return identityCard?.identityCardNumber !== "" ? (
+        return identityCard !== null ? (
           <>
             <div className="flex flex-row px-5">
               <Descriptions className="px-5" layout="horizontal">
@@ -328,7 +340,7 @@ const ModalAccountDetail: React.FC<Props> = (props) => {
         );
 
       case CategoriesDetailEnum.DRIVING_LICENSE_INFO:
-        return drivingLicense?.drivingLicenseNumber !== "" ? (
+        return drivingLicense !== null ? (
           <>
             <div className="flex flex-row px-5">
               <Descriptions className="px-5" layout="horizontal">
@@ -408,7 +420,7 @@ const ModalAccountDetail: React.FC<Props> = (props) => {
         );
 
       case CategoriesDetailEnum.LINKED_ACCOUNT_INFO:
-        return linkedAccountInfo?.accountNumber !== "" ? (
+        return linkedAccountInfo !== null ? (
           <>
             <div className="flex flex-row px-5">
               <Descriptions className="px-5" layout="horizontal">
@@ -424,6 +436,59 @@ const ModalAccountDetail: React.FC<Props> = (props) => {
         ) : (
           <p className="px-5">Người dùng chưa cập nhập</p>
         );
+
+      case CategoriesDetailEnum.VEHICLE_INFO:
+        return vehicleInfo?.length > 0 ? (
+          <>
+            {vehicleInfo.map((vehicle) => (
+              <>
+                <div key={vehicle.licensePlate} className="vehicle-info">
+                  <h3 className="mx-5">
+                    {vehicle.brand} {vehicle.model}
+                  </h3>
+                  <Descriptions className="px-5" layout="horizontal">
+                    <Descriptions.Item label="Biển số xe">
+                      {vehicle.licensePlate}
+                    </Descriptions.Item>
+                    <Descriptions.Item label="Màu">
+                      {vehicle.color}
+                    </Descriptions.Item>
+                  </Descriptions>
+
+                  <div className="flex flex-row px-5 justify-center items-center">
+                    {vehicle.listVehicleImage?.map((image, index) => (
+                      <div
+                        key={index}
+                        style={{ marginRight: 20, textAlign: "center" }}
+                      >
+                        <Image
+                          src={`${urlImageLinkHost}${image.imageUrl}`}
+                          alt={vehicleImageTypeText[image.imageUrl]}
+                          style={{ width: 200, height: "auto" }}
+                        />
+                        <div>
+                          {vehicleImageTypeText[image.vehicleImageType]}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <Divider
+                  className=""
+                  style={{
+                    marginTop: "12px",
+                    borderWidth: "medium",
+                    borderColor: "#EEEEEE",
+                  }}
+                ></Divider>
+              </>
+            ))}
+          </>
+        ) : (
+          <p className="px-5">Người dùng chưa cập nhập</p>
+        );
+
       default:
         return null;
     }
@@ -449,6 +514,7 @@ const ModalAccountDetail: React.FC<Props> = (props) => {
         setListIdentityCardImage(resGetIdentityImg);
       } catch (errors) {
         console.log("errors get identity", errors);
+        setListIdentityCardImage([]);
       } finally {
         setLoading(false);
       }
@@ -469,6 +535,7 @@ const ModalAccountDetail: React.FC<Props> = (props) => {
         setListDrivingLicenseImage(resGetDlcImg);
       } catch (errors) {
         console.log("errors get DrivingLicenseInfo", errors);
+        setListDrivingLicenseImage([]);
       } finally {
         setLoading(false);
       }
@@ -483,6 +550,39 @@ const ModalAccountDetail: React.FC<Props> = (props) => {
         setLinkedAccountInfo(resLinkedAccount);
       } catch (errors) {
         console.log("errors get linked account", errors);
+      } finally {
+        setLoading(false);
+      }
+    } else if (key === "VehicleInfo") {
+      setLoading(true);
+      try {
+        const resVehicleInfoList = await vehicleService.getVehicleByCustomerId(
+          session?.user.access_token!,
+          dataAccount?.id ?? ""
+        );
+
+        setVehicleInfo(resVehicleInfoList);
+
+        const vehicleInfoList: VehicleType[] = resVehicleInfoList;
+
+        const vehicleInfoWithImages = await Promise.all(
+          vehicleInfoList.map(async (vehicle) => {
+            const resVehicleImage = await vehicleService.getVehicleImage(
+              session?.user.access_token!,
+              vehicle.id ?? ""
+            );
+
+            return {
+              ...vehicle,
+              listVehicleImage: resVehicleImage,
+            };
+          })
+        );
+
+        setVehicleInfo(vehicleInfoWithImages);
+      } catch (errors) {
+        console.log("errors get vehicle info: ", errors);
+        setListDrivingLicenseImage([]);
       } finally {
         setLoading(false);
       }
@@ -583,6 +683,7 @@ const ModalAccountDetail: React.FC<Props> = (props) => {
           setIdentityCard(null);
           setDrivingLicense(null);
           setLinkedAccountInfo(null);
+          setListIdentityCardImage([]);
         }}
       >
         <div className="flex flex-row gap-3 mb-7">

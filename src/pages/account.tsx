@@ -48,7 +48,7 @@ const Account: React.FC = () => {
   const [filteredInfo, setFilteredInfo] = useState<Filters>({});
   const [sortedInfo, setSortedInfo] = useState<Sorts>({});
 
-  const [selectedAccount, setSelectedAccount] = useState<User | null>(null);
+  const [selectedAccount, setSelectedAccount] = useState<any>(null);
 
   const [loadingSubmit, setLoadingSubmit] = useState<boolean>(false);
 
