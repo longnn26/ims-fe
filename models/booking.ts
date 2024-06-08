@@ -1,6 +1,6 @@
 import { Base, PagingModel, ParamGet } from "./base";
 import { User } from "./user";
-import { Vehicle } from "./vehicle";
+import { VehicleType } from "./vehicle";
 
 export interface BookingType {
   id: string;
@@ -45,7 +45,7 @@ export interface SearchRequest {
   dropOffLatitude: number;
   dropOffAddress: string;
   pickupAddress: string;
-  bookingVehicle: Vehicle;
+  bookingVehicle: VehicleType;
   customerBookedOnBehalf: any;
   price: number;
   distance: number;
