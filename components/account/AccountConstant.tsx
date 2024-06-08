@@ -1,3 +1,4 @@
+import { ParamGet } from "@models/base";
 import { MenuProps } from "antd";
 import { BiCheck, BiDetail } from "react-icons/bi";
 import { GrTransaction } from "react-icons/gr";
@@ -28,5 +29,13 @@ export const categoriesDetail = [
   { key: "IdentityCardInfo", label: "Căn cước công dân" },
   { key: "VehicleInfo", label: "Thông tin chiếc xe" },
   { key: "DrivingLicenseInfo", label: "Thông tin bằng lái xe" },
+  { key: "LinkedAccountInfo", label: "Thông tin liên kết" },
 ];
 
+export const defaultParam: ParamGet = {
+  pageIndex: 1,
+  pageSize: 10,
+  sortKey: "DateCreated",
+  sortOrder: "DESC",
+  searchValue: "",
+};

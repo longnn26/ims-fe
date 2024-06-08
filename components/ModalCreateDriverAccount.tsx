@@ -14,6 +14,8 @@ import FirstStageCreate from "./stageCreateAccount/FirstStageCreate";
 import SecondStageCreate from "./stageCreateAccount/SecondStageCreate";
 import ThirdStageCreate from "./stageCreateAccount/ThirdStageCreate";
 import { formatDobToYYYYMMDD } from "@utils/helpers";
+import FourStageCreate from "./stageCreateAccount/FourStageCreate";
+import { BankType } from "@models/linkedAccount";
 
 interface Props {
   open: boolean;
@@ -29,10 +31,16 @@ const ModalCreateDriverAccount: React.FC<Props> = (props) => {
   const { data: session } = useSession();
   const formAccountRef = useRef(null);
   const [formAccount] = Form.useForm();
+
   const formIdentityCardRef = useRef(null);
   const [formIdentityCard] = Form.useForm();
+
   const formDrivingLicenseRef = useRef(null);
   const [formDrivingLicense] = Form.useForm();
+
+  const formLinkedAccountRef = useRef(null);
+  const [formLinkedAccount] = Form.useForm();
+  const [selectedBank, setSelectedBank] = useState<BankType>();
 
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [loadingSubmit, setLoadingSubmit] = useState<boolean>(false);
@@ -43,6 +51,7 @@ const ModalCreateDriverAccount: React.FC<Props> = (props) => {
     1: true,
     2: false,
     3: false,
+    4: false,
   });
 
   //function xử lý chuyển trang
@@ -57,6 +66,8 @@ const ModalCreateDriverAccount: React.FC<Props> = (props) => {
         await formAccount.validateFields();
       } else if (currentStage === 2) {
         await formIdentityCard.validateFields();
+      } else if (currentStage === 3) {
+        await formDrivingLicense.validateFields();
       }
 
       /////////////////////////////////////////////
@@ -81,6 +92,8 @@ const ModalCreateDriverAccount: React.FC<Props> = (props) => {
         return "CCCD";
       case 3:
         return "Bằng lái xe";
+      case 4:
+        return "Ngân hàng liên kết";
       default:
         return "";
     }
@@ -132,6 +145,16 @@ const ModalCreateDriverAccount: React.FC<Props> = (props) => {
             data={dataSupport}
           />
         );
+      case 4:
+        return (
+          <FourStageCreate
+            formLinkedAccountRef={formLinkedAccountRef}
+            formLinkedAccount={formLinkedAccount}
+            data={dataSupport}
+            selectedBank={selectedBank}
+            setSelectedBank={setSelectedBank}
+          />
+        );
       default:
         return null;
     }
@@ -151,6 +174,10 @@ const ModalCreateDriverAccount: React.FC<Props> = (props) => {
         "Bạn có chắc muốn tạo tài khoản tài xế với những thông tin vừa điền?",
       async onOk() {
         try {
+          toast("Tiến trình sẽ diễn ra hơi lâu, vui lòng chờ trong giây lát!", {
+            type: "warning" as TypeOptions,
+            position: "top-right",
+          });
           setLoadingSubmit(true);
 
           const resCreateDriver = await customerService.createDriverAccount(
@@ -164,36 +191,49 @@ const ModalCreateDriverAccount: React.FC<Props> = (props) => {
               gender: formAccount.getFieldValue("gender"),
               dob: formatDobToYYYYMMDD(formAccount.getFieldValue("dob")),
               file: formAccount.getFieldValue("avatar")[0]?.originFileObj,
+              drivingLicenseNumber: formDrivingLicense.getFieldValue(
+                "drivingLicenseNumber"
+              ),
+              type: formDrivingLicense.getFieldValue("type"),
+              issueDate: formatDobToYYYYMMDD(
+                formDrivingLicense.getFieldValue("issueDate")
+              ),
+              drivingLicenseExpiredDate: formatDobToYYYYMMDD(
+                formDrivingLicense.getFieldValue("expiredDate")
+              ),
+              nationality: formIdentityCard.getFieldValue("nationality"),
+              placeOrigin: formIdentityCard.getFieldValue("placeOrigin"),
+              placeResidence: formIdentityCard.getFieldValue("placeResidence"),
+              personalIdentification: formIdentityCard.getFieldValue(
+                "personalIdentification"
+              ),
+              identityCardNumber:
+                formIdentityCard.getFieldValue("identityCardNumber"),
+              identityCardExpiredDate: formatDobToYYYYMMDD(
+                formIdentityCard.getFieldValue("expiredDate")
+              ),
+              accountNumber: formLinkedAccount.getFieldValue("accountNumber"),
+              linkedAccountType: "Bank",
+              brand: selectedBank?.shortName ?? "",
+              linkedImgUrl: selectedBank?.logo ?? "",
             }
           );
 
-          const resIdentityCard =
-            await identityCardService.createIdentityCardByAdmin(
-              session?.user.access_token!,
-              {
-                fullName: formIdentityCard.getFieldValue("fullName"),
-                dob: formatDobToYYYYMMDD(formIdentityCard.getFieldValue("dob")),
-                gender: formIdentityCard.getFieldValue("gender"),
-                nationality: formIdentityCard.getFieldValue("nationality"),
-                placeOrigin: formIdentityCard.getFieldValue("placeOrigin"),
-                placeResidence:
-                  formIdentityCard.getFieldValue("placeResidence"),
-                personalIdentification: formIdentityCard.getFieldValue(
-                  "personalIdentification"
-                ),
-                identityCardNumber:
-                  formIdentityCard.getFieldValue("identityCardNumber"),
-                expiredDate: formatDobToYYYYMMDD(
-                  formIdentityCard.getFieldValue("expiredDate")
-                ),
-              },
-              resCreateDriver.id
-            );
+          const resGetIdentityCard = await identityCardService.getIdentityCard(
+            session?.user.access_token!,
+            resCreateDriver?.id ?? ""
+          );
 
+          const resGetDlc = await drivingLicenseService.getDrivingLicense(
+            session?.user.access_token!,
+            resCreateDriver?.id ?? ""
+          );
+
+          //add ảnh CCCD
           await identityCardService.addIdentityCardImageByAdmin(
             session?.user.access_token!,
             {
-              identityCardId: resIdentityCard,
+              identityCardId: resGetIdentityCard.id,
               isFront: true,
               file: formIdentityCard.getFieldValue("imageFront")[0]
                 .originFileObj,
@@ -203,35 +243,18 @@ const ModalCreateDriverAccount: React.FC<Props> = (props) => {
           await identityCardService.addIdentityCardImageByAdmin(
             session?.user.access_token!,
             {
-              identityCardId: resIdentityCard,
+              identityCardId: resGetIdentityCard.id,
               isFront: false,
               file: formIdentityCard.getFieldValue("imageBehind")[0]
                 .originFileObj,
             }
           );
 
-          const resCreateDlc =
-            await drivingLicenseService.createDrivingLicenseByAdmin(
-              session?.user.access_token!,
-              {
-                drivingLicenseNumber: formDrivingLicense.getFieldValue(
-                  "drivingLicenseNumber"
-                ),
-                type: formDrivingLicense.getFieldValue("type"),
-                expiredDate: formatDobToYYYYMMDD(
-                  formDrivingLicense.getFieldValue("expiredDate")
-                ),
-                issueDate: formatDobToYYYYMMDD(
-                  formDrivingLicense.getFieldValue("issueDate")
-                ),
-              },
-              resCreateDriver.id
-            );
-
+           //add ảnh bằng lái xe
           await drivingLicenseService.addDrivingLicenseImageByAdmin(
             session?.user.access_token!,
             {
-              drivingLicenseId: resCreateDlc,
+              drivingLicenseId: resGetDlc[0].id,
               isFront: true,
               file: formDrivingLicense.getFieldValue("imageFront")[0]
                 .originFileObj,
@@ -241,7 +264,7 @@ const ModalCreateDriverAccount: React.FC<Props> = (props) => {
           await drivingLicenseService.addDrivingLicenseImageByAdmin(
             session?.user.access_token!,
             {
-              drivingLicenseId: resCreateDlc,
+              drivingLicenseId: resGetDlc[0].id,
               isFront: false,
               file: formDrivingLicense.getFieldValue("imageBehind")[0]
                 .originFileObj,
@@ -256,12 +279,15 @@ const ModalCreateDriverAccount: React.FC<Props> = (props) => {
             1: true,
             2: false,
             3: false,
+            4: false,
           });
           setCurrentStage(1);
 
           formAccount.resetFields();
           formIdentityCard.resetFields();
           formDrivingLicense.resetFields();
+          formLinkedAccount.resetFields;
+          setSelectedBank(undefined);
 
           if (functionResetListDataAccount) {
             await functionResetListDataAccount();
@@ -299,7 +325,7 @@ const ModalCreateDriverAccount: React.FC<Props> = (props) => {
   return (
     <>
       <Modal
-        centered
+        style={{top: 10}}
         title={
           <span className="inline-block m-auto">
             {" "}
@@ -315,6 +341,7 @@ const ModalCreateDriverAccount: React.FC<Props> = (props) => {
             1: true,
             2: false,
             3: false,
+            4: false,
           });
           setCurrentStage(1);
           formAccount.resetFields();
@@ -337,7 +364,7 @@ const ModalCreateDriverAccount: React.FC<Props> = (props) => {
               </div>
             )}
 
-            {currentStage < 3 && (
+            {currentStage < 4 && (
               <div
                 key="btn-continue"
                 className="font-semibold btn-continue px-4 py-2 cursor-pointer"
@@ -347,7 +374,7 @@ const ModalCreateDriverAccount: React.FC<Props> = (props) => {
               </div>
             )}
 
-            {currentStage === 3 && (
+            {currentStage === 4 && (
               <div
                 key="btn-confirm"
                 className="font-semibold btn-continue px-4 py-2 cursor-pointer"
@@ -361,8 +388,8 @@ const ModalCreateDriverAccount: React.FC<Props> = (props) => {
       >
         <div className="container">
           <div className="w-full flex justify-center">
-            <div className="stage-header w-3/5">
-              {[1, 2, 3].map((stageNum, index) => (
+            <div className="stage-header w-full">
+              {[1, 2, 3, 4].map((stageNum, index) => (
                 <div
                   key={index}
                   className={`stage btn ${

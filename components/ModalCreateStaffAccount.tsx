@@ -146,7 +146,7 @@ const ModalCreateStaffAccount: React.FC<Props> = (props) => {
   return (
     <>
       <Modal
-        centered
+        style={{ top: 10 }}
         title={
           <span className="inline-block m-auto">
             Form tạo tài khoản cho Nhân viên

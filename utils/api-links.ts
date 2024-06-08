@@ -34,6 +34,7 @@ const apiLinks = {
     unBanAccount: `${url}/api/Admin/User/UnBanAccount`,
     createDriver: `${url}/api/Admin/Driver/Register`,
     createStaff: `${url}/api/Admin/Staff/Register`,
+    updatePriority: `${url}/api/Admin/UpdateUserPriorityById`,
   },
 
   notification: {
@@ -101,7 +102,8 @@ const apiLinks = {
   },
 
   linkedAccount: {
-    getLinkedAccountByAdmin: `${url}/api/`,
+    getLinkedAccountByAdmin: `${url}/api/Admin/User/GetLinkedAccount`,
+    getAllBank: `https://api.vietqr.io/v2/banks`,
   },
 
   car: {

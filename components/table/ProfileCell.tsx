@@ -12,8 +12,8 @@ interface ProfileCellProps {
 const ProfileCell: React.FC<ProfileCellProps> = ({ user }) => {
   return (
     <div className="flex items-center gap-3">
-      <Avatar src={`${urlImageLinkHost + user?.avatar}`} size="large" >
-        {user?.name?.charAt(0)}
+      <Avatar src={`${urlImageLinkHost + user?.avatar}`} size="large">
+        {user?.name?.charAt(0) || user?.email?.charAt(0)}
       </Avatar>
       <div className="flex flex-col">
         <p className="font-normal">{user?.name}</p>

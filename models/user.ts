@@ -79,6 +79,7 @@ export interface DriverCreateModel {
   file: any;
 }
 
+//new model driver register
 export interface RegisterDriverByAdminModel {
     name: string;
     userName: string;
@@ -98,4 +99,13 @@ export interface RegisterDriverByAdminModel {
     personalIdentification: string;
     identityCardNumber: string;
     identityCardExpiredDate: string;
+    accountNumber: string;
+    linkedAccountType: string;
+    brand: string;
+    linkedImgUrl: string;
+}
+
+export interface UpdatePriorityModel {
+  userId: string;
+  priority: number;
 }
