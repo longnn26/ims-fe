@@ -97,9 +97,6 @@ const ThirdStageCreate: React.FC<ThirdStageProps> = (props) => {
               allowClear
             >
               <Select.Option value="Hạng B2">Hạng B2</Select.Option>
-              <Select.Option value="Hạng C">Hạng C</Select.Option>
-              <Select.Option value=">Hạng D">Hạng D</Select.Option>
-              <Select.Option value="Hạng E">Hạng E</Select.Option>
             </Select>
           </Form.Item>
 

@@ -56,7 +56,7 @@ const ModalRecruitmentForm: React.FC<Props> = (props) => {
       <Modal
         title={
           <p className="inline-block m-auto text-2xl">
-            Thông tin ứng viên Tài xế Taxi tại SecureRideHome
+            Thông tin ứng viên Tài xế tại SecureRideHome
           </p>
         }
         centered
@@ -326,9 +326,6 @@ const ModalRecruitmentForm: React.FC<Props> = (props) => {
                 >
                   <Select className="h-9">
                     <Select.Option value="Hạng B2">Hạng B2</Select.Option>
-                    <Select.Option value="Hạng C">Hạng C</Select.Option>
-                    <Select.Option value=">Hạng D">Hạng D</Select.Option>
-                    <Select.Option value="Hạng E">Hạng E</Select.Option>
                   </Select>
                 </Form.Item>
               </div>
