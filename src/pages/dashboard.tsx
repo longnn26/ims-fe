@@ -68,17 +68,19 @@ const Dashboard: React.FC = () => {
         setLoading(false);
       });
 
-    await statisticsService
-      .getAdminProfitMonthlyIncome(session?.user.access_token!, selectedYear)
-      .then((res: Statistic) => {
-        setDataProfitMonthlyIncome(res);
-      })
-      .catch((errors) => {
-        console.log("errors get profit monthly income", errors);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+    if (session?.user.roles.includes("Admin")) {
+      await statisticsService
+        .getAdminProfitMonthlyIncome(session?.user.access_token!, selectedYear)
+        .then((res: Statistic) => {
+          setDataProfitMonthlyIncome(res);
+        })
+        .catch((errors) => {
+          console.log("errors get profit monthly income", errors);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }
 
     await statisticsService
       .getAdminRevenueMonthlyIncome(session?.user.access_token!, selectedYear)
