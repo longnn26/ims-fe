@@ -16,7 +16,7 @@ import { CategoriesDetailEnum } from "@utils/enum";
 import { urlImageLinkHost } from "@utils/api-links";
 import { User } from "@models/user";
 import { useSession } from "next-auth/react";
-import accountService from "@services/customer";
+import customerService from "@services/customer";
 import {
   IdentityCardImageModel,
   IdentityCardModel,
@@ -24,27 +24,37 @@ import {
 import { convertDatePicker, translateGenderToVietnamese } from "@utils/helpers";
 import identityCardService from "@services/identityCard";
 import drivingLicenseService from "@services/drivingLicense";
+import linkedAccountService from "@services/linkedAccount";
 import {
   DrivingLicenseCardModel,
   DrivingLicenseImageCard,
 } from "@models/drivingLicense";
 import moment from "moment"; // Import moment for date formatting
 import { dateFormat } from "@utils/constants";
+import { LinkedAccountType } from "@models/linkedAccount";
+import { CiEdit } from "react-icons/ci";
+import { FiSave } from "react-icons/fi";
+import { MdOutlineCancel } from "react-icons/md";
+import { TypeOptions, toast } from "react-toastify";
 
 const { Option } = Select;
+const { confirm } = Modal;
 
 interface Props {
   open: boolean;
   onClose: () => void;
   dataAccount: User | undefined;
+  setDataAccount: React.Dispatch<React.SetStateAction<User>>;
 }
 
 const ModalAccountDetail: React.FC<Props> = (props) => {
-  const { open, dataAccount, onClose } = props;
+  const { open, dataAccount, onClose, setDataAccount } = props;
   const { data: session } = useSession();
   const [loading, setLoading] = useState(false);
-  console.log("dataAccount", dataAccount);
-  
+
+  const [isEditingPriority, setIsEditingPriority] = useState(false);
+  const [editedPriority, setEditedPriority] = useState(dataAccount?.priority);
+
   const [selectedCategory, setSelectedCategory] = useState<any>(
     CategoriesDetailEnum.ACCOUNT_INFO
   );
@@ -59,6 +69,9 @@ const ModalAccountDetail: React.FC<Props> = (props) => {
 
   const [listDrivingLicenseImage, setListDrivingLicenseImage] =
     useState<DrivingLicenseImageCard[]>();
+
+  const [linkedAccountInfo, setLinkedAccountInfo] =
+    useState<LinkedAccountType | null>(null);
 
   const [editMode, setEditMode] = useState(false);
 
@@ -162,15 +175,50 @@ const ModalAccountDetail: React.FC<Props> = (props) => {
                   <Descriptions.Item label="Tình trạng">
                     {dataAccount?.isActive ? "Đang hoạt động" : "Đã bị ban"}
                   </Descriptions.Item>
+                  <Descriptions.Item label="Mức độ ưu tiên">
+                    {isEditingPriority ? (
+                      <div
+                        className="w-10"
+                        style={{ position: "relative", top: "-5px" }}
+                      >
+                        <Input
+                          value={editedPriority}
+                          onChange={handleChangePriority}
+                          style={{ alignItems: "start" }}
+                        />
+                      </div>
+                    ) : (
+                      <span style={{ position: "relative", top: "-5px" }}>
+                        {dataAccount?.priority}
+                      </span>
+                    )}
+                    {isEditingPriority ? (
+                      <>
+                        <Button onClick={handleSavePriority} type="link">
+                          <FiSave className="w-5 h-5" />
+                        </Button>
+                        <Button onClick={handleCancelPriority} type="link">
+                          <MdOutlineCancel className="w-5 h-5" />
+                        </Button>
+                      </>
+                    ) : (
+                      <Button
+                        onClick={handleEditPriority}
+                        type="link"
+                        style={{ position: "relative", top: "-5px" }}
+                      >
+                        <CiEdit />
+                      </Button>
+                    )}
+                  </Descriptions.Item>
                 </>
               )}
             </Descriptions>
           </div>
         );
 
-      // Similar updates for other cases
       case CategoriesDetailEnum.IDENTITY_CARD_INFO:
-        return identityCard !== null || identityCard !== undefined ? (
+        return identityCard?.identityCardNumber !== "" ? (
           <>
             <div className="flex flex-row px-5">
               <Descriptions className="px-5" layout="horizontal">
@@ -279,9 +327,8 @@ const ModalAccountDetail: React.FC<Props> = (props) => {
           <p className="px-5">Người dùng chưa cập nhập</p>
         );
 
-      // Similar updates for other cases
       case CategoriesDetailEnum.DRIVING_LICENSE_INFO:
-        return drivingLicense !== null || drivingLicense !== undefined ? (
+        return drivingLicense?.drivingLicenseNumber !== "" ? (
           <>
             <div className="flex flex-row px-5">
               <Descriptions className="px-5" layout="horizontal">
@@ -360,6 +407,23 @@ const ModalAccountDetail: React.FC<Props> = (props) => {
           <p className="px-5">Người dùng chưa cập nhập</p>
         );
 
+      case CategoriesDetailEnum.LINKED_ACCOUNT_INFO:
+        return linkedAccountInfo?.accountNumber !== "" ? (
+          <>
+            <div className="flex flex-row px-5">
+              <Descriptions className="px-5" layout="horizontal">
+                <Descriptions.Item label="Số tài khoản">
+                  {linkedAccountInfo?.accountNumber}
+                </Descriptions.Item>
+                <Descriptions.Item label="Tên ngân hàng">
+                  {linkedAccountInfo?.brand}
+                </Descriptions.Item>
+              </Descriptions>
+            </div>
+          </>
+        ) : (
+          <p className="px-5">Người dùng chưa cập nhập</p>
+        );
       default:
         return null;
     }
@@ -369,7 +433,7 @@ const ModalAccountDetail: React.FC<Props> = (props) => {
     setSelectedCategory(key);
 
     if (key === "IdentityCardInfo") {
-      setLoading(true);
+      setListIdentityCardImage([]);
       try {
         const res = await identityCardService.getIdentityCard(
           session?.user.access_token!,
@@ -389,6 +453,7 @@ const ModalAccountDetail: React.FC<Props> = (props) => {
         setLoading(false);
       }
     } else if (key === "DrivingLicenseInfo") {
+      setListDrivingLicenseImage([]);
       setLoading(true);
       try {
         const resDlc = await drivingLicenseService.getDrivingLicense(
@@ -407,7 +472,71 @@ const ModalAccountDetail: React.FC<Props> = (props) => {
       } finally {
         setLoading(false);
       }
+    } else if (key === "LinkedAccountInfo") {
+      setLoading(true);
+      try {
+        const resLinkedAccount =
+          await linkedAccountService.getLinkedAccountByAdmin(
+            session?.user.access_token!,
+            dataAccount?.id ?? ""
+          );
+        setLinkedAccountInfo(resLinkedAccount);
+      } catch (errors) {
+        console.log("errors get linked account", errors);
+      } finally {
+        setLoading(false);
+      }
     }
+  };
+
+  //xủ lý priority
+  const handleEditPriority = () => {
+    setIsEditingPriority(true);
+  };
+
+  const handleSavePriority = () => {
+    confirm({
+      cancelText: "Hủy",
+      okText: "Xác nhận",
+      title: "Bạn có chắc muốn thay đổi độ ưu tiên của tài khoản?",
+      async onOk() {
+        await customerService
+          .updatePriorityByUserId(session?.user.access_token!, {
+            userId: dataAccount?.id ?? "",
+            priority: editedPriority ?? 2,
+          })
+          .then((res) => {
+            toast("Cập nhập độ ưu tiên thành công!", {
+              type: "success" as TypeOptions,
+              position: "top-right",
+            });
+
+            setDataAccount((prevData) => ({
+              ...prevData,
+              priority: editedPriority,
+            }));
+
+            setIsEditingPriority(false);
+          })
+          .catch((errors) => {
+            console.log("errors update priority: ", errors);
+            toast(`${errors.response.data}`, {
+              type: "error" as TypeOptions,
+              position: "top-right",
+            });
+          });
+      },
+      onCancel() {},
+    });
+  };
+
+  const handleCancelPriority = () => {
+    setEditedPriority(dataAccount?.priority);
+    setIsEditingPriority(false);
+  };
+
+  const handleChangePriority = (e) => {
+    setEditedPriority(e.target.value);
   };
 
   useEffect(() => {
@@ -429,11 +558,12 @@ const ModalAccountDetail: React.FC<Props> = (props) => {
   return (
     <>
       <Modal
-        
         width={1200}
         open={open}
         footer={
-          dataAccount?.role?.includes("Driver")
+          dataAccount?.role?.includes("Driver") &&
+          selectedCategory !== CategoriesDetailEnum.LINKED_ACCOUNT_INFO &&
+          selectedCategory !== CategoriesDetailEnum.ACCOUNT_INFO
             ? [
                 <Button
                   className="btn-submit"
@@ -448,8 +578,11 @@ const ModalAccountDetail: React.FC<Props> = (props) => {
         onCancel={() => {
           onClose();
           setEditMode(false);
+          setIsEditingPriority(false);
           setSelectedCategory(CategoriesDetailEnum.ACCOUNT_INFO);
           setIdentityCard(null);
+          setDrivingLicense(null);
+          setLinkedAccountInfo(null);
         }}
       >
         <div className="flex flex-row gap-3 mb-7">

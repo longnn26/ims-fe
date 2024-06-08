@@ -527,6 +527,7 @@ const Account: React.FC = () => {
               open={openModalAccountDetail}
               dataAccount={selectedAccount}
               onClose={() => setOpenModalAccountDetail(false)}
+              setDataAccount={setSelectedAccount}
             />
           )}
         </>

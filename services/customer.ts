@@ -9,6 +9,8 @@ import {
 import {
   DriverCreateModel,
   LoginResponse,
+  RegisterDriverByAdminModel,
+  UpdatePriorityModel,
   User,
   UserId,
   UserListData,
@@ -99,7 +101,7 @@ const unBanAccount = async (token: string, model: UserId): Promise<any> => {
 
 const createDriverAccount = async (
   token: string,
-  model: DriverCreateModel
+  model: RegisterDriverByAdminModel
 ): Promise<any> => {
   const response = await httpClient.post({
     contentType: ContentTypeEnum.MULTIPART,
@@ -123,6 +125,18 @@ const createStaffAccount = async (
   return response.data;
 };
 
+const updatePriorityByUserId = async (
+  token: string,
+  model: UpdatePriorityModel
+): Promise<any> => {
+  const response = await httpClient.put({
+    url: `${apiLinks.customer.updatePriority}`,
+    token: token,
+    data: model
+  });
+  return response.data;
+};
+
 const customer = {
   getCustomerProfile,
   login,
@@ -134,6 +148,7 @@ const customer = {
   banAccount,
   createDriverAccount,
   createStaffAccount,
+  updatePriorityByUserId
 };
 
 export default customer;

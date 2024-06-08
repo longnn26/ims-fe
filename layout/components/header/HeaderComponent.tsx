@@ -382,7 +382,13 @@ const HeaderComponent: React.FC<Props> = (props) => {
           <div className="flex mx-3 flex-col justify-center text-sm">
             <p>
               Người gửi:{" "}
-              <span className="text-black">{parsedData.Sender.Name}</span>
+              <span className="text-black">
+                {parsedData.Sender.Name ? (
+                  parsedData.Sender.Name
+                ) : (
+                  <em>Khách hàng (chưa có tên)</em>
+                )}
+              </span>
             </p>
             <p>
               Số điện thoại:{" "}

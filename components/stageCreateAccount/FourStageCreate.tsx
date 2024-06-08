@@ -15,18 +15,27 @@ import { disableFutureDates, disablePastDates } from "@utils/helpers";
 import linkedAccountService from "@services/linkedAccount";
 import { BankType } from "@models/linkedAccount";
 
-interface ThirdStageProps {
+interface FourStageCreate {
   formLinkedAccountRef: any;
   formLinkedAccount: FormInstance;
   data?: any;
+  selectedBank?: BankType;
+  setSelectedBank: React.Dispatch<React.SetStateAction<BankType | undefined>>;
 }
 
-const FourStageCreate: React.FC<ThirdStageProps> = (props) => {
-  const { formLinkedAccountRef, formLinkedAccount, data } = props;
+const FourStageCreate: React.FC<FourStageCreate> = (props) => {
+  const {
+    formLinkedAccountRef,
+    formLinkedAccount,
+    data,
+    selectedBank,
+    setSelectedBank,
+  } = props;
   const [maxLength, setMaxLength] = useState(10);
   const [loading, setLoading] = useState(false);
   const [dataBankList, setDataBankList] = useState<BankType[]>([]);
-  const [selectedBank, setSelectedBank] = useState<BankType>();
+  const [bankName, setBankName] = useState<string>("");
+
   const handleChangePhoneNumber = (e) => {
     const value = e.target.value;
   };
@@ -90,19 +99,20 @@ const FourStageCreate: React.FC<ThirdStageProps> = (props) => {
             style={{ marginLeft: "12px", marginRight: "12px" }}
           >
             <Select
+              showSearch
               className="w-52"
-              value={data?.shortName}
-              onChange={(bank) => {
-                setSelectedBank(bank);
+              value={bankName}
+              onChange={(bankName: string) => {
+                const selectedBankObject = dataBankList.find(
+                  (bank) => bank.shortName === bankName
+                );
+                setSelectedBank(selectedBankObject);
               }}
               placeholder="Vui lòng chọn ngân hàng"
             >
               {dataBankList.map((bank, index) => (
                 <Select.Option key={bank.id} value={bank.shortName}>
-                  <div
-                    key={index}
-                    className="flex items-center justify-start"
-                  >
+                  <div key={index} className="flex items-center justify-start">
                     <img
                       src={bank.logo}
                       alt={bank.shortName}

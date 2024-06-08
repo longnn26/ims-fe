@@ -237,7 +237,13 @@ const Emergency: React.FC = () => {
                 title="Người gửi"
                 dataIndex="sender"
                 key="senderName"
-                render={(text, record: EmergencyType) => record.sender.name}
+                render={(text, record: EmergencyType) =>
+                  record.sender.name ? (
+                    record.sender.name
+                  ) : (
+                    <em>Khách hàng (chưa có tên)</em>
+                  )
+                }
                 sorter={(a: EmergencyType, b: EmergencyType) =>
                   a.sender.name.localeCompare(b.sender.name)
                 }
