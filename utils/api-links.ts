@@ -106,6 +106,7 @@ const apiLinks = {
     getAllBank: `https://api.vietqr.io/v2/banks`,
   },
 
+  // cái này là để tạo brand, model của xe
   car: {
     //brand
     addNewBrand: `${url}/api/BrandVehicle`,
@@ -117,6 +118,11 @@ const apiLinks = {
     getAllModelByBrandVehicleId: `${url}/api/ModelVehicle/BrandVehicle`,
     deleteSelectedModelByModelVehicleId: `${url}/api/ModelVehicle`,
     updateSelectedModelByBrandVehicleId: `${url}/api/ModelVehicle`,
+  },
+
+  vehicle: {
+    getVehicle: `${url}/api/Admin/Vehicle`,
+    getVehicleImage: `${url}/api/Vehicle/VehicleImage`,
   },
 };
 
