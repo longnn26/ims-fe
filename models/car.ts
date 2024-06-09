@@ -10,7 +10,7 @@ export interface BrandCarType extends Base {
 
 export interface BrandCarCreateType {
   brandName: string;
-  brandImg?: string;
+  file: any;
 }
 
 export interface BrandCarUpdateType extends BrandCarCreateType {

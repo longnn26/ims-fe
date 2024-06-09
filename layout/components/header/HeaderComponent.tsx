@@ -179,24 +179,26 @@ const HeaderComponent: React.FC<Props> = (props) => {
   ];
 
   const onChangeStaffStatus = async () => {
-    if (!isOnline) {
-      await customerService
-        .changeStaffStatusOnline(session?.user.access_token!)
-        .then((res) => {
-          setIsOnline(true);
-        })
-        .catch((errors) => {
-          console.log("errors change online status", errors);
-        });
-    } else {
-      await customerService
-        .changeStaffStatusOffline(session?.user.access_token!)
-        .then((res) => {
-          setIsOnline(false);
-        })
-        .catch((errors) => {
-          console.log("errors change offline status", errors);
-        });
+    if (session?.user.roles.includes("Staff")) {
+      if (!isOnline) {
+        await customerService
+          .changeStaffStatusOnline(session?.user.access_token!)
+          .then((res) => {
+            setIsOnline(true);
+          })
+          .catch((errors) => {
+            console.log("errors change online status", errors);
+          });
+      } else {
+        await customerService
+          .changeStaffStatusOffline(session?.user.access_token!)
+          .then((res) => {
+            setIsOnline(false);
+          })
+          .catch((errors) => {
+            console.log("errors change offline status", errors);
+          });
+      }
     }
   };
 
@@ -222,12 +224,14 @@ const HeaderComponent: React.FC<Props> = (props) => {
   };
 
   const autoTurnOnline = async () => {
-    await customerService
-      .changeStaffStatusOnline(session?.user.access_token!)
-      .then((res) => {})
-      .catch((errors) => {
-        console.log("errors change online status", errors);
-      });
+    if (session?.user.roles.includes("Staff")) {
+      await customerService
+        .changeStaffStatusOnline(session?.user.access_token!)
+        .then((res) => {})
+        .catch((errors) => {
+          console.log("errors change online status", errors);
+        });
+    }
   };
 
   useEffect(() => {

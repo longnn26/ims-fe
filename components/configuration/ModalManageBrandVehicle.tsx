@@ -26,6 +26,7 @@ import { BiPlus, BiTrash } from "react-icons/bi";
 import { RcFile } from "antd/es/upload";
 import { TypeOptions, toast } from "react-toastify";
 import carService from "@services/car";
+import { urlImageLinkHost } from "@utils/api-links";
 const { Dragger } = Upload;
 
 interface Props {
@@ -64,7 +65,7 @@ const ModalManageBrandVehicle: React.FC<Props> = (props) => {
         uid: "-1",
         name: "image.png",
         status: "done",
-        url: brand.brandImg,
+        url: `${urlImageLinkHost + brand.brandImg}`,
       },
     ]);
   };
@@ -78,16 +79,13 @@ const ModalManageBrandVehicle: React.FC<Props> = (props) => {
 
   const handleSave = () => {
     form.validateFields().then(async (values) => {
-      const brandImg = fileList[0]?.url || "";
       setLoadingSubmit(true);
-
       if (!editBrand) {
         //thêm
-        // const newBrand = { ...values, brandImg, id: new Date().getTime() };
         await carService
           .addNewBrand(session?.user.access_token!, {
             brandName: form.getFieldValue("brandName"),
-            //img
+            file: fileList[0].originFileObj,
           })
           .then((res) => {
             const newBrand = { ...res };
@@ -113,9 +111,16 @@ const ModalManageBrandVehicle: React.FC<Props> = (props) => {
           .updateSelectedBrand(session?.user.access_token!, {
             brandVehicleId: editBrand?.id,
             brandName: form.getFieldValue("brandName"),
-            //img
+            file: fileList[0].originFileObj,
           })
           .then((res) => {
+
+            const updatedList = dataBrandList.map((brand) =>
+              //   brand.id === editBrand?.id ? { ...brand, ...values, brandImg } : brand
+              brand.id === editBrand?.id ? { ...brand, ...res } : brand
+            );
+
+            setDataBrandList(updatedList);
             toast(`Cập nhập thành công!`, {
               type: "success" as TypeOptions,
               position: "top-right",
@@ -129,11 +134,7 @@ const ModalManageBrandVehicle: React.FC<Props> = (props) => {
             setLoadingSubmit(false);
           });
 
-        const updatedList = dataBrandList.map((brand) =>
-          //   brand.id === editBrand?.id ? { ...brand, ...values, brandImg } : brand
-          brand.id === editBrand?.id ? { ...brand, ...values } : brand
-        );
-        setDataBrandList(updatedList);
+       
       }
       setEditBrand(null);
       setIsAdding(false);
@@ -188,6 +189,7 @@ const ModalManageBrandVehicle: React.FC<Props> = (props) => {
   };
 
   const handlePreview = async (file: UploadFile) => {
+    console.log("UploadFile: ", file);
     let src = file.url as string;
     if (!src) {
       src = await new Promise((resolve) => {
@@ -224,7 +226,11 @@ const ModalManageBrandVehicle: React.FC<Props> = (props) => {
                 style={{ border: "1px solid #D3D3D3" }}
               >
                 <img
-                  src={item.brandImg || getBrandLogoPath(item.brandName)}
+                  src={
+                    item.brandImg
+                      ? `${urlImageLinkHost + item.brandImg}`
+                      : getBrandLogoPath(item.brandName)
+                  }
                   alt={item.brandName}
                   className="w-10 mr-4"
                 />
