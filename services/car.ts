@@ -8,6 +8,7 @@ import {
   ModelCarUpdateType,
 } from "@models/car";
 import apiLinks from "@utils/api-links";
+import { ContentTypeEnum } from "@utils/enum";
 import httpClient from "@utils/http-client";
 
 //brand
@@ -16,6 +17,7 @@ const addNewBrand = async (
   model: BrandCarCreateType
 ): Promise<any> => {
   const response = await httpClient.post({
+    contentType: ContentTypeEnum.MULTIPART,
     url: `${apiLinks.car.addNewBrand}`,
     token: token,
     data: model,
@@ -36,6 +38,7 @@ const updateSelectedBrand = async (
   model: BrandCarUpdateType
 ): Promise<any> => {
   const response = await httpClient.put({
+    contentType: ContentTypeEnum.MULTIPART,
     url: `${apiLinks.car.updateSelectedBrand}`,
     token: token,
     data: model,
