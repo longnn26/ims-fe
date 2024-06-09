@@ -379,7 +379,7 @@ const Configuration: React.FC = () => {
               </Button>
             </div>
 
-            <h3 className="mx-1 my-4">Bảng giá</h3>
+            <h3 className="mx-1 my-4">Bảng cấu hình</h3>
             <Table dataSource={dataSource} loading={loading}>
               <Column
                 width={"20%"}
