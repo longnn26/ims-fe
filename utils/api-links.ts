@@ -1,6 +1,6 @@
-export const url = "https://wmsapi.hisoft.vn";
-export const urlNoti = "https://wms.hisoft.vn";
-export const urlServerSide = "http://192.168.40.83:8002";
+export const url = "https://khoserverapi.solocode.click";
+export const urlNoti = "https://khoserverapi.solocode.click";
+export const urlServerSide = "https://khoserverapi.solocode.click";
 
 const apiLinks = {
   user: {
