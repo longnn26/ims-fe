@@ -2,13 +2,14 @@
 import React, { useEffect } from "react";
 import { Layout, Menu, theme } from "antd";
 import useSelector from "@hooks/use-selector";
-import { sliderMenu } from "@utils/global";
+import { sliderMenu, sliderMenus } from "@utils/global";
 import useDispatch from "@hooks/use-dispatch";
-import { setSliderMenuItemSelectedKey } from "@slices/global";
+import { setdefaultOpenKeys } from "@slices/global";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
-import { areInArray } from "@utils/helpers";
-
+import { areInArray, getItem } from "@utils/helpers";
+import type { MenuProps } from "antd";
+import { LaptopOutlined, NotificationOutlined } from "@ant-design/icons";
 const { Sider } = Layout;
 const SliderComponent: React.FC = () => {
   const router = useRouter();
@@ -16,10 +17,11 @@ const SliderComponent: React.FC = () => {
   const {
     token: { colorBgContainer },
   } = theme.useToken();
-  const { collapsed, sliderMenuItemSelectedKey } = useSelector(
+  const { collapsed, defaultOpenKey } = useSelector(
     (state) => state.global
   );
   const { data: session } = useSession();
+
   return (
     <Sider
       trigger={null}
@@ -34,12 +36,15 @@ const SliderComponent: React.FC = () => {
       <div className="demo-logo-vertical" />
       <Menu
         mode="inline"
-        selectedKeys={[sliderMenuItemSelectedKey]}
-        items={sliderMenu.filter((t) =>
-          areInArray(session?.user.roles!, ...t.roles)
-        )}
+        selectedKeys={defaultOpenKey}
+        // items={sliderMenu.filter((t) =>
+        //   areInArray(session?.user.roles!, ...t.roles)
+        // )}
+        defaultOpenKeys={defaultOpenKey}
+        items={sliderMenus}
         onClick={async (info) => {
-          dispatch(setSliderMenuItemSelectedKey(info.key));
+          console.log(info)
+          dispatch(setdefaultOpenKeys(info.keyPath))
           router.push(`/${info.key}`);
         }}
       />

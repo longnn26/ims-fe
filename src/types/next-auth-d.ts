@@ -1,3 +1,4 @@
+import { MenuProps } from "antd";
 import NextAuth, { DefaultSession } from "next-auth";
 
 declare module "next-auth" {
@@ -38,17 +39,5 @@ declare module "next-auth/jwt" {
     roles: string[];
   }
 }
-declare module "antd/es/tree" {
-  export interface DataNode {
-    id?: string;
-    title: string;
-    key: string;
-    name?: string;
-    isLeaf?: boolean;
-    parentId?: string;
-    dateCreated?: string;
-    dataUpdated?: string;
-    children: DataNode[] | undefined;
-    label?: string;
-  }
-}
+
+export type MenuItem = Required<MenuProps>["items"][number];

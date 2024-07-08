@@ -1,12 +1,13 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { Children, useEffect, useState } from "react";
 import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
 import { Layout, Button, theme, Badge, Divider } from "antd";
 import useSelector from "@hooks/use-selector";
-import { setCollapsed, setSliderMenuItemSelectedKey } from "@slices/global";
+import {
+  setCollapsed,
+} from "@slices/global";
 import useDispatch from "@hooks/use-dispatch";
-import { sliderMenu } from "@utils/global";
 import { signOut, useSession } from "next-auth/react";
 import { Dropdown, Space, Avatar, MenuProps } from "antd";
 import { useRouter } from "next/router";
@@ -19,7 +20,6 @@ import { Notification } from "@models/notification";
 import InfiniteScroll from "react-infinite-scroll-component";
 import moment from "moment";
 import { FaDotCircle } from "react-icons/fa";
-import { TypeOptions, toast } from "react-toastify";
 import { parseJwt } from "@utils/helpers";
 
 const { Header } = Layout;
@@ -30,13 +30,11 @@ const HeaderComponent: React.FC<Props> = (props) => {
   const { data: session, update: sessionUpdate } = useSession();
   const router = useRouter();
   const dispatch = useDispatch();
-  const { collapsed, sliderMenuItemSelectedKey } = useSelector(
-    (state) => state.global
-  );
+  const { collapsed, labelHeader } = useSelector((state) => state.global);
   const {
     token: { colorBgContainer },
   } = theme.useToken();
-  const item = sliderMenu.find((_) => _.key === sliderMenuItemSelectedKey);
+
   const [showNotification, setShowNotification] = useState<boolean>(false);
   const [notifications, setNotifications] = useState<Notification[]>([]);
   // const [pageSizeNoti, setPageSizeNoti] = useState<number>(6);
@@ -126,7 +124,6 @@ const HeaderComponent: React.FC<Props> = (props) => {
       label: (
         <span
           onClick={() => {
-            dispatch(setSliderMenuItemSelectedKey("product"));
             signOut();
           }}
         >
@@ -137,99 +134,80 @@ const HeaderComponent: React.FC<Props> = (props) => {
     },
   ];
 
-  useEffect(() => {
-    switch (router.pathname) {
-      case "/receive":
-        dispatch(setSliderMenuItemSelectedKey("receive"));
-        break;
-      case "/product":
-        dispatch(setSliderMenuItemSelectedKey("product"));
-        break;
-      case "/dashboard":
-        dispatch(setSliderMenuItemSelectedKey("dashboard"));
-        break;
-      case "/profile":
-        dispatch(setSliderMenuItemSelectedKey("profile"));
-        break;
-      default:
-        break;
-    }
-  }, []);
+  // useEffect(() => {
+  //   // session && getNotifications();
+  // }, [session]);
 
-  useEffect(() => {
-    session && getNotifications();
-  }, [session]);
-
-  useEffect(() => {
-    if (session != null) {
-      const newConnection = signalR.connectionServer(session.user.access_token);
-      newConnection
-        .start()
-        .then(() => {
-          newConnection.on("newNotify", async (data: any) => {
-            // if (showNotification) {
-            var list = notifications.reverse();
-            list.push(data);
-            setNotifications(list.reverse());
-            // }
-            toast(
-              <div
-                id="toast-notification"
-                className="w-full max-w-xs p-4 text-gray-900 bg-white"
-                role="alert"
-                onClick={() => handleNotification(data)}
-              >
-                <div className="flex items-center mb-3">
-                  <span className="mb-1 text-sm font-semibold text-gray-900 dark:text-white">
-                    {data.title}
-                  </span>
-                </div>
-                <div className="flex items-center">
-                  <div className="ml-3 text-sm font-normal">
-                    <div className="text-sm font-semibold text-gray-900 dark:text-white">
-                      {data?.subject}
-                    </div>
-                    <div className="text-sm font-normal">{`${data?.action} ${data?.body}`}</div>
-                    <span className="text-xs font-medium text-blue-600 dark:text-blue-500">
-                      a few seconds ago
-                    </span>
-                  </div>
-                </div>
-              </div>,
-              {
-                type: "success" as TypeOptions,
-                position: "top-right",
-              }
-            );
-          });
-          newConnection.on("newNotifyCount", async (data: number) => {
-            setNewNotifyCount(data);
-            const newSession = {
-              ...session,
-              user: {
-                ...session?.user,
-                currenNoticeCount: data,
-              },
-            };
-            await sessionUpdate({ ...newSession });
-          });
-        })
-        .catch((err) => console.log(err));
-      return () => {
-        newConnection
-          .stop()
-          .then(() => {})
-          .catch(() => {});
-      };
-    }
-  }, [session]);
+  // useEffect(() => {
+  //   if (session != null) {
+  //     const newConnection = signalR.connectionServer(session.user.access_token);
+  //     newConnection
+  //       .start()
+  //       .then(() => {
+  //         newConnection.on("newNotify", async (data: any) => {
+  //           // if (showNotification) {
+  //           var list = notifications.reverse();
+  //           list.push(data);
+  //           setNotifications(list.reverse());
+  //           // }
+  //           toast(
+  //             <div
+  //               id="toast-notification"
+  //               className="w-full max-w-xs p-4 text-gray-900 bg-white"
+  //               role="alert"
+  //               onClick={() => handleNotification(data)}
+  //             >
+  //               <div className="flex items-center mb-3">
+  //                 <span className="mb-1 text-sm font-semibold text-gray-900 dark:text-white">
+  //                   {data.title}
+  //                 </span>
+  //               </div>
+  //               <div className="flex items-center">
+  //                 <div className="ml-3 text-sm font-normal">
+  //                   <div className="text-sm font-semibold text-gray-900 dark:text-white">
+  //                     {data?.subject}
+  //                   </div>
+  //                   <div className="text-sm font-normal">{`${data?.action} ${data?.body}`}</div>
+  //                   <span className="text-xs font-medium text-blue-600 dark:text-blue-500">
+  //                     a few seconds ago
+  //                   </span>
+  //                 </div>
+  //               </div>
+  //             </div>,
+  //             {
+  //               type: "success" as TypeOptions,
+  //               position: "top-right",
+  //             }
+  //           );
+  //         });
+  //         newConnection.on("newNotifyCount", async (data: number) => {
+  //           setNewNotifyCount(data);
+  //           const newSession = {
+  //             ...session,
+  //             user: {
+  //               ...session?.user,
+  //               currenNoticeCount: data,
+  //             },
+  //           };
+  //           await sessionUpdate({ ...newSession });
+  //         });
+  //       })
+  //       .catch((err) => console.log(err));
+  //     return () => {
+  //       newConnection
+  //         .stop()
+  //         .then(() => {})
+  //         .catch(() => {});
+  //     };
+  //   }
+  // }, [session]);
   return (
     <Header
       style={{ padding: 0, background: colorBgContainer }}
       className="flex justify-between"
     >
       <Head>
-        <title>{item?.label}</title>
+        <title>{labelHeader}</title>
       </Head>
       <div className="flex w-1/3 justify-start items-center">
         <Button
@@ -255,7 +233,7 @@ const HeaderComponent: React.FC<Props> = (props) => {
 
       <div className="flex w-1/3 justify-center">
         <span className="self-center text-xl font-semibold whitespace-nowrap">
-          {item?.label}
+          {labelHeader}
         </span>
       </div>
 
@@ -269,7 +247,6 @@ const HeaderComponent: React.FC<Props> = (props) => {
         >
           <Badge count={newNotifyCount}>
             <Avatar
-              // className="bg-[#fde3cf] hover:bg-[#fde3cf]/50"
               className="bg-[#edebd3] hover:bg-[#edebd3]/50"
               shape="circle"
               icon={<IoMdNotifications style={{ color: "#dba50f" }} />}

@@ -1,6 +1,7 @@
 import moment from "moment";
 import { dateAdvFormat } from "./constants";
 import dayjs from "dayjs";
+import { MenuItem } from "@/types/next-auth-d";
 
 export const isExpiredTimeToken = (loginDate: string, exp: number): boolean => {
   const tokenExpiredTime = moment(loginDate).add(exp, "minute").toDate();
@@ -39,3 +40,17 @@ export const areInArray = (arr: any[], ...elements: any[]) => {
   }
   return false;
 };
+
+export function getItem(
+  label: React.ReactNode | string,
+  key: React.Key,
+  icon?: React.ReactNode,
+  children?: MenuItem[]
+): MenuItem {
+  return {
+    key,
+    icon,
+    children,
+    label,
+  } as MenuItem;
+}
