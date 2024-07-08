@@ -7,13 +7,6 @@ import { ROLE_ADMIN, ROLE_CUSTOMER } from "./constants";
 import { ItemType } from "antd/es/menu/hooks/useItems";
 import { MenuItem } from "@/types/next-auth-d";
 import { getItem } from "./helpers";
-import {
-  DesktopOutlined,
-  FileOutlined,
-  PieChartOutlined,
-  TeamOutlined,
-  UserOutlined,
-} from "@ant-design/icons";
 
 import { MdOutlineInventory2, MdInventory2 } from "react-icons/md";
 import { IoBarcode } from "react-icons/io5";
@@ -24,6 +17,7 @@ import { GrDocumentTransfer } from "react-icons/gr";
 import { FaWarehouse } from "react-icons/fa6";
 import { GrDocumentConfig } from "react-icons/gr";
 import { ImProfile } from "react-icons/im";
+import { TbTemplate } from "react-icons/tb";
 
 export interface SliderMenuItem {
   key: string;
@@ -56,7 +50,7 @@ export const sliderMenu = [
 
 export const sliderMenus: MenuItem[] = [
   getItem("Product", "product", <MdOutlineInventory2 />, [
-    getItem("Products", "products", <MdOutlineInventory2 />),
+    getItem("Products", "products", <TbTemplate />),
     getItem("Product Variants", "product-variants", <MdInventory2 />),
     getItem("Lots/Serial Numbers", "lots-serial-numbers", <IoBarcode />),
   ]),
