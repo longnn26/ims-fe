@@ -18,6 +18,7 @@ import { FaWarehouse } from "react-icons/fa6";
 import { GrDocumentConfig } from "react-icons/gr";
 import { ImProfile } from "react-icons/im";
 import { TbTemplate } from "react-icons/tb";
+import { TbRulerMeasure } from "react-icons/tb";
 
 export interface SliderMenuItem {
   key: string;
@@ -62,5 +63,6 @@ export const sliderMenus: MenuItem[] = [
   getItem("Warehouses", "warehouses", <FaWarehouse />),
   getItem("Configuration", "configuration", <GrDocumentConfig />, [
     getItem("Profile", "profile", <ImProfile />),
+    getItem("Units of Measure", "units-of-measure", <TbRulerMeasure />),
   ]),
 ];
