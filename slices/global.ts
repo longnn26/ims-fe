@@ -24,7 +24,6 @@ const slice = createSlice({
     },
     setdefaultOpenKeys: (state, action) => {
       state.defaultOpenKey = action.payload;
-      console.log(action.payload)
       if (state.defaultOpenKey.length > 1) {
         const defaultOpen = sliderMenus.find(
           (_) => _?.key === state.defaultOpenKey[1]

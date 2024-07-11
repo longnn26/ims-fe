@@ -43,7 +43,6 @@ const SliderComponent: React.FC = () => {
         defaultOpenKeys={defaultOpenKey}
         items={sliderMenus}
         onClick={async (info) => {
-          console.log(info)
           dispatch(setdefaultOpenKeys(info.keyPath))
           router.push(`/${info.key}`);
         }}

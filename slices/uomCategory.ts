@@ -8,6 +8,7 @@ interface State {
   uomCategoryData: UomCategory[];
   pageIndex: number;
   pageSize: number;
+  totalSize: number;
   loading: boolean;
 }
 
@@ -15,6 +16,7 @@ const initialState: State = {
   uomCategoryData: [],
   pageIndex: 1,
   pageSize: 10,
+  totalSize: 30,
   loading: false,
 };
 
@@ -24,7 +26,6 @@ const getUomCategories = createAsyncThunk(
   `${TYPE_PREFIX}/get`,
   async (arg: { token: string }, { getState }) => {
     const state = getState() as AppState;
-    console.log(state.uomCategory);
     const result = await uomCategoryService.getUomCategories(
       arg.token,
       state.uomCategory.pageIndex,
@@ -63,5 +64,6 @@ const slice = createSlice({
 });
 
 export { getUomCategories };
+export const { setPageIndex, setPageSize } = slice.actions;
 
 export default slice.reducer;
