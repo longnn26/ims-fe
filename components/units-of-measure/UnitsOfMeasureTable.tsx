@@ -22,12 +22,6 @@ const UnitsOfMeasureTable: React.FC<Props> = (props) => {
   );
 
   const columns: TableColumnsType<DataType> = [
-    {
-      title: "No",
-      dataIndex: "id",
-      key: "id",
-      fixed: "left",
-    },
     { title: "Units of Measure Category", dataIndex: "name", key: "name" },
     {
       title: "Action",
@@ -45,11 +39,11 @@ const UnitsOfMeasureTable: React.FC<Props> = (props) => {
   ];
 
   const data: DataType[] = [];
-  for (let i = 0; i < uomCategoryData?.data?.length; ++i) {
+  for (let i = 0; i < uomCategoryData?.length; ++i) {
     data.push({
-      key: uomCategoryData?.data[i].id,
-      id: uomCategoryData?.data[i].id,
-      name: uomCategoryData?.data[i].name,
+      key: uomCategoryData[i].id,
+      id: uomCategoryData[i].id,
+      name: uomCategoryData[i].name,
     });
   }
 
