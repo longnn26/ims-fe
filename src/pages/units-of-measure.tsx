@@ -12,7 +12,7 @@ const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
 });
 
-const LotsSerialNumbers: React.FC = () => {
+const UnitsOfMeasure: React.FC = () => {
   const dispatch = useDispatch();
   const { data: session } = useSession();
 
@@ -33,4 +33,4 @@ const LotsSerialNumbers: React.FC = () => {
   return <AntdLayoutNoSSR content={<UnitsOfMeasureTable />} />;
 };
 
-export default LotsSerialNumbers;
+export default UnitsOfMeasure;
