@@ -1,6 +1,5 @@
-import { ParamGet } from "@models/base";
 import {
-  UomCategory,
+  UomCategoryPaging,
 } from "@models/uomCategory";
 import apiLinks from "@utils/api-links";
 import httpClient from "@utils/http-client";
@@ -9,7 +8,7 @@ const getUomCategories = async (
   token?: string,
   pageIndex?: number,
   pageSize?: number,
-): Promise<UomCategory[]> => {
+): Promise<UomCategoryPaging> => {
   const response = await httpClient.get({
     token: token,
     url: apiLinks.uomCategory.get,

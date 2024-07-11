@@ -1,22 +1,24 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import uomCategoryService from "@services/uomCategory";
 import { ParamGet } from "@models/base";
-import { UomCategory } from "@models/uomCategory";
+import { UomCategory, UomCategoryPaging } from "@models/uomCategory";
 import { AppState } from "@store/index";
 
 interface State {
-  uomCategoryData: UomCategory[];
+  paging: UomCategoryPaging;
+  data: UomCategory[];
   pageIndex: number;
   pageSize: number;
-  totalSize: number;
+  totalPage: number;
   loading: boolean;
 }
 
 const initialState: State = {
-  uomCategoryData: [],
+  paging: {} as UomCategoryPaging,
+  data: [],
   pageIndex: 1,
   pageSize: 10,
-  totalSize: 30,
+  totalPage: 0,
   loading: false,
 };
 
@@ -53,7 +55,10 @@ const slice = createSlice({
     }));
     builder.addCase(getUomCategories.fulfilled, (state, { payload }) => ({
       ...state,
-      uomCategoryData: payload,
+      data: payload.data,
+      pageIndex: payload.pageIndex,
+      pageSize: payload.pageSize,
+      totalPage: payload.totalPage,
       loading: false,
     }));
     builder.addCase(getUomCategories.rejected, (state) => ({

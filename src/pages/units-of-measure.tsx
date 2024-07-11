@@ -16,7 +16,7 @@ const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
 const UnitsOfMeasure: React.FC = () => {
   const dispatch = useDispatch();
   const { data: session } = useSession();
-  const { uomCategoryData, pageIndex, pageSize, totalSize } = useSelector(
+  const { data, pageIndex, pageSize, totalPage } = useSelector(
     (state) => state.uomCategory
   );
 
@@ -41,12 +41,12 @@ const UnitsOfMeasure: React.FC = () => {
       content={
         <>
           <UnitsOfMeasureTable />
-          {uomCategoryData.length > 0 && (
+          {data?.length > 0 && (
             <Pagination
               className="text-end m-4"
               current={pageIndex}
-              pageSize={pageSize ?? 10}
-              total={totalSize ?? 30}
+              pageSize={pageSize}
+              total={totalPage}
               onChange={(page) => {
                 dispatch(setPageIndex(page));
               }}
