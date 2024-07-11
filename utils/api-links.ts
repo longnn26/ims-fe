@@ -27,6 +27,10 @@ const apiLinks = {
     get: `${urlNoti}/api/Notification`,
     seenNotification: `${urlNoti}/api/Notification/SeenNotify`,
   },
+
+  uomCategory: {
+    get: `${url}/api/UomCategory`,
+  },
 };
 
 export default apiLinks;
