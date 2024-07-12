@@ -1,4 +1,3 @@
-"use client";
 import { useCallback, useEffect } from "react";
 import useDispatch from "@hooks/use-dispatch";
 import useSelector from "@hooks/use-selector";
@@ -8,12 +7,18 @@ import React from "react";
 import { useSession } from "next-auth/react";
 import UomUomTable from "@components/units-of-measure/UomUomTable";
 import { Pagination } from "antd";
+import { useRouter } from "next/router";
+import { GetServerSideProps } from "next";
 
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
 });
-
-const UnitsOfMeasureInfo: React.FC = () => {
+interface Props {
+  uomCategoryId: string;
+}
+const UnitsOfMeasureInfo: React.FC<Props> = (props) => {
+  const router = useRouter();
+  const { uomCategoryId } = props;
   const dispatch = useDispatch();
   const { data: session } = useSession();
   const { data, pageIndex, pageSize, totalPage } = useSelector(
@@ -22,11 +27,11 @@ const UnitsOfMeasureInfo: React.FC = () => {
 
   //function handle
   const fetchData = useCallback(() => {
-    if (session) {
+    if (session && uomCategoryId) {
       dispatch(
         getUomUoms({
           token: session.user.access_token!,
-          uomCategoryId: '1e6da5f5-b75f-4b48-a875-5b0232870ae4'
+          uomCategoryId: uomCategoryId,
         })
       );
     }
@@ -34,8 +39,17 @@ const UnitsOfMeasureInfo: React.FC = () => {
   }, [pageIndex]);
 
   useEffect(() => {
-    fetchData();
-  }, [fetchData]);
+    console.log(uomCategoryId);
+    // fetchData();
+    if (session && uomCategoryId) {
+      dispatch(
+        getUomUoms({
+          token: session.user.access_token!,
+          uomCategoryId: uomCategoryId,
+        })
+      );
+    }
+  }, [uomCategoryId]);
 
   return (
     <AntdLayoutNoSSR
@@ -57,6 +71,17 @@ const UnitsOfMeasureInfo: React.FC = () => {
       }
     />
   );
+};
+
+export const getServerSideProps: GetServerSideProps<Props> = async (
+  context
+) => {
+  const uomCategoryId = context.query.uomCategoryId!;
+  return {
+    props: {
+      uomCategoryId: uomCategoryId.toString(),
+    },
+  };
 };
 
 export default UnitsOfMeasureInfo;

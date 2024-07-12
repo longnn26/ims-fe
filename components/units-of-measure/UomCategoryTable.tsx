@@ -17,6 +17,8 @@ interface DataType {
 
 const UomCategoryTable: React.FC<Props> = (props) => {
   const router = useRouter();
+  // onClick={() => router.push(`/posts/${bestArticleInfo?.slug}`)}
+
   const { data: uomCategoryData, loading } = useSelector(
     (state) => state.uomCategory
   );
