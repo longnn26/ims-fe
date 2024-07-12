@@ -75,6 +75,13 @@ const UomCategoryTable: React.FC<Props> = (props) => {
   return (
     <>
       <Table
+        onRow={(record, rowIndex) => {
+          return {
+            onClick: (event) => {
+              router.push(`/units-of-measure/${record?.id}`);
+            },
+          };
+        }}
         loading={loading}
         columns={columns}
         dataSource={data}

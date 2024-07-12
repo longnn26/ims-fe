@@ -11,6 +11,7 @@ interface DataType {
   key: React.Key;
   id: string;
   name: string;
+  uomType: string;
   rounding: number;
   active: boolean;
   ratio: number;
@@ -18,15 +19,18 @@ interface DataType {
 
 const UomUomTable: React.FC<Props> = (props) => {
   const router = useRouter();
-  const { data: uomUomData, loading } = useSelector(
-    (state) => state.uomUom
-  );
+  const { data: uomUomData, loading } = useSelector((state) => state.uomUom);
 
   const columns: TableColumnsType<DataType> = [
     {
       title: "Name",
       dataIndex: "name",
       key: "name",
+    },
+    {
+      title: "Type",
+      dataIndex: "uomType",
+      key: "uomType",
     },
     {
       title: "Ratio",
@@ -64,6 +68,7 @@ const UomUomTable: React.FC<Props> = (props) => {
       key: uomUomData[i].id,
       id: uomUomData[i].id,
       name: uomUomData[i].name,
+      uomType: uomUomData[i].uomType,
       ratio: uomUomData[i].ratio,
       rounding: uomUomData[i].rounding,
       active: uomUomData[i].active,

@@ -4,7 +4,6 @@ import { MdInventory } from "react-icons/md";
 import { AiOutlineDashboard } from "react-icons/ai";
 
 import { ROLE_ADMIN, ROLE_CUSTOMER } from "./constants";
-import { ItemType } from "antd/es/menu/hooks/useItems";
 import { MenuItem } from "@/types/next-auth-d";
 import { getItem } from "./helpers";
 
@@ -15,10 +14,11 @@ import { IoReceipt } from "react-icons/io5";
 import { TbTruckDelivery } from "react-icons/tb";
 import { GrDocumentTransfer } from "react-icons/gr";
 import { FaWarehouse } from "react-icons/fa6";
-import { GrDocumentConfig } from "react-icons/gr";
 import { ImProfile } from "react-icons/im";
 import { TbTemplate } from "react-icons/tb";
 import { TbRulerMeasure } from "react-icons/tb";
+import { IoConstructSharp } from "react-icons/io5";
+import { ItemType } from "antd/es/menu/interface";
 
 export interface SliderMenuItem {
   key: string;
@@ -61,7 +61,7 @@ export const sliderMenus: MenuItem[] = [
     getItem("Deliveries", "deliveries", <TbTruckDelivery />),
   ]),
   getItem("Warehouses", "warehouses", <FaWarehouse />),
-  getItem("Configuration", "configuration", <GrDocumentConfig />, [
+  getItem("Configuration", "configuration", <IoConstructSharp />, [
     getItem("Profile", "profile", <ImProfile />),
     getItem("Units of Measure", "units-of-measure", <TbRulerMeasure />),
   ]),

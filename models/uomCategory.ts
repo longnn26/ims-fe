@@ -13,3 +13,8 @@ export interface UomCategoryPaging extends PagingModel {
   totalPage: number;
   data: UomCategory[];
 }
+
+export interface UomCategoryInfo {
+  id: string;
+  name: string;
+}

@@ -1,4 +1,5 @@
 import {
+  UomCategoryInfo,
   UomCategoryPaging,
 } from "@models/uomCategory";
 import apiLinks from "@utils/api-links";
@@ -17,8 +18,20 @@ const getUomCategories = async (
   return response.data;
 };
 
+const getUomCategoryInfo = async (
+  token?: string,
+  id?: string
+): Promise<UomCategoryInfo> => {
+  const response = await httpClient.get({
+    token: token,
+    url: `${apiLinks.uomCategory.getInfo}/${id}`,
+  });
+  return response.data;
+};
+
 const uomCategory = {
   getUomCategories,
+  getUomCategoryInfo
 };
 
 export default uomCategory;
