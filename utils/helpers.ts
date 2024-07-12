@@ -2,6 +2,7 @@ import moment from "moment";
 import { dateAdvFormat } from "./constants";
 import dayjs from "dayjs";
 import { MenuItem } from "@/types/next-auth-d";
+import { ItemType } from "antd/es/breadcrumb/Breadcrumb";
 
 export const isExpiredTimeToken = (loginDate: string, exp: number): boolean => {
   const tokenExpiredTime = moment(loginDate).add(exp, "minute").toDate();
@@ -54,3 +55,28 @@ export function getItem(
     label,
   } as MenuItem;
 }
+
+const handleTitleBreadCumb = (title) => {
+  switch (title) {
+    case "units-of-measure":
+      return "Units of Measure";
+    default:
+      return title;
+  }
+};
+
+export const handleBreadCumb = (router) => {
+  var itemBrs = [] as ItemType[];
+  var items = router.split("/");
+  items.shift();
+  items.pop();
+  var path = "";
+  items.forEach((element) => {
+    path += `/${element}`;
+    itemBrs.push({
+      href: path,
+      title: handleTitleBreadCumb(element),
+    });
+  });
+  return itemBrs;
+};

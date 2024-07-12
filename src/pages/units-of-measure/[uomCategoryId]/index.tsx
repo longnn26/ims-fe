@@ -20,6 +20,9 @@ import { useRouter } from "next/router";
 import { GetServerSideProps } from "next";
 import { UomCategoryInfo } from "@models/uomCategory";
 import uomCategoryServices from "@services/uomCategory";
+import { handleBreadCumb } from "@utils/helpers";
+import { ItemType } from "antd/es/breadcrumb/Breadcrumb";
+import BreadcrumbComponent from "@components/breadcrumb/BreadcrumbComponent";
 
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
@@ -27,10 +30,11 @@ const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
 interface Props {
   uomCategoryId: string;
   accessToken: string;
+  itemBrs: ItemType[];
 }
 const UnitsOfMeasureInfo: React.FC<Props> = (props) => {
   const router = useRouter();
-  const { uomCategoryId, accessToken } = props;
+  const { uomCategoryId, accessToken, itemBrs } = props;
   const dispatch = useDispatch();
   const { data, pageIndex, pageSize, totalPage } = useSelector(
     (state) => state.uomUom
@@ -74,6 +78,7 @@ const UnitsOfMeasureInfo: React.FC<Props> = (props) => {
     <AntdLayoutNoSSR
       content={
         <>
+          <BreadcrumbComponent itemBreadcrumbs={itemBrs} />
           <Form.Item
             label={
               <p style={{ fontSize: "14px", fontWeight: "500" }}>
@@ -125,10 +130,12 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
   const session = await getSession(context);
   const uomCategoryId = context.query.uomCategoryId!;
   const accessToken = session?.user?.access_token!;
+  const itemBrs = handleBreadCumb(context.resolvedUrl);
   return {
     props: {
       uomCategoryId: uomCategoryId.toString(),
       accessToken: accessToken?.toString(),
+      itemBrs: itemBrs,
     },
   };
 };

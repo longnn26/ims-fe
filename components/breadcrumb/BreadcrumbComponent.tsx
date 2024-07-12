@@ -6,13 +6,6 @@ interface Props {
 }
 const BreadcrumbComponent: React.FC<Props> = (props) => {
   const { itemBreadcrumbs } = props;
-  itemBreadcrumbs.forEach((element) => {
-    switch (element.title) {
-      case "units-of-measure":
-        element.title = "Units of Measure";
-        break;
-    }
-  });
   return (
     <div className="">
       <Breadcrumb items={itemBreadcrumbs} />
