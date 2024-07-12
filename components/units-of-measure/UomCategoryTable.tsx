@@ -15,7 +15,7 @@ interface DataType {
   uomUoms: UomUom[];
 }
 
-const UnitsOfMeasureTable: React.FC<Props> = (props) => {
+const UomCategoryTable: React.FC<Props> = (props) => {
   const router = useRouter();
   const { data: uomCategoryData, loading } = useSelector(
     (state) => state.uomCategory
@@ -83,4 +83,4 @@ const UnitsOfMeasureTable: React.FC<Props> = (props) => {
   );
 };
 
-export default UnitsOfMeasureTable;
+export default UomCategoryTable;

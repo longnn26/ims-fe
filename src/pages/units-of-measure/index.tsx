@@ -6,7 +6,7 @@ import { getUomCategories, setPageIndex } from "@slices/uomCategory";
 import dynamic from "next/dynamic";
 import React from "react";
 import { useSession } from "next-auth/react";
-import UnitsOfMeasureTable from "@components/units-of-measure/UnitsOfMeasureTable";
+import UomCategoryTable from "@components/units-of-measure/UomCategoryTable";
 import { Pagination } from "antd";
 
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
@@ -40,7 +40,7 @@ const UnitsOfMeasure: React.FC = () => {
     <AntdLayoutNoSSR
       content={
         <>
-          <UnitsOfMeasureTable />
+          <UomCategoryTable />
           {data?.length > 0 && (
             <Pagination
               className="text-end m-4"
