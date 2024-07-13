@@ -48,7 +48,7 @@ const UomUomTable: React.FC<Props> = (props) => {
         );
       })
       .catch((error) => {
-        message.error(error);
+        message.error(error?.response?.data);
       });
   };
   const updateUomUomFactor = async (
@@ -66,7 +66,7 @@ const UomUomTable: React.FC<Props> = (props) => {
         );
       })
       .catch((error) => {
-        message.error(error);
+        message.error(error?.response?.data);
       });
   };
   const updateUomUomType = async (
@@ -84,8 +84,7 @@ const UomUomTable: React.FC<Props> = (props) => {
         );
       })
       .catch((error) => {
-        console.log("lieu")
-        message.error(error);
+        message.error(error?.response?.data);
       });
   };
   const handleBlur = async (

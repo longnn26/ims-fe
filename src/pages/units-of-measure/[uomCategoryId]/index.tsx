@@ -57,7 +57,9 @@ const UnitsOfMeasureInfo: React.FC<Props> = (props) => {
         setUomCategoryInfo({ ...res });
         setUomCategoryName(res.name);
       })
-      .catch((error) => message.error(error));
+      .catch((error) => {
+        message.error(error?.response?.data);
+      });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
