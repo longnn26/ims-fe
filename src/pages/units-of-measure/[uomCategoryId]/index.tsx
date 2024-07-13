@@ -7,14 +7,25 @@ import dynamic from "next/dynamic";
 import React from "react";
 import { getSession } from "next-auth/react";
 import UomUomTable from "@components/units-of-measure/UomUomTable";
-import { Form, Input, Pagination, Tabs, message } from "antd";
+import {
+  Button,
+  Flex,
+  Form,
+  Input,
+  Pagination,
+  Tabs,
+  Tooltip,
+  message,
+} from "antd";
+import { IoCloudUpload } from "react-icons/io5";
 import { useRouter } from "next/router";
 import { GetServerSideProps } from "next";
-import { UomCategoryInfo } from "@models/uomCategory";
+import { UomCategoryInfo, UomCategoryUpdateInfo } from "@models/uomCategory";
 import uomCategoryServices from "@services/uomCategory";
 import { handleBreadCumb } from "@utils/helpers";
 import { ItemType } from "antd/es/breadcrumb/Breadcrumb";
 import BreadcrumbComponent from "@components/breadcrumb/BreadcrumbComponent";
+import FlexButtons from "@components/button/FlexButtons";
 
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
@@ -32,7 +43,10 @@ const UnitsOfMeasureInfo: React.FC<Props> = (props) => {
     (state) => state.uomUom
   );
   const [uomCategoryInfo, setUomCategoryInfo] = useState<UomCategoryInfo>();
-  const [uomCategoryName, setUomCategoryName] = useState<string>();
+  const [uomCategoryName, setUomCategoryName] = useState<string | undefined>(
+    undefined
+  );
+  const [isChanged, setIsChanged] = useState(false);
 
   const handleInputNameChange = (event) => {
     setUomCategoryName(event.target.value);
@@ -63,6 +77,31 @@ const UnitsOfMeasureInfo: React.FC<Props> = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const updateUomCategoryInfo = async () => {
+    await uomCategoryServices
+      .updateUomCategoryInfo(accessToken, {
+        id: uomCategoryId,
+        name: uomCategoryName,
+      } as UomCategoryUpdateInfo)
+      .then(() => {
+        fetchUomCategoryInfoData();
+      })
+      .catch((error) => {
+        // message.error(error?.response?.data);
+      });
+  };
+
+  useEffect(() => {
+    if (uomCategoryName !== undefined) {
+      if (uomCategoryName !== uomCategoryInfo?.name) {
+        setIsChanged(true);
+      } else {
+        setIsChanged(false);
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [uomCategoryName, uomCategoryInfo?.name]);
+
   useEffect(() => {
     fetchUomUomsData();
     fetchUomCategoryInfoData();
@@ -73,6 +112,11 @@ const UnitsOfMeasureInfo: React.FC<Props> = (props) => {
       content={
         <>
           <BreadcrumbComponent itemBreadcrumbs={itemBrs} />
+          <FlexButtons
+            isChanged={isChanged}
+            onSave={updateUomCategoryInfo}
+            onReload={fetchUomCategoryInfoData}
+          />
           <Form.Item
             label={
               <p style={{ fontSize: "14px", fontWeight: "500" }}>

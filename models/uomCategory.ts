@@ -18,3 +18,8 @@ export interface UomCategoryInfo {
   id: string;
   name: string;
 }
+
+export interface UomCategoryUpdateInfo {
+  id: string;
+  name: string;
+}
