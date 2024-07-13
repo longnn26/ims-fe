@@ -1,7 +1,14 @@
 "use client";
 
 import useSelector from "@hooks/use-selector";
-import { message, Popconfirm, Space, TableColumnsType, Tag } from "antd";
+import {
+  Button,
+  message,
+  Popconfirm,
+  Space,
+  TableColumnsType,
+  Tag,
+} from "antd";
 import { Table } from "antd";
 import { useRouter } from "next/router";
 import { UomUom } from "@models/uomUom";
@@ -32,11 +39,11 @@ const UomCategoryTable: React.FC<Props> = (props) => {
     await uomCategoryServices
       .deleteUomCategory(accessToken, record.id)
       .then(() => {
-        // dispatch(
-        //   getUomCategories({
-        //     token: accessToken,
-        //   })
-        // );
+        dispatch(
+          getUomCategories({
+            token: accessToken,
+          })
+        );
       })
       .catch((error) => {
         message.error(error?.response?.data);
@@ -71,12 +78,19 @@ const UomCategoryTable: React.FC<Props> = (props) => {
       key: "operation",
       width: "15%",
       render: (record: DataType) => (
-        <Space wrap>
+        <Space
+          wrap
+          onClick={(e) => e.stopPropagation()}
+        >
           <Popconfirm
             title="Sure to delete?"
-            onConfirm={() => deleteUomCategory(record)}
+            onConfirm={() => {
+              deleteUomCategory(record);
+            }}
           >
-            <AiFillDelete className="cursor-pointer" />
+            <Button>
+              <AiFillDelete />
+            </Button>
           </Popconfirm>
         </Space>
       ),
