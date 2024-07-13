@@ -17,7 +17,6 @@ import {
   Tooltip,
   message,
 } from "antd";
-import { IoCloudUpload } from "react-icons/io5";
 import { useRouter } from "next/router";
 import { GetServerSideProps } from "next";
 import { UomCategoryInfo, UomCategoryUpdateInfo } from "@models/uomCategory";
@@ -139,7 +138,7 @@ const UnitsOfMeasureInfo: React.FC<Props> = (props) => {
                 key: uomCategoryId,
                 children: (
                   <>
-                    <UomUomTable accessToken={accessToken} />
+                    <UomUomTable accessToken={accessToken} categoryId={uomCategoryId} />
                     {data?.length > 0 && (
                       <Pagination
                         className="text-end m-4"

@@ -7,7 +7,7 @@ export interface UomUom {
 }
 
 export interface UomUomInfo extends UomUom {
-  categoryId: string,
+  categoryId: string;
   rounding: number;
   active: boolean;
   ratio: number;
@@ -34,4 +34,13 @@ export interface UomUomUpdateFactor {
 export interface UomUomUpdateType {
   id: string;
   uomType: string;
+}
+
+export interface UomUomCreate {
+  categoryId: string;
+  uomType?: string;
+  name?: string;
+  factor?: number;
+  rounding?: number;
+  active?: boolean;
 }

@@ -1,4 +1,5 @@
 import {
+  UomUomCreate,
   UomUomPaging,
   UomUomUpdateFactor,
   UomUomUpdateInfo,
@@ -57,11 +58,38 @@ const updateUomUomType = async (
   return response.data;
 };
 
+const createUomUom = async (
+  token?: string,
+  data?: UomUomCreate
+): Promise<any> => {
+  (data!.name = "New"),
+    (data!.uomType = "Bigger"),
+    (data!.factor = 1),
+    (data!.rounding = 0.01),
+    (data!.active = true);
+  const response = await httpClient.post({
+    token: token,
+    url: apiLinks.uomUom.create,
+    data: data,
+  });
+  return response.data;
+};
+
+const deleteUomUom = async (token?: string, id?: string): Promise<any> => {
+  const response = await httpClient.delete({
+    token: token,
+    url: `${apiLinks.uomUom.delete}/${id}`,
+  });
+  return response.data;
+};
+
 const uomUom = {
   getUomUoms,
   updateUomUomInfo,
   updateUomUomFactor,
   updateUomUomType,
+  createUomUom,
+  deleteUomUom,
 };
 
 export default uomUom;

@@ -1,19 +1,33 @@
 "use client";
 
 import useSelector from "@hooks/use-selector";
-import { Checkbox, Input, TableColumnsType, Select, message } from "antd";
+import {
+  Checkbox,
+  Input,
+  TableColumnsType,
+  Select,
+  message,
+  Button,
+  Space,
+  Tooltip,
+} from "antd";
 import { Table } from "antd";
+import { PlusOutlined } from "@ant-design/icons";
 import useDispatch from "@hooks/use-dispatch";
 import uomUomServices from "@services/uomUom";
 import {
+  UomUomCreate,
+  UomUomInfo,
   UomUomUpdateFactor,
   UomUomUpdateInfo,
   UomUomUpdateType,
 } from "@models/uomUom";
 import { getUomUoms } from "@slices/uomUom";
 import { useEffect, useState } from "react";
+import { AiFillDelete } from "react-icons/ai";
 interface Props {
   accessToken: string;
+  categoryId: string;
 }
 
 interface DataType {
@@ -29,21 +43,18 @@ interface DataType {
 
 const UomUomTable: React.FC<Props> = (props) => {
   const dispatch = useDispatch();
-  const { accessToken } = props;
+  const { accessToken, categoryId } = props;
   const { data: uomUomData, loading } = useSelector((state) => state.uomUom);
   const [data, setData] = useState<DataType[]>([]);
 
-  const updateUomUomInfo = async (
-    data: UomUomUpdateInfo,
-    uomCategoryId: string
-  ) => {
+  const updateUomUomInfo = async (data: UomUomUpdateInfo) => {
     await uomUomServices
       .updateUomUomInfo(accessToken, data)
       .then(() => {
         dispatch(
           getUomUoms({
             token: accessToken,
-            uomCategoryId: uomCategoryId,
+            uomCategoryId: categoryId,
           })
         );
       })
@@ -51,17 +62,14 @@ const UomUomTable: React.FC<Props> = (props) => {
         message.error(error?.response?.data);
       });
   };
-  const updateUomUomFactor = async (
-    data: UomUomUpdateFactor,
-    uomCategoryId: string
-  ) => {
+  const updateUomUomFactor = async (data: UomUomUpdateFactor) => {
     await uomUomServices
       .updateUomUomFactor(accessToken, data)
       .then(() => {
         dispatch(
           getUomUoms({
             token: accessToken,
-            uomCategoryId: uomCategoryId,
+            uomCategoryId: categoryId,
           })
         );
       })
@@ -69,17 +77,14 @@ const UomUomTable: React.FC<Props> = (props) => {
         message.error(error?.response?.data);
       });
   };
-  const updateUomUomType = async (
-    data: UomUomUpdateType,
-    uomCategoryId: string
-  ) => {
+  const updateUomUomType = async (data: UomUomUpdateType) => {
     await uomUomServices
       .updateUomUomType(accessToken, data)
       .then(() => {
         dispatch(
           getUomUoms({
             token: accessToken,
-            uomCategoryId: uomCategoryId,
+            uomCategoryId: categoryId,
           })
         );
       })
@@ -96,32 +101,26 @@ const UomUomTable: React.FC<Props> = (props) => {
     switch (type) {
       case "name":
         if (newValue !== record.name) {
-          await updateUomUomInfo(
-            { id: record.id, name: newValue } as UomUomUpdateInfo,
-            record.categoryId
-          );
+          await updateUomUomInfo({
+            id: record.id,
+            name: newValue,
+          } as UomUomUpdateInfo);
         }
         break;
       case "rounding":
         if (Number.parseFloat(newValue) !== record.rounding) {
-          await updateUomUomInfo(
-            {
-              id: record.id,
-              rounding: Number.parseFloat(newValue),
-            } as UomUomUpdateInfo,
-            record.categoryId
-          );
+          await updateUomUomInfo({
+            id: record.id,
+            rounding: Number.parseFloat(newValue),
+          } as UomUomUpdateInfo);
         }
         break;
       case "factor":
         if (Number.parseFloat(newValue) !== record.ratio) {
-          await updateUomUomFactor(
-            {
-              id: record.id,
-              factor: Number.parseFloat(newValue),
-            } as UomUomUpdateFactor,
-            record.categoryId
-          );
+          await updateUomUomFactor({
+            id: record.id,
+            factor: Number.parseFloat(newValue),
+          } as UomUomUpdateFactor);
         }
         break;
       default:
@@ -131,18 +130,18 @@ const UomUomTable: React.FC<Props> = (props) => {
   const handleActiveChange = async (e, record: DataType) => {
     const newValue = e.target.checked;
     if (newValue !== record.active) {
-      await updateUomUomInfo(
-        { id: record.id, active: newValue } as UomUomUpdateInfo,
-        record.categoryId
-      );
+      await updateUomUomInfo({
+        id: record.id,
+        active: newValue,
+      } as UomUomUpdateInfo);
     }
   };
   const handleUomTypeChange = async (newValue: string, record: DataType) => {
     if (newValue !== record.uomType) {
-      await updateUomUomType(
-        { id: record.id, uomType: newValue } as UomUomUpdateType,
-        record.categoryId
-      );
+      await updateUomUomType({
+        id: record.id,
+        uomType: newValue,
+      } as UomUomUpdateType);
     }
   };
   const handleInputChange = (
@@ -158,12 +157,44 @@ const UomUomTable: React.FC<Props> = (props) => {
     });
     setData(newData);
   };
-
+  const createUomUom = async () => {
+    await uomUomServices
+      .createUomUom(accessToken, {
+        categoryId: categoryId,
+      } as UomUomCreate)
+      .then(() => {
+        dispatch(
+          getUomUoms({
+            token: accessToken,
+            uomCategoryId: categoryId,
+          })
+        );
+      })
+      .catch((error) => {
+        message.error(error?.response?.data);
+      });
+  };
+  const deleteUomUom = async (record: DataType) => {
+    await uomUomServices
+      .deleteUomUom(accessToken, record.id)
+      .then(() => {
+        dispatch(
+          getUomUoms({
+            token: accessToken,
+            uomCategoryId: categoryId,
+          })
+        );
+      })
+      .catch((error) => {
+        message.error(error?.response?.data);
+      });
+  };
   const columns: TableColumnsType<DataType> = [
     {
       title: "Name",
       key: "name",
       width: "15%",
+      fixed: true,
       render: (record: DataType) => (
         <>
           <Input
@@ -256,22 +287,20 @@ const UomUomTable: React.FC<Props> = (props) => {
         </>
       ),
     },
-
-    // {
-    //   title: "Action",
-    //   key: "operation",
-    //   render: (record: UomCategory) => (
-    //     <Space wrap>
-    //       <Tooltip title="Delete" color={"black"}>
-    //         <Button onClick={() => {}}>
-    //           <AiFillDelete />
-    //         </Button>
-    //       </Tooltip>
-    //     </Space>
-    //   ),
-    // },
+    {
+      title: "Action",
+      key: "operation",
+      render: (record: DataType) => (
+        <Space wrap>
+          <Tooltip title="Delete">
+            <Button onClick={() => deleteUomUom(record)}>
+              <AiFillDelete />
+            </Button>
+          </Tooltip>
+        </Space>
+      ),
+    },
   ];
-
   useEffect(() => {
     if (uomUomData) {
       const newData: DataType[] = uomUomData.map((item) => ({
@@ -297,6 +326,14 @@ const UomUomTable: React.FC<Props> = (props) => {
         scroll={{ x: 1300 }}
         pagination={false}
       />
+      <Button
+        type="dashed"
+        onClick={createUomUom}
+        style={{ width: "100%", marginTop: "20px" }}
+        icon={<PlusOutlined />}
+      >
+        Add line
+      </Button>
     </>
   );
 };
