@@ -1,7 +1,7 @@
 "use client";
 
 import useSelector from "@hooks/use-selector";
-import { Checkbox, Input, TableColumnsType, Select } from "antd";
+import { Checkbox, Input, TableColumnsType, Select, message } from "antd";
 import { Table } from "antd";
 import useDispatch from "@hooks/use-dispatch";
 import uomUomServices from "@services/uomUom";
@@ -47,7 +47,9 @@ const UomUomTable: React.FC<Props> = (props) => {
           })
         );
       })
-      .catch((error) => {});
+      .catch((error) => {
+        message.error(error);
+      });
   };
   const updateUomUomFactor = async (
     data: UomUomUpdateFactor,
@@ -63,7 +65,9 @@ const UomUomTable: React.FC<Props> = (props) => {
           })
         );
       })
-      .catch((error) => {});
+      .catch((error) => {
+        message.error(error);
+      });
   };
   const updateUomUomType = async (
     data: UomUomUpdateType,
@@ -79,7 +83,9 @@ const UomUomTable: React.FC<Props> = (props) => {
           })
         );
       })
-      .catch((error) => {});
+      .catch((error) => {
+        message.error(error);
+      });
   };
   const handleBlur = async (
     event: React.FocusEvent<HTMLInputElement>,
@@ -169,9 +175,7 @@ const UomUomTable: React.FC<Props> = (props) => {
             onBlur={(event) => {
               handleBlur(event, "name", record);
             }}
-            onChange={(event) =>
-              handleInputChange(event, record.key, "name")
-            }
+            onChange={(event) => handleInputChange(event, record.key, "name")}
           />
         </>
       ),

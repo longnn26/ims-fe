@@ -5,17 +5,9 @@ import useSelector from "@hooks/use-selector";
 import { getUomUoms, setPageIndex } from "@slices/uomUom";
 import dynamic from "next/dynamic";
 import React from "react";
-import { getSession, useSession } from "next-auth/react";
+import { getSession } from "next-auth/react";
 import UomUomTable from "@components/units-of-measure/UomUomTable";
-import {
-  Descriptions,
-  Flex,
-  Form,
-  Input,
-  Pagination,
-  Tabs,
-  Typography,
-} from "antd";
+import { Form, Input, Pagination, Tabs, message } from "antd";
 import { useRouter } from "next/router";
 import { GetServerSideProps } from "next";
 import { UomCategoryInfo } from "@models/uomCategory";
@@ -65,7 +57,7 @@ const UnitsOfMeasureInfo: React.FC<Props> = (props) => {
         setUomCategoryInfo({ ...res });
         setUomCategoryName(res.name);
       })
-      .catch((error) => console.log(error));
+      .catch((error) => message.error(error));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
