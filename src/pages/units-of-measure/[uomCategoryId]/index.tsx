@@ -101,7 +101,7 @@ const UnitsOfMeasureInfo: React.FC<Props> = (props) => {
                 key: uomCategoryId,
                 children: (
                   <>
-                    <UomUomTable />
+                    <UomUomTable accessToken={accessToken} />
                     {data?.length > 0 && (
                       <Pagination
                         className="text-end m-4"

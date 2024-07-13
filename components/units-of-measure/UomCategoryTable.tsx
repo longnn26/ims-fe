@@ -82,6 +82,7 @@ const UomCategoryTable: React.FC<Props> = (props) => {
             },
           };
         }}
+        className="custom-table"
         loading={loading}
         columns={columns}
         dataSource={data}

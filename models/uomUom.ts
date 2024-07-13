@@ -7,6 +7,7 @@ export interface UomUom {
 }
 
 export interface UomUomInfo extends UomUom {
+  categoryId: string,
   rounding: number;
   active: boolean;
   ratio: number;
@@ -17,4 +18,11 @@ export interface UomUomPaging extends PagingModel {
   pageSize: number;
   totalPage: number;
   data: UomUomInfo[];
+}
+
+export interface UomUomUpdateInfo {
+  id: string;
+  name?: string;
+  rounding?: number;
+  active?: boolean;
 }

@@ -1,16 +1,22 @@
 "use client";
 
 import useSelector from "@hooks/use-selector";
-import { TableColumnsType, Tag } from "antd";
+import { Checkbox, Input, TableColumnsType } from "antd";
 import { Table } from "antd";
-import { useRouter } from "next/router";
+import useDispatch from "@hooks/use-dispatch";
+import uomUomServices from "@services/uomUom";
+import { UomUomUpdateInfo } from "@models/uomUom";
+import { getUomUoms } from "@slices/uomUom";
 
-interface Props {}
+interface Props {
+  accessToken: string;
+}
 
 interface DataType {
   key: React.Key;
   id: string;
   name: string;
+  categoryId: string;
   uomType: string;
   rounding: number;
   active: boolean;
@@ -18,14 +24,86 @@ interface DataType {
 }
 
 const UomUomTable: React.FC<Props> = (props) => {
-  const router = useRouter();
+  const dispatch = useDispatch();
+  const { accessToken } = props;
   const { data: uomUomData, loading } = useSelector((state) => state.uomUom);
+
+  const updateUomUomInfo = async (
+    data: UomUomUpdateInfo,
+    uomCategoryId: string
+  ) => {
+    await uomUomServices
+      .updateUomUomInfo(accessToken, data)
+      .then(() => {
+        dispatch(
+          getUomUoms({
+            token: accessToken,
+            uomCategoryId: uomCategoryId,
+          })
+        );
+      })
+      .catch((error) => {});
+  };
+
+  const handleBlur = async (
+    event: React.FocusEvent<HTMLInputElement>,
+    type: string,
+    record: DataType
+  ) => {
+    const newValue = event.target.value;
+    switch (type) {
+      case "name":
+        if (newValue !== record.name) {
+          await updateUomUomInfo(
+            { id: record.id, name: newValue } as UomUomUpdateInfo,
+            record.categoryId
+          );
+        }
+        break;
+      case "rounding":
+        if (Number.parseFloat(newValue) !== record.rounding) {
+          await updateUomUomInfo(
+            {
+              id: record.id,
+              rounding: Number.parseFloat(newValue),
+            } as UomUomUpdateInfo,
+            record.categoryId
+          );
+        }
+        break;
+      default:
+        break;
+    }
+  };
+  const handleOnChange = async (e, record: DataType) => {
+    const newValue = e.target.checked;
+    if (newValue !== record.active) {
+      await updateUomUomInfo(
+        { id: record.id, active: newValue } as UomUomUpdateInfo,
+        record.categoryId
+      );
+    }
+  };
 
   const columns: TableColumnsType<DataType> = [
     {
       title: "Name",
-      dataIndex: "name",
       key: "name",
+      width: "15%",
+      render: (record: DataType) => (
+        <>
+          <Input
+            required
+            style={{ cursor: "pointer" }}
+            placeholder="Name"
+            variant="borderless"
+            defaultValue={record.name}
+            onBlur={(event) => {
+              handleBlur(event, "name", record);
+            }}
+          />
+        </>
+      ),
     },
     {
       title: "Type",
@@ -39,13 +117,35 @@ const UomUomTable: React.FC<Props> = (props) => {
     },
     {
       title: "Rounding",
-      dataIndex: "rounding",
       key: "rounding",
+      width: "10%",
+      render: (record: DataType) => (
+        <>
+          <Input
+            type="number"
+            style={{ cursor: "pointer" }}
+            required
+            placeholder="Rounding"
+            variant="borderless"
+            defaultValue={record.rounding}
+            onBlur={(event) => {
+              handleBlur(event, "rounding", record);
+            }}
+          />
+        </>
+      ),
     },
     {
       title: "Active",
-      dataIndex: "active",
       key: "active",
+      render: (record: DataType) => (
+        <>
+          <Checkbox
+            defaultChecked={record.active}
+            onChange={(event) => handleOnChange(event, record)}
+          ></Checkbox>
+        </>
+      ),
     },
     // {
     //   title: "Action",
@@ -69,6 +169,7 @@ const UomUomTable: React.FC<Props> = (props) => {
       id: uomUomData[i].id,
       name: uomUomData[i].name,
       uomType: uomUomData[i].uomType,
+      categoryId: uomUomData[i].categoryId,
       ratio: uomUomData[i].ratio,
       rounding: uomUomData[i].rounding,
       active: uomUomData[i].active,
