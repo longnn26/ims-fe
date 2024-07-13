@@ -323,7 +323,7 @@ const UomUomTable: React.FC<Props> = (props) => {
         loading={loading}
         columns={columns}
         dataSource={data}
-        scroll={{ x: 1300 }}
+        // scroll={{ x: 1300 }}
         pagination={false}
       />
       <Button
