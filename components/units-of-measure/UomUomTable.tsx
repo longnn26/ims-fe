@@ -10,6 +10,7 @@ import {
   Button,
   Space,
   Tooltip,
+  Popconfirm,
 } from "antd";
 import { Table } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
@@ -193,7 +194,7 @@ const UomUomTable: React.FC<Props> = (props) => {
     {
       title: "Name",
       key: "name",
-      width: "15%",
+      width: "20%",
       fixed: true,
       render: (record: DataType) => (
         <>
@@ -213,19 +214,19 @@ const UomUomTable: React.FC<Props> = (props) => {
     {
       title: "Type",
       key: "uomType",
-      width: "20%",
+      // width: "20%",
       render: (record: DataType) => (
         <Select
           variant="borderless"
           value={record.uomType}
-          style={{ width: 120 }}
+          // style={{ width: 120 }}
           onChange={(value) => {
             handleUomTypeChange(value, record);
           }}
           options={[
-            { value: "Smaller", label: "Smaller" },
-            { value: "Bigger", label: "Bigger" },
-            { value: "Reference", label: "Reference" },
+            { value: "Smaller", label: "Smaller than the reference Unit of Measure" },
+            { value: "Bigger", label: "Bigger than the reference Unit of Measure" },
+            { value: "Reference", label: "Reference Unit of Measure for this category" },
           ]}
         />
       ),
@@ -278,6 +279,7 @@ const UomUomTable: React.FC<Props> = (props) => {
     {
       title: "Active",
       key: "active",
+      width: "5%",
       render: (record: DataType) => (
         <>
           <Checkbox
@@ -288,15 +290,22 @@ const UomUomTable: React.FC<Props> = (props) => {
       ),
     },
     {
-      title: "Action",
+      // title: "Action",
       key: "operation",
+      width: "5%",
       render: (record: DataType) => (
         <Space wrap>
-          <Tooltip title="Delete">
+          <Popconfirm
+            title="Sure to delete?"
+            onConfirm={() => deleteUomUom(record)}
+          >
+            <AiFillDelete className="cursor-pointer"/>
+          </Popconfirm>
+          {/* <Tooltip title="Delete">
             <Button onClick={() => deleteUomUom(record)}>
               <AiFillDelete />
             </Button>
-          </Tooltip>
+          </Tooltip> */}
         </Space>
       ),
     },
@@ -323,6 +332,7 @@ const UomUomTable: React.FC<Props> = (props) => {
         loading={loading}
         columns={columns}
         dataSource={data}
+        bordered
         // scroll={{ x: 1300 }}
         pagination={false}
       />

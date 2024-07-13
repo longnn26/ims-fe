@@ -86,6 +86,7 @@ const UomCategoryTable: React.FC<Props> = (props) => {
         loading={loading}
         columns={columns}
         dataSource={data}
+        bordered
         // scroll={{ x: 1300 }}
         pagination={false}
       />
