@@ -37,6 +37,7 @@ const apiLinks = {
   uomUom: {
     updateInfo: `${url}/api/UomUom/Info`,
     updateFactor: `${url}/api/UomUom/Factor`,
+    updateType: `${url}/api/UomUom/Type`,
   },
 };
 

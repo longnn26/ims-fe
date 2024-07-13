@@ -1,13 +1,17 @@
 "use client";
 
 import useSelector from "@hooks/use-selector";
-import { Checkbox, Input, TableColumnsType } from "antd";
+import { Checkbox, Input, TableColumnsType, Select } from "antd";
 import { Table } from "antd";
 import useDispatch from "@hooks/use-dispatch";
 import uomUomServices from "@services/uomUom";
-import { UomUomUpdateFactor, UomUomUpdateInfo } from "@models/uomUom";
+import {
+  UomUomUpdateFactor,
+  UomUomUpdateInfo,
+  UomUomUpdateType,
+} from "@models/uomUom";
 import { getUomUoms } from "@slices/uomUom";
-
+import { useEffect, useState } from "react";
 interface Props {
   accessToken: string;
 }
@@ -27,6 +31,7 @@ const UomUomTable: React.FC<Props> = (props) => {
   const dispatch = useDispatch();
   const { accessToken } = props;
   const { data: uomUomData, loading } = useSelector((state) => state.uomUom);
+  const [data, setData] = useState<DataType[]>([]);
 
   const updateUomUomInfo = async (
     data: UomUomUpdateInfo,
@@ -50,6 +55,22 @@ const UomUomTable: React.FC<Props> = (props) => {
   ) => {
     await uomUomServices
       .updateUomUomFactor(accessToken, data)
+      .then(() => {
+        dispatch(
+          getUomUoms({
+            token: accessToken,
+            uomCategoryId: uomCategoryId,
+          })
+        );
+      })
+      .catch((error) => {});
+  };
+  const updateUomUomType = async (
+    data: UomUomUpdateType,
+    uomCategoryId: string
+  ) => {
+    await uomUomServices
+      .updateUomUomType(accessToken, data)
       .then(() => {
         dispatch(
           getUomUoms({
@@ -101,7 +122,7 @@ const UomUomTable: React.FC<Props> = (props) => {
         break;
     }
   };
-  const handleOnChange = async (e, record: DataType) => {
+  const handleActiveChange = async (e, record: DataType) => {
     const newValue = e.target.checked;
     if (newValue !== record.active) {
       await updateUomUomInfo(
@@ -109,6 +130,27 @@ const UomUomTable: React.FC<Props> = (props) => {
         record.categoryId
       );
     }
+  };
+  const handleUomTypeChange = async (newValue: string, record: DataType) => {
+    if (newValue !== record.uomType) {
+      await updateUomUomType(
+        { id: record.id, uomType: newValue } as UomUomUpdateType,
+        record.categoryId
+      );
+    }
+  };
+  const handleInputChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+    key: React.Key,
+    field: string
+  ) => {
+    const newData = data.map((item) => {
+      if (item.key === key) {
+        return { ...item, [field]: event.target.value };
+      }
+      return item;
+    });
+    setData(newData);
   };
 
   const columns: TableColumnsType<DataType> = [
@@ -127,15 +169,32 @@ const UomUomTable: React.FC<Props> = (props) => {
             onBlur={(event) => {
               handleBlur(event, "name", record);
             }}
+            onChange={(event) =>
+              handleInputChange(event, record.key, "name")
+            }
           />
         </>
       ),
     },
     {
       title: "Type",
-      dataIndex: "uomType",
       key: "uomType",
       width: "20%",
+      render: (record: DataType) => (
+        <Select
+          variant="borderless"
+          value={record.uomType}
+          style={{ width: 120 }}
+          onChange={(value) => {
+            handleUomTypeChange(value, record);
+          }}
+          options={[
+            { value: "Smaller", label: "Smaller" },
+            { value: "Bigger", label: "Bigger" },
+            { value: "Reference", label: "Reference" },
+          ]}
+        />
+      ),
     },
     {
       title: "Ratio",
@@ -150,9 +209,11 @@ const UomUomTable: React.FC<Props> = (props) => {
             placeholder="Ratio"
             variant="borderless"
             defaultValue={record.ratio}
+            value={record.ratio}
             onBlur={(event) => {
               handleBlur(event, "factor", record);
             }}
+            onChange={(event) => handleInputChange(event, record.key, "ratio")}
           />
         </>
       ),
@@ -173,6 +234,9 @@ const UomUomTable: React.FC<Props> = (props) => {
             onBlur={(event) => {
               handleBlur(event, "rounding", record);
             }}
+            onChange={(event) =>
+              handleInputChange(event, record.key, "rounding")
+            }
           />
         </>
       ),
@@ -184,11 +248,12 @@ const UomUomTable: React.FC<Props> = (props) => {
         <>
           <Checkbox
             defaultChecked={record.active}
-            onChange={(event) => handleOnChange(event, record)}
+            onChange={(event) => handleActiveChange(event, record)}
           ></Checkbox>
         </>
       ),
     },
+
     // {
     //   title: "Action",
     //   key: "operation",
@@ -204,19 +269,21 @@ const UomUomTable: React.FC<Props> = (props) => {
     // },
   ];
 
-  const data: DataType[] = [];
-  for (let i = 0; i < uomUomData?.length; ++i) {
-    data.push({
-      key: uomUomData[i].id,
-      id: uomUomData[i].id,
-      name: uomUomData[i].name,
-      uomType: uomUomData[i].uomType,
-      categoryId: uomUomData[i].categoryId,
-      ratio: uomUomData[i].ratio,
-      rounding: uomUomData[i].rounding,
-      active: uomUomData[i].active,
-    });
-  }
+  useEffect(() => {
+    if (uomUomData) {
+      const newData: DataType[] = uomUomData.map((item) => ({
+        key: item.id,
+        id: item.id,
+        name: item.name,
+        uomType: item.uomType,
+        categoryId: item.categoryId,
+        ratio: item.ratio,
+        rounding: item.rounding,
+        active: item.active,
+      }));
+      setData(newData);
+    }
+  }, [uomUomData]);
 
   return (
     <>

@@ -2,6 +2,7 @@ import {
   UomUomPaging,
   UomUomUpdateFactor,
   UomUomUpdateInfo,
+  UomUomUpdateType,
 } from "@models/uomUom";
 import apiLinks from "@utils/api-links";
 import httpClient from "@utils/http-client";
@@ -44,10 +45,23 @@ const updateUomUomFactor = async (
   return response.data;
 };
 
+const updateUomUomType = async (
+  token?: string,
+  data?: UomUomUpdateType
+): Promise<any> => {
+  const response = await httpClient.put({
+    token: token,
+    url: apiLinks.uomUom.updateType,
+    data: data,
+  });
+  return response.data;
+};
+
 const uomUom = {
   getUomUoms,
   updateUomUomInfo,
   updateUomUomFactor,
+  updateUomUomType,
 };
 
 export default uomUom;

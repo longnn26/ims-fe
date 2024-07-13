@@ -31,3 +31,7 @@ export interface UomUomUpdateFactor {
   id: string;
   factor: number;
 }
+export interface UomUomUpdateType {
+  id: string;
+  uomType: string;
+}
