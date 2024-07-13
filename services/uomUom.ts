@@ -1,4 +1,8 @@
-import { UomUomPaging, UomUomUpdateInfo } from "@models/uomUom";
+import {
+  UomUomPaging,
+  UomUomUpdateFactor,
+  UomUomUpdateInfo,
+} from "@models/uomUom";
 import apiLinks from "@utils/api-links";
 import httpClient from "@utils/http-client";
 
@@ -28,9 +32,22 @@ const updateUomUomInfo = async (
   return response.data;
 };
 
+const updateUomUomFactor = async (
+  token?: string,
+  data?: UomUomUpdateFactor
+): Promise<any> => {
+  const response = await httpClient.put({
+    token: token,
+    url: apiLinks.uomUom.updateFactor,
+    data: data,
+  });
+  return response.data;
+};
+
 const uomUom = {
   getUomUoms,
   updateUomUomInfo,
+  updateUomUomFactor,
 };
 
 export default uomUom;

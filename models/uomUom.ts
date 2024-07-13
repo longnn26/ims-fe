@@ -26,3 +26,8 @@ export interface UomUomUpdateInfo {
   rounding?: number;
   active?: boolean;
 }
+
+export interface UomUomUpdateFactor {
+  id: string;
+  factor: number;
+}

@@ -5,7 +5,7 @@ import { Checkbox, Input, TableColumnsType } from "antd";
 import { Table } from "antd";
 import useDispatch from "@hooks/use-dispatch";
 import uomUomServices from "@services/uomUom";
-import { UomUomUpdateInfo } from "@models/uomUom";
+import { UomUomUpdateFactor, UomUomUpdateInfo } from "@models/uomUom";
 import { getUomUoms } from "@slices/uomUom";
 
 interface Props {
@@ -44,7 +44,22 @@ const UomUomTable: React.FC<Props> = (props) => {
       })
       .catch((error) => {});
   };
-
+  const updateUomUomFactor = async (
+    data: UomUomUpdateFactor,
+    uomCategoryId: string
+  ) => {
+    await uomUomServices
+      .updateUomUomFactor(accessToken, data)
+      .then(() => {
+        dispatch(
+          getUomUoms({
+            token: accessToken,
+            uomCategoryId: uomCategoryId,
+          })
+        );
+      })
+      .catch((error) => {});
+  };
   const handleBlur = async (
     event: React.FocusEvent<HTMLInputElement>,
     type: string,
@@ -67,6 +82,17 @@ const UomUomTable: React.FC<Props> = (props) => {
               id: record.id,
               rounding: Number.parseFloat(newValue),
             } as UomUomUpdateInfo,
+            record.categoryId
+          );
+        }
+        break;
+      case "factor":
+        if (Number.parseFloat(newValue) !== record.ratio) {
+          await updateUomUomFactor(
+            {
+              id: record.id,
+              factor: Number.parseFloat(newValue),
+            } as UomUomUpdateFactor,
             record.categoryId
           );
         }
@@ -109,16 +135,32 @@ const UomUomTable: React.FC<Props> = (props) => {
       title: "Type",
       dataIndex: "uomType",
       key: "uomType",
+      width: "20%",
     },
     {
       title: "Ratio",
-      dataIndex: "ratio",
       key: "ratio",
+      width: "15%",
+      render: (record: DataType) => (
+        <>
+          <Input
+            type="number"
+            style={{ cursor: "pointer" }}
+            required
+            placeholder="Ratio"
+            variant="borderless"
+            defaultValue={record.ratio}
+            onBlur={(event) => {
+              handleBlur(event, "factor", record);
+            }}
+          />
+        </>
+      ),
     },
     {
       title: "Rounding",
       key: "rounding",
-      width: "10%",
+      width: "15%",
       render: (record: DataType) => (
         <>
           <Input
