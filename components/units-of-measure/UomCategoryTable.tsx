@@ -1,12 +1,18 @@
 "use client";
 
 import useSelector from "@hooks/use-selector";
-import { TableColumnsType, Tag } from "antd";
+import { message, Popconfirm, Space, TableColumnsType, Tag } from "antd";
 import { Table } from "antd";
 import { useRouter } from "next/router";
 import { UomUom } from "@models/uomUom";
+import { AiFillDelete } from "react-icons/ai";
+import uomCategoryServices from "@services/uomCategory";
+import useDispatch from "@hooks/use-dispatch";
+import { getUomCategories } from "@slices/uomCategory";
 
-interface Props {}
+interface Props {
+  accessToken: string;
+}
 
 interface DataType {
   key: React.Key;
@@ -17,15 +23,28 @@ interface DataType {
 
 const UomCategoryTable: React.FC<Props> = (props) => {
   const router = useRouter();
-  // onClick={() => router.push(`/posts/${bestArticleInfo?.slug}`)}
-
+  const dispatch = useDispatch();
+  const { accessToken } = props;
   const { data: uomCategoryData, loading } = useSelector(
     (state) => state.uomCategory
   );
-
+  const deleteUomCategory = async (record: DataType) => {
+    await uomCategoryServices
+      .deleteUomCategory(accessToken, record.id)
+      .then(() => {
+        // dispatch(
+        //   getUomCategories({
+        //     token: accessToken,
+        //   })
+        // );
+      })
+      .catch((error) => {
+        message.error(error?.response?.data);
+      });
+  };
   const columns: TableColumnsType<DataType> = [
     {
-      title: "Units of Measure Category",
+      title: "Unit of Measure Category",
       dataIndex: "name",
       key: "name",
       width: "30%",
@@ -47,21 +66,22 @@ const UomCategoryTable: React.FC<Props> = (props) => {
         </>
       ),
     },
-    // {
-    //   title: "Action",
-    //   key: "operation",
-    //   render: (record: UomCategory) => (
-    //     <Space wrap>
-    //       <Tooltip title="Delete" color={"black"}>
-    //         <Button onClick={() => {}}>
-    //           <AiFillDelete />
-    //         </Button>
-    //       </Tooltip>
-    //     </Space>
-    //   ),
-    // },
+    {
+      // title: "Action",
+      key: "operation",
+      width: "15%",
+      render: (record: DataType) => (
+        <Space wrap>
+          <Popconfirm
+            title="Sure to delete?"
+            onConfirm={() => deleteUomCategory(record)}
+          >
+            <AiFillDelete className="cursor-pointer" />
+          </Popconfirm>
+        </Space>
+      ),
+    },
   ];
-
   const data: DataType[] = [];
   for (let i = 0; i < uomCategoryData?.length; ++i) {
     data.push({
@@ -71,7 +91,6 @@ const UomCategoryTable: React.FC<Props> = (props) => {
       uomUoms: uomCategoryData[i].uomUoms,
     });
   }
-
   return (
     <>
       <Table

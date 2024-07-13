@@ -4,13 +4,13 @@ import { IoCloudUpload } from "react-icons/io5";
 import { IoReloadOutline } from "react-icons/io5";
 import { motion, AnimatePresence } from "framer-motion";
 
-interface SaveButtonProps {
+interface FlexButtonsProps {
   isChanged: boolean;
   onSave: () => void;
   onReload: () => void;
 }
 
-const FlexButtons: React.FC<SaveButtonProps> = ({
+const FlexButtons: React.FC<FlexButtonsProps> = ({
   onSave,
   onReload,
   isChanged,

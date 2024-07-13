@@ -224,9 +224,18 @@ const UomUomTable: React.FC<Props> = (props) => {
             handleUomTypeChange(value, record);
           }}
           options={[
-            { value: "Smaller", label: "Smaller than the reference Unit of Measure" },
-            { value: "Bigger", label: "Bigger than the reference Unit of Measure" },
-            { value: "Reference", label: "Reference Unit of Measure for this category" },
+            {
+              value: "Smaller",
+              label: "Smaller than the reference Unit of Measure",
+            },
+            {
+              value: "Bigger",
+              label: "Bigger than the reference Unit of Measure",
+            },
+            {
+              value: "Reference",
+              label: "Reference Unit of Measure for this category",
+            },
           ]}
         />
       ),
@@ -292,20 +301,15 @@ const UomUomTable: React.FC<Props> = (props) => {
     {
       // title: "Action",
       key: "operation",
-      width: "5%",
+      width: "15%",
       render: (record: DataType) => (
         <Space wrap>
           <Popconfirm
             title="Sure to delete?"
             onConfirm={() => deleteUomUom(record)}
           >
-            <AiFillDelete className="cursor-pointer"/>
+            <AiFillDelete className="cursor-pointer" />
           </Popconfirm>
-          {/* <Tooltip title="Delete">
-            <Button onClick={() => deleteUomUom(record)}>
-              <AiFillDelete />
-            </Button>
-          </Tooltip> */}
         </Space>
       ),
     },

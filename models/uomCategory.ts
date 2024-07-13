@@ -23,3 +23,6 @@ export interface UomCategoryUpdateInfo {
   id: string;
   name: string;
 }
+export interface UomCategoryCreate {
+  name?: string;
+}

@@ -1,4 +1,5 @@
 import {
+  UomCategoryCreate,
   UomCategoryInfo,
   UomCategoryPaging,
   UomCategoryUpdateInfo,
@@ -37,7 +38,27 @@ const updateUomCategoryInfo = async (
   const response = await httpClient.put({
     token: token,
     url: `${apiLinks.uomCategory.updateInfo}`,
-    data: data
+    data: data,
+  });
+  return response.data;
+};
+
+const createUomCategory = async (
+  token?: string,
+  data?: UomCategoryCreate
+): Promise<any> => {
+  const response = await httpClient.post({
+    token: token,
+    url: `${apiLinks.uomCategory.create}`,
+    data: data,
+  });
+  return response.data;
+};
+
+const deleteUomCategory = async (token?: string, id?: string): Promise<any> => {
+  const response = await httpClient.delete({
+    token: token,
+    url: `${apiLinks.uomCategory.delete}/${id}`,
   });
   return response.data;
 };
@@ -46,6 +67,8 @@ const uomCategory = {
   getUomCategories,
   getUomCategoryInfo,
   updateUomCategoryInfo,
+  createUomCategory,
+  deleteUomCategory
 };
 
 export default uomCategory;

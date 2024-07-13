@@ -33,6 +33,8 @@ const apiLinks = {
     getInfo: `${url}/api/UomCategory/Info`,
     getUomUom: `${url}/api/UomCategory/GetUomUom`,
     updateInfo: `${url}/api/UomCategory/Info`,
+    create: `${url}/api/UomCategory`,
+    delete: `${url}/api/UomCategory`,
   },
 
   uomUom: {

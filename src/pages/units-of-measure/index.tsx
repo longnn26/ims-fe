@@ -1,14 +1,17 @@
 "use client";
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import useDispatch from "@hooks/use-dispatch";
 import useSelector from "@hooks/use-selector";
 import { getUomCategories, setPageIndex } from "@slices/uomCategory";
 import dynamic from "next/dynamic";
 import React from "react";
-import { getSession, useSession } from "next-auth/react";
+import { getSession } from "next-auth/react";
 import UomCategoryTable from "@components/units-of-measure/UomCategoryTable";
-import { Pagination } from "antd";
+import { Form, Input, message, Modal, Pagination } from "antd";
 import { GetServerSideProps } from "next";
+import CreateButton from "@components/button/CreateButton";
+import { UomCategoryCreate } from "@models/uomCategory";
+import uomCategoryServices from "@services/uomCategory";
 
 interface Props {
   accessToken: string;
@@ -19,12 +22,25 @@ const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
 
 const UnitsOfMeasure: React.FC<Props> = (props) => {
   const dispatch = useDispatch();
+  const [form] = Form.useForm();
+  const [formValues, setFormValues] = useState<UomCategoryCreate>();
+  const [open, setOpen] = useState(false);
   const { accessToken } = props;
   const { data, pageIndex, pageSize, totalPage } = useSelector(
     (state) => state.uomCategory
   );
+  const onCreate = async (data: UomCategoryCreate) => {
+    await uomCategoryServices
+      .createUomCategory(accessToken, data)
+      .then(() => {
+        fetchData();
+      })
+      .catch((error) => {
+        message.error(error?.response?.data);
+      });
+    setOpen(false);
+  };
 
-  //function handle
   const fetchData = useCallback(() => {
     dispatch(
       getUomCategories({
@@ -42,7 +58,10 @@ const UnitsOfMeasure: React.FC<Props> = (props) => {
     <AntdLayoutNoSSR
       content={
         <>
-          <UomCategoryTable />
+          <div className="mb-3">
+            <CreateButton onSave={() => setOpen(true)} />
+          </div>
+          <UomCategoryTable accessToken={accessToken} />
           {data?.length > 0 && (
             <Pagination
               className="text-end m-4"
@@ -54,6 +73,40 @@ const UnitsOfMeasure: React.FC<Props> = (props) => {
               }}
             />
           )}
+          <Modal
+            open={open}
+            title="New Unit of Measure Category"
+            okText="Create"
+            cancelText="Cancel"
+            okButtonProps={{ autoFocus: true, htmlType: "submit" }}
+            onCancel={() => setOpen(false)}
+            destroyOnClose
+            modalRender={(dom) => (
+              <Form
+                layout="vertical"
+                form={form}
+                name="form_in_modal"
+                initialValues={{ modifier: "public" }}
+                clearOnDestroy
+                onFinish={(values) => onCreate(values)}
+              >
+                {dom}
+              </Form>
+            )}
+          >
+            <Form.Item
+              name="name"
+              label="Name"
+              rules={[
+                {
+                  required: true,
+                  message: "Please input the name of Unit of Measure Category!",
+                },
+              ]}
+            >
+              <Input />
+            </Form.Item>
+          </Modal>
         </>
       }
     />
