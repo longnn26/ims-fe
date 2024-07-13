@@ -8,7 +8,11 @@ export async function middleware(req: NextRequest) {
     req,
     secret: process.env.NEXTAUTH_SECRET,
   })) as any;
-
+  if (req.url.includes(`/units-of-measure`)) {
+    if (!token || !isExpiredTimeToken(token.loginDate, token.expiresIn)) {
+      return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/signin`);
+    }
+  }
   switch (pathname) {
     case "/signin":
       if (token && isExpiredTimeToken(token.loginDate, token.expiresIn))
@@ -50,6 +54,10 @@ export async function middleware(req: NextRequest) {
         return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/signin`);
       }
     case "/warehouses":
+      if (!token || !isExpiredTimeToken(token.loginDate, token.expiresIn)) {
+        return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/signin`);
+      }
+    case "/units-of-measure":
       if (!token || !isExpiredTimeToken(token.loginDate, token.expiresIn)) {
         return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/signin`);
       }
