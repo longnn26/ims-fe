@@ -84,6 +84,7 @@ const UomUomTable: React.FC<Props> = (props) => {
         );
       })
       .catch((error) => {
+        console.log("lieu")
         message.error(error);
       });
   };
