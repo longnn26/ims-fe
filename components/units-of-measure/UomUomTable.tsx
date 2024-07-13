@@ -175,7 +175,6 @@ const UomUomTable: React.FC<Props> = (props) => {
             onBlur={(event) => {
               handleBlur(event, "name", record);
             }}
-            // onChange={(event) => handleInputChange(event, record.key, "name")}
           />
         </>
       ),
