@@ -19,7 +19,7 @@ import { TbTemplate } from "react-icons/tb";
 import { TbRulerMeasure } from "react-icons/tb";
 import { IoConstructSharp } from "react-icons/io5";
 import { ItemType } from "antd/es/menu/interface";
-
+import { BiSolidCategory } from "react-icons/bi";
 export interface SliderMenuItem {
   key: string;
   icon: ReactNode;
@@ -64,5 +64,6 @@ export const sliderMenus: MenuItem[] = [
   getItem("Configuration", "configuration", <IoConstructSharp />, [
     getItem("Profile", "profile", <ImProfile />),
     getItem("Units of Measure", "units-of-measure", <TbRulerMeasure />),
+    getItem("Product Categories", "product-categories", <BiSolidCategory />),
   ]),
 ];

@@ -23,7 +23,6 @@ const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
 const UnitsOfMeasure: React.FC<Props> = (props) => {
   const dispatch = useDispatch();
   const [form] = Form.useForm();
-  const [formValues, setFormValues] = useState<UomCategoryCreate>();
   const [open, setOpen] = useState(false);
   const { accessToken } = props;
   const { data, pageIndex, pageSize, totalPage } = useSelector(

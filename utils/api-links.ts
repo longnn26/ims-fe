@@ -44,6 +44,16 @@ const apiLinks = {
     create: `${url}/api/UomUom`,
     delete: `${url}/api/UomUom`,
   },
+
+  productCategory: {
+    get: `${url}/api/ProductCategory`,
+    getInfo: `${url}/api/ProductCategory/Info`,
+    getSelectParent: `${url}/api/ProductCategory/SelectParent`,
+    update: `${url}/api/ProductCategory`,
+    updateParent: `${url}/api/ProductCategory/Parent`,
+    create: `${url}/api/ProductCategory`,
+    delete: `${url}/api/ProductCategory`,
+  },
 };
 
 export default apiLinks;

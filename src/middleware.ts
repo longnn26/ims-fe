@@ -13,6 +13,11 @@ export async function middleware(req: NextRequest) {
       return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/signin`);
     }
   }
+  if (req.url.includes(`/product-categories`)) {
+    if (!token || !isExpiredTimeToken(token.loginDate, token.expiresIn)) {
+      return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/signin`);
+    }
+  }
   switch (pathname) {
     case "/signin":
       if (token && isExpiredTimeToken(token.loginDate, token.expiresIn))
@@ -58,6 +63,10 @@ export async function middleware(req: NextRequest) {
         return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/signin`);
       }
     case "/units-of-measure":
+      if (!token || !isExpiredTimeToken(token.loginDate, token.expiresIn)) {
+        return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/signin`);
+      }
+    case "/product-categories":
       if (!token || !isExpiredTimeToken(token.loginDate, token.expiresIn)) {
         return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/signin`);
       }

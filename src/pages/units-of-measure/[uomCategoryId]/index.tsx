@@ -8,13 +8,10 @@ import React from "react";
 import { getSession } from "next-auth/react";
 import UomUomTable from "@components/units-of-measure/UomUomTable";
 import {
-  Button,
-  Flex,
   Form,
   Input,
   Pagination,
   Tabs,
-  Tooltip,
   message,
 } from "antd";
 import { useRouter } from "next/router";
@@ -35,7 +32,6 @@ interface Props {
   itemBrs: ItemType[];
 }
 const UnitsOfMeasureInfo: React.FC<Props> = (props) => {
-  const router = useRouter();
   const { uomCategoryId, accessToken, itemBrs } = props;
   const dispatch = useDispatch();
   const { data, pageIndex, pageSize, totalPage } = useSelector(
@@ -50,8 +46,6 @@ const UnitsOfMeasureInfo: React.FC<Props> = (props) => {
   const handleInputNameChange = (event) => {
     setUomCategoryName(event.target.value);
   };
-  const test = () => {};
-
   //function handle
   const fetchUomUomsData = useCallback(() => {
     dispatch(
