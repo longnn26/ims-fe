@@ -54,6 +54,10 @@ const apiLinks = {
     create: `${url}/api/ProductCategory`,
     delete: `${url}/api/ProductCategory`,
   },
+
+  productRemoval: {
+    getSelect: `${url}/api/ProductRemoval/Select`,
+  },
 };
 
 export default apiLinks;

@@ -60,6 +60,8 @@ const handleTitleBreadCumb = (title) => {
   switch (title) {
     case "units-of-measure":
       return "Units of Measure";
+    case "product-categories":
+      return "Product Categories";
     default:
       return title;
   }

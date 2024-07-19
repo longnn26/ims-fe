@@ -5,6 +5,7 @@ export interface ProductCategory {
   name: string;
   completeName: string;
   parentPath: string;
+  removalStrategyId: string;
 }
 
 export interface ProductCategoryInfo extends ProductCategory {
@@ -21,6 +22,7 @@ export interface ProductCategoryPaging extends PagingModel {
 export interface ProductCategoryUpdateInfo {
   id: string;
   name: string;
+  removalStrategyId: string;
 }
 
 export interface ProductCategoryUpdateParent {
@@ -31,5 +33,4 @@ export interface ProductCategoryUpdateParent {
 export interface ProductCategoryCreate {
   name: string;
   removalStrategyId: string;
-  parentId: string;
 }

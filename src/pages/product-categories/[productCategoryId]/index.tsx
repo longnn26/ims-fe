@@ -7,15 +7,16 @@ import { GetServerSideProps } from "next";
 import { handleBreadCumb } from "@utils/helpers";
 import { ItemType } from "antd/es/breadcrumb/Breadcrumb";
 import BreadcrumbComponent from "@components/breadcrumb/BreadcrumbComponent";
-import { Form, Input, message, Select } from "antd";
+import { Card, Form, Input, message, Select, Space } from "antd";
 import {
   ProductCategoryInfo,
   ProductCategoryUpdateInfo,
   ProductCategoryUpdateParent,
 } from "@models/productCategory";
-import productCategoryServices from "@services/productCategory";
 import FlexButtons from "@components/button/FlexButtons";
 import { OptionType } from "@models/base";
+import productCategoryServices from "@services/productCategory";
+import productRemovalServices from "@services/productRemoval";
 const { Option } = Select;
 
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
@@ -30,11 +31,14 @@ const ProductCategoryInfoPage: React.FC<Props> = (props) => {
   const router = useRouter();
   const { productCategoryId, accessToken, itemBrs } = props;
   const [options, setOptions] = useState<OptionType[]>([]);
+  const [removalOptions, setRemovalOptions] = useState<OptionType[]>([]);
   const [productCategoryInfo, setProductCategoryInfo] =
     useState<ProductCategoryInfo>();
   const [productCategoryName, setProductCategoryName] = useState<string>();
   const [parentProductCategoryId, setParentProductCategoryId] =
     useState<string>();
+
+  const [removalStrategyId, setRemovalStrategyId] = useState<string>();
 
   const [isChanged, setIsChanged] = useState(false);
 
@@ -46,6 +50,10 @@ const ProductCategoryInfoPage: React.FC<Props> = (props) => {
     setParentProductCategoryId(value);
   };
 
+  const handleSelectRemovalStrategy = (value: string) => {
+    setRemovalStrategyId(value);
+  };
+
   const fetchProductCategoryInfoData = useCallback(async () => {
     await productCategoryServices
       .getProductCategoryInfo(accessToken, productCategoryId)
@@ -53,6 +61,7 @@ const ProductCategoryInfoPage: React.FC<Props> = (props) => {
         setProductCategoryInfo({ ...res });
         setProductCategoryName(res.name);
         setParentProductCategoryId(res.parentCategory?.id);
+        setRemovalStrategyId(res.removalStrategyId);
       })
       .catch((error) => {
         message.error(error?.response?.data);
@@ -75,12 +84,27 @@ const ProductCategoryInfoPage: React.FC<Props> = (props) => {
       });
   };
 
+  const fetchForSelectRemoval = async () => {
+    await productRemovalServices
+      .getForSelect(accessToken)
+      .then((res) => {
+        const options: OptionType[] = res.map((item) => ({
+          value: item.id,
+          label: item.name,
+        })) as any;
+        setRemovalOptions(options);
+      })
+      .catch((error) => {
+        message.error(error?.response?.data);
+      });
+  };
+
   const updateProductCategory = async () => {
     if (productCategoryName !== productCategoryInfo?.name) {
       await productCategoryServices
         .updateProductCategoryInfo(accessToken, {
           id: productCategoryId,
-          name: productCategoryName,
+          name: productCategoryName != "" ? productCategoryName : null,
         } as ProductCategoryUpdateInfo)
         .then(() => {
           fetchProductCategoryInfoData();
@@ -102,13 +126,27 @@ const ProductCategoryInfoPage: React.FC<Props> = (props) => {
           message.error(error?.response?.data);
         });
     }
+    if (removalStrategyId !== productCategoryInfo?.removalStrategyId) {
+      await productCategoryServices
+        .updateProductCategoryInfo(accessToken, {
+          id: productCategoryId,
+          removalStrategyId: removalStrategyId,
+        } as ProductCategoryUpdateInfo)
+        .then(() => {
+          fetchProductCategoryInfoData();
+        })
+        .catch((error) => {
+          message.error(error?.response?.data);
+        });
+    }
   };
 
   useEffect(() => {
     if (productCategoryName !== undefined) {
       if (
         productCategoryName !== productCategoryInfo?.name ||
-        parentProductCategoryId != productCategoryInfo.parentCategory?.id
+        parentProductCategoryId != productCategoryInfo.parentCategory?.id ||
+        removalStrategyId != productCategoryInfo.removalStrategyId
       ) {
         setIsChanged(true);
       } else {
@@ -121,6 +159,8 @@ const ProductCategoryInfoPage: React.FC<Props> = (props) => {
     productCategoryInfo?.name,
     parentProductCategoryId,
     productCategoryInfo?.parentCategory?.id,
+    removalStrategyId,
+    productCategoryInfo?.removalStrategyId,
   ]);
 
   useEffect(() => {
@@ -129,6 +169,10 @@ const ProductCategoryInfoPage: React.FC<Props> = (props) => {
 
   useEffect(() => {
     fetchForSelectParent();
+  }, []);
+
+  useEffect(() => {
+    fetchForSelectRemoval();
   }, []);
   return (
     <AntdLayoutNoSSR
@@ -140,38 +184,66 @@ const ProductCategoryInfoPage: React.FC<Props> = (props) => {
             onSave={updateProductCategory}
             onReload={fetchProductCategoryInfoData}
           />
-          <Form.Item
-            label={
-              <p style={{ fontSize: "14px", fontWeight: "500" }}>Category</p>
-            }
-          >
-            <Input
-              placeholder="Category"
-              variant="filled"
-              value={productCategoryName}
-              onChange={handleInputNameChange}
-            />
-          </Form.Item>{" "}
-          <Form.Item
-            label={
-              <p style={{ fontSize: "14px", fontWeight: "500" }}>
-                Parent Category
-              </p>
-            }
-          >
-            <Select
-              style={{ width: "100%" }}
-              variant="filled"
-              value={parentProductCategoryId}
-              onChange={handleSelectParentChange}
-            >
-              {options.map((option) => (
-                <Option key={option.value} value={option.value}>
-                  {option.label}
-                </Option>
-              ))}
-            </Select>
-          </Form.Item>
+          <Card style={{ borderWidth: "5px" }}>
+            <Form 
+            wrapperCol={{ span: 12 }} 
+            layout="vertical">
+              <Form.Item
+                label={
+                  <p style={{ fontSize: "14px", fontWeight: "500" }}>
+                    Category
+                  </p>
+                }
+              >
+                <Input
+                  placeholder="Category"
+                  variant="filled"
+                  value={productCategoryName}
+                  onChange={handleInputNameChange}
+                />
+              </Form.Item>
+              <Form.Item
+                label={
+                  <p style={{ fontSize: "14px", fontWeight: "500" }}>
+                    Parent Category
+                  </p>
+                }
+              >
+                <Select
+                  style={{ width: "100%" }}
+                  variant="filled"
+                  value={parentProductCategoryId}
+                  onChange={handleSelectParentChange}
+                >
+                  {options.map((option) => (
+                    <Option key={option.value} value={option.value}>
+                      {option.label}
+                    </Option>
+                  ))}
+                </Select>
+              </Form.Item>
+              <Form.Item
+                label={
+                  <p style={{ fontSize: "14px", fontWeight: "500" }}>
+                    Force Removal Strategy
+                  </p>
+                }
+              >
+                <Select
+                  style={{ width: "100%" }}
+                  variant="filled"
+                  value={removalStrategyId}
+                  onChange={handleSelectRemovalStrategy}
+                >
+                  {removalOptions.map((option) => (
+                    <Option key={option.value} value={option.value}>
+                      {option.label}
+                    </Option>
+                  ))}
+                </Select>
+              </Form.Item>
+            </Form>
+          </Card>
         </>
       }
     />
