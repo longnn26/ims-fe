@@ -54,6 +54,9 @@ const AntdLayout: React.FC<Props> = (props) => {
       case "/product-categories":
         dispatch(setdefaultOpenKeys(["product-categories", "configuration"]));
         break;
+      case "/attributes":
+        dispatch(setdefaultOpenKeys(["attributes", "configuration"]));
+        break;
       default:
         break;
     }

@@ -3,7 +3,6 @@ import { RiFolderReceivedFill } from "react-icons/ri";
 import { MdInventory } from "react-icons/md";
 import { AiOutlineDashboard } from "react-icons/ai";
 
-import { ROLE_ADMIN, ROLE_CUSTOMER } from "./constants";
 import { MenuItem } from "@/types/next-auth-d";
 import { getItem } from "./helpers";
 
@@ -20,6 +19,9 @@ import { TbRulerMeasure } from "react-icons/tb";
 import { IoConstructSharp } from "react-icons/io5";
 import { ItemType } from "antd/es/menu/interface";
 import { BiSolidCategory } from "react-icons/bi";
+import { BiSolidTagAlt } from "react-icons/bi";
+
+
 export interface SliderMenuItem {
   key: string;
   icon: ReactNode;
@@ -65,5 +67,6 @@ export const sliderMenus: MenuItem[] = [
     getItem("Profile", "profile", <ImProfile />),
     getItem("Units of Measure", "units-of-measure", <TbRulerMeasure />),
     getItem("Product Categories", "product-categories", <BiSolidCategory />),
+    getItem("Attributes", "attributes", <BiSolidTagAlt />),
   ]),
 ];

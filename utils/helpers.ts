@@ -62,6 +62,8 @@ const handleTitleBreadCumb = (title) => {
       return "Units of Measure";
     case "product-categories":
       return "Product Categories";
+    case "attributes":
+      return "Attributes";
     default:
       return title;
   }

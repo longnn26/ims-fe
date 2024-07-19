@@ -58,6 +58,21 @@ const apiLinks = {
   productRemoval: {
     getSelect: `${url}/api/ProductRemoval/Select`,
   },
+
+  productAttribute: {
+    get: `${url}/api/ProductAttribute`,
+    getInfo: `${url}/api/ProductAttribute/Info`,
+    getValues: `${url}/api/ProductAttribute/Value`,
+    update: `${url}/api/ProductAttribute`,
+    create: `${url}/api/ProductAttribute`,
+    delete: `${url}/api/ProductAttribute`,
+  },
+
+  productAttributeValue: {
+    create: `${url}/api/ProductAttributeValue`,
+    update: `${url}/api/ProductAttributeValue`,
+    delete: `${url}/api/ProductAttributeValue`,
+  },
 };
 
 export default apiLinks;
