@@ -33,9 +33,6 @@ const AntdLayout: React.FC<Props> = (props) => {
       case "/products":
         dispatch(setdefaultOpenKeys(["products", "product"]));
         break;
-      case "/profile":
-        dispatch(setdefaultOpenKeys(["profile", "configuration"]));
-        break;
       case "/receipts":
         dispatch(setdefaultOpenKeys(["receipts", "transfers"]));
         break;
@@ -47,6 +44,15 @@ const AntdLayout: React.FC<Props> = (props) => {
         break;
       case "/warehouses":
         dispatch(setdefaultOpenKeys(["warehouses"]));
+        break;
+      case "/profile":
+        dispatch(setdefaultOpenKeys(["profile", "configuration"]));
+        break;
+      case "/units-of-measure":
+        dispatch(setdefaultOpenKeys(["units-of-measure", "configuration"]));
+        break;
+      case "/product-categories":
+        dispatch(setdefaultOpenKeys(["product-categories", "configuration"]));
         break;
       default:
         break;
