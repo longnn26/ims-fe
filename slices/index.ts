@@ -5,6 +5,7 @@ import uomUom from "@slices/uomUom";
 import productCategory from "@slices/productCategory";
 import productAttribute from "@slices/productAttribute";
 import productAttributeValue from "@slices/productAttributeValue";
+import productTemplate from "@slices/productTemplate";
 
 // eslint-disable-next-line import/no-anonymous-default-export
 export default {
@@ -14,5 +15,6 @@ export default {
   uomUom,
   productCategory,
   productAttribute,
-  productAttributeValue
+  productAttributeValue,
+  productTemplate
 };

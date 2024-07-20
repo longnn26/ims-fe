@@ -45,6 +45,14 @@ const apiLinks = {
     delete: `${url}/api/UomUom`,
   },
 
+  productTemplate: {
+    create: `${url}/api/ProductTemplate`,
+    update: `${url}/api/ProductTemplate`,
+    get: `${url}/api/ProductTemplate`,
+    delete: `${url}/api/ProductTemplate`,
+    getInfo: `${url}/api/ProductTemplate/Info`,
+  },
+
   productCategory: {
     get: `${url}/api/ProductCategory`,
     getInfo: `${url}/api/ProductCategory/Info`,
