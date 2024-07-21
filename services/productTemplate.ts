@@ -3,6 +3,7 @@ import {
   ProductTemplateInfo,
   ProductTemplateCreate,
   ProductTemplateUpdate,
+  ProductTemplate,
 } from "@models/productTemplate";
 import apiLinks from "@utils/api-links";
 import httpClient from "@utils/http-client";
@@ -46,7 +47,7 @@ const updateProductTemplate = async (
 const createProductTemplate = async (
   token?: string,
   data?: ProductTemplateCreate
-): Promise<any> => {
+): Promise<ProductTemplate> => {
   const response = await httpClient.post({
     token: token,
     url: `${apiLinks.productTemplate.create}`,

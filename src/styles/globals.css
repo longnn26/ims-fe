@@ -66,3 +66,7 @@
 .custom-table .ant-table-tbody>tr:hover {
     cursor: pointer;
 }
+
+.custom-select:hover {
+    border-bottom: 1px solid #dba50f; /* Màu và kích thước border khi hover */
+  }
