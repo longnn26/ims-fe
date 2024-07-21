@@ -232,7 +232,7 @@ const ProductInfoPage: React.FC<Props> = (props) => {
                 }
               >
                 <Input
-                  placeholder="Category"
+                  placeholder="Product Name"
                   variant="filled"
                   onChange={handletProductTemplateNameChange}
                 />
