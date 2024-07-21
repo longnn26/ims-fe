@@ -64,6 +64,8 @@ const handleTitleBreadCumb = (title) => {
       return "Product Categories";
     case "attributes":
       return "Attributes";
+    case "products":
+      return "Products";
     default:
       return title;
   }
