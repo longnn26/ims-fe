@@ -43,6 +43,7 @@ const apiLinks = {
     updateType: `${url}/api/UomUom/Type`,
     create: `${url}/api/UomUom`,
     delete: `${url}/api/UomUom`,
+    getSelect: `${url}/api/UomUom/Select`,
   },
 
   productTemplate: {
@@ -57,6 +58,7 @@ const apiLinks = {
     get: `${url}/api/ProductCategory`,
     getInfo: `${url}/api/ProductCategory/Info`,
     getSelectParent: `${url}/api/ProductCategory/SelectParent`,
+    getSelect: `${url}/api/ProductCategory/Select`,
     update: `${url}/api/ProductCategory`,
     updateParent: `${url}/api/ProductCategory/Parent`,
     create: `${url}/api/ProductCategory`,

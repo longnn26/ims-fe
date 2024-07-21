@@ -91,6 +91,14 @@ const deleteProductCategory = async (
   return response.data;
 };
 
+const getProductCategorySelect = async (token?: string): Promise<ProductCategory[]> => {
+  const response = await httpClient.get({
+    token: token,
+    url: `${apiLinks.productCategory.getSelect}`,
+  });
+  return response.data;
+};
+
 const productCategory = {
   getProductCategories,
   getProductCategoryInfo,
@@ -99,6 +107,7 @@ const productCategory = {
   deleteProductCategory,
   getForSelectParent,
   updateProductCategoryParent,
+  getProductCategorySelect
 };
 
 export default productCategory;

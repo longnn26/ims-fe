@@ -1,5 +1,6 @@
 import {
   UomUomCreate,
+  UomUomInfo,
   UomUomPaging,
   UomUomUpdateFactor,
   UomUomUpdateInfo,
@@ -83,6 +84,14 @@ const deleteUomUom = async (token?: string, id?: string): Promise<any> => {
   return response.data;
 };
 
+const getUomUomForSelect = async (token?: string): Promise<UomUomInfo[]> => {
+  const response = await httpClient.get({
+    token: token,
+    url: `${apiLinks.uomUom.getSelect}`,
+  });
+  return response.data;
+};
+
 const uomUom = {
   getUomUoms,
   updateUomUomInfo,
@@ -90,6 +99,7 @@ const uomUom = {
   updateUomUomType,
   createUomUom,
   deleteUomUom,
+  getUomUomForSelect
 };
 
 export default uomUom;

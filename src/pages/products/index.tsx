@@ -8,7 +8,8 @@ import { Pagination } from "antd";
 import { GetServerSideProps } from "next";
 import { getSession } from "next-auth/react";
 import dynamic from "next/dynamic";
-import React, { useCallback, useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import React, { useCallback, useEffect } from "react";
 
 interface Props {
   accessToken: string;
@@ -18,12 +19,12 @@ const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
 });
 
 const Products: React.FC<Props> = (props) => {
+  const router = useRouter();
   const dispatch = useDispatch();
   const { accessToken } = props;
   const { data, pageIndex, pageSize, totalPage } = useSelector(
     (state) => state.productTemplate
   );
-  const [open, setOpen] = useState(false);
   const fetchData = useCallback(() => {
     dispatch(
       getProductTemplates({
@@ -39,9 +40,8 @@ const Products: React.FC<Props> = (props) => {
     <AntdLayoutNoSSR
       content={
         <>
-          {" "}
           <div className="mb-3">
-            <CreateButton onSave={() => setOpen(true)} />
+            <CreateButton onSave={() => router.push(`/products/new`)} />
           </div>
           <ProductTemplateTable accessToken={accessToken} />
           {data?.length > 0 && (

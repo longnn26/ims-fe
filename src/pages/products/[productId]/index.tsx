@@ -10,6 +10,10 @@ import { ProductTemplateInfo } from "@models/productTemplate";
 import { Card, Form, Input, message, Pagination, Select, Tabs } from "antd";
 import BreadcrumbComponent from "@components/breadcrumb/BreadcrumbComponent";
 import FlexButtons from "@components/button/FlexButtons";
+import { OptionType } from "@models/base";
+import uomUomServices from "@services/uomUom";
+import productCategoryServices from "@services/productCategory";
+const { Option } = Select;
 
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
@@ -29,26 +33,70 @@ const ProductInfoPage: React.FC<Props> = (props) => {
   const [productTemplateDetailedType, setProductTemplateDetailedType] =
     useState<string>();
   const [productTemplateUomUom, setProductTemplateUomUom] = useState<string>();
+  const [productTemplateCategory, setProductTemplateCategory] =
+    useState<string>();
+  const [uomUomOptions, setUomUomOptions] = useState<OptionType[]>([]);
+  const [categoryOptions, setCategoryOptions] = useState<OptionType[]>([]);
   const [isChanged, setIsChanged] = useState(false);
 
   const fetchProductTemplateInfoData = useCallback(async () => {
-    await productTemplateServices
-      .getProductTemplateInfo(accessToken, productId)
+    if (productId !== "new") {
+      await productTemplateServices
+        .getProductTemplateInfo(accessToken, productId)
+        .then((res) => {
+          setProductTemplateInfo({ ...res });
+          setProductTemplateName(res.name);
+          setProductTemplateDetailedType(res.detailedType);
+          setProductTemplateUomUom(res.uomUom.id);
+          setProductTemplateCategory(res.productCategory.id);
+        })
+        .catch((error) => {
+          // message.error(error?.response?.data);
+        });
+    }
+  }, []);
+
+  const fetchForSelectUomUom = async () => {
+    await uomUomServices
+      .getUomUomForSelect(accessToken)
       .then((res) => {
-        setProductTemplateInfo({ ...res });
-        setProductTemplateName(res.name);
-        setProductTemplateDetailedType(res.detailedType);
-        setProductTemplateUomUom(res.uomUom.id);
+        const options: OptionType[] = res.map((item) => ({
+          value: item.id,
+          label: item.name,
+        })) as any;
+        setUomUomOptions(options);
       })
       .catch((error) => {
         message.error(error?.response?.data);
       });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  };
+
+  const fetchForSelectCategory = async () => {
+    await productCategoryServices
+      .getProductCategorySelect(accessToken)
+      .then((res) => {
+        const options: OptionType[] = res.map((item) => ({
+          value: item.id,
+          label: item.completeName,
+        })) as any;
+        setCategoryOptions(options);
+      })
+      .catch((error) => {
+        message.error(error?.response?.data);
+      });
+  };
 
   useEffect(() => {
     fetchProductTemplateInfoData();
   }, [fetchProductTemplateInfoData]);
+
+  useEffect(() => {
+    fetchForSelectUomUom();
+  }, []);
+
+  useEffect(() => {
+    fetchForSelectCategory();
+  }, []);
 
   useEffect(() => {
     if (productTemplateName !== undefined) {
@@ -134,7 +182,14 @@ const ProductInfoPage: React.FC<Props> = (props) => {
                           <Select
                             style={{ width: "100%" }}
                             variant="outlined"
-                          ></Select>
+                            value={productTemplateUomUom}
+                          >
+                            {uomUomOptions.map((option) => (
+                              <Option key={option.value} value={option.value}>
+                                {option.label}
+                              </Option>
+                            ))}
+                          </Select>
                         </Form.Item>
                         <Form.Item
                           label={
@@ -146,7 +201,14 @@ const ProductInfoPage: React.FC<Props> = (props) => {
                           <Select
                             style={{ width: "100%" }}
                             variant="outlined"
-                          ></Select>
+                            value={productTemplateCategory}
+                          >
+                            {categoryOptions.map((option) => (
+                              <Option key={option.value} value={option.value}>
+                                {option.label}
+                              </Option>
+                            ))}
+                          </Select>
                         </Form.Item>
                       </Form>
                     </>
