@@ -1,6 +1,7 @@
 import {
   ProductTemplateAttributeLinePaging,
   ProductTemplateAttributeLineCreate,
+  ProductTemplateAttributeValuesUpdate,
 } from "@models/productTemplateAttributeLine";
 import apiLinks from "@utils/api-links";
 import httpClient from "@utils/http-client";
@@ -42,10 +43,23 @@ const deleteProductTemplateAttributeLine = async (
   return response.data;
 };
 
+const updateProductTemplateAttributeValues = async (
+  token?: string,
+  data?: ProductTemplateAttributeValuesUpdate
+): Promise<any> => {
+  const response = await httpClient.put({
+    token: token,
+    url: `${apiLinks.productTemplateAttributeLine.updateValues}`,
+    data: data
+  });
+  return response.data;
+};
+
 const productTemplate = {
   getProductTemplateAttributeLines,
   createProductTemplateAttributeLine,
   deleteProductTemplateAttributeLine,
+  updateProductTemplateAttributeValues
 };
 
 export default productTemplate;

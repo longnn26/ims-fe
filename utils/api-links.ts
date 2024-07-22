@@ -89,6 +89,7 @@ const apiLinks = {
   productTemplateAttributeLine: {
     create: `${url}/api/ProductTemplateAttributeLine`,
     delete: `${url}/api/ProductTemplateAttributeLine`,
+    updateValues: `${url}/api/ProductTemplateAttributeLine/AttributeValues`,
   },
 };
 
