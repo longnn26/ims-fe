@@ -50,6 +50,7 @@ const apiLinks = {
     create: `${url}/api/ProductTemplate`,
     update: `${url}/api/ProductTemplate`,
     get: `${url}/api/ProductTemplate`,
+    getAttributeLine: `${url}/api/ProductTemplate/AttributeLine`,
     delete: `${url}/api/ProductTemplate`,
     getInfo: `${url}/api/ProductTemplate/Info`,
   },
@@ -73,6 +74,7 @@ const apiLinks = {
     get: `${url}/api/ProductAttribute`,
     getInfo: `${url}/api/ProductAttribute/Info`,
     getValues: `${url}/api/ProductAttribute/Value`,
+    getSelect: `${url}/api/ProductAttribute/Select`,
     update: `${url}/api/ProductAttribute`,
     create: `${url}/api/ProductAttribute`,
     delete: `${url}/api/ProductAttribute`,
@@ -82,6 +84,11 @@ const apiLinks = {
     create: `${url}/api/ProductAttributeValue`,
     update: `${url}/api/ProductAttributeValue`,
     delete: `${url}/api/ProductAttributeValue`,
+  },
+
+  productTemplateAttributeLine: {
+    create: `${url}/api/ProductTemplateAttributeLine`,
+    delete: `${url}/api/ProductTemplateAttributeLine`,
   },
 };
 

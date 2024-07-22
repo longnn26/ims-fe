@@ -1,4 +1,5 @@
 import {
+  ProductAttribute,
   ProductAttributeCreate,
   ProductAttributeInfo,
   ProductAttributePaging,
@@ -27,6 +28,16 @@ const getProductAttributeInfo = async (
   const response = await httpClient.get({
     token: token,
     url: `${apiLinks.productAttribute.getInfo}/${id}`,
+  });
+  return response.data;
+};
+
+const getProductAttributeForSelect = async (
+  token?: string
+): Promise<ProductAttribute[]> => {
+  const response = await httpClient.get({
+    token: token,
+    url: apiLinks.productAttribute.getSelect,
   });
   return response.data;
 };
@@ -71,7 +82,8 @@ const productAttribute = {
   updateProductAttribute,
   createProductAttribute,
   deleteProductAttribute,
-  getProductAttributeInfo
+  getProductAttributeInfo,
+  getProductAttributeForSelect
 };
 
 export default productAttribute;

@@ -3,6 +3,8 @@ import { handleBreadCumb } from "@utils/helpers";
 import { ItemType } from "antd/es/breadcrumb/Breadcrumb";
 import { GetServerSideProps } from "next";
 import { getSession } from "next-auth/react";
+import useDispatch from "@hooks/use-dispatch";
+import useSelector from "@hooks/use-selector";
 import dynamic from "next/dynamic";
 import React, { useCallback, useEffect, useState } from "react";
 import productTemplateServices from "@services/productTemplate";
@@ -13,12 +15,14 @@ import {
   ProductTemplateUpdate,
 } from "@models/productTemplate";
 import {
+  Button,
   Card,
   Col,
   Divider,
   Form,
   Input,
   message,
+  Modal,
   Pagination,
   Row,
   Select,
@@ -29,6 +33,20 @@ import FlexButtons from "@components/button/FlexButtons";
 import { OptionType } from "@models/base";
 import uomUomServices from "@services/uomUom";
 import { useRouter } from "next/router";
+import {
+  getProductTemplateAttributeLines,
+  resetData,
+  setPageIndex,
+} from "@slices/productTemplateAttributeLine";
+import ProductTemplateAttributeLineTable from "@components/product/ProductTemplateAttributeLineTable";
+import productTemplateAttributeLineServices from "@services/productTemplateAttributeLine";
+import productAttributeServices from "@services/productAttribute";
+import {
+  ProductTemplateAttributeLineCreate,
+  ProductTemplateAttributeLineInfo,
+} from "@models/productTemplateAttributeLine";
+import { PlusOutlined } from "@ant-design/icons";
+
 const { Option } = Select;
 const { TextArea } = Input;
 
@@ -55,14 +73,23 @@ interface FormName {
 
 const ProductInfoPage: React.FC<Props> = (props) => {
   const router = useRouter();
+  const dispatch = useDispatch();
   const [formGeneralInfo] = Form.useForm<FormGeneralInfo>();
   const [formName] = Form.useForm<FormName>();
   const { productId, accessToken, itemBrs } = props;
+  const { data, pageIndex, pageSize, totalPage } = useSelector(
+    (state) => state.productTemplateAttributeLine
+  );
+
   const [productTemplateInfo, setProductTemplateInfo] =
     useState<ProductTemplateInfo>();
   const [uomUomOptions, setUomUomOptions] = useState<OptionType[]>([]);
+  const [productTmplAttOptions, setProductTmplAttOptions] = useState<
+    OptionType[]
+  >([]);
   const [categoryOptions, setCategoryOptions] = useState<OptionType[]>([]);
   const [isChanged, setIsChanged] = useState(false);
+  const [openAddAttribute, setOpenAddAttribute] = useState(false);
 
   const handletProductTemplateNameChange = (event) => {
     if (event.target.value === "") {
@@ -144,6 +171,21 @@ const ProductInfoPage: React.FC<Props> = (props) => {
       });
   };
 
+  const fetchForSelectAttribute = async () => {
+    await productAttributeServices
+      .getProductAttributeForSelect(accessToken)
+      .then((res) => {
+        const options: OptionType[] = res.map((item) => ({
+          value: item.id,
+          label: item.name,
+        })) as any;
+        setProductTmplAttOptions(options);
+      })
+      .catch((error) => {
+        // message.error(error?.response?.data);
+      });
+  };
+
   const onSave = async () => {
     await formName.validateFields();
     await formGeneralInfo.validateFields();
@@ -187,17 +229,63 @@ const ProductInfoPage: React.FC<Props> = (props) => {
     }
   };
 
+  const createProductAttributeValue = async (
+    data: ProductTemplateAttributeLineCreate
+  ) => {
+    await productTemplateAttributeLineServices
+      .createProductTemplateAttributeLine(accessToken, data)
+      .then(() => {
+        dispatch(
+          getProductTemplateAttributeLines({
+            token: accessToken,
+            productTmplId: productId,
+          })
+        );
+        setOpenAddAttribute(false);
+      })
+      .catch((error) => {
+        message.error(error?.response?.data);
+      });
+  };
+
+  const fetchProductTemplateAttributeLineData = useCallback(() => {
+    dispatch(
+      getProductTemplateAttributeLines({
+        token: accessToken,
+        productTmplId: productId,
+      })
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pageIndex]);
+
   useEffect(() => {
     fetchProductTemplateInfoData();
   }, [fetchProductTemplateInfoData]);
 
   useEffect(() => {
-    fetchForSelectUomUom();
+    fetchProductTemplateAttributeLineData();
+  }, [fetchProductTemplateAttributeLineData]);
+
+  useEffect(() => {
+    Promise.all([
+      fetchForSelectUomUom(),
+      fetchForSelectCategory(),
+      fetchForSelectAttribute(),
+    ]).catch((error) => {});
   }, []);
 
   useEffect(() => {
-    fetchForSelectCategory();
-  }, []);
+    const handleRouteChange = () => {
+      dispatch(resetData());
+    };
+
+    router.events.on("routeChangeStart", handleRouteChange);
+
+    // Clean up the event listener on component unmount
+    return () => {
+      router.events.off("routeChangeStart", handleRouteChange);
+    };
+  }, [router, dispatch]);
   return (
     <AntdLayoutNoSSR
       content={
@@ -388,8 +476,6 @@ const ProductInfoPage: React.FC<Props> = (props) => {
                             >
                               <TextArea
                                 placeholder="Description"
-                                // variant="borderless"
-                                // width={"100%"}
                                 onChange={
                                   handletProductTemplateDescriptionChange
                                 }
@@ -404,7 +490,88 @@ const ProductInfoPage: React.FC<Props> = (props) => {
                 {
                   label: `Attributes & Variants`,
                   key: "2",
-                  children: <></>,
+                  children: (
+                    <>
+                      {Boolean(productId !== "new") && (
+                        <>
+                          <ProductTemplateAttributeLineTable
+                            productTmplId={productId}
+                            accessToken={accessToken}
+                          />
+                          <Button
+                            type="dashed"
+                            onClick={() => setOpenAddAttribute(true)}
+                            style={{ width: "100%", marginTop: "20px" }}
+                            icon={<PlusOutlined />}
+                          >
+                            Add Attribute
+                          </Button>
+                          {data?.length > 0 && (
+                            <Pagination
+                              className="text-end m-4"
+                              current={pageIndex}
+                              pageSize={pageSize}
+                              total={totalPage}
+                              onChange={(page) => {
+                                dispatch(setPageIndex(page));
+                              }}
+                            />
+                          )}
+                          <Modal
+                            open={openAddAttribute}
+                            okText="Add"
+                            cancelText="Cancel"
+                            okButtonProps={{
+                              autoFocus: true,
+                              htmlType: "submit",
+                            }}
+                            onCancel={() => setOpenAddAttribute(false)}
+                            destroyOnClose
+                            modalRender={(dom) => (
+                              <Form
+                                layout="vertical"
+                                name="form_in_modal"
+                                // initialValues={{ modifier: "public" }}
+                                clearOnDestroy
+                                onFinish={(values) =>
+                                  createProductAttributeValue(values)
+                                }
+                              >
+                                {dom}
+                              </Form>
+                            )}
+                          >
+                            <Form.Item
+                              name="attributeId"
+                              label="Attribute"
+                              rules={[
+                                {
+                                  required: true,
+                                  message: "Please select Attribute!",
+                                },
+                              ]}
+                            >
+                              <Select style={{ width: "100%" }}>
+                                {productTmplAttOptions.map((option) => (
+                                  <Option
+                                    key={option.value}
+                                    value={option.value}
+                                  >
+                                    {option.label}
+                                  </Option>
+                                ))}
+                              </Select>
+                            </Form.Item>
+                            <Form.Item
+                              hidden={true}
+                              name="productTmplId"
+                              initialValue={productId}
+                            ></Form.Item>
+                          </Modal>
+                        </>
+                      )}
+                    </>
+                  ),
                 },
                 {
                   label: `Inventory`,
