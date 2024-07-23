@@ -74,7 +74,7 @@ const ProductTemplateAttributeLineTable: React.FC<Props> = (props) => {
     await productTemplateAttributeLineServices
       .updateProductTemplateAttributeValues(accessToken, {
         attributeLineId: attributeLineId,
-        ProductAttributeValueIds: selectedPtavsRef.current,
+        productAttributeValueIds: selectedPtavsRef.current,
       } as ProductTemplateAttributeValuesUpdate)
       .then(() => {
         dispatch(
