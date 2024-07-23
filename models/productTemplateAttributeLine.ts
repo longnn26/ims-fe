@@ -33,5 +33,5 @@ export interface ProductTemplateAttributeLineCreate {
 
 export interface ProductTemplateAttributeValuesUpdate {
   attributeLineId: string;
-  productTemplateAttributeValueIds: string[];
+  ProductAttributeValueIds: string[];
 }
