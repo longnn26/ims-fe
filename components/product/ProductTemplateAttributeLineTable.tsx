@@ -24,6 +24,7 @@ import { FocusEventHandler, useEffect, useRef, useState } from "react";
 import { AiFillDelete } from "react-icons/ai";
 import { getProductTemplateAttributeLines } from "@slices/productTemplateAttributeLine";
 import { ProductAttribute } from "@models/productAttribute";
+import { areInArray, setsAreEqual } from "@utils/helpers";
 
 const { Option } = Select;
 
@@ -70,24 +71,30 @@ const ProductTemplateAttributeLineTable: React.FC<Props> = (props) => {
     selectedPtavsRef.current = value;
   };
 
-  const handleBlur = async (attributeLineId: string) => {
-    await productTemplateAttributeLineServices
-      .updateProductTemplateAttributeValues(accessToken, {
-        attributeLineId: attributeLineId,
-        productAttributeValueIds: selectedPtavsRef.current,
-      } as ProductTemplateAttributeValuesUpdate)
-      .then(() => {
-        dispatch(
-          getProductTemplateAttributeLines({
-            token: accessToken,
-            productTmplId: productTmplId,
-          })
-        );
-      })
-      .catch((error) => {
-        message.error(error?.response?.data);
-      });
+  const handleBlur = async (attributeLineId: string, ptavIds: string[]) => {
+    const set1 = new Set(ptavIds);
+    const set2 = new Set(selectedPtavsRef.current);
+    if (selectedPtavsRef.current.length !== 0 && !setsAreEqual(set1, set2)) {
+      await productTemplateAttributeLineServices
+        .updateProductTemplateAttributeValues(accessToken, {
+          attributeLineId: attributeLineId,
+          productAttributeValueIds: selectedPtavsRef.current,
+        } as ProductTemplateAttributeValuesUpdate)
+        .then(() => {
+          dispatch(
+            getProductTemplateAttributeLines({
+              token: accessToken,
+              productTmplId: productTmplId,
+            })
+          );
+        })
+        .catch((error) => {
+          message.error(error?.response?.data);
+        });
+    }
+    selectedPtavsRef.current = [];
   };
+
   const columns: TableColumnsType<DataType> = [
     {
       title: "Attribute",
@@ -124,7 +131,14 @@ const ProductTemplateAttributeLineTable: React.FC<Props> = (props) => {
                 (value) => value.productAttributeValue.id
               )}
               onChange={handleChange}
-              onBlur={() => handleBlur(id)}
+              onBlur={() =>
+                handleBlur(
+                  id,
+                  productTemplateAttributeValues.map(
+                    (value) => value.productAttributeValue.id
+                  )
+                )
+              }
             >
               {productAttribute.productAttributeValues.map((option) => (
                 <Option key={option.id} value={option.id}>
@@ -137,7 +151,6 @@ const ProductTemplateAttributeLineTable: React.FC<Props> = (props) => {
       ),
     },
     {
-      // title: "Action",
       key: "operation",
       width: "15%",
       render: (record: DataType) => (
