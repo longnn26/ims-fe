@@ -53,6 +53,9 @@ const apiLinks = {
     getAttributeLine: `${url}/api/ProductTemplate/AttributeLine`,
     delete: `${url}/api/ProductTemplate`,
     getInfo: `${url}/api/ProductTemplate/Info`,
+    getProductVariant: `${url}/api/ProductTemplate/ProductVariant`,
+    suggestProductVariant: `${url}/api/ProductTemplate/SuggestProductVariants`,
+    createProductVariant: `${url}/api/ProductTemplate/ProductVariant`,
   },
 
   productCategory: {
@@ -90,6 +93,10 @@ const apiLinks = {
     create: `${url}/api/ProductTemplateAttributeLine`,
     delete: `${url}/api/ProductTemplateAttributeLine`,
     updateValues: `${url}/api/ProductTemplateAttributeLine/AttributeValues`,
+  },
+
+  productProduct: {
+    delete: `${url}/api/ProductProduct`,
   },
 };
 

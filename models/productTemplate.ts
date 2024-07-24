@@ -14,6 +14,7 @@ export interface ProductTemplate {
 export interface ProductTemplateInfo extends ProductTemplate {
   productCategory: ProductCategory;
   uomUom: UomUom;
+  totalVariant: number;
 }
 
 export interface ProductTemplatePaging extends PagingModel {
@@ -40,4 +41,15 @@ export interface ProductTemplateCreate {
   detailedType: string;
   tracking: string;
   description: string;
+}
+
+export interface SuggestProductVariant {
+  attributeName: string;
+  attributeValue: string;
+  productTemplateAttributeValueId: string;
+}
+
+export interface ProductVariantCreate {
+  productTemplateId: string;
+  ptavIds: string[];
 }

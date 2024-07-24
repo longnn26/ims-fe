@@ -1,9 +1,12 @@
+import { ProductProductPaging } from "@models/productProduct";
 import {
   ProductTemplatePaging,
   ProductTemplateInfo,
   ProductTemplateCreate,
   ProductTemplateUpdate,
   ProductTemplate,
+  ProductVariantCreate,
+  SuggestProductVariant,
 } from "@models/productTemplate";
 import apiLinks from "@utils/api-links";
 import httpClient from "@utils/http-client";
@@ -67,12 +70,52 @@ const deleteProductTemplate = async (
   return response.data;
 };
 
+const getProductVariants = async (
+  token?: string,
+  productTmplId?: string,
+  pageIndex?: number,
+  pageSize?: number
+): Promise<ProductProductPaging> => {
+  const response = await httpClient.get({
+    token: token,
+    url: `${apiLinks.productTemplate.getProductVariant}/${productTmplId}`,
+    params: { pageIndex, pageSize, SortKey: "CreateDate", SortOrder: "ASC" },
+  });
+  return response.data;
+};
+
+const suggestProductVariants = async (
+  token?: string,
+  productTmplId?: string
+): Promise<SuggestProductVariant[][]> => {
+  const response = await httpClient.get({
+    token: token,
+    url: `${apiLinks.productTemplate.suggestProductVariant}/${productTmplId}`,
+  });
+  return response.data;
+};
+
+const createProductVariant = async (
+  token?: string,
+  data?: ProductVariantCreate
+): Promise<any> => {
+  const response = await httpClient.post({
+    token: token,
+    url: `${apiLinks.productTemplate.createProductVariant}`,
+    data: data
+  });
+  return response.data;
+};
+
 const productTemplate = {
   getProductTemplates,
   getProductTemplateInfo,
   updateProductTemplate,
   createProductTemplate,
   deleteProductTemplate,
+  getProductVariants,
+  suggestProductVariants,
+  createProductVariant
 };
 
 export default productTemplate;

@@ -19,6 +19,7 @@ import {
   Card,
   Col,
   Divider,
+  Flex,
   Form,
   Input,
   message,
@@ -46,6 +47,7 @@ import {
   ProductTemplateAttributeLineInfo,
 } from "@models/productTemplateAttributeLine";
 import { PlusOutlined } from "@ant-design/icons";
+import { PiTreeStructureFill } from "react-icons/pi";
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -291,6 +293,17 @@ const ProductInfoPage: React.FC<Props> = (props) => {
       content={
         <>
           <BreadcrumbComponent itemBreadcrumbs={itemBrs} />
+          <div className="flex justify-start mt-5">
+            <Button
+              shape="default"
+              icon={<PiTreeStructureFill />}
+              onClick={() => {
+                router.push(`/products/${productId}/variants`);
+              }}
+            >
+              {`Variants (${productTemplateInfo?.totalVariant})`}
+            </Button>
+          </div>
           <FlexButtons
             isChanged={isChanged}
             onSave={onSave}
