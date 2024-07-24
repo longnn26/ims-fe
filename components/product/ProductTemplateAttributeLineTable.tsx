@@ -5,26 +5,21 @@ import {
   Input,
   TableColumnsType,
   message,
-  Button,
   Space,
   Popconfirm,
-  Tag,
   Select,
 } from "antd";
 import { Table } from "antd";
 import useDispatch from "@hooks/use-dispatch";
 import productTemplateAttributeLineServices from "@services/productTemplateAttributeLine";
 import {
-  ProductTemplateAttributeLineCreate,
-  ProductTemplateAttributeLineInfo,
   ProductTemplateAttributeValue,
   ProductTemplateAttributeValuesUpdate,
 } from "@models/productTemplateAttributeLine";
-import { FocusEventHandler, useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { AiFillDelete } from "react-icons/ai";
 import { getProductTemplateAttributeLines } from "@slices/productTemplateAttributeLine";
 import { ProductAttribute } from "@models/productAttribute";
-import { areInArray, setsAreEqual } from "@utils/helpers";
 
 const { Option } = Select;
 
@@ -49,7 +44,7 @@ const ProductTemplateAttributeLineTable: React.FC<Props> = (props) => {
     (state) => state.productTemplateAttributeLine
   );
   const [data, setData] = useState<DataType[]>([]);
-  const selectedPtavsRef = useRef<string[]>([]);
+  // const selectedPtavsRef = useRef<string[]>([]);
 
   const deleteProductAttributeValue = async (record: DataType) => {
     await productTemplateAttributeLineServices
@@ -67,32 +62,24 @@ const ProductTemplateAttributeLineTable: React.FC<Props> = (props) => {
       });
   };
 
-  const handleChange = (value: string[]) => {
-    selectedPtavsRef.current = value;
-  };
-
-  const handleBlur = async (attributeLineId: string, ptavIds: string[]) => {
-    const set1 = new Set(ptavIds);
-    const set2 = new Set(selectedPtavsRef.current);
-    if (selectedPtavsRef.current.length !== 0 && !setsAreEqual(set1, set2)) {
-      await productTemplateAttributeLineServices
-        .updateProductTemplateAttributeValues(accessToken, {
-          attributeLineId: attributeLineId,
-          productAttributeValueIds: selectedPtavsRef.current,
-        } as ProductTemplateAttributeValuesUpdate)
-        .then(() => {
-          dispatch(
-            getProductTemplateAttributeLines({
-              token: accessToken,
-              productTmplId: productTmplId,
-            })
-          );
-        })
-        .catch((error) => {
-          message.error(error?.response?.data);
-        });
-    }
-    selectedPtavsRef.current = [];
+  const handleChange = async (value: string[], attributeLineId: string) => {
+    // selectedPtavsRef.current = value;
+    await productTemplateAttributeLineServices
+      .updateProductTemplateAttributeValues(accessToken, {
+        attributeLineId: attributeLineId,
+        productAttributeValueIds: value,
+      } as ProductTemplateAttributeValuesUpdate)
+      .then(() => {
+        dispatch(
+          getProductTemplateAttributeLines({
+            token: accessToken,
+            productTmplId: productTmplId,
+          })
+        );
+      })
+      .catch((error) => {
+        message.error(error?.response?.data);
+      });
   };
 
   const columns: TableColumnsType<DataType> = [
@@ -130,15 +117,7 @@ const ProductTemplateAttributeLineTable: React.FC<Props> = (props) => {
               defaultValue={productTemplateAttributeValues.map(
                 (value) => value.productAttributeValue.id
               )}
-              onChange={handleChange}
-              onBlur={() =>
-                handleBlur(
-                  id,
-                  productTemplateAttributeValues.map(
-                    (value) => value.productAttributeValue.id
-                  )
-                )
-              }
+              onChange={(value) => handleChange(value, id)}
             >
               {productAttribute.productAttributeValues.map((option) => (
                 <Option key={option.id} value={option.id}>
