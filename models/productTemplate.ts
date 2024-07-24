@@ -21,7 +21,7 @@ export interface ProductTemplatePaging extends PagingModel {
   pageIndex: number;
   pageSize: number;
   totalPage: number;
-  data: ProductTemplate[];
+  data: ProductTemplateInfo[];
 }
 
 export interface ProductTemplateUpdate {

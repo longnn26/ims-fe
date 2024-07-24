@@ -8,6 +8,8 @@ import { AiFillDelete } from "react-icons/ai";
 import productTemplateServices from "@services/productTemplate";
 import useDispatch from "@hooks/use-dispatch";
 import { getProductTemplates } from "@slices/productTemplate";
+import { ProductCategory } from "@models/productCategory";
+import { UomUom } from "@models/uomUom";
 
 interface Props {
   accessToken: string;
@@ -21,6 +23,9 @@ interface DataType {
   tracking: string;
   description: string;
   active: boolean;
+  productCategory: ProductCategory;
+  uomUom: UomUom;
+  totalVariant: number;
 }
 
 const ProductTemplateTable: React.FC<Props> = (props) => {
@@ -51,6 +56,30 @@ const ProductTemplateTable: React.FC<Props> = (props) => {
       key: "name",
     },
     {
+      title: "Variants",
+      key: "totalVariant",
+      dataIndex: "totalVariant",
+    },
+    {
+      title: "Unit",
+      key: "uomUom",
+      render: (record: DataType) => (
+        <>
+          <p>{record.uomUom.name}</p>
+        </>
+      ),
+    },
+    {
+      title: "Product Category",
+      key: "productCategory",
+      fixed: true,
+      render: (record: DataType) => (
+        <>
+          <p>{record.productCategory.name}</p>
+        </>
+      ),
+    },
+    {
       key: "operation",
       width: "15%",
       render: (record: DataType) => (
@@ -79,6 +108,9 @@ const ProductTemplateTable: React.FC<Props> = (props) => {
       tracking: productTemplateData[i].tracking,
       description: productTemplateData[i].description,
       active: productTemplateData[i].active,
+      productCategory: productTemplateData[i].productCategory,
+      uomUom: productTemplateData[i].uomUom,
+      totalVariant: productTemplateData[i].totalVariant,
     });
   }
   return (

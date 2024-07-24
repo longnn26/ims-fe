@@ -2,13 +2,14 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import productTemplateService from "@services/productTemplate";
 import {
   ProductTemplate,
+  ProductTemplateInfo,
   ProductTemplatePaging,
 } from "@models/productTemplate";
 import { AppState } from "@store/index";
 
 interface State {
   paging: ProductTemplatePaging;
-  data: ProductTemplate[];
+  data: ProductTemplateInfo[];
   pageIndex: number;
   pageSize: number;
   totalPage: number;
