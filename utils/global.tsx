@@ -14,13 +14,13 @@ import { TbTruckDelivery } from "react-icons/tb";
 import { GrDocumentTransfer } from "react-icons/gr";
 import { FaWarehouse } from "react-icons/fa6";
 import { ImProfile } from "react-icons/im";
-import { TbTemplate } from "react-icons/tb";
+import { RiFolderSettingsFill } from "react-icons/ri";
 import { TbRulerMeasure } from "react-icons/tb";
 import { IoConstructSharp } from "react-icons/io5";
 import { ItemType } from "antd/es/menu/interface";
 import { BiSolidCategory } from "react-icons/bi";
 import { BiSolidTagAlt } from "react-icons/bi";
-
+import { HiTemplate } from "react-icons/hi";
 
 export interface SliderMenuItem {
   key: string;
@@ -52,8 +52,8 @@ export const sliderMenu = [
 ] as SliderMenuItem[];
 
 export const sliderMenus: MenuItem[] = [
-  getItem("Product", "product", <MdOutlineInventory2 />, [
-    getItem("Products", "products", <TbTemplate />),
+  getItem("Product", "product", <RiFolderSettingsFill />, [
+    getItem("Products", "products", <HiTemplate />),
     getItem("Product Variants", "product-variants", <MdInventory2 />),
     getItem("Lots/Serial Numbers", "lots-serial-numbers", <IoBarcode />),
   ]),
