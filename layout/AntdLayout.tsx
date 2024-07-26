@@ -43,7 +43,10 @@ const AntdLayout: React.FC<Props> = (props) => {
         dispatch(setdefaultOpenKeys(["deliveries", "transfers"]));
         break;
       case "/warehouses":
-        dispatch(setdefaultOpenKeys(["warehouses"]));
+        dispatch(setdefaultOpenKeys(["warehouses", "warehouse"]));
+        break;
+      case "/locations":
+        dispatch(setdefaultOpenKeys(["locations", "warehouse"]));
         break;
       case "/profile":
         dispatch(setdefaultOpenKeys(["profile", "configuration"]));

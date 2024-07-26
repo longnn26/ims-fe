@@ -5,10 +5,10 @@ const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
 });
 
-const Receipts: React.FC = () => {
+const Locations: React.FC = () => {
   return (
     <AntdLayoutNoSSR content={<></>} />
   );
 };
 
-export default Receipts;
+export default Locations;

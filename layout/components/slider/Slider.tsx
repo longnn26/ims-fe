@@ -2,7 +2,7 @@
 import React, { useEffect } from "react";
 import { Layout, Menu, theme } from "antd";
 import useSelector from "@hooks/use-selector";
-import { sliderMenu, sliderMenus } from "@utils/global";
+import { sliderMenus } from "@utils/global";
 import useDispatch from "@hooks/use-dispatch";
 import { setdefaultOpenKeys } from "@slices/global";
 import { useRouter } from "next/router";

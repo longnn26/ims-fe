@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction, CaseReducer } from "@reduxjs/toolkit";
-import { sliderMenu, sliderMenus } from "@utils/global";
+import { sliderMenus } from "@utils/global";
 
 interface State {
   collapsed: boolean;
@@ -34,15 +34,12 @@ const slice = createSlice({
       } else {
         state.labelHeader = sliderMenus.find(
           (_) => _?.key === state.defaultOpenKey[0]
-        )!['label'];
+        )!["label"];
       }
     },
   },
 });
 
-export const {
-  setCollapsed,
-  setdefaultOpenKeys,
-} = slice.actions;
+export const { setCollapsed, setdefaultOpenKeys } = slice.actions;
 
 export default slice.reducer;
