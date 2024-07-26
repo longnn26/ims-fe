@@ -2,14 +2,14 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import stockLocationService from "@services/stockLocation";
 import {
   StockLocation,
-  StockWarehouseInfo,
+  StockLocationInfo,
   StockLocationPaging,
 } from "@models/stockLocation";
 import { AppState } from "@store/index";
 
 interface State {
   paging: StockLocationPaging;
-  data: StockWarehouseInfo[];
+  data: StockLocationInfo[];
   pageIndex: number;
   pageSize: number;
   totalPage: number;
