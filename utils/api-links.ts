@@ -106,6 +106,14 @@ const apiLinks = {
     getInfo: `${url}/api/StockWarehouse/Info`,
     delete: `${url}/api/StockWarehouse`,
   },
+
+  stockLocation: {
+    create: `${url}/api/StockLocation`,
+    update: `${url}/api/StockLocation`,
+    get: `${url}/api/StockLocation`,
+    getInfo: `${url}/api/StockLocation/Info`,
+    delete: `${url}/api/StockLocation`,
+  },
 };
 
 export default apiLinks;

@@ -1,5 +1,6 @@
 import { PagingModel } from "./base";
 import { StockLocation } from "./stockLocation";
+import { StockPickingType } from "./stockPickingType";
 
 export interface StockWarehouse {
   id: string;
@@ -21,6 +22,7 @@ export interface StockWarehouseInfo extends StockWarehouse {
   whQcStockLoc: StockLocation;
   whOutputStockLoc: StockLocation;
   whPackStockLoc: StockLocation;
+  stockPickingTypes: StockPickingType[]
 }
 
 export interface StockWarehouseUpdate {

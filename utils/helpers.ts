@@ -74,6 +74,8 @@ const handleTitleBreadCumb = (title) => {
       return "Attributes";
     case "products":
       return "Products";
+    case "warehouses":
+      return "Warehouses";
     default:
       return title;
   }
