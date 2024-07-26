@@ -103,7 +103,7 @@ const apiLinks = {
     create: `${url}/api/StockWarehouse`,
     update: `${url}/api/StockWarehouse`,
     get: `${url}/api/StockWarehouse`,
-    getInfo: `${url}/api/StockWarehouse`,
+    getInfo: `${url}/api/StockWarehouse/Info`,
     delete: `${url}/api/StockWarehouse`,
   },
 };
