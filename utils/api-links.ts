@@ -98,6 +98,14 @@ const apiLinks = {
   productProduct: {
     delete: `${url}/api/ProductProduct`,
   },
+
+  stockWarehouse: {
+    create: `${url}/api/StockWarehouse`,
+    update: `${url}/api/StockWarehouse`,
+    get: `${url}/api/StockWarehouse`,
+    getInfo: `${url}/api/StockWarehouse`,
+    delete: `${url}/api/StockWarehouse`,
+  },
 };
 
 export default apiLinks;

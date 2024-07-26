@@ -8,6 +8,7 @@ import productAttributeValue from "@slices/productAttributeValue";
 import productTemplate from "@slices/productTemplate";
 import productTemplateAttributeLine from "@slices/productTemplateAttributeLine";
 import productProduct from "@slices/productProduct";
+import stockWarehouse from "@slices/stockWarehouse";
 
 // eslint-disable-next-line import/no-anonymous-default-export
 export default {
@@ -20,5 +21,6 @@ export default {
   productAttributeValue,
   productTemplate,
   productTemplateAttributeLine,
-  productProduct
+  productProduct,
+  stockWarehouse
 };
