@@ -28,6 +28,16 @@ export async function middleware(req: NextRequest) {
       return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/signin`);
     }
   }
+  if (req.url.includes(`/warehouses`)) {
+    if (!token || !isExpiredTimeToken(token.loginDate, token.expiresIn)) {
+      return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/signin`);
+    }
+  }
+  if (req.url.includes(`/locations`)) {
+    if (!token || !isExpiredTimeToken(token.loginDate, token.expiresIn)) {
+      return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/signin`);
+    }
+  }
   switch (pathname) {
     case "/signin":
       if (token && isExpiredTimeToken(token.loginDate, token.expiresIn))
@@ -69,6 +79,10 @@ export async function middleware(req: NextRequest) {
         return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/signin`);
       }
     case "/warehouses":
+      if (!token || !isExpiredTimeToken(token.loginDate, token.expiresIn)) {
+        return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/signin`);
+      }
+    case "/locations":
       if (!token || !isExpiredTimeToken(token.loginDate, token.expiresIn)) {
         return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/signin`);
       }

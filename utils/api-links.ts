@@ -113,6 +113,7 @@ const apiLinks = {
     get: `${url}/api/StockLocation`,
     getInfo: `${url}/api/StockLocation/Info`,
     delete: `${url}/api/StockLocation`,
+    getSelectParent: `${url}/api/StockLocation/SelectParent`,
   },
 };
 

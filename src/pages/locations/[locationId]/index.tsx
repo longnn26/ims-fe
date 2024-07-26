@@ -48,6 +48,25 @@ const StockLocationInfoPage: React.FC<Props> = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const fetchForSelectParent = async () => {
+    await stockLocationServices
+      .getForSelectParent(accessToken, locationId)
+      .then((res) => {
+        const options: OptionType[] = res.map((item) => ({
+          value: item.id,
+          label: item.completeName,
+        })) as any;
+        setOptions(options);
+      })
+      .catch((error) => {
+        message.error(error?.response?.data);
+      });
+  };
+
+  useEffect(() => {
+    fetchForSelectParent();
+  }, []);
+
   useEffect(() => {
     fetchStockLocationInfoData();
   }, [fetchStockLocationInfoData]);
@@ -74,6 +93,7 @@ const StockLocationInfoPage: React.FC<Props> = (props) => {
                   placeholder="Category"
                   variant="filled"
                   value={stockLocationInfo?.name}
+                  readOnly={true}
                 />
               </Form.Item>
               <Form.Item
@@ -86,7 +106,8 @@ const StockLocationInfoPage: React.FC<Props> = (props) => {
                 <Select
                   style={{ width: "100%" }}
                   variant="filled"
-                  value={stockLocationInfo?.parentLocation.id}
+                  value={stockLocationInfo?.parentLocation?.id}
+                  disabled
                 >
                   {options.map((option) => (
                     <Option key={option.value} value={option.value}>
@@ -106,6 +127,7 @@ const StockLocationInfoPage: React.FC<Props> = (props) => {
                   placeholder="Category"
                   variant="filled"
                   value={stockLocationInfo?.usage}
+                  readOnly={true}
                 />
               </Form.Item>
             </Form>

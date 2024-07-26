@@ -26,6 +26,7 @@ import FlexButtons from "@components/button/FlexButtons";
 import { OptionType } from "@models/base";
 import stockWarehouseServices from "@services/stockWarehouse";
 import Link from "next/link";
+import { env } from "process";
 const { Option } = Select;
 
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
@@ -171,14 +172,18 @@ const WarehouseInfoPage: React.FC<Props> = (props) => {
                       <Row>
                         <Col span={12}>
                           <Form.Item label="Warehouse view location">
-                            <Link href="#">
+                            <Link
+                              href={`/locations/${stockWarehouseInfo?.viewLocation.id}`}
+                            >
                               {stockWarehouseInfo?.viewLocation.completeName}
                             </Link>
                           </Form.Item>
                         </Col>
                         <Col span={12}>
                           <Form.Item label="Location Stock">
-                            <Link href="#">
+                            <Link
+                              href={`/locations/${stockWarehouseInfo?.lotStock.id}`}
+                            >
                               {stockWarehouseInfo?.lotStock.completeName}
                             </Link>
                           </Form.Item>
@@ -187,14 +192,18 @@ const WarehouseInfoPage: React.FC<Props> = (props) => {
                       <Row>
                         <Col span={12}>
                           <Form.Item label="Input Location">
-                            <Link href="#">
+                            <Link
+                              href={`/locations/${stockWarehouseInfo?.whInputStockLoc.id}`}
+                            >
                               {stockWarehouseInfo?.whInputStockLoc.completeName}
                             </Link>
                           </Form.Item>
                         </Col>
                         <Col span={12}>
                           <Form.Item label="Quality Control Location">
-                            <Link href="#">
+                            <Link
+                              href={`/locations/${stockWarehouseInfo?.whQcStockLoc.id}`}
+                            >
                               {stockWarehouseInfo?.whQcStockLoc.completeName}
                             </Link>
                           </Form.Item>
@@ -203,14 +212,18 @@ const WarehouseInfoPage: React.FC<Props> = (props) => {
                       <Row>
                         <Col span={12}>
                           <Form.Item label="Packing Location">
-                            <Link href="#">
+                            <Link
+                              href={`/locations/${stockWarehouseInfo?.whPackStockLoc.id}`}
+                            >
                               {stockWarehouseInfo?.whPackStockLoc.completeName}
                             </Link>
                           </Form.Item>
                         </Col>
                         <Col span={12}>
                           <Form.Item label="Output Location">
-                            <Link href="#">
+                            <Link
+                              href={`/locations/${stockWarehouseInfo?.whOutputStockLoc.id}`}
+                            >
                               {
                                 stockWarehouseInfo?.whOutputStockLoc
                                   .completeName

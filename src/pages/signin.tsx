@@ -46,7 +46,7 @@ const Signin: React.FC<Props> = (props) => {
         <div>
           <img
             className="absolute left-0 top-[24rem] h-auto w-full"
-            src="/images/background.png"
+            // src="/images/background.png"
             alt=""
           />
         </div>
