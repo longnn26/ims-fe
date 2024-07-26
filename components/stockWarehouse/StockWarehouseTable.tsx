@@ -86,7 +86,7 @@ const StockWarehouseTable: React.FC<Props> = (props) => {
         onRow={(record, rowIndex) => {
           return {
             onClick: (event) => {
-              router.push(`/warehouse/${record?.id}`);
+              router.push(`/warehouses/${record?.id}`);
             },
           };
         }}
