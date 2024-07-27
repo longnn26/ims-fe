@@ -115,6 +115,10 @@ const apiLinks = {
     delete: `${url}/api/StockLocation`,
     getSelectParent: `${url}/api/StockLocation/SelectParent`,
   },
+
+  stockPickingType: {
+    get: `${url}/api/StockPickingType`,
+  },
 };
 
 export default apiLinks;

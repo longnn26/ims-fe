@@ -16,6 +16,7 @@ import { BiSolidTagAlt } from "react-icons/bi";
 import { HiTemplate } from "react-icons/hi";
 import { BiSolidEditLocation } from "react-icons/bi";
 import { MdInventory2, MdWarehouse } from "react-icons/md";
+import { MdSummarize } from "react-icons/md";
 export interface SliderMenuItem {
   key: string;
   icon: ReactNode;
@@ -46,16 +47,17 @@ export interface SliderMenuItem {
 // ] as SliderMenuItem[];
 
 export const sliderMenus: MenuItem[] = [
+  getItem("Inventory Overview", "overview", <MdSummarize />),
   getItem("Product", "product", <HiTemplate />, [
     getItem("Products", "products", <></>),
-    getItem("Product Variants", "product-variants", <></>),
-    getItem("Lots/Serial Numbers", "lots-serial-numbers", <></>),
+    // getItem("Product Variants", "product-variants", <></>),
+    // getItem("Lots/Serial Numbers", "lots-serial-numbers", <></>),
   ]),
-  getItem("Transfers", "transfers", <BiTransfer />, [
-    getItem("Receipts", "receipts", <></>),
-    getItem("Internal", "internal", <></>),
-    getItem("Deliveries", "deliveries", <></>),
-  ]),
+  // getItem("Transfers", "transfers", <BiTransfer />, [
+  //   getItem("Receipts", "receipts", <></>),
+  //   getItem("Internal", "internal", <></>),
+  //   getItem("Deliveries", "deliveries", <></>),
+  // ]),
   getItem("Warehouse", "warehouse", <FaWarehouse />, [
     getItem("Warehouses", "warehouses", <></>),
     getItem("Locations", "locations", <></>),
