@@ -45,13 +45,27 @@ const StockLocationTable: React.FC<Props> = (props) => {
   const columns: TableColumnsType<DataType> = [
     {
       title: "Location",
-      dataIndex: "completeName",
-      key: "completeName",
+      render: (record: DataType) => (
+        <span
+          className={`${
+            record.usage === "View" ? "text-[#578699]" : "text-[#d23f3a]"
+          }  `}
+        >
+          {record.completeName}
+        </span>
+      ),
     },
     {
       title: "Location Type",
-      dataIndex: "usage",
-      key: "usage",
+      render: (record: DataType) => (
+        <span
+          className={`${
+            record.usage === "View" ? "text-[#578699]" : "text-[#d23f3a]"
+          }  `}
+        >
+          {record.usage}
+        </span>
+      ),
     },
     // {
     //   key: "operation",
