@@ -42,18 +42,18 @@ const Overview: React.FC<Props> = (props) => {
     fetchData();
   }, [fetchData]);
 
-  useEffect(() => {
-    const handleRouteChange = () => {
-      dispatch(resetData());
-    };
+  // useEffect(() => {
+  //   const handleRouteChange = () => {
+  //     dispatch(resetData());
+  //   };
 
-    router.events.on("routeChangeStart", handleRouteChange);
+  //   router.events.on("routeChangeStart", handleRouteChange);
 
-    // Clean up the event listener on component unmount
-    return () => {
-      router.events.off("routeChangeStart", handleRouteChange);
-    };
-  }, [router, dispatch]);
+  //   // Clean up the event listener on component unmount
+  //   return () => {
+  //     router.events.off("routeChangeStart", handleRouteChange);
+  //   };
+  // }, [router, dispatch]);
   return (
     <AntdLayoutNoSSR
       content={

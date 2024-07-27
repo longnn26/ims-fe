@@ -56,6 +56,7 @@ const StockPickingTypeTable: React.FC<Props> = (props) => {
 
     return colors;
   }, [stockPickingTypeData]);
+
   return (
     <>
       <div style={{ padding: "20px" }}>
@@ -66,6 +67,7 @@ const StockPickingTypeTable: React.FC<Props> = (props) => {
                 hoverable
                 title={spt.name}
                 style={{
+                  borderWidth: "3px",
                   borderLeft: `4px solid ${warehouseColors[spt.warehouse.id]}`,
                   borderRadius: "2px",
                 }}
