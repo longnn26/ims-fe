@@ -1,4 +1,4 @@
-import { ProductProductPaging } from "@models/productProduct";
+import { ProductProduct, ProductProductPaging } from "@models/productProduct";
 import {
   ProductTemplatePaging,
   ProductTemplateInfo,
@@ -8,6 +8,7 @@ import {
   ProductVariantCreate,
   SuggestProductVariant,
 } from "@models/productTemplate";
+import { StockQuantPaging } from "@models/stockQuant";
 import apiLinks from "@utils/api-links";
 import httpClient from "@utils/http-client";
 
@@ -95,6 +96,20 @@ const suggestProductVariants = async (
   return response.data;
 };
 
+const getStockQuants = async (
+  token?: string,
+  productTmplId?: string,
+  pageIndex?: number,
+  pageSize?: number
+): Promise<StockQuantPaging> => {
+  const response = await httpClient.get({
+    token: token,
+    url: `${apiLinks.productTemplate.getStockQuant}/${productTmplId}`,
+    params: { pageIndex, pageSize, SortKey: "CreateDate", SortOrder: "ASC" },
+  });
+  return response.data;
+};
+
 const createProductVariant = async (
   token?: string,
   data?: ProductVariantCreate
@@ -107,6 +122,17 @@ const createProductVariant = async (
   return response.data;
 };
 
+const getProductVariantForSelect = async (
+  token?: string,
+  productTmplId?: string,
+): Promise<ProductProduct[]> => {
+  const response = await httpClient.get({
+    token: token,
+    url: `${apiLinks.productTemplate.getForSelect}/${productTmplId}`,
+  });
+  return response.data;
+};
+
 const productTemplate = {
   getProductTemplates,
   getProductTemplateInfo,
@@ -115,7 +141,9 @@ const productTemplate = {
   deleteProductTemplate,
   getProductVariants,
   suggestProductVariants,
-  createProductVariant
+  createProductVariant,
+  getStockQuants,
+  getProductVariantForSelect
 };
 
 export default productTemplate;

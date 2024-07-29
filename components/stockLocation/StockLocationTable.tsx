@@ -67,24 +67,6 @@ const StockLocationTable: React.FC<Props> = (props) => {
         </span>
       ),
     },
-    // {
-    //   key: "operation",
-    //   width: "15%",
-    //   render: (record: DataType) => (
-    //     <Space wrap onClick={(e) => e.stopPropagation()}>
-    //       <Popconfirm
-    //         title="Sure to delete?"
-    //         onConfirm={() => {
-    //           // deleteUomCategory(record);
-    //         }}
-    //       >
-    //         <Button>
-    //           <AiFillDelete />
-    //         </Button>
-    //       </Popconfirm>
-    //     </Space>
-    //   ),
-    // },
   ];
   const data: DataType[] = [];
   for (let i = 0; i < stockLocationData?.length; ++i) {

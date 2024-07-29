@@ -21,11 +21,9 @@ export default function App({
     <ConfigProvider
       theme={{
         token: {
-          // Seed Token
-          colorPrimary: "#dba50f",
+          colorPrimary: "#4a819e",
           borderRadius: 2,
-          // Alias Token
-          // colorBgContainer: "#f6ffed",
+          colorBgContainer: "#ffffff",
         },
       }}
     >

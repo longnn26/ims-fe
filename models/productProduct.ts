@@ -4,6 +4,8 @@ export interface ProductProduct{
   id: string;
   name: string;
   pvcs: Pvc[];
+  qtyAvailable: number;
+  uomUom: string;
 }
 
 export interface Pvc {

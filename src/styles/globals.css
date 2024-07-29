@@ -2,9 +2,33 @@
 @tailwind components;
 @tailwind utilities;
 
-.ant-btn-primary {
-    background-color: #dba50f !important;
+:root {
+    --avt-bg-color: #4a819e;
+    --avt-text-color: #4a819e;
+    --bg-color: #4a819e;
+    --text-color: #ffffff;
 }
+
+
+.ant-btn-primary {
+    background-color: var(--bg-color) !important;
+}
+
+.ant-table-thead>tr>th {
+    background-color: var(--bg-color) !important;
+    color: var(--text-color) !important;
+    text-align: center !important;
+    padding: 10px 10px !important;
+}
+
+.ant-table-container {
+    border: 2px solid var(--bg-color) !important;
+}
+
+.ant-table-tbody>tr>td {
+    padding: 10px 10px !important;
+}
+
 
 @layer components {
     .btn-submit {
@@ -45,28 +69,10 @@
     }
 }
 
-.swiper {
-    width: 100%;
-    padding-top: 50px;
-    padding-bottom: 50px;
-}
-
-.swiper-slide {
-    background-position: center;
-    background-size: cover;
-    width: 300px;
-    height: 300px;
-}
-
-.swiper-slide img {
-    display: block;
-    width: 100%;
-}
-
 .custom-table .ant-table-tbody>tr:hover {
     cursor: pointer;
 }
 
 .custom-select:hover {
-    border-bottom: 1px solid #dba50f; /* Màu và kích thước border khi hover */
-  }
+    border-bottom: 1px solid var(--bg-color);
+}

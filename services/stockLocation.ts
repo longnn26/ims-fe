@@ -41,10 +41,21 @@ const getForSelectParent = async (
   return response.data;
 };
 
+const getInternalLocations = async (
+  token?: string
+): Promise<StockLocation[]> => {
+  const response = await httpClient.get({
+    token: token,
+    url: `${apiLinks.stockLocation.getInternal}`,
+  });
+  return response.data;
+};
+
 const stockLocation = {
   getStockLocations,
   getStockLocationInfo,
-  getForSelectParent
+  getForSelectParent,
+  getInternalLocations
 };
 
 export default stockLocation;

@@ -28,6 +28,7 @@ import {
   Row,
   Select,
   Tabs,
+  Tag,
 } from "antd";
 import BreadcrumbComponent from "@components/breadcrumb/BreadcrumbComponent";
 import FlexButtons from "@components/button/FlexButtons";
@@ -47,7 +48,8 @@ import {
   ProductTemplateAttributeLineInfo,
 } from "@models/productTemplateAttributeLine";
 import { PlusOutlined } from "@ant-design/icons";
-import { PiTreeStructureFill } from "react-icons/pi";
+import { PiTreeStructureFill, PiX } from "react-icons/pi";
+import { FaBoxes } from "react-icons/fa";
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -293,6 +295,9 @@ const ProductInfoPage: React.FC<Props> = (props) => {
       content={
         <>
           <BreadcrumbComponent itemBreadcrumbs={itemBrs} />
+          <Divider orientation="left" orientationMargin="0">
+            Product Detail
+          </Divider>
           <div className="flex justify-start mt-5">
             <Button
               shape="default"
@@ -301,7 +306,18 @@ const ProductInfoPage: React.FC<Props> = (props) => {
                 router.push(`/products/${productId}/variants`);
               }}
             >
-              {`Variants (${productTemplateInfo?.totalVariant})`}
+              {`Variants: `}{" "}
+              <p className="font-bold">{productTemplateInfo?.totalVariant}</p>
+            </Button>
+            <Button
+              shape="default"
+              icon={<FaBoxes />}
+              onClick={() => {
+                router.push(`/products/${productId}/quantity`);
+              }}
+            >
+              {`On Hand: `}{" "}
+              <p className="font-bold">{productTemplateInfo?.qtyAvailable}</p>
             </Button>
           </div>
           <FlexButtons
@@ -340,6 +356,7 @@ const ProductInfoPage: React.FC<Props> = (props) => {
               </Form.Item>
             </Form>
             <Tabs
+              color="green"
               type="card"
               items={[
                 {

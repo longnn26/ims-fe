@@ -30,6 +30,8 @@ interface DataType {
   id: string;
   name: string;
   pvcs: Pvc[];
+  qtyAvailable: number;
+  uomUom: string;
 }
 
 const ProductVariantTable: React.FC<Props> = (props) => {
@@ -92,6 +94,24 @@ const ProductVariantTable: React.FC<Props> = (props) => {
       ),
     },
     {
+      title: "On Hand",
+      width: "10%",
+      render: (record: DataType) => (
+        <>
+          <p>{record.qtyAvailable}</p>
+        </>
+      ),
+    },
+    {
+      title: "Unit",
+      width: "10%",
+      render: (record: DataType) => (
+        <>
+          <p>{record.uomUom}</p>
+        </>
+      ),
+    },
+    {
       key: "operation",
       width: "15%",
       render: (record: DataType) => (
@@ -113,6 +133,8 @@ const ProductVariantTable: React.FC<Props> = (props) => {
         id: item.id,
         name: item.name,
         pvcs: item.pvcs,
+        qtyAvailable: item.qtyAvailable,
+        uomUom: item.uomUom,
       }));
       setData(newData);
     }

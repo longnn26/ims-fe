@@ -1,7 +1,14 @@
 "use client";
 
 import useSelector from "@hooks/use-selector";
-import { Button, message, Popconfirm, Space, TableColumnsType } from "antd";
+import {
+  Button,
+  message,
+  Popconfirm,
+  Space,
+  TableColumnsType,
+  Tag,
+} from "antd";
 import { Table } from "antd";
 import { useRouter } from "next/router";
 import { AiFillDelete } from "react-icons/ai";
@@ -26,6 +33,7 @@ interface DataType {
   productCategory: ProductCategory;
   uomUom: UomUom;
   totalVariant: number;
+  qtyAvailable: number;
 }
 
 const ProductTemplateTable: React.FC<Props> = (props) => {
@@ -57,8 +65,19 @@ const ProductTemplateTable: React.FC<Props> = (props) => {
     },
     {
       title: "Variants",
-      key: "totalVariant",
-      dataIndex: "totalVariant",
+      render: (record: DataType) => (
+        <>
+          <p className="font-bold">{record.totalVariant}</p>
+        </>
+      ),
+    },
+    {
+      title: "On Hand",
+      render: (record: DataType) => (
+        <>
+          <p className="font-bold">{record.qtyAvailable}</p>
+        </>
+      ),
     },
     {
       title: "Unit",
@@ -90,9 +109,7 @@ const ProductTemplateTable: React.FC<Props> = (props) => {
               deleteProductTemplate(record);
             }}
           >
-            <Button>
-              <AiFillDelete />
-            </Button>
+            <AiFillDelete className="cursor-pointer" />
           </Popconfirm>
         </Space>
       ),
@@ -111,6 +128,7 @@ const ProductTemplateTable: React.FC<Props> = (props) => {
       productCategory: productTemplateData[i].productCategory,
       uomUom: productTemplateData[i].uomUom,
       totalVariant: productTemplateData[i].totalVariant,
+      qtyAvailable: productTemplateData[i].qtyAvailable,
     });
   }
   return (

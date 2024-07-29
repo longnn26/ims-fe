@@ -56,6 +56,8 @@ const apiLinks = {
     getProductVariant: `${url}/api/ProductTemplate/ProductVariant`,
     suggestProductVariant: `${url}/api/ProductTemplate/SuggestProductVariants`,
     createProductVariant: `${url}/api/ProductTemplate/ProductVariant`,
+    getStockQuant: `${url}/api/ProductTemplate/StockQuant`,
+    getForSelect: `${url}/api/ProductTemplate/Select`,
   },
 
   productCategory: {
@@ -114,10 +116,15 @@ const apiLinks = {
     getInfo: `${url}/api/StockLocation/Info`,
     delete: `${url}/api/StockLocation`,
     getSelectParent: `${url}/api/StockLocation/SelectParent`,
+    getInternal: `${url}/api/StockLocation/Internal`,
   },
 
   stockPickingType: {
     get: `${url}/api/StockPickingType`,
+  },
+
+  stockQuant: {
+    create: `${url}/api/StockQuant`,
   },
 };
 

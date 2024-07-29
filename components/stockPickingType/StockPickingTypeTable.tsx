@@ -36,7 +36,7 @@ const StockPickingTypeTable: React.FC<Props> = (props) => {
   const { data: stockPickingTypeData, loading } = useSelector(
     (state) => state.stockPickingType
   );
-  const predefinedColors = ["#dc8534", "#e8bb1d", "#ee2d2d"];
+  const predefinedColors = ["#4a819e", "#e8bb1d", "#ee2d2d"];
 
   const getRandomColor = () => {
     return "#" + Math.floor(Math.random() * 16777215).toString(16);

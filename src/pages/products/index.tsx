@@ -4,7 +4,7 @@ import ProductTemplateTable from "@components/product/ProductTemplateTable";
 import useDispatch from "@hooks/use-dispatch";
 import useSelector from "@hooks/use-selector";
 import { getProductTemplates, setPageIndex } from "@slices/productTemplate";
-import { Pagination } from "antd";
+import { Divider, Pagination } from "antd";
 import { GetServerSideProps } from "next";
 import { getSession } from "next-auth/react";
 import dynamic from "next/dynamic";
@@ -43,6 +43,9 @@ const Products: React.FC<Props> = (props) => {
           <div className="mb-3">
             <CreateButton onSave={() => router.push(`/products/new`)} />
           </div>
+          <Divider orientation="left" orientationMargin="0">
+            Product List
+          </Divider>
           <ProductTemplateTable accessToken={accessToken} />
           {data?.length > 0 && (
             <Pagination

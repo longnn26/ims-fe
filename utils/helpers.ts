@@ -78,6 +78,8 @@ const handleTitleBreadCumb = (title) => {
       return "Warehouses";
     case "locations":
       return "Locations";
+    case "moves-history":
+      return "Moves History";
     default:
       return title;
   }

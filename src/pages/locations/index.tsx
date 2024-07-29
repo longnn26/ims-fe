@@ -11,7 +11,7 @@ import {
   setPageIndex,
 } from "@slices/stockLocation";
 import StockLocationTable from "@components/stockLocation/StockLocationTable";
-import { Pagination } from "antd";
+import { Divider, Pagination } from "antd";
 import { useRouter } from "next/router";
 
 interface Props {
@@ -58,6 +58,9 @@ const Locations: React.FC<Props> = (props) => {
     <AntdLayoutNoSSR
       content={
         <>
+          <Divider orientation="left" orientationMargin="0">
+            Location List
+          </Divider>
           <StockLocationTable accessToken={accessToken} />
           {data?.length > 0 && (
             <Pagination

@@ -4,9 +4,7 @@ import React, { Children, useEffect, useState } from "react";
 import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
 import { Layout, Button, theme, Badge, Divider } from "antd";
 import useSelector from "@hooks/use-selector";
-import {
-  setCollapsed,
-} from "@slices/global";
+import { setCollapsed } from "@slices/global";
 import useDispatch from "@hooks/use-dispatch";
 import { signOut, useSession } from "next-auth/react";
 import { Dropdown, Space, Avatar, MenuProps } from "antd";
@@ -247,9 +245,9 @@ const HeaderComponent: React.FC<Props> = (props) => {
         >
           <Badge count={newNotifyCount}>
             <Avatar
-              className="bg-[#edebd3] hover:bg-[#edebd3]/50"
+              className="bg-avtBg"
               shape="circle"
-              icon={<IoMdNotifications style={{ color: "#dba50f" }} />}
+              icon={<IoMdNotifications />}
             />
           </Badge>
         </Space>
@@ -258,7 +256,7 @@ const HeaderComponent: React.FC<Props> = (props) => {
             className=" top-[80px] z-20 absolute w-full max-w-sm bg-white divide-y divide-gray-100 rounded-lg shadow"
             aria-labelledby="dropdownNotificationButton"
           >
-            <div className="block px-4 py-2 font-medium text-center text-[#dba50f] rounded-t-lg bg-gray-50">
+            <div className="block px-4 py-2 font-medium text-center text-white rounded-t-lg bg-avtBg">
               Notifications
             </div>
             <InfiniteScroll
@@ -332,7 +330,7 @@ const HeaderComponent: React.FC<Props> = (props) => {
           className="cursor-pointer"
         >
           <Space>
-            <Avatar style={{ backgroundColor: "#edebd3", color: "#dba50f" }}>
+            <Avatar className="bg-avtBg">
               {session?.user.roles.includes("Customer")
                 ? parseJwt(session.user.access_token).Email.charAt(0)
                 : session?.user.userName?.charAt(0)}

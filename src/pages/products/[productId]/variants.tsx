@@ -12,6 +12,7 @@ import { handleBreadCumb } from "@utils/helpers";
 import {
   Avatar,
   Button,
+  Divider,
   List,
   Modal,
   Pagination,
@@ -118,6 +119,9 @@ const ProductVariants: React.FC<Props> = (props) => {
             accessToken={accessToken}
             itemBreadcrumbs={itemBrs}
           />
+          <Divider orientation="left" orientationMargin="0">
+            Product Variants
+          </Divider>
           <div className="flex justify-start mt-5 mb-5">
             <Button
               shape="default"

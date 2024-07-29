@@ -10,6 +10,7 @@ import BreadcrumbComponent from "@components/breadcrumb/BreadcrumbComponent";
 import {
   Card,
   Col,
+  Divider,
   Form,
   Input,
   message,
@@ -110,6 +111,9 @@ const WarehouseInfoPage: React.FC<Props> = (props) => {
       content={
         <>
           <BreadcrumbComponent itemBreadcrumbs={itemBrs} />
+          <Divider orientation="left" orientationMargin="0">
+            Warehouse Detail
+          </Divider>
           <FlexButtons
             isChanged={isChanged}
             onSave={onSave}

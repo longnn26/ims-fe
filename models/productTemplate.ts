@@ -15,6 +15,7 @@ export interface ProductTemplateInfo extends ProductTemplate {
   productCategory: ProductCategory;
   uomUom: UomUom;
   totalVariant: number;
+  qtyAvailable: number;
 }
 
 export interface ProductTemplatePaging extends PagingModel {
