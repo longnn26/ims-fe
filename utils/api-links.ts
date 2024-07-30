@@ -125,6 +125,7 @@ const apiLinks = {
 
   stockQuant: {
     create: `${url}/api/StockQuant`,
+    getMoveLines: `${url}/api/StockQuant/MoveLines`,
   },
 };
 

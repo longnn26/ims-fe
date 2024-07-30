@@ -53,13 +53,7 @@ const slice = createSlice({
       state.pageSize = action.payload;
     },
     resetData: (state) => {
-      state.data = [];
-      state.paging = {} as StockLocationPaging;
-      state.data = [];
       state.pageIndex = 1;
-      state.pageSize = 10;
-      state.totalPage = 0;
-      state.totalSize = 0;
     },
   },
   extraReducers: (builder) => {
@@ -67,15 +61,17 @@ const slice = createSlice({
       ...state,
       loading: true,
     }));
-    builder.addCase(getStockLocations.fulfilled, (state, { payload }) => ({
-      ...state,
-      data: payload.data,
-      pageIndex: payload.pageIndex,
-      pageSize: payload.pageSize,
-      totalPage: payload.totalPage,
-      totalSize: payload.totalSize,
-      loading: false,
-    }));
+    builder.addCase(getStockLocations.fulfilled, (state, { payload }) => {
+      return {
+        ...state,
+        data: payload.data,
+        pageIndex: payload.pageIndex,
+        pageSize: payload.pageSize,
+        totalPage: payload.totalPage,
+        totalSize: payload.totalSize,
+        loading: false,
+      };
+    });
     builder.addCase(getStockLocations.rejected, (state) => ({
       ...state,
       loading: false,
