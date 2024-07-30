@@ -12,6 +12,7 @@ import stockWarehouse from "@slices/stockWarehouse";
 import stockLocation from "@slices/stockLocation";
 import stockPickingType from "@slices/stockPickingType";
 import stockQuant from "@slices/stockQuant";
+import stockQuantProduct from "@slices/stockQuantProduct";
 import stockMoveLine from "@slices/stockMoveLine";
 
 // eslint-disable-next-line import/no-anonymous-default-export
@@ -30,5 +31,6 @@ export default {
   stockLocation,
   stockPickingType,
   stockQuant,
+  stockQuantProduct,
   stockMoveLine
 };

@@ -99,6 +99,7 @@ const apiLinks = {
 
   productProduct: {
     delete: `${url}/api/ProductProduct`,
+    getStockQuant: `${url}/api/ProductProduct/StockQuant`,
   },
 
   stockWarehouse: {
@@ -125,7 +126,10 @@ const apiLinks = {
 
   stockQuant: {
     create: `${url}/api/StockQuant`,
+    update: `${url}/api/StockQuant`,
     getMoveLines: `${url}/api/StockQuant/MoveLines`,
+    setStockQuant: `${url}/api/StockQuant/Set`,
+    clearStockQuant: `${url}/api/StockQuant/Clear`,
   },
 };
 

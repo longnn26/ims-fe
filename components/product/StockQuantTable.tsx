@@ -12,6 +12,8 @@ import { StockQuantInfo } from "@models/stockQuant";
 import { ProductProduct } from "@models/productProduct";
 import { StockLocation } from "@models/stockLocation";
 import { FaHistory } from "react-icons/fa";
+import { MdEdit } from "react-icons/md";
+
 import Link from "next/link";
 
 interface Props {
@@ -61,10 +63,21 @@ const StockQuantTable: React.FC<Props> = (props) => {
     },
     {
       title: "On Hand Quantity",
+      align: "center",
       render: (record: DataType) => (
-        <>
-          <p className="font-bold">{record.quantity}</p>
-        </>
+        <Space
+          wrap
+          onClick={(e) => {
+            e.stopPropagation();
+          }}
+        >
+          <Space wrap onClick={(e) => e.stopPropagation()}>
+            <p className="font-bold">{record.quantity}</p>
+            <Link href={`/inventory-adjustments/${record?.productProduct.id}`}>
+              <MdEdit></MdEdit>
+            </Link>
+          </Space>
+        </Space>
       ),
     },
     {
@@ -79,7 +92,6 @@ const StockQuantTable: React.FC<Props> = (props) => {
         >
           <Space wrap onClick={(e) => e.stopPropagation()}>
             <Link href={`/moves-history/${record.id}`}>
-              {" "}
               <FaHistory></FaHistory> History
             </Link>
           </Space>
@@ -107,12 +119,10 @@ const StockQuantTable: React.FC<Props> = (props) => {
       <Table
         onRow={(record, rowIndex) => {
           return {
-            onClick: (event) => {
-              // router.push(`/products/${record?.id}`);
-            },
+            onClick: (event) => {},
           };
         }}
-        className="custom-table"
+        // className="custom-table"
         loading={loading}
         columns={columns}
         dataSource={data}

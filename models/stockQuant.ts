@@ -25,3 +25,8 @@ export interface StockQuantCreate {
   locationId: string;
   quantity: number;
 }
+
+export interface StockQuantUpdate {
+  id: string;
+  inventoryQuantity: number;
+}
