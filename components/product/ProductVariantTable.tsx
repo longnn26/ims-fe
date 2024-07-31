@@ -96,9 +96,10 @@ const ProductVariantTable: React.FC<Props> = (props) => {
     {
       title: "On Hand",
       width: "10%",
+      align: "center",
       render: (record: DataType) => (
         <>
-          <p>{record.qtyAvailable}</p>
+          <p className="font-bold text-[#4a819e]">{record.qtyAvailable}</p>
         </>
       ),
     },

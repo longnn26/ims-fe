@@ -13,7 +13,7 @@ import { ProductProduct } from "@models/productProduct";
 import { StockLocation } from "@models/stockLocation";
 import { FaHistory } from "react-icons/fa";
 import { MdEdit } from "react-icons/md";
-
+import { TbSum } from "react-icons/tb";
 import Link from "next/link";
 
 interface Props {
@@ -114,6 +114,11 @@ const StockQuantTable: React.FC<Props> = (props) => {
       uomUom: stockQuantData[i].uomUom,
     });
   }
+
+  const totalQuantity = stockQuantData.reduce(
+    (sum, item) => sum + (item.quantity || 0),
+    0
+  );
   return (
     <>
       <Table
@@ -122,12 +127,24 @@ const StockQuantTable: React.FC<Props> = (props) => {
             onClick: (event) => {},
           };
         }}
-        // className="custom-table"
         loading={loading}
         columns={columns}
         dataSource={data}
         bordered
         pagination={false}
+        summary={() => (
+          <Table.Summary fixed>
+            <Table.Summary.Row>
+              <Table.Summary.Cell index={1} colSpan={2}></Table.Summary.Cell>
+              <Table.Summary.Cell index={1} align="center">
+                <Space wrap>
+                  <p className="font-bold text-[#4a819e]">{totalQuantity}</p>
+                  <TbSum />
+                </Space>
+              </Table.Summary.Cell>
+            </Table.Summary.Row>
+          </Table.Summary>
+        )}
       />
     </>
   );
