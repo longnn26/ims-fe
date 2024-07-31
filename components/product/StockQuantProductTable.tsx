@@ -52,7 +52,9 @@ const StockQuantProductTable: React.FC<Props> = (props) => {
     (state) => state.stockQuantProduct
   );
   const [data, setData] = useState<DataType[]>([]);
-
+  const [countedQuantity, setCountedQuantity] = useState<{
+    [key: string]: number;
+  }>({});
   const handleBlurInventoryQuantity = async (
     event: React.FocusEvent<HTMLInputElement>,
     record: DataType
@@ -148,7 +150,13 @@ const StockQuantProductTable: React.FC<Props> = (props) => {
             style={{ cursor: "pointer" }}
             placeholder="0"
             variant="filled"
-            defaultValue={record.inventoryQuantity}
+            value={countedQuantity![record.id]}
+            onChange={(event) => {
+              setCountedQuantity({
+                ...countedQuantity,
+                [record.id]: Number.parseFloat(event.target.value),
+              });
+            }}
             onBlur={(event) => {
               handleBlurInventoryQuantity(event, record);
             }}
@@ -243,7 +251,10 @@ const StockQuantProductTable: React.FC<Props> = (props) => {
           inventoryQuantitySet: stockQuantData[i].inventoryQuantitySet,
           uomUom: stockQuantData[i].uomUom,
         });
+        countedQuantity[stockQuantData[i].id] =
+          stockQuantData[i].inventoryQuantity;
         setData(data);
+        setCountedQuantity(countedQuantity);
       }
     }
   }, [stockQuantData]);
