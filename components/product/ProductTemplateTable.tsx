@@ -75,7 +75,7 @@ const ProductTemplateTable: React.FC<Props> = (props) => {
       title: "On Hand",
       render: (record: DataType) => (
         <>
-          <p className="font-bold">{record.qtyAvailable}</p>
+          <p className="font-bold text-[#4a819e]">{record.qtyAvailable}</p>
         </>
       ),
     },

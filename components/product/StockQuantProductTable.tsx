@@ -152,7 +152,7 @@ const StockQuantProductTable: React.FC<Props> = (props) => {
       align: "center",
       render: (record: DataType) => (
         <>
-          <p className="font-bold">{record.quantity}</p>
+          <p className="font-bold text-[#4a819e]">{record.quantity}</p>
         </>
       ),
     },

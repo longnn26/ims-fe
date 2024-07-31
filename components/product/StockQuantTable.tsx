@@ -72,7 +72,7 @@ const StockQuantTable: React.FC<Props> = (props) => {
           }}
         >
           <Space wrap onClick={(e) => e.stopPropagation()}>
-            <p className="font-bold">{record.quantity}</p>
+            <p className="font-bold text-[#4a819e]">{record.quantity}</p>
             <Link href={`/inventory-adjustments/${record?.productProduct.id}`}>
               <MdEdit></MdEdit>
             </Link>
