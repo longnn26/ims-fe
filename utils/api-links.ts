@@ -130,6 +130,7 @@ const apiLinks = {
     getMoveLines: `${url}/api/StockQuant/MoveLines`,
     setStockQuant: `${url}/api/StockQuant/Set`,
     clearStockQuant: `${url}/api/StockQuant/Clear`,
+    applyStockQuant: `${url}/api/StockQuant/Apply`,
   },
 };
 

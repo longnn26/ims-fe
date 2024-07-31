@@ -72,21 +72,6 @@ const StockQuantPage: React.FC<Props> = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pageIndex]);
 
-  const fetchInternalLocations = async () => {
-    await stockLocationServices
-      .getInternalLocations(accessToken)
-      .then((res) => {
-        const options: OptionType[] = res.map((item) => ({
-          value: item.id,
-          label: item.completeName,
-        })) as any;
-        setInternalLocationOptions(options);
-      })
-      .catch((error) => {
-        message.error(error?.response?.data);
-      });
-  };
-
   useEffect(() => {
     fetchStockQuantData();
   }, [fetchStockQuantData]);

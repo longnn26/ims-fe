@@ -112,6 +112,22 @@ const StockQuantProductTable: React.FC<Props> = (props) => {
       });
   };
 
+  const applyStockQuant = async (record: DataType) => {
+    await stockQuantServices
+      .applyStockQuant(accessToken, record.id)
+      .then(() => {
+        dispatch(
+          getStockQuants({
+            token: accessToken,
+            productVariantId: record.productProduct.id,
+          })
+        );
+      })
+      .catch((error) => {
+        message.error(error?.response?.data);
+      });
+  };
+
   const columns: TableColumnsType<DataType> = [
     {
       title: "Product Variant",
@@ -199,7 +215,12 @@ const StockQuantProductTable: React.FC<Props> = (props) => {
           {record.inventoryQuantitySet && (
             <>
               <Space wrap onClick={(e) => e.stopPropagation()}>
-                <Popconfirm title="Sure to apply?" onConfirm={() => {}}>
+                <Popconfirm
+                  title="Sure to apply?"
+                  onConfirm={() => {
+                    applyStockQuant(record);
+                  }}
+                >
                   <FaSave className="cursor-pointer" /> Apply
                 </Popconfirm>
               </Space>
