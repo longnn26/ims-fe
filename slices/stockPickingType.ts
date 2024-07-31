@@ -32,11 +32,18 @@ const getStockPickingTypes = createAsyncThunk(
   `${TYPE_PREFIX}/get`,
   async (arg: { token: string }, { getState }) => {
     const state = getState() as AppState;
-    const result = await stockPickingTypeService.getStockPickingTypes(
+    let result = await stockPickingTypeService.getStockPickingTypes(
       arg.token,
       state.stockPickingType.pageIndex,
       state.stockPickingType.pageSize
     );
+    if (result.pageIndex > result.totalPage) {
+      result = await stockPickingTypeService.getStockPickingTypes(
+        arg.token,
+        1,
+        state.stockPickingType.pageSize
+      );
+    }
     return result;
   }
 );
@@ -50,15 +57,6 @@ const slice = createSlice({
     },
     setPageSize: (state, action) => {
       state.pageSize = action.payload;
-    },
-    resetData: (state) => {
-      state.data = [];
-      state.paging = {} as StockPickingTypePaging;
-      state.data = [];
-      state.pageIndex = 1;
-      state.pageSize = 10;
-      state.totalPage = 0;
-      state.totalSize = 0;
     },
   },
   extraReducers: (builder) => {
@@ -83,6 +81,6 @@ const slice = createSlice({
 });
 
 export { getStockPickingTypes };
-export const { setPageIndex, setPageSize, resetData } = slice.actions;
+export const { setPageIndex, setPageSize } = slice.actions;
 
 export default slice.reducer;

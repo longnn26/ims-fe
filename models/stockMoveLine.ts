@@ -10,6 +10,7 @@ export interface StockMoveLineInfo {
   quantity: number;
   location: string;
   locationDest: string;
+  writeDate: string;
 }
 export interface StockMoveLinePaging extends PagingModel {
   pageIndex: number;

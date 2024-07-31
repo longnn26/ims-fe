@@ -41,6 +41,17 @@ const getForSelectParent = async (
   return response.data;
 };
 
+const deleteStockLocation = async (
+  token?: string,
+  id?: string
+): Promise<any> => {
+  const response = await httpClient.delete({
+    token: token,
+    url: `${apiLinks.stockLocation.delete}/${id}`,
+  });
+  return response.data;
+};
+
 const getInternalLocations = async (
   token?: string
 ): Promise<StockLocation[]> => {
@@ -55,7 +66,8 @@ const stockLocation = {
   getStockLocations,
   getStockLocationInfo,
   getForSelectParent,
-  getInternalLocations
+  getInternalLocations,
+  deleteStockLocation,
 };
 
 export default stockLocation;

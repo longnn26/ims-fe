@@ -33,11 +33,18 @@ const getStockLocations = createAsyncThunk(
   `${TYPE_PREFIX}/get`,
   async (arg: { token: string }, { getState }) => {
     const state = getState() as AppState;
-    const result = await stockLocationService.getStockLocations(
+    let result = await stockLocationService.getStockLocations(
       arg.token,
       state.stockLocation.pageIndex,
       state.stockLocation.pageSize
     );
+    if (result.pageIndex > result.totalPage) {
+      result = await stockLocationService.getStockLocations(
+        arg.token,
+        1,
+        state.stockLocation.pageSize
+      );
+    }
     return result;
   }
 );
@@ -51,9 +58,6 @@ const slice = createSlice({
     },
     setPageSize: (state, action) => {
       state.pageSize = action.payload;
-    },
-    resetData: (state) => {
-      state.pageIndex = 1;
     },
   },
   extraReducers: (builder) => {
@@ -80,6 +84,6 @@ const slice = createSlice({
 });
 
 export { getStockLocations };
-export const { setPageIndex, setPageSize, resetData } = slice.actions;
+export const { setPageIndex, setPageSize } = slice.actions;
 
 export default slice.reducer;

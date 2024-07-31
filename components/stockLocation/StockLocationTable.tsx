@@ -5,9 +5,10 @@ import { Button, message, Popconfirm, Space, TableColumnsType } from "antd";
 import { Table } from "antd";
 import { useRouter } from "next/router";
 import { AiFillDelete } from "react-icons/ai";
-import productCategoryServices from "@services/productCategory";
+import stockLocationServices from "@services/stockLocation";
 import useDispatch from "@hooks/use-dispatch";
 import { getProductCategories } from "@slices/productCategory";
+import { getStockLocations } from "@slices/stockLocation";
 
 interface Props {
   accessToken: string;
@@ -28,20 +29,20 @@ const StockLocationTable: React.FC<Props> = (props) => {
   const { data: stockLocationData, loading } = useSelector(
     (state) => state.stockLocation
   );
-  // const deleteUomCategory = async (record: DataType) => {
-  //   await productCategoryServices
-  //     .deleteProductCategory(accessToken, record.id)
-  //     .then(() => {
-  //       dispatch(
-  //         getProductCategories({
-  //           token: accessToken,
-  //         })
-  //       );
-  //     })
-  //     .catch((error) => {
-  //       message.error(error?.response?.data);
-  //     });
-  // };
+  const deleteStockLocation = async (record: DataType) => {
+    await stockLocationServices
+      .deleteStockLocation(accessToken, record.id)
+      .then(() => {
+        dispatch(
+          getStockLocations({
+            token: accessToken,
+          })
+        );
+      })
+      .catch((error) => {
+        message.error(error?.response?.data);
+      });
+  };
   const columns: TableColumnsType<DataType> = [
     {
       title: "Location",
@@ -65,6 +66,22 @@ const StockLocationTable: React.FC<Props> = (props) => {
         >
           {record.usage}
         </span>
+      ),
+    },
+    {
+      key: "operation",
+      width: "15%",
+      render: (record: DataType) => (
+        <Space wrap onClick={(e) => e.stopPropagation()}>
+          <Popconfirm
+            title="Sure to delete?"
+            onConfirm={() => {
+              deleteStockLocation(record);
+            }}
+          >
+            <AiFillDelete className="cursor-pointer" />
+          </Popconfirm>
+        </Space>
       ),
     },
   ];

@@ -7,7 +7,6 @@ import useDispatch from "@hooks/use-dispatch";
 import useSelector from "@hooks/use-selector";
 import {
   getStockLocations,
-  resetData,
   setPageIndex,
 } from "@slices/stockLocation";
 import StockLocationTable from "@components/stockLocation/StockLocationTable";
@@ -41,19 +40,6 @@ const Locations: React.FC<Props> = (props) => {
   useEffect(() => {
     fetchData();
   }, [fetchData]);
-
-  useEffect(() => {
-    const handleRouteChange = () => {
-      dispatch(resetData());
-    };
-
-    router.events.on("routeChangeStart", handleRouteChange);
-
-    // Clean up the event listener on component unmount
-    return () => {
-      router.events.off("routeChangeStart", handleRouteChange);
-    };
-  }, [router, dispatch]);
   return (
     <AntdLayoutNoSSR
       content={

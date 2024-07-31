@@ -15,6 +15,7 @@ import { AiFillDelete } from "react-icons/ai";
 import productCategoryServices from "@services/productCategory";
 import useDispatch from "@hooks/use-dispatch";
 import { getProductCategories } from "@slices/productCategory";
+import moment from "moment";
 
 interface Props {
   accessToken?: string;
@@ -31,6 +32,7 @@ interface DataType {
   quantity: number;
   location: string;
   locationDest: string;
+  writeDate: string;
 }
 
 const StockMoveLineTable: React.FC<Props> = (props) => {
@@ -41,6 +43,13 @@ const StockMoveLineTable: React.FC<Props> = (props) => {
     (state) => state.stockMoveLine
   );
   const columns: TableColumnsType<DataType> = [
+    {
+      title: "Date",
+      width: "15%",
+      render: (record: DataType) => (
+        <p>{moment(record.writeDate).format('YYYY-MM-DD HH:mm:ss')}</p>
+      ),
+    },
     {
       title: "Reference",
       dataIndex: "reference",
@@ -100,6 +109,7 @@ const StockMoveLineTable: React.FC<Props> = (props) => {
       quantity: stockMoveLineData[i].quantity,
       location: stockMoveLineData[i].location,
       locationDest: stockMoveLineData[i].locationDest,
+      writeDate: stockMoveLineData[i].writeDate,
     });
   }
   return (

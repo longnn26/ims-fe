@@ -8,7 +8,6 @@ import React, { useCallback, useEffect } from "react";
 import { useRouter } from "next/router";
 import {
   getStockPickingTypes,
-  resetData,
   setPageIndex,
 } from "@slices/stockPickingType";
 import { Pagination } from "antd";
@@ -44,7 +43,7 @@ const Overview: React.FC<Props> = (props) => {
 
   // useEffect(() => {
   //   const handleRouteChange = () => {
-  //     dispatch(resetData());
+  //     dispatch(resetState());
   //   };
 
   //   router.events.on("routeChangeStart", handleRouteChange);
