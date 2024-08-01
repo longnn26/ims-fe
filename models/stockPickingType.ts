@@ -6,6 +6,7 @@ export interface StockPickingType {
   name: string;
   code: string;
   barcode: string;
+  totalPickingReady: number;
 }
 
 export interface StockPickingTypeInfo extends StockPickingType {

@@ -27,6 +27,7 @@ interface DataType {
   name: string;
   completeName: string;
   usage: string;
+  totalPickingReady: number;
 }
 
 const StockPickingTypeTable: React.FC<Props> = (props) => {
@@ -75,7 +76,9 @@ const StockPickingTypeTable: React.FC<Props> = (props) => {
                 <Meta
                   title={
                     <>
-                      <Button type="primary">0 To Process</Button>
+                      <Button type="primary">
+                        {`${spt.totalPickingReady} To Process`}{" "}
+                      </Button>
                     </>
                   }
                   description={spt.warehouse.name}
