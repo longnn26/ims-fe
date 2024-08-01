@@ -124,6 +124,13 @@ const apiLinks = {
     get: `${url}/api/StockPickingType`,
   },
 
+  stockPicking: {
+    getIncoming: `${url}/api/StockPicking/Incoming`,
+    getInternal: `${url}/api/StockPicking/Internal`,
+    getOutgoing: `${url}/api/StockPicking/Outgoing`,
+    create: `${url}/api/StockPicking`,
+  },
+
   stockQuant: {
     create: `${url}/api/StockQuant`,
     update: `${url}/api/StockQuant`,

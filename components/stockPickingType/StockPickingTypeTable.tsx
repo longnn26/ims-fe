@@ -15,6 +15,7 @@ import { useRouter } from "next/router";
 import useDispatch from "@hooks/use-dispatch";
 import { getStockPickingTypes } from "@slices/stockPickingType";
 import { useMemo } from "react";
+import { StockPickingTypeInfo } from "@models/stockPickingType";
 const { Meta } = Card;
 
 interface Props {
@@ -58,6 +59,16 @@ const StockPickingTypeTable: React.FC<Props> = (props) => {
     return colors;
   }, [stockPickingTypeData]);
 
+  const handleClick = (data: StockPickingTypeInfo) => {
+    switch (data.code) {
+      case "Incoming":
+        router.push(`/overview/incomings/${data.warehouse.id}`);
+        break;
+      default:
+        break;
+    }
+  };
+
   return (
     <>
       <div style={{ padding: "20px" }}>
@@ -76,8 +87,8 @@ const StockPickingTypeTable: React.FC<Props> = (props) => {
                 <Meta
                   title={
                     <>
-                      <Button type="primary">
-                        {`${spt.totalPickingReady} To Process`}{" "}
+                      <Button type="primary" onClick={() => handleClick(spt)}>
+                        {`${spt.totalPickingReady} To Process`}
                       </Button>
                     </>
                   }
