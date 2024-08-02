@@ -4,57 +4,38 @@ import { ItemType } from "antd/es/breadcrumb/Breadcrumb";
 import { GetServerSideProps } from "next";
 import { getSession } from "next-auth/react";
 import useDispatch from "@hooks/use-dispatch";
-import useSelector from "@hooks/use-selector";
 import dynamic from "next/dynamic";
 import React, { useCallback, useEffect, useState } from "react";
 import productTemplateServices from "@services/productTemplate";
-import productCategoryServices from "@services/productCategory";
 import {
-  ProductTemplateCreate,
-  ProductTemplateInfo,
-  ProductTemplateUpdate,
-} from "@models/productTemplate";
-import {
-  Button,
   Card,
   Col,
   DatePicker,
   Divider,
-  Flex,
   Form,
   Input,
   message,
-  Modal,
-  Pagination,
   Row,
   Select,
-  Tabs,
-  Tag,
 } from "antd";
 import BreadcrumbComponent from "@components/breadcrumb/BreadcrumbComponent";
 import FlexButtons from "@components/button/FlexButtons";
 import { OptionType } from "@models/base";
-import uomUomServices from "@services/uomUom";
 import { useRouter } from "next/router";
+import stockPickingServices from "@services/stockPicking";
 import {
-  getProductTemplateAttributeLines,
-  resetData,
-  setPageIndex,
-} from "@slices/productTemplateAttributeLine";
-import ProductTemplateAttributeLineTable from "@components/product/ProductTemplateAttributeLineTable";
-import productTemplateAttributeLineServices from "@services/productTemplateAttributeLine";
-import productAttributeServices from "@services/productAttribute";
-import {
-  ProductTemplateAttributeLineCreate,
-  ProductTemplateAttributeLineInfo,
-} from "@models/productTemplateAttributeLine";
-import { PlusOutlined } from "@ant-design/icons";
-import { PiTreeStructureFill, PiX } from "react-icons/pi";
-import { FaBoxes } from "react-icons/fa";
-import { StockPickingCreate, StockPickingInfo } from "@models/stockPicking";
+  StockPickingCreate,
+  StockPickingInfo,
+  StockPickingReceipt,
+  StockPickingReceiptUpdate,
+} from "@models/stockPicking";
 import stockWarehouseServices from "@services/stockWarehouse";
 import stockLocationServices from "@services/stockLocation";
+import stockLPickingServices from "@services/stockPicking";
 import { StockWarehouseInfo } from "@models/stockWarehouse";
+import moment from "moment";
+import { dateAdvFormat } from "@utils/constants";
+import dayjs from "dayjs";
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -70,25 +51,75 @@ interface Props {
   itemBrs: ItemType[];
 }
 
+interface FormStockPicking {
+  partnerId?: string;
+  pickingTypeId?: string;
+  locationDestId?: string;
+  name: string;
+  note?: string;
+}
+
 const ProductInfoPage: React.FC<Props> = (props) => {
   const router = useRouter();
   const dispatch = useDispatch();
   const { warehouseId, stockPickingId, accessToken, itemBrs } = props;
-  const [formStockPicking] = Form.useForm<StockPickingCreate>();
+  const [formStockPicking] = Form.useForm<FormStockPicking>();
   const [stockPickingInfo, setStockPickingInfo] = useState<StockPickingInfo>();
   const [stockWarehouseInfo, setStockWarehouseInfo] =
     useState<StockWarehouseInfo>();
+  const [scheduledDate, setScheduledDate] = useState<string>();
+  const [dateDeadline, setDateDeadline] = useState<string>();
+  const [isChanged, setIsChanged] = useState(false);
   const [internalLocationOptions, setInternalLocationOptions] = useState<
     OptionType[]
   >([]);
-  const [isChanged, setIsChanged] = useState(false);
+
+  const handleScheduledDateChange = (date) => {
+    date
+      ? setScheduledDate(dayjs(date).format(dateAdvFormat))
+      : setScheduledDate(undefined);
+    setIsChanged(true);
+  };
+
+  const handledateDeadlineChange = (date) => {
+    date
+      ? setDateDeadline(dayjs(date).format(dateAdvFormat))
+      : setDateDeadline(undefined);
+    setIsChanged(true);
+  };
 
   const onSave = async () => {
     await formStockPicking.validateFields();
     if (stockPickingId === "new") {
-      const data = {} as ProductTemplateCreate;
-      console.log(formStockPicking.getFieldsValue());
+      const data = formStockPicking.getFieldsValue() as StockPickingReceipt;
+      data.scheduledDate = scheduledDate;
+      data.dateDeadline = dateDeadline;
+      await stockPickingServices
+        .createStockPickingReceipt(accessToken, data)
+        .then((res) => {
+          router.push(`/overview/${warehouseId}/${res?.id}`).then(() => {
+            router.reload();
+          });
+        })
+        .catch((error) => {
+          message.error(error?.response?.data);
+        });
     } else {
+      await stockLPickingServices
+        .updateStockPickingReceipt(accessToken, {
+          id: stockPickingId,
+          note: formStockPicking.getFieldsValue().note,
+          locationDestId: formStockPicking.getFieldsValue().locationDestId,
+          dateDeadline: dateDeadline,
+          scheduledDate: scheduledDate,
+        } as StockPickingReceiptUpdate)
+        .then(() => {
+          message.success("The stock picking has been updated!");
+          fetchStockPickingInfoData();
+        })
+        .catch((error) => {
+          message.error(error?.response?.data);
+        });
     }
   };
   const fetchStockWarehouseInfoData = async () => {
@@ -100,6 +131,29 @@ const ProductInfoPage: React.FC<Props> = (props) => {
       .catch((error) => {
         message.error(error?.response?.data);
       });
+  };
+
+  const fetchStockPickingInfoData = async () => {
+    if (stockPickingId !== "new") {
+      await stockLPickingServices
+        .getStockPickingInfo(accessToken, stockPickingId)
+        .then((res) => {
+          setStockPickingInfo({ ...res });
+          formStockPicking.setFieldsValue({
+            partnerId: res.partnerId,
+            pickingTypeId: res.pickingTypeId,
+            locationDestId: res.locationDestId,
+            name: res.name,
+            note: res.note,
+          });
+          setDateDeadline(res.dateDeadline);
+          setScheduledDate(res.scheduledDate);
+        })
+        .catch((error) => {
+          message.error(error?.response?.data);
+        });
+    }
+    setIsChanged(false);
   };
 
   const fetchInternalLocations = async () => {
@@ -120,19 +174,28 @@ const ProductInfoPage: React.FC<Props> = (props) => {
   useEffect(() => {
     fetchStockWarehouseInfoData();
     fetchInternalLocations();
+    fetchStockPickingInfoData();
   }, []);
+
+  const dateFormat = "YYYY-MM-DD";
+
   return (
     <AntdLayoutNoSSR
       content={
         <>
-          <BreadcrumbComponent itemBreadcrumbs={itemBrs} />
+          <BreadcrumbComponent
+            itemBreadcrumbs={itemBrs}
+            accessToken={accessToken}
+          />
           <Divider orientation="left" orientationMargin="0">
-            {`${stockWarehouseInfo?.name} - Receipts`}
+            {`Receipt - ${
+              stockPickingInfo?.name ? `(${stockPickingInfo?.name})` : ""
+            }`}
           </Divider>
           <FlexButtons
             isChanged={isChanged}
             onSave={onSave}
-            onReload={fetchStockWarehouseInfoData}
+            onReload={fetchStockPickingInfoData}
           />
           <Card style={{ borderWidth: "5px" }}>
             <Form
@@ -140,7 +203,7 @@ const ProductInfoPage: React.FC<Props> = (props) => {
               labelCol={{ span: 6 }}
               labelAlign="left"
               form={formStockPicking}
-              onValuesChange={(value: StockPickingCreate) => {
+              onValuesChange={(value: StockPickingReceipt) => {
                 setIsChanged(true);
               }}
             >
@@ -166,7 +229,6 @@ const ProductInfoPage: React.FC<Props> = (props) => {
                 <Col span={12}>
                   <Form.Item
                     labelCol={{ xl: 8 }}
-                    name="scheduledDate"
                     label={
                       <p
                         style={{
@@ -178,7 +240,15 @@ const ProductInfoPage: React.FC<Props> = (props) => {
                       </p>
                     }
                   >
-                    <DatePicker showTime />
+                    <DatePicker
+                      allowClear={false}
+                      showTime
+                      value={scheduledDate ? dayjs(scheduledDate) : undefined}
+                      format={dateAdvFormat}
+                      onChange={(date) => {
+                        handleScheduledDateChange(date);
+                      }}
+                    />
                   </Form.Item>
                 </Col>
               </Row>
@@ -190,7 +260,7 @@ const ProductInfoPage: React.FC<Props> = (props) => {
                     rules={[
                       {
                         required: true,
-                        message: "Please input the product Operation Type!",
+                        message: "Please input the Operation Type!",
                       },
                     ]}
                     label={
@@ -207,7 +277,7 @@ const ProductInfoPage: React.FC<Props> = (props) => {
                     <Select
                       style={{ width: "100%" }}
                       variant="filled"
-                      // onChange={handleProductTemplateCategoryChange}
+                      disabled={Boolean(stockPickingId !== "new")}
                     >
                       {stockWarehouseInfo?.stockPickingTypes.map((option) => (
                         <Option key={option.id} value={option.id}>
@@ -230,7 +300,9 @@ const ProductInfoPage: React.FC<Props> = (props) => {
                         Effective Date
                       </p>
                     }
-                  ></Form.Item>
+                  >
+                    <DatePicker allowClear={false} showTime disabled placeholder="Effective Date" />
+                  </Form.Item>
                 </Col>
               </Row>
               <Row gutter={24}>
@@ -241,7 +313,7 @@ const ProductInfoPage: React.FC<Props> = (props) => {
                     rules={[
                       {
                         required: true,
-                        message: "Please input the product Operation Type!",
+                        message: "Please input the Destination Location!",
                       },
                     ]}
                     label={
@@ -266,7 +338,6 @@ const ProductInfoPage: React.FC<Props> = (props) => {
                 </Col>
                 <Col span={12}>
                   <Form.Item
-                    name="name"
                     labelCol={{ xl: 8 }}
                     label={
                       <p
@@ -275,11 +346,21 @@ const ProductInfoPage: React.FC<Props> = (props) => {
                           fontWeight: "500",
                         }}
                       >
-                        Source Document
+                        Deadline
                       </p>
                     }
-                  ></Form.Item>
-                </Col>
+                  >
+                    <DatePicker
+                      allowClear={false}
+                      showTime
+                      value={dateDeadline ? dayjs(dateDeadline) : undefined}
+                      format={dateAdvFormat}
+                      onChange={(date) => {
+                        handledateDeadlineChange(date);
+                      }}
+                    />
+                  </Form.Item>
+                </Col>{" "}
               </Row>
               <Divider orientation="left">Note</Divider>
               <Row gutter={24}>
@@ -289,10 +370,7 @@ const ProductInfoPage: React.FC<Props> = (props) => {
                     name="note"
                     wrapperCol={{ span: 24 }}
                   >
-                    <TextArea
-                      placeholder="Description"
-                      // onChange={handletProductTemplateDescriptionChange}
-                    />
+                    <TextArea placeholder="Description" />
                   </Form.Item>
                 </Col>
               </Row>

@@ -129,6 +129,10 @@ const apiLinks = {
     getInternal: `${url}/api/StockPicking/Internal`,
     getOutgoing: `${url}/api/StockPicking/Outgoing`,
     create: `${url}/api/StockPicking`,
+    createReceipt: `${url}/api/StockPicking/Receipt`,
+    updateReceipt: `${url}/api/StockPicking/Receipt`,
+    delete: `${url}/api/StockPicking`,
+    getInfo: `${url}/api/StockPicking/Info`,
   },
 
   stockQuant: {

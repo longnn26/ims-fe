@@ -82,7 +82,7 @@ const StockPickingIncomingPage: React.FC<Props> = (props) => {
           <div className="mt-3 mb-3">
             <CreateButton
               onSave={() =>
-                router.push(`/overview/incomings/${warehouseId}/new`)
+                router.push(`/overview/${warehouseId}/new`)
               }
             />
           </div>

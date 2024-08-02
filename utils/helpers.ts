@@ -80,6 +80,8 @@ const handleTitleBreadCumb = (title) => {
       return "Locations";
     case "moves-history":
       return "Moves History";
+    case "overview":
+      return "Overview";
     default:
       return title;
   }
@@ -99,4 +101,17 @@ export const handleBreadCumb = (router) => {
     });
   });
   return itemBrs;
+};
+
+export const getStockPickingTagColor = (state) => {
+  switch (state) {
+    case "Done":
+      return "#87d068";
+    case "Draft":
+      return "default";
+    case "Assigned":
+      return "processing";
+    default:
+      return "default";
+  }
 };

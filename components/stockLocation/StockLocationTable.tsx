@@ -49,7 +49,7 @@ const StockLocationTable: React.FC<Props> = (props) => {
       render: (record: DataType) => (
         <span
           className={`${
-            record.usage === "View" ? "text-[#578699]" : "text-[#d23f3a]"
+            record.usage === "Internal" ? "text-[#d23f3a]" : "text-[#578699]"
           }  `}
         >
           {record.completeName}
@@ -61,7 +61,7 @@ const StockLocationTable: React.FC<Props> = (props) => {
       render: (record: DataType) => (
         <span
           className={`${
-            record.usage === "View" ? "text-[#578699]" : "text-[#d23f3a]"
+            record.usage === "Internal" ? "text-[#d23f3a]" : "text-[#578699]"
           }  `}
         >
           {record.usage}

@@ -2,6 +2,7 @@ import { Breadcrumb } from "antd";
 import { ItemType } from "antd/es/breadcrumb/Breadcrumb";
 import { useEffect, useState } from "react";
 import productTemplateServices from "@services/productTemplate";
+import stockWarehouseServices from "@services/stockWarehouse";
 
 interface Props {
   accessToken?: string;
@@ -23,10 +24,23 @@ const BreadcrumbComponent: React.FC<Props> = (props) => {
           return response.name;
         } catch (error) {
           console.error("Failed to fetch product name:", error);
-          return productId; // Fallback to ID if fetching fails
+          return productId;
         }
       }
-      // Add more conditions here for other dynamic pages if needed
+      if (href.startsWith("/overview/")) {
+        const warehouseId = href.split("/")[2];
+        console.log(warehouseId);
+        try {
+          const response = await stockWarehouseServices.getStockWarehouseInfo(
+            accessToken,
+            warehouseId
+          );
+          return response.name;
+        } catch (error) {
+          console.error("Failed to fetch  name:", error);
+          return warehouseId;
+        }
+      }
       return null;
     };
 

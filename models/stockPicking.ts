@@ -8,9 +8,12 @@ export interface StockPicking {
 }
 
 export interface StockPickingInfo extends StockPicking {
+  partnerId?: string;
+  pickingTypeId?: string;
   pickingType: StockPickingTypeInfo;
   location: StockLocation;
   locationDest: StockLocation;
+  locationDestId?: string;
   name: string;
   state: string;
   note: string;
@@ -34,6 +37,23 @@ export interface StockPickingCreate {
   locationId?: string;
   locationDestId?: string;
   name: string;
+  note?: string;
+  dateDeadline?: string;
+}
+
+export interface StockPickingReceipt {
+  partnerId?: string;
+  scheduledDate?: string;
+  pickingTypeId?: string;
+  locationDestId?: string;
+  name: string;
+  note?: string;
+  dateDeadline?: string;
+}
+
+export interface StockPickingReceiptUpdate {
+  scheduledDate?: string;
+  locationDestId?: string;
   note?: string;
   dateDeadline?: string;
 }

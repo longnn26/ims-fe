@@ -18,6 +18,11 @@ import { AiFillDelete } from "react-icons/ai";
 import { StockPickingInfo } from "@models/stockPicking";
 import { getStockPickingIncomings } from "@slices/stockPickingIncoming";
 import { StockLocation } from "@models/stockLocation";
+import { useRouter } from "next/router";
+import { getStockPickingTagColor } from "@utils/helpers";
+import { dateAdvFormat } from "@utils/constants";
+import moment from "moment";
+import dayjs from "dayjs";
 
 const { Option } = Select;
 
@@ -41,28 +46,37 @@ interface DataType {
 
 const StockPickingIncomingTable: React.FC<Props> = (props) => {
   const dispatch = useDispatch();
+  const router = useRouter();
   const { accessToken, warehouseId } = props;
   const { data: stockPickingIncomingData, loading } = useSelector(
     (state) => state.stockPickingIncoming
   );
   const [data, setData] = useState<DataType[]>([]);
 
-  // const deleteProductProduct = async (record: DataType) => {
-  //   await productProductServices
-  //     .deleteProductProduct(accessToken, record.id)
-  //     .then(() => {
-  //       dispatch(
-  //         getProductVariants({
-  //           token: accessToken,
-  //           productTmplId: productTmplId,
-  //         })
-  //       );
-  //     })
-  //     .catch((error) => {
-  //       message.error(error?.response?.data);
-  //     });
-  // };
+  const deletetockPicking = async (record: DataType) => {
+    await stockPickingServices
+      .deletetockPicking(accessToken, record.id)
+      .then(() => {
+        dispatch(
+          getStockPickingIncomings({
+            token: accessToken,
+            warehouseId: warehouseId,
+          })
+        );
+      })
+      .catch((error) => {
+        message.error(error?.response?.data);
+      });
+  };
   const columns: TableColumnsType<DataType> = [
+    {
+      title: "Reference",
+      render: (record: DataType) => (
+        <>
+          <p>{record.name}</p>
+        </>
+      ),
+    },
     {
       title: "From",
       render: (record: DataType) => (
@@ -83,7 +97,11 @@ const StockPickingIncomingTable: React.FC<Props> = (props) => {
       title: "Scheduled Date",
       render: (record: DataType) => (
         <>
-          <p>{record.scheduledDate}</p>
+          <p>
+            {Boolean(record.scheduledDate)
+              ? dayjs(record.scheduledDate).format(dateAdvFormat)
+              : ""}
+          </p>{" "}
         </>
       ),
     },
@@ -91,7 +109,11 @@ const StockPickingIncomingTable: React.FC<Props> = (props) => {
       title: "Deadline",
       render: (record: DataType) => (
         <>
-          <p>{record.dateDeadline}</p>
+          <p>
+            {Boolean(record.dateDeadline)
+              ? dayjs(record.dateDeadline).format(dateAdvFormat)
+              : ""}
+          </p>
         </>
       ),
     },
@@ -99,7 +121,21 @@ const StockPickingIncomingTable: React.FC<Props> = (props) => {
       title: "Effective Date",
       render: (record: DataType) => (
         <>
-          <p>{record.dateDone}</p>
+          <p>
+            {Boolean(record.dateDone)
+              ? moment(record.dateDone).format(dateAdvFormat)
+              : ""}
+          </p>
+        </>
+      ),
+    },
+    {
+      title: "Status",
+      render: (record: DataType) => (
+        <>
+          <Tag color={getStockPickingTagColor(record.state)}>
+            {record.state}
+          </Tag>{" "}
         </>
       ),
     },
@@ -107,8 +143,13 @@ const StockPickingIncomingTable: React.FC<Props> = (props) => {
       key: "operation",
       width: "15%",
       render: (record: DataType) => (
-        <Space wrap>
-          <Popconfirm title="Sure to delete?" onConfirm={() => {}}>
+        <Space wrap onClick={(e) => e.stopPropagation()}>
+          <Popconfirm
+            title="Sure to delete?"
+            onConfirm={() => {
+              deletetockPicking(record);
+            }}
+          >
             <AiFillDelete className="cursor-pointer" />
           </Popconfirm>
         </Space>
@@ -136,6 +177,14 @@ const StockPickingIncomingTable: React.FC<Props> = (props) => {
   return (
     <>
       <Table
+        onRow={(record, rowIndex) => {
+          return {
+            onClick: (event) => {
+              router.push(`/overview/${warehouseId}/${record?.id}`);
+            },
+          };
+        }}
+        className="custom-table"
         loading={loading}
         columns={columns}
         dataSource={data}
