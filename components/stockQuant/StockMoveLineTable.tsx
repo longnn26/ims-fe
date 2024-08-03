@@ -78,7 +78,7 @@ const StockMoveLineTable: React.FC<Props> = (props) => {
             record.quantity < 0 ? "text-red-500" : "text-green-500"
           }`}
         >
-          {record.quantity}
+          {record.quantityProductUom}
         </p>
       ),
     },

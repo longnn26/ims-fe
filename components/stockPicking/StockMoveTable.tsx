@@ -34,6 +34,7 @@ const { Option } = Select;
 interface Props {
   accessToken: string;
   pickingId: string;
+  onRefresh: () => void;
 }
 
 interface DataType {
@@ -57,7 +58,7 @@ interface DataType {
 const StockMoveTable: React.FC<Props> = (props) => {
   const dispatch = useDispatch();
   const router = useRouter();
-  const { accessToken, pickingId } = props;
+  const { accessToken, pickingId, onRefresh } = props;
   const { data: stockMoveData, loading } = useSelector(
     (state) => state.stockMove
   );
@@ -77,6 +78,7 @@ const StockMoveTable: React.FC<Props> = (props) => {
             pickingId: pickingId,
           })
         );
+        onRefresh();
       })
       .catch((error) => {
         message.error(error?.response?.data);

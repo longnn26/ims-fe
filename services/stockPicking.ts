@@ -141,6 +141,17 @@ const cancel = async (
   });
   return response.data;
 };
+
+const validate = async (
+  token?: string,
+  id?: string
+): Promise<StockMovePaging> => {
+  const response = await httpClient.put({
+    token: token,
+    url: `${apiLinks.stockPicking.validate}/${id}`,
+  });
+  return response.data;
+};
 const stockPicking = {
   getStockPickingIncomings,
   getStockPickingInternals,
@@ -152,7 +163,8 @@ const stockPicking = {
   updateStockPickingReceipt,
   getStockMoves,
   makeAsTodo,
-  cancel
+  cancel,
+  validate
 };
 
 export default stockPicking;

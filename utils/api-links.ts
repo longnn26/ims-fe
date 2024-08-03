@@ -138,6 +138,7 @@ const apiLinks = {
     getStockMove: `${url}/api/StockPicking/StockMove`,
     makeAsTodo: `${url}/api/StockPicking/MakeAsTodo`,
     cancel: `${url}/api/StockPicking/Cancel`,
+    validate: `${url}/api/StockPicking/Validate`,
   },
 
   stockQuant: {

@@ -199,6 +199,19 @@ const ProductInfoPage: React.FC<Props> = (props) => {
         message.error(error?.response?.data);
       });
   };
+
+  const validate = async () => {
+    await stockLPickingServices
+      .validate(accessToken, stockPickingId)
+      .then((res) => {
+        fetchStockMoveData();
+        fetchStockPickingInfoData();
+      })
+      .catch((error) => {
+        message.error(error?.response?.data);
+      });
+  };
+
   const fetchStockWarehouseInfoData = async () => {
     await stockWarehouseServices
       .getStockWarehouseInfo(accessToken, warehouseId)
@@ -328,8 +341,22 @@ const ProductInfoPage: React.FC<Props> = (props) => {
               </Button>
             )}
             {Boolean(
+              stockPickingId !== "new" && stockPickingInfo?.state === "Assigned"
+            ) && (
+              <Button
+                type="primary"
+                className="mr-1"
+                onClick={() => {
+                  validate();
+                }}
+              >
+                Validate
+              </Button>
+            )}
+            {Boolean(
               stockPickingId !== "new" &&
-                stockPickingInfo?.state !== "Cancelled"
+                stockPickingInfo?.state !== "Cancelled" &&
+                stockPickingInfo?.state !== "Done"
             ) && (
               <Button
                 className="mr-1"
@@ -543,7 +570,11 @@ const ProductInfoPage: React.FC<Props> = (props) => {
                       <>
                         {Boolean(stockPickingId !== "new") && (
                           <>
-                            <StockMoveTable accessToken={accessToken} pickingId={stockPickingId} />
+                            <StockMoveTable
+                              onRefresh={fetchStockPickingInfoData}
+                              accessToken={accessToken}
+                              pickingId={stockPickingId}
+                            />
                             <Button
                               type="dashed"
                               onClick={() => {
