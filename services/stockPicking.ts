@@ -1,3 +1,4 @@
+import { StockMovePaging } from "@models/stockMove";
 import {
   StockPickingCreate,
   StockPickingInfo,
@@ -105,6 +106,41 @@ const updateStockPickingReceipt = async (
   return response.data;
 };
 
+const getStockMoves = async (
+  token?: string,
+  id?: string,
+  pageIndex?: number,
+  pageSize?: number
+): Promise<StockMovePaging> => {
+  const response = await httpClient.get({
+    token: token,
+    url: `${apiLinks.stockPicking.getStockMove}/${id}`,
+    params: { pageIndex, pageSize, SortKey: "CreateDate", SortOrder: "DESC" },
+  });
+  return response.data;
+};
+
+const makeAsTodo = async (
+  token?: string,
+  id?: string
+): Promise<StockMovePaging> => {
+  const response = await httpClient.put({
+    token: token,
+    url: `${apiLinks.stockPicking.makeAsTodo}/${id}`,
+  });
+  return response.data;
+};
+
+const cancel = async (
+  token?: string,
+  id?: string
+): Promise<StockMovePaging> => {
+  const response = await httpClient.put({
+    token: token,
+    url: `${apiLinks.stockPicking.cancel}/${id}`,
+  });
+  return response.data;
+};
 const stockPicking = {
   getStockPickingIncomings,
   getStockPickingInternals,
@@ -113,7 +149,10 @@ const stockPicking = {
   createStockPickingReceipt,
   deletetockPicking,
   getStockPickingInfo,
-  updateStockPickingReceipt
+  updateStockPickingReceipt,
+  getStockMoves,
+  makeAsTodo,
+  cancel
 };
 
 export default stockPicking;

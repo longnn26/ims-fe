@@ -19,7 +19,7 @@ import { StockPickingInfo } from "@models/stockPicking";
 import { getStockPickingIncomings } from "@slices/stockPickingIncoming";
 import { StockLocation } from "@models/stockLocation";
 import { useRouter } from "next/router";
-import { getStockPickingTagColor } from "@utils/helpers";
+import { getStockPickingTagColor, getStockPickingTitle } from "@utils/helpers";
 import { dateAdvFormat } from "@utils/constants";
 import moment from "moment";
 import dayjs from "dayjs";
@@ -134,7 +134,7 @@ const StockPickingIncomingTable: React.FC<Props> = (props) => {
       render: (record: DataType) => (
         <>
           <Tag color={getStockPickingTagColor(record.state)}>
-            {record.state}
+            {getStockPickingTitle(record.state)}
           </Tag>{" "}
         </>
       ),

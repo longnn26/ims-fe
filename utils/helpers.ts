@@ -108,10 +108,27 @@ export const getStockPickingTagColor = (state) => {
     case "Done":
       return "#87d068";
     case "Draft":
-      return "default";
+      return "grey";
     case "Assigned":
-      return "processing";
+      return "#1a79ff";
+    case "Cancelled":
+      return "red";
     default:
       return "default";
+  }
+};
+
+export const getStockPickingTitle = (state) => {
+  switch (state) {
+    case "Done":
+      return "Done";
+    case "Draft":
+      return "Draft";
+    case "Assigned":
+      return "Ready";
+    case "Cancelled":
+      return "Cancelled";
+    default:
+      return "";
   }
 };

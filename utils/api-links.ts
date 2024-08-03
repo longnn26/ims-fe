@@ -100,6 +100,8 @@ const apiLinks = {
   productProduct: {
     delete: `${url}/api/ProductProduct`,
     getStockQuant: `${url}/api/ProductProduct/StockQuant`,
+    getProductVariant: `${url}/api/ProductProduct/ProductVariant`,
+    getUomUomForSelect: `${url}/api/ProductProduct/UomUom/Select`,
   },
 
   stockWarehouse: {
@@ -133,6 +135,9 @@ const apiLinks = {
     updateReceipt: `${url}/api/StockPicking/Receipt`,
     delete: `${url}/api/StockPicking`,
     getInfo: `${url}/api/StockPicking/Info`,
+    getStockMove: `${url}/api/StockPicking/StockMove`,
+    makeAsTodo: `${url}/api/StockPicking/MakeAsTodo`,
+    cancel: `${url}/api/StockPicking/Cancel`,
   },
 
   stockQuant: {
@@ -142,6 +147,12 @@ const apiLinks = {
     setStockQuant: `${url}/api/StockQuant/Set`,
     clearStockQuant: `${url}/api/StockQuant/Clear`,
     applyStockQuant: `${url}/api/StockQuant/Apply`,
+  },
+
+  stockMove: {
+    create: `${url}/api/StockMove`,
+    delete: `${url}/api/StockMove`,
+    updateQuantity: `${url}/api/StockMove/Quantity`,
   },
 };
 

@@ -1,13 +1,20 @@
 "use client";
-import { handleBreadCumb } from "@utils/helpers";
+import {
+  getStockPickingTagColor,
+  getStockPickingTitle,
+  handleBreadCumb,
+} from "@utils/helpers";
 import { ItemType } from "antd/es/breadcrumb/Breadcrumb";
 import { GetServerSideProps } from "next";
-import { getSession } from "next-auth/react";
 import useDispatch from "@hooks/use-dispatch";
+import useSelector from "@hooks/use-selector";
+import { getSession } from "next-auth/react";
 import dynamic from "next/dynamic";
 import React, { useCallback, useEffect, useState } from "react";
-import productTemplateServices from "@services/productTemplate";
+import productProductServices from "@services/productProduct";
 import {
+  Badge,
+  Button,
   Card,
   Col,
   DatePicker,
@@ -15,8 +22,11 @@ import {
   Form,
   Input,
   message,
+  Modal,
+  Pagination,
   Row,
   Select,
+  Tabs,
 } from "antd";
 import BreadcrumbComponent from "@components/breadcrumb/BreadcrumbComponent";
 import FlexButtons from "@components/button/FlexButtons";
@@ -32,10 +42,16 @@ import {
 import stockWarehouseServices from "@services/stockWarehouse";
 import stockLocationServices from "@services/stockLocation";
 import stockLPickingServices from "@services/stockPicking";
+import stockMoveServices from "@services/stockMove";
 import { StockWarehouseInfo } from "@models/stockWarehouse";
 import moment from "moment";
 import { dateAdvFormat } from "@utils/constants";
 import dayjs from "dayjs";
+import { getStockMoves } from "@slices/stockMove";
+import StockMoveTable from "@components/stockPicking/StockMoveTable";
+import { setPageIndex } from "@slices/stockMove";
+import { PlusOutlined } from "@ant-design/icons";
+import { StockMoveCreate } from "@models/stockMove";
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -59,20 +75,43 @@ interface FormStockPicking {
   note?: string;
 }
 
+interface FormStockMove {
+  productId: string;
+  productUomId: string;
+  pickingId: string;
+  locationId: string;
+  locationDestId: string;
+  productUomQty: number;
+}
+
 const ProductInfoPage: React.FC<Props> = (props) => {
   const router = useRouter();
   const dispatch = useDispatch();
   const { warehouseId, stockPickingId, accessToken, itemBrs } = props;
+
+  const { data, pageIndex, pageSize, totalPage } = useSelector(
+    (state) => state.stockMove
+  );
+
   const [formStockPicking] = Form.useForm<FormStockPicking>();
+  const [formStockMove] = Form.useForm<FormStockMove>();
   const [stockPickingInfo, setStockPickingInfo] = useState<StockPickingInfo>();
   const [stockWarehouseInfo, setStockWarehouseInfo] =
     useState<StockWarehouseInfo>();
   const [scheduledDate, setScheduledDate] = useState<string>();
   const [dateDeadline, setDateDeadline] = useState<string>();
   const [isChanged, setIsChanged] = useState(false);
+  const [openAddStockMove, setOpenAddStockMove] = useState(false);
+
   const [internalLocationOptions, setInternalLocationOptions] = useState<
     OptionType[]
   >([]);
+
+  const [productVariantOptions, setProductVarianOptions] = useState<
+    OptionType[]
+  >([]);
+
+  const [uomUomOptions, setUomUomOptions] = useState<OptionType[]>([]);
 
   const handleScheduledDateChange = (date) => {
     date
@@ -121,6 +160,44 @@ const ProductInfoPage: React.FC<Props> = (props) => {
           message.error(error?.response?.data);
         });
     }
+  };
+
+  const onSaveStockMove = async () => {
+    await formStockMove.validateFields();
+    const data = formStockMove.getFieldsValue() as StockMoveCreate;
+    await stockMoveServices
+      .createStockMove(accessToken, data)
+      .then((res) => {
+        fetchStockMoveData();
+        setOpenAddStockMove(false);
+      })
+      .catch((error) => {
+        message.error(error?.response?.data);
+      });
+  };
+
+  const makeAsTodo = async () => {
+    await stockLPickingServices
+      .makeAsTodo(accessToken, stockPickingId)
+      .then((res) => {
+        fetchStockMoveData();
+        fetchStockPickingInfoData();
+      })
+      .catch((error) => {
+        message.error(error?.response?.data);
+      });
+  };
+
+  const cancel = async () => {
+    await stockLPickingServices
+      .cancel(accessToken, stockPickingId)
+      .then((res) => {
+        fetchStockMoveData();
+        fetchStockPickingInfoData();
+      })
+      .catch((error) => {
+        message.error(error?.response?.data);
+      });
   };
   const fetchStockWarehouseInfoData = async () => {
     await stockWarehouseServices
@@ -171,13 +248,57 @@ const ProductInfoPage: React.FC<Props> = (props) => {
       });
   };
 
+  const fetchProductVariantForSelect = async () => {
+    await productProductServices
+      .getProductVariantForSelect(accessToken)
+      .then((res) => {
+        const options: OptionType[] = res.map((item) => ({
+          value: item.id,
+          label: `${item.name} (${item.pvcs
+            .map((pvc) => `${pvc.value}`)
+            .join(", ")})`,
+        })) as any;
+        setProductVarianOptions(options);
+      })
+      .catch((error) => {
+        message.error(error?.response?.data);
+      });
+  };
+
+  const fetchForSelectUomUom = async (productId: string) => {
+    await productProductServices
+      .getUomUomForSelect(accessToken, productId)
+      .then((res) => {
+        const options: OptionType[] = res.map((item) => ({
+          value: item.id,
+          label: item.name,
+        })) as any;
+        setUomUomOptions(options);
+      })
+      .catch((error) => {
+        message.error(error?.response?.data);
+      });
+  };
+
+  const fetchStockMoveData = useCallback(() => {
+    dispatch(
+      getStockMoves({
+        token: accessToken,
+        pickingId: stockPickingId,
+      })
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pageIndex]);
+
   useEffect(() => {
     fetchStockWarehouseInfoData();
     fetchInternalLocations();
     fetchStockPickingInfoData();
   }, []);
 
-  const dateFormat = "YYYY-MM-DD";
+  useEffect(() => {
+    fetchStockMoveData();
+  }, [fetchStockMoveData]);
 
   return (
     <AntdLayoutNoSSR
@@ -192,190 +313,377 @@ const ProductInfoPage: React.FC<Props> = (props) => {
               stockPickingInfo?.name ? `(${stockPickingInfo?.name})` : ""
             }`}
           </Divider>
+          <div>
+            {Boolean(
+              stockPickingId !== "new" && stockPickingInfo?.state === "Draft"
+            ) && (
+              <Button
+                type="primary"
+                className="mr-1"
+                onClick={() => {
+                  makeAsTodo();
+                }}
+              >
+                Make As Todo
+              </Button>
+            )}
+            {Boolean(
+              stockPickingId !== "new" &&
+                stockPickingInfo?.state !== "Cancelled"
+            ) && (
+              <Button
+                className="mr-1"
+                onClick={() => {
+                  cancel();
+                }}
+              >
+                Cancel
+              </Button>
+            )}
+          </div>
           <FlexButtons
             isChanged={isChanged}
             onSave={onSave}
             onReload={fetchStockPickingInfoData}
-          />
-          <Card style={{ borderWidth: "5px" }}>
-            <Form
-              wrapperCol={{ span: 12 }}
-              labelCol={{ span: 6 }}
-              labelAlign="left"
-              form={formStockPicking}
-              onValuesChange={(value: StockPickingReceipt) => {
-                setIsChanged(true);
-              }}
-            >
-              <Row gutter={24}>
-                <Col span={12}>
-                  <Form.Item
-                    labelCol={{ xl: 8 }}
-                    name="partnerId"
-                    label={
-                      <p
-                        style={{
-                          fontSize: "14px",
-                          fontWeight: "500",
-                        }}
-                      >
-                        Receive From
-                      </p>
-                    }
-                  >
-                    <Select style={{ width: "100%" }} variant="filled"></Select>
-                  </Form.Item>
-                </Col>
-                <Col span={12}>
-                  <Form.Item
-                    labelCol={{ xl: 8 }}
-                    label={
-                      <p
-                        style={{
-                          fontSize: "14px",
-                          fontWeight: "500",
-                        }}
-                      >
-                        Scheduled Date
-                      </p>
-                    }
-                  >
-                    <DatePicker
-                      allowClear={false}
-                      showTime
-                      value={scheduledDate ? dayjs(scheduledDate) : undefined}
-                      format={dateAdvFormat}
-                      onChange={(date) => {
-                        handleScheduledDateChange(date);
-                      }}
-                    />
-                  </Form.Item>
-                </Col>
-              </Row>
-              <Row gutter={24}>
-                <Col span={12}>
-                  <Form.Item
-                    labelCol={{ xl: 8 }}
-                    name="pickingTypeId"
-                    rules={[
-                      {
-                        required: true,
-                        message: "Please input the Operation Type!",
-                      },
-                    ]}
-                    label={
-                      <p
-                        style={{
-                          fontSize: "14px",
-                          fontWeight: "500",
-                        }}
-                      >
-                        Operation Type
-                      </p>
-                    }
-                  >
-                    <Select
-                      style={{ width: "100%" }}
-                      variant="filled"
-                      disabled={Boolean(stockPickingId !== "new")}
+          />{" "}
+          <Badge.Ribbon
+            text={getStockPickingTitle(stockPickingInfo?.state)}
+            color={getStockPickingTagColor(stockPickingInfo?.state)}
+          >
+            <Card style={{ borderWidth: "5px" }}>
+              <Form
+                wrapperCol={{ span: 12 }}
+                labelCol={{ span: 6 }}
+                labelAlign="left"
+                form={formStockPicking}
+                onValuesChange={(value: StockPickingReceipt) => {
+                  setIsChanged(true);
+                }}
+              >
+                <Row gutter={24}>
+                  <Col span={12}>
+                    <Form.Item
+                      labelCol={{ xl: 8 }}
+                      name="partnerId"
+                      label={
+                        <p
+                          style={{
+                            fontSize: "14px",
+                            fontWeight: "500",
+                          }}
+                        >
+                          Receive From
+                        </p>
+                      }
                     >
-                      {stockWarehouseInfo?.stockPickingTypes.map((option) => (
-                        <Option key={option.id} value={option.id}>
-                          {option.name}
-                        </Option>
-                      ))}
-                    </Select>
-                  </Form.Item>
-                </Col>
-                <Col span={12}>
-                  <Form.Item
-                    labelCol={{ xl: 8 }}
-                    label={
-                      <p
-                        style={{
-                          fontSize: "14px",
-                          fontWeight: "500",
+                      <Select
+                        style={{ width: "100%" }}
+                        variant="filled"
+                      ></Select>
+                    </Form.Item>
+                  </Col>
+                  <Col span={12}>
+                    <Form.Item
+                      labelCol={{ xl: 8 }}
+                      label={
+                        <p
+                          style={{
+                            fontSize: "14px",
+                            fontWeight: "500",
+                          }}
+                        >
+                          Scheduled Date
+                        </p>
+                      }
+                    >
+                      <DatePicker
+                        allowClear={false}
+                        showTime
+                        value={scheduledDate ? dayjs(scheduledDate) : undefined}
+                        format={dateAdvFormat}
+                        onChange={(date) => {
+                          handleScheduledDateChange(date);
                         }}
+                      />
+                    </Form.Item>
+                  </Col>
+                </Row>
+                <Row gutter={24}>
+                  <Col span={12}>
+                    <Form.Item
+                      labelCol={{ xl: 8 }}
+                      name="pickingTypeId"
+                      rules={[
+                        {
+                          required: true,
+                          message: "Please input the Operation Type!",
+                        },
+                      ]}
+                      label={
+                        <p
+                          style={{
+                            fontSize: "14px",
+                            fontWeight: "500",
+                          }}
+                        >
+                          Operation Type
+                        </p>
+                      }
+                    >
+                      <Select
+                        style={{ width: "100%" }}
+                        variant="filled"
+                        disabled={Boolean(stockPickingId !== "new")}
                       >
-                        Effective Date
-                      </p>
-                    }
-                  >
-                    <DatePicker allowClear={false} showTime disabled placeholder="Effective Date" />
-                  </Form.Item>
-                </Col>
-              </Row>
-              <Row gutter={24}>
-                <Col span={12}>
-                  <Form.Item
-                    labelCol={{ xl: 8 }}
-                    name="locationDestId"
-                    rules={[
-                      {
-                        required: true,
-                        message: "Please input the Destination Location!",
-                      },
-                    ]}
-                    label={
-                      <p
-                        style={{
-                          fontSize: "14px",
-                          fontWeight: "500",
+                        {stockWarehouseInfo?.stockPickingTypes.map((option) => (
+                          <Option key={option.id} value={option.id}>
+                            {option.name}
+                          </Option>
+                        ))}
+                      </Select>
+                    </Form.Item>
+                  </Col>
+                  <Col span={12}>
+                    <Form.Item
+                      labelCol={{ xl: 8 }}
+                      label={
+                        <p
+                          style={{
+                            fontSize: "14px",
+                            fontWeight: "500",
+                          }}
+                        >
+                          Effective Date
+                        </p>
+                      }
+                    >
+                      <DatePicker
+                        allowClear={false}
+                        showTime
+                        disabled
+                        placeholder="Effective Date"
+                      />
+                    </Form.Item>
+                  </Col>
+                </Row>
+                <Row gutter={24}>
+                  <Col span={12}>
+                    <Form.Item
+                      labelCol={{ xl: 8 }}
+                      name="locationDestId"
+                      rules={[
+                        {
+                          required: true,
+                          message: "Please input the Destination Location!",
+                        },
+                      ]}
+                      label={
+                        <p
+                          style={{
+                            fontSize: "14px",
+                            fontWeight: "500",
+                          }}
+                        >
+                          Destination Location
+                        </p>
+                      }
+                    >
+                      <Select style={{ width: "100%" }} variant="filled">
+                        {internalLocationOptions.map((option) => (
+                          <Option key={option.value} value={option.value}>
+                            {option.label}
+                          </Option>
+                        ))}
+                      </Select>
+                    </Form.Item>
+                  </Col>
+                  <Col span={12}>
+                    <Form.Item
+                      labelCol={{ xl: 8 }}
+                      label={
+                        <p
+                          style={{
+                            fontSize: "14px",
+                            fontWeight: "500",
+                          }}
+                        >
+                          Deadline
+                        </p>
+                      }
+                    >
+                      <DatePicker
+                        allowClear={false}
+                        showTime
+                        value={dateDeadline ? dayjs(dateDeadline) : undefined}
+                        format={dateAdvFormat}
+                        onChange={(date) => {
+                          handledateDeadlineChange(date);
                         }}
-                      >
-                        Destination Location
-                      </p>
-                    }
-                  >
-                    <Select style={{ width: "100%" }} variant="filled">
-                      {internalLocationOptions.map((option) => (
-                        <Option key={option.value} value={option.value}>
-                          {option.label}
-                        </Option>
-                      ))}
-                    </Select>
-                  </Form.Item>
-                </Col>
-                <Col span={12}>
-                  <Form.Item
-                    labelCol={{ xl: 8 }}
-                    label={
-                      <p
-                        style={{
-                          fontSize: "14px",
-                          fontWeight: "500",
-                        }}
-                      >
-                        Deadline
-                      </p>
-                    }
-                  >
-                    <DatePicker
-                      allowClear={false}
-                      showTime
-                      value={dateDeadline ? dayjs(dateDeadline) : undefined}
-                      format={dateAdvFormat}
-                      onChange={(date) => {
-                        handledateDeadlineChange(date);
-                      }}
-                    />
-                  </Form.Item>
-                </Col>{" "}
-              </Row>
-              <Divider orientation="left">Note</Divider>
-              <Row gutter={24}>
-                <Col span={24}>
-                  <Form.Item
-                    layout="vertical"
-                    name="note"
-                    wrapperCol={{ span: 24 }}
-                  >
-                    <TextArea placeholder="Description" />
-                  </Form.Item>
-                </Col>
-              </Row>
-            </Form>
-          </Card>
+                      />
+                    </Form.Item>
+                  </Col>{" "}
+                </Row>
+                <Divider orientation="left">Note</Divider>
+                <Row gutter={24}>
+                  <Col span={24}>
+                    <Form.Item name="note" wrapperCol={{ span: 24 }}>
+                      <TextArea placeholder="Description" />
+                    </Form.Item>
+                  </Col>
+                </Row>
+              </Form>
+              <Tabs
+                color="green"
+                type="card"
+                items={[
+                  {
+                    label: `Operations`,
+                    key: "1",
+                    children: (
+                      <>
+                        {Boolean(stockPickingId !== "new") && (
+                          <>
+                            <StockMoveTable accessToken={accessToken} pickingId={stockPickingId} />
+                            <Button
+                              type="dashed"
+                              onClick={() => {
+                                setOpenAddStockMove(true);
+                                fetchProductVariantForSelect();
+                              }}
+                              style={{ width: "100%", marginTop: "20px" }}
+                              icon={<PlusOutlined />}
+                            >
+                              Add a line
+                            </Button>
+                            {data?.length > 0 && (
+                              <Pagination
+                                className="text-end m-4"
+                                current={pageIndex}
+                                pageSize={pageSize}
+                                total={totalPage}
+                                onChange={(page) => {
+                                  dispatch(setPageIndex(page));
+                                }}
+                              />
+                            )}
+                            <Modal
+                              open={openAddStockMove}
+                              okText="Add"
+                              cancelText="Cancel"
+                              okButtonProps={{
+                                autoFocus: true,
+                                htmlType: "submit",
+                              }}
+                              onCancel={() => {
+                                setOpenAddStockMove(false);
+                              }}
+                              onOk={() => {
+                                onSaveStockMove();
+                              }}
+                              destroyOnClose
+                              modalRender={(dom) => (
+                                <Form
+                                  layout="vertical"
+                                  name="form_in_modal"
+                                  initialValues={{ modifier: "public" }}
+                                  form={formStockMove}
+                                  clearOnDestroy
+                                  onFinish={(values) => {
+                                    // createProductAttributeValue(values)
+                                  }}
+                                >
+                                  {dom}
+                                </Form>
+                              )}
+                            >
+                              <Form.Item
+                                name="productId"
+                                label="Product"
+                                rules={[
+                                  {
+                                    required: true,
+                                    message: "Please select Attribute!",
+                                  },
+                                ]}
+                              >
+                                <Select
+                                  style={{ width: "100%" }}
+                                  variant="filled"
+                                  onChange={(value) =>
+                                    fetchForSelectUomUom(value)
+                                  }
+                                >
+                                  {productVariantOptions.map((option) => (
+                                    <Option
+                                      key={option.value}
+                                      value={option.value}
+                                    >
+                                      {option.label}
+                                    </Option>
+                                  ))}
+                                </Select>
+                              </Form.Item>
+                              <Form.Item
+                                name="productUomId"
+                                label="Unit"
+                                rules={[
+                                  {
+                                    required: true,
+                                    message: "Please select Unit!",
+                                  },
+                                ]}
+                              >
+                                <Select
+                                  style={{ width: "100%" }}
+                                  variant="filled"
+                                >
+                                  {uomUomOptions.map((option) => (
+                                    <Option
+                                      key={option.value}
+                                      value={option.value}
+                                    >
+                                      {option.label}
+                                    </Option>
+                                  ))}
+                                </Select>
+                              </Form.Item>
+                              <Form.Item
+                                name="productUomQty"
+                                label="Demand"
+                                rules={[
+                                  {
+                                    required: true,
+                                    message: "Please input Demand!",
+                                  },
+                                ]}
+                              >
+                                <Input />
+                              </Form.Item>
+                              <Form.Item
+                                hidden={true}
+                                name="pickingId"
+                                initialValue={stockPickingId}
+                              ></Form.Item>
+                              <Form.Item
+                                hidden={true}
+                                name="locationId"
+                                initialValue={stockPickingInfo?.location.id}
+                              ></Form.Item>
+                              <Form.Item
+                                hidden={true}
+                                name="locationDestId"
+                                initialValue={stockPickingInfo?.locationDest.id}
+                              ></Form.Item>
+                            </Modal>
+                          </>
+                        )}
+                      </>
+                    ),
+                  },
+                ]}
+              />
+            </Card>
+          </Badge.Ribbon>
         </>
       }
     />

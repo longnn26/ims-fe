@@ -1,4 +1,6 @@
+import { ProductProduct } from "@models/productProduct";
 import { StockQuantPaging, StockQuantUpdate } from "@models/stockQuant";
+import { UomUomInfo } from "@models/uomUom";
 import apiLinks from "@utils/api-links";
 import httpClient from "@utils/http-client";
 
@@ -27,9 +29,32 @@ const getStockQuants = async (
   return response.data;
 };
 
+const getProductVariantForSelect = async (
+  token?: string
+): Promise<ProductProduct[]> => {
+  const response = await httpClient.get({
+    token: token,
+    url: `${apiLinks.productProduct.getProductVariant}`,
+  });
+  return response.data;
+};
+
+const getUomUomForSelect = async (
+  token?: string,
+  productId?: string
+): Promise<UomUomInfo[]> => {
+  const response = await httpClient.get({
+    token: token,
+    url: `${apiLinks.productProduct.getUomUomForSelect}/${productId}`,
+  });
+  return response.data;
+};
+
 const productProduct = {
   deleteProductProduct,
   getStockQuants,
+  getProductVariantForSelect,
+  getUomUomForSelect
 };
 
 export default productProduct;
