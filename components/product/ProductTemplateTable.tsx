@@ -93,6 +93,7 @@ const ProductTemplateTable: React.FC<Props> = (props) => {
     },
     {
       title: "Product Category",
+      align: "center",
       key: "productCategory",
       fixed: true,
       render: (record: DataType) => (
