@@ -65,6 +65,7 @@ const ProductTemplateTable: React.FC<Props> = (props) => {
     },
     {
       title: "Variants",
+      align: "center",
       render: (record: DataType) => (
         <>
           <p className="font-bold">{record.totalVariant}</p>
@@ -73,6 +74,7 @@ const ProductTemplateTable: React.FC<Props> = (props) => {
     },
     {
       title: "On Hand",
+      align: "center",
       render: (record: DataType) => (
         <>
           <p className="font-bold text-[#4a819e]">{record.qtyAvailable}</p>
@@ -81,6 +83,7 @@ const ProductTemplateTable: React.FC<Props> = (props) => {
     },
     {
       title: "Unit",
+      align: "center",
       key: "uomUom",
       render: (record: DataType) => (
         <>
