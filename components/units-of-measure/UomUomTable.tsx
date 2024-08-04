@@ -26,6 +26,7 @@ import {
 import { getUomUoms } from "@slices/uomUom";
 import { useEffect, useState } from "react";
 import { AiFillDelete } from "react-icons/ai";
+import { useRouter } from "next/router";
 interface Props {
   accessToken: string;
   categoryId: string;
@@ -44,6 +45,7 @@ interface DataType {
 
 const UomUomTable: React.FC<Props> = (props) => {
   const dispatch = useDispatch();
+  const router = useRouter();
   const { accessToken, categoryId } = props;
   const { data: uomUomData, loading } = useSelector((state) => state.uomUom);
   const [data, setData] = useState<DataType[]>([]);
@@ -66,31 +68,33 @@ const UomUomTable: React.FC<Props> = (props) => {
   const updateUomUomFactor = async (data: UomUomUpdateFactor) => {
     await uomUomServices
       .updateUomUomFactor(accessToken, data)
-      .then(() => {
+      .then(() => {})
+      .catch((error) => {
+        message.error(error?.response?.data);
+      })
+      .finally(() => {
         dispatch(
           getUomUoms({
             token: accessToken,
             uomCategoryId: categoryId,
           })
         );
-      })
-      .catch((error) => {
-        message.error(error?.response?.data);
       });
   };
   const updateUomUomType = async (data: UomUomUpdateType) => {
     await uomUomServices
       .updateUomUomType(accessToken, data)
-      .then(() => {
+      .then(() => {})
+      .catch((error) => {
+        message.error(error?.response?.data);
+      })
+      .finally(() => {
         dispatch(
           getUomUoms({
             token: accessToken,
             uomCategoryId: categoryId,
           })
         );
-      })
-      .catch((error) => {
-        message.error(error?.response?.data);
       });
   };
   const handleBlur = async (
@@ -252,7 +256,6 @@ const UomUomTable: React.FC<Props> = (props) => {
             required
             placeholder="Ratio"
             variant="borderless"
-            defaultValue={record.ratio}
             value={record.ratio}
             onBlur={(event) => {
               handleBlur(event, "factor", record);
@@ -270,6 +273,7 @@ const UomUomTable: React.FC<Props> = (props) => {
         <>
           <Input
             type="number"
+            readOnly
             style={{ cursor: "pointer" }}
             required
             placeholder="Rounding"

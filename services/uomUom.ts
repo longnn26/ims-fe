@@ -18,7 +18,7 @@ const getUomUoms = async (
   const response = await httpClient.get({
     token: token,
     url: `${apiLinks.uomCategory.getUomUom}/${uomCategoryId}`,
-    params: { pageIndex, pageSize },
+    params: { pageIndex, pageSize, SortKey: "CreateDate", SortOrder: "DESC" },
   });
   return response.data;
 };
@@ -66,7 +66,7 @@ const createUomUom = async (
   (data!.name = "New"),
     (data!.uomType = "Bigger"),
     (data!.factor = 1),
-    (data!.rounding = 0.01),
+    // (data!.rounding = 0.01),
     (data!.active = true);
   const response = await httpClient.post({
     token: token,

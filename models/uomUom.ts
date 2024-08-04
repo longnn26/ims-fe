@@ -23,7 +23,7 @@ export interface UomUomPaging extends PagingModel {
 export interface UomUomUpdateInfo {
   id: string;
   name?: string;
-  rounding?: number;
+  // rounding?: number;
   active?: boolean;
 }
 
@@ -41,6 +41,6 @@ export interface UomUomCreate {
   uomType?: string;
   name?: string;
   factor?: number;
-  rounding?: number;
+  // rounding?: number;
   active?: boolean;
 }

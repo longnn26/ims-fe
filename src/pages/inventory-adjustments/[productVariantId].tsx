@@ -6,20 +6,12 @@ import { ItemType } from "antd/es/breadcrumb/Breadcrumb";
 import { GetServerSideProps } from "next";
 import { getSession } from "next-auth/react";
 import dynamic from "next/dynamic";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect } from "react";
 import { useRouter } from "next/router";
-import BreadcrumbComponent from "@components/breadcrumb/BreadcrumbComponent";
-import productTemplateServices from "@services/productTemplate";
-import StockQuantTable from "@components/product/StockQuantTable";
 import {
   Button,
   Divider,
-  Form,
-  Input,
-  message,
-  Modal,
   Pagination,
-  Select,
   Tooltip,
 } from "antd";
 import {
@@ -27,15 +19,8 @@ import {
   resetData,
   setPageIndex,
 } from "@slices/stockQuantProduct";
-import { PiComputerTowerBold } from "react-icons/pi";
-import CreateButton from "@components/button/CreateButton";
-import { StockQuantCreate } from "@models/stockQuant";
-import stockQuantServices from "@services/stockQuant";
-import stockLocationServices from "@services/stockLocation";
-import { OptionType } from "@models/base";
 import StockQuantProductTable from "@components/product/StockQuantProductTable";
 import { IoCaretBack } from "react-icons/io5";
-const { Option } = Select;
 
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
@@ -53,14 +38,6 @@ const StockQuantPage: React.FC<Props> = (props) => {
   const { data, pageIndex, pageSize, totalPage } = useSelector(
     (state) => state.stockQuant
   );
-  const [form] = Form.useForm();
-  const [open, setOpen] = useState(false);
-  const [internalLocationOptions, setInternalLocationOptions] = useState<
-    OptionType[]
-  >([]);
-  const [productVariantOptions, setProductVarianOptions] = useState<
-    OptionType[]
-  >([]);
 
   const fetchStockQuantData = useCallback(() => {
     dispatch(

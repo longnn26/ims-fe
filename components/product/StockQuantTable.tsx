@@ -81,6 +81,15 @@ const StockQuantTable: React.FC<Props> = (props) => {
       ),
     },
     {
+      title: "Unit",
+      align: "center",
+      render: (record: DataType) => (
+        <>
+          <p>{record.uomUom}</p>
+        </>
+      ),
+    },
+    {
       key: "operation",
       width: "15%",
       render: (record: DataType) => (

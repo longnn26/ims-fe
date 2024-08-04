@@ -72,6 +72,7 @@ const StockMoveLineTable: React.FC<Props> = (props) => {
     },
     {
       title: "Quantity",
+      align: "center",
       render: (record: DataType) => (
         <p
           className={`${
