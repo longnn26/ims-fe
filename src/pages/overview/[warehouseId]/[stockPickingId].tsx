@@ -486,6 +486,11 @@ const ProductInfoPage: React.FC<Props> = (props) => {
                     >
                       <DatePicker
                         allowClear={false}
+                        value={
+                          stockPickingInfo?.dateDone
+                            ? dayjs(stockPickingInfo?.dateDone)
+                            : undefined
+                        }
                         showTime
                         disabled
                         placeholder="Effective Date"
