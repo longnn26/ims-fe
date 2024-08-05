@@ -328,7 +328,11 @@ const ProductInfoPage: React.FC<Props> = (props) => {
           </Divider>
           <div>
             {Boolean(
-              stockPickingId !== "new" && stockPickingInfo?.state === "Draft"
+              stockPickingId !== "new" &&
+                Boolean(
+                  stockPickingInfo?.state === "Draft" ||
+                    stockPickingInfo?.state === "Waiting"
+                )
             ) && (
               <Button
                 type="primary"
@@ -555,6 +559,30 @@ const ProductInfoPage: React.FC<Props> = (props) => {
                     </Form.Item>
                   </Col>{" "}
                 </Row>
+                {stockPickingInfo?.backorder && (
+                  <>
+                    <Divider orientation="left">Back Order of</Divider>
+                    <Row gutter={24}>
+                      <Col span={24}>
+                        <TextArea
+                          onClick={() => {
+                            router
+                              .push(
+                                `/overview/${warehouseId}/${stockPickingInfo.backorderId}`
+                              )
+                              .then(() => router.reload());
+                          }}
+                          className="cursor-pointer"
+                          placeholder="Back Order of"
+                          value={stockPickingInfo.backorder.name}
+                          rows={1}
+                          variant="filled"
+                          readOnly
+                        />
+                      </Col>
+                    </Row>
+                  </>
+                )}
                 <Divider orientation="left">Note</Divider>
                 <Row gutter={24}>
                   <Col span={24}>

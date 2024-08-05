@@ -23,6 +23,7 @@ import { getStockPickingTagColor, getStockPickingTitle } from "@utils/helpers";
 import { dateAdvFormat } from "@utils/constants";
 import moment from "moment";
 import dayjs from "dayjs";
+import { RiBatteryShareLine } from "react-icons/ri";
 
 const { Option } = Select;
 
@@ -42,6 +43,7 @@ interface DataType {
   scheduledDate: string;
   dateDeadline: string;
   dateDone: string;
+  backorderId?: string;
 }
 
 const StockPickingIncomingTable: React.FC<Props> = (props) => {
@@ -71,6 +73,8 @@ const StockPickingIncomingTable: React.FC<Props> = (props) => {
   const columns: TableColumnsType<DataType> = [
     {
       title: "Reference",
+      width: "20%",
+      fixed: "left",
       render: (record: DataType) => (
         <>
           <p>{record.name}</p>
@@ -91,6 +95,13 @@ const StockPickingIncomingTable: React.FC<Props> = (props) => {
         <>
           <p>{record.locationDest.completeName}</p>
         </>
+      ),
+    },
+    {
+      title: "Back Order",
+      align: "center",
+      render: (record: DataType) => (
+        <>{record.backorderId && <RiBatteryShareLine />}</>
       ),
     },
     {
@@ -139,20 +150,23 @@ const StockPickingIncomingTable: React.FC<Props> = (props) => {
         </>
       ),
     },
+
     {
       key: "operation",
       width: "15%",
       render: (record: DataType) => (
-        <Space wrap onClick={(e) => e.stopPropagation()}>
-          <Popconfirm
-            title="Sure to delete?"
-            onConfirm={() => {
-              deletetockPicking(record);
-            }}
-          >
-            <AiFillDelete className="cursor-pointer" />
-          </Popconfirm>
-        </Space>
+        <>
+          <Space wrap onClick={(e) => e.stopPropagation()}>
+            <Popconfirm
+              title="Sure to delete?"
+              onConfirm={() => {
+                deletetockPicking(record);
+              }}
+            >
+              <AiFillDelete className="cursor-pointer" />
+            </Popconfirm>
+          </Space>
+        </>
       ),
     },
   ];
@@ -169,6 +183,7 @@ const StockPickingIncomingTable: React.FC<Props> = (props) => {
         scheduledDate: item.scheduledDate,
         dateDeadline: item.dateDeadline,
         dateDone: item.dateDone,
+        backorderId: item.backorderId,
       }));
       setData(newData);
     }
@@ -190,6 +205,7 @@ const StockPickingIncomingTable: React.FC<Props> = (props) => {
         dataSource={data}
         bordered
         pagination={false}
+        scroll={{ x: 1500 }}
       />
     </>
   );

@@ -113,6 +113,8 @@ export const getStockPickingTagColor = (state) => {
       return "#1a79ff";
     case "Cancelled":
       return "red";
+    case "Waiting":
+      return "cyan";
     default:
       return "default";
   }
@@ -128,6 +130,8 @@ export const getStockPickingTitle = (state) => {
       return "Ready";
     case "Cancelled":
       return "Cancelled";
+    case "Waiting":
+      return "Waiting";
     default:
       return "";
   }
