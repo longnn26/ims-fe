@@ -130,7 +130,7 @@ const StockPickingOutgoingTable: React.FC<Props> = (props) => {
       ),
     },
     {
-      title: "Effective Date",
+      title: "Effective Date", 
       render: (record: DataType) => (
         <>
           <p>
