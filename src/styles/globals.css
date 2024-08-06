@@ -76,3 +76,7 @@
 .custom-select:hover {
     border-bottom: 1px solid var(--bg-color);
 }
+
+:where(.css-dev-only-do-not-override-129b63z).ant-input-number-filled {
+    width: 100%;
+}

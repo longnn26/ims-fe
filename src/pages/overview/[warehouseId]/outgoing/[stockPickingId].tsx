@@ -27,6 +27,7 @@ import {
   Row,
   Select,
   Tabs,
+  InputNumber,
 } from "antd";
 import BreadcrumbComponent from "@components/breadcrumb/BreadcrumbComponent";
 import FlexButtons from "@components/button/FlexButtons";
@@ -733,7 +734,7 @@ const ProductInfoPage: React.FC<Props> = (props) => {
                                   },
                                 ]}
                               >
-                                <Input />
+                                <InputNumber variant="filled" />
                               </Form.Item>
                               <Form.Item
                                 hidden={true}
