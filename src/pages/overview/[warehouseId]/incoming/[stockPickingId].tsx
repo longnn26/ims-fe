@@ -136,9 +136,11 @@ const ProductInfoPage: React.FC<Props> = (props) => {
       await stockPickingServices
         .createStockPickingReceipt(accessToken, data)
         .then((res) => {
-          router.push(`/overview/${warehouseId}/incoming/${res?.id}`).then(() => {
-            router.reload();
-          });
+          router
+            .push(`/overview/${warehouseId}/incoming/${res?.id}`)
+            .then(() => {
+              router.reload();
+            });
         })
         .catch((error) => {
           message.error(error?.response?.data);
@@ -718,6 +720,13 @@ const ProductInfoPage: React.FC<Props> = (props) => {
                                   {
                                     required: true,
                                     message: "Please input Demand!",
+                                  },
+                                  {
+                                    type: "number",
+                                    min: 1,
+                                    max: 100000,
+                                    message:
+                                      "Quantity must be between 1 and 100000.",
                                   },
                                 ]}
                               >

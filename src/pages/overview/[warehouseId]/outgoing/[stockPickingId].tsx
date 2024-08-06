@@ -724,6 +724,13 @@ const ProductInfoPage: React.FC<Props> = (props) => {
                                     required: true,
                                     message: "Please input Demand!",
                                   },
+                                  {
+                                    type: "number",
+                                    min: 1,
+                                    max: 100000,
+                                    message:
+                                      "Quantity must be between 1 and 100000.",
+                                  },
                                 ]}
                               >
                                 <Input />

@@ -90,6 +90,14 @@ const StockMoveTable: React.FC<Props> = (props) => {
     record: DataType
   ) => {
     const newValue = event.target.value;
+    if (Number.parseFloat(newValue) < 1 || Number.parseFloat(newValue) > 100000) {
+      message.error("Quantity must be between 1 and 100000.");
+      setQuantity({
+        ...quantity,
+        [record.id]: record.quantity,
+      });
+      return;
+    }
     if (newValue && Number.parseFloat(newValue) !== record.quantity) {
       await stockMoveServices
         .updateQuantity(accessToken, {
@@ -105,7 +113,7 @@ const StockMoveTable: React.FC<Props> = (props) => {
           );
         })
         .catch((error) => {
-          message.error(error?.response?.data);
+          message.error(error?.message.data);
         });
     }
   };
