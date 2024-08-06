@@ -24,6 +24,7 @@ import { dateAdvFormat } from "@utils/constants";
 import moment from "moment";
 import dayjs from "dayjs";
 import { RiBatteryShareLine } from "react-icons/ri";
+import { getStockPickingOutgoings } from "@slices/stockPickingOutgoing";
 
 const { Option } = Select;
 
@@ -60,7 +61,7 @@ const StockPickingOutgoingTable: React.FC<Props> = (props) => {
       .deletetockPicking(accessToken, record.id)
       .then(() => {
         dispatch(
-          getStockPickingIncomings({
+          getStockPickingOutgoings({
             token: accessToken,
             warehouseId: warehouseId,
           })
@@ -195,7 +196,7 @@ const StockPickingOutgoingTable: React.FC<Props> = (props) => {
         onRow={(record, rowIndex) => {
           return {
             onClick: (event) => {
-              router.push(`/overview/${warehouseId}/${record?.id}`);
+              router.push(`/overview/${warehouseId}/outgoing/${record?.id}`);
             },
           };
         }}

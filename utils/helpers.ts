@@ -84,6 +84,8 @@ const handleTitleBreadCumb = (title) => {
       return "Overview";
     case "incoming":
       return "Receipts";
+    case "outgoing":
+      return "Delivery Order";
     default:
       return title;
   }

@@ -12,6 +12,7 @@ export interface StockPickingInfo extends StockPicking {
   pickingTypeId?: string;
   pickingType: StockPickingTypeInfo;
   location: StockLocation;
+  locationId: string;
   locationDest: StockLocation;
   locationDestId?: string;
   name: string;
