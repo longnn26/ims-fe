@@ -1,6 +1,8 @@
 import { StockMovePaging } from "@models/stockMove";
 import {
   StockPickingCreate,
+  StockPickingDeliveryOrder,
+  StockPickingDeliveryOrderUpdate,
   StockPickingInfo,
   StockPickingPaging,
   StockPickingReceipt,
@@ -63,18 +65,6 @@ const createStockPicking = async (
   return response.data;
 };
 
-const createStockPickingReceipt = async (
-  token?: string,
-  data?: StockPickingReceipt
-): Promise<any> => {
-  const response = await httpClient.post({
-    token: token,
-    url: `${apiLinks.stockPicking.createReceipt}`,
-    data: data,
-  });
-  return response.data;
-};
-
 const deletetockPicking = async (token?: string, id?: string): Promise<any> => {
   const response = await httpClient.delete({
     token: token,
@@ -94,6 +84,18 @@ const getStockPickingInfo = async (
   return response.data;
 };
 
+const createStockPickingReceipt = async (
+  token?: string,
+  data?: StockPickingReceipt
+): Promise<any> => {
+  const response = await httpClient.post({
+    token: token,
+    url: `${apiLinks.stockPicking.createReceipt}`,
+    data: data,
+  });
+  return response.data;
+};
+
 const updateStockPickingReceipt = async (
   token?: string,
   data?: StockPickingReceiptUpdate
@@ -101,6 +103,30 @@ const updateStockPickingReceipt = async (
   const response = await httpClient.put({
     token: token,
     url: `${apiLinks.stockPicking.updateReceipt}`,
+    data: data,
+  });
+  return response.data;
+};
+
+const createStockPickingDeliveryOrder = async (
+  token?: string,
+  data?: StockPickingDeliveryOrder
+): Promise<any> => {
+  const response = await httpClient.post({
+    token: token,
+    url: `${apiLinks.stockPicking.createDeliveryOrder}`,
+    data: data,
+  });
+  return response.data;
+};
+
+const updateStockPickingDeliveryOrder = async (
+  token?: string,
+  data?: StockPickingDeliveryOrderUpdate
+): Promise<any> => {
+  const response = await httpClient.put({
+    token: token,
+    url: `${apiLinks.stockPicking.updateDeliveryOrder}`,
     data: data,
   });
   return response.data;
@@ -164,7 +190,9 @@ const stockPicking = {
   getStockMoves,
   makeAsTodo,
   cancel,
-  validate
+  validate,
+  createStockPickingDeliveryOrder,
+  updateStockPickingDeliveryOrder
 };
 
 export default stockPicking;

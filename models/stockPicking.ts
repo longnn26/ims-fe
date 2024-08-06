@@ -59,3 +59,20 @@ export interface StockPickingReceiptUpdate {
   note?: string;
   dateDeadline?: string;
 }
+
+export interface StockPickingDeliveryOrder {
+  partnerId?: string;
+  scheduledDate?: string;
+  pickingTypeId?: string;
+  locationId?: string;
+  name: string;
+  note?: string;
+  dateDeadline?: string;
+}
+
+export interface StockPickingDeliveryOrderUpdate {
+  scheduledDate?: string;
+  locationId?: string;
+  note?: string;
+  dateDeadline?: string;
+}

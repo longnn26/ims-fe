@@ -28,17 +28,19 @@ const BreadcrumbComponent: React.FC<Props> = (props) => {
         }
       }
       if (href.startsWith("/overview/")) {
-        const warehouseId = href.split("/")[2];
-        console.log(warehouseId);
-        try {
-          const response = await stockWarehouseServices.getStockWarehouseInfo(
-            accessToken,
-            warehouseId
-          );
-          return response.name;
-        } catch (error) {
-          console.error("Failed to fetch  name:", error);
-          return warehouseId;
+        const index = href.split("/").length - 1;
+        if (href.split("/")[index] == href.split("/")[2]) {
+          const warehouseId = href.split("/")[2];
+          try {
+            const response = await stockWarehouseServices.getStockWarehouseInfo(
+              accessToken,
+              warehouseId
+            );
+            return response.name;
+          } catch (error) {
+            console.error("Failed to fetch  name:", error);
+            return warehouseId;
+          }
         }
       }
       return null;

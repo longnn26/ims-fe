@@ -133,6 +133,8 @@ const apiLinks = {
     create: `${url}/api/StockPicking`,
     createReceipt: `${url}/api/StockPicking/Receipt`,
     updateReceipt: `${url}/api/StockPicking/Receipt`,
+    createDeliveryOrder: `${url}/api/StockPicking/DeliveryOrder`,
+    updateDeliveryOrder: `${url}/api/StockPicking/DeliveryOrder`,
     delete: `${url}/api/StockPicking`,
     getInfo: `${url}/api/StockPicking/Info`,
     getStockMove: `${url}/api/StockPicking/StockMove`,

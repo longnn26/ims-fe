@@ -136,7 +136,7 @@ const ProductInfoPage: React.FC<Props> = (props) => {
       await stockPickingServices
         .createStockPickingReceipt(accessToken, data)
         .then((res) => {
-          router.push(`/overview/${warehouseId}/${res?.id}`).then(() => {
+          router.push(`/overview/${warehouseId}/incoming/${res?.id}`).then(() => {
             router.reload();
           });
         })

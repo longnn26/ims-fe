@@ -46,12 +46,12 @@ interface DataType {
   backorderId?: string;
 }
 
-const StockPickingIncomingTable: React.FC<Props> = (props) => {
+const StockPickingOutgoingTable: React.FC<Props> = (props) => {
   const dispatch = useDispatch();
   const router = useRouter();
   const { accessToken, warehouseId } = props;
-  const { data: stockPickingIncomingData, loading } = useSelector(
-    (state) => state.stockPickingIncoming
+  const { data: stockPickingOutgoingData, loading } = useSelector(
+    (state) => state.stockPickingOutgoing
   );
   const [data, setData] = useState<DataType[]>([]);
 
@@ -171,8 +171,8 @@ const StockPickingIncomingTable: React.FC<Props> = (props) => {
     },
   ];
   useEffect(() => {
-    if (stockPickingIncomingData) {
-      const newData: DataType[] = stockPickingIncomingData.map((item) => ({
+    if (stockPickingOutgoingData) {
+      const newData: DataType[] = stockPickingOutgoingData.map((item) => ({
         key: item.id,
         id: item.id,
         name: item.name,
@@ -187,7 +187,7 @@ const StockPickingIncomingTable: React.FC<Props> = (props) => {
       }));
       setData(newData);
     }
-  }, [stockPickingIncomingData]);
+  }, [stockPickingOutgoingData]);
 
   return (
     <>
@@ -195,7 +195,7 @@ const StockPickingIncomingTable: React.FC<Props> = (props) => {
         onRow={(record, rowIndex) => {
           return {
             onClick: (event) => {
-              router.push(`/overview/${warehouseId}/incoming/${record?.id}`);
+              router.push(`/overview/${warehouseId}/${record?.id}`);
             },
           };
         }}
@@ -211,4 +211,4 @@ const StockPickingIncomingTable: React.FC<Props> = (props) => {
   );
 };
 
-export default StockPickingIncomingTable;
+export default StockPickingOutgoingTable;

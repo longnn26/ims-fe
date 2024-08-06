@@ -62,7 +62,10 @@ const StockPickingTypeTable: React.FC<Props> = (props) => {
   const handleClick = (data: StockPickingTypeInfo) => {
     switch (data.code) {
       case "Incoming":
-        router.push(`/overview/${data.warehouse.id}`);
+        router.push(`/overview/${data.warehouse.id}/incoming`);
+        break;
+      case "Outgoing":
+        router.push(`/overview/${data.warehouse.id}/outgoing`);
         break;
       default:
         break;

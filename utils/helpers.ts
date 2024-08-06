@@ -82,6 +82,8 @@ const handleTitleBreadCumb = (title) => {
       return "Moves History";
     case "overview":
       return "Overview";
+    case "incoming":
+      return "Receipts";
     default:
       return title;
   }
