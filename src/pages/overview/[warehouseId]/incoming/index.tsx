@@ -9,15 +9,18 @@ import dynamic from "next/dynamic";
 import React, { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import BreadcrumbComponent from "@components/breadcrumb/BreadcrumbComponent";
-import { Divider, message, Pagination, Select } from "antd";
+import { Divider, Input, message, Pagination, Select } from "antd";
 import stockPickingIncoming, {
   getStockPickingIncomings,
   setPageIndex,
+  setSearchText,
+  setPageSize,
 } from "@slices/stockPickingIncoming";
 import CreateButton from "@components/button/CreateButton";
 import StockPickingIncomingTable from "@components/stockPicking/StockPickingIncomingTable";
 import stockWarehouseServices from "@services/stockWarehouse";
 import { StockWarehouseInfo } from "@models/stockWarehouse";
+import { FaSearch } from "react-icons/fa";
 const { Option } = Select;
 
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
@@ -33,7 +36,7 @@ const StockPickingIncomingPage: React.FC<Props> = (props) => {
   const router = useRouter();
   const dispatch = useDispatch();
   const { warehouseId, accessToken, itemBrs } = props;
-  const { data, pageIndex, pageSize, totalSize } = useSelector(
+  const { data, pageIndex, pageSize, totalSize, searchText } = useSelector(
     (state) => state.stockPickingIncoming
   );
   const [stockWarehouseInfo, setStockWarehouseInfo] =
@@ -58,7 +61,7 @@ const StockPickingIncomingPage: React.FC<Props> = (props) => {
       })
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pageIndex]);
+  }, [pageIndex, pageSize, searchText]);
 
   useEffect(() => {
     fetchStockWarehouseInfoData();
@@ -79,9 +82,22 @@ const StockPickingIncomingPage: React.FC<Props> = (props) => {
           <Divider orientation="left" orientationMargin="0">
             {`${stockWarehouseInfo?.name} - Receipts`}
           </Divider>
+          <div className="flex justify-center">
+            <Input
+              className="input-search"
+              prefix={<FaSearch />}
+              placeholder="Search Reference"
+              defaultValue={searchText}
+              onPressEnter={(event) => {
+                dispatch(setSearchText(event.target["value"]));
+              }}
+            />
+          </div>
           <div className="mt-3 mb-3">
             <CreateButton
-              onSave={() => router.push(`/overview/${warehouseId}/incoming/new`)}
+              onSave={() =>
+                router.push(`/overview/${warehouseId}/incoming/new`)
+              }
             />
           </div>
           <StockPickingIncomingTable
@@ -94,6 +110,10 @@ const StockPickingIncomingPage: React.FC<Props> = (props) => {
               current={pageIndex}
               pageSize={pageSize}
               total={totalSize}
+              showSizeChanger
+              onShowSizeChange={(current, pageSize) => {
+                dispatch(setPageSize(pageSize));
+              }}
               onChange={(page) => {
                 dispatch(setPageIndex(page));
               }}

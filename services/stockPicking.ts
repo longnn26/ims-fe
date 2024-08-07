@@ -15,12 +15,19 @@ const getStockPickingIncomings = async (
   token?: string,
   warehouseId?: string,
   pageIndex?: number,
-  pageSize?: number
+  pageSize?: number,
+  searchText?: string
 ): Promise<StockPickingPaging> => {
   const response = await httpClient.get({
     token: token,
     url: `${apiLinks.stockPicking.getIncoming}/${warehouseId}`,
-    params: { pageIndex, pageSize, SortKey: "CreateDate", SortOrder: "DESC" },
+    params: {
+      pageIndex,
+      pageSize,
+      SortKey: "CreateDate",
+      SortOrder: "DESC",
+      SearchText: searchText,
+    },
   });
   return response.data;
 };
@@ -43,12 +50,19 @@ const getStockPickingOutgoings = async (
   token?: string,
   warehouseId?: string,
   pageIndex?: number,
-  pageSize?: number
+  pageSize?: number,
+  searchText?: string
 ): Promise<StockPickingPaging> => {
   const response = await httpClient.get({
     token: token,
     url: `${apiLinks.stockPicking.getOutgoing}/${warehouseId}`,
-    params: { pageIndex, pageSize, SortKey: "CreateDate", SortOrder: "DESC" },
+    params: {
+      pageIndex,
+      pageSize,
+      SortKey: "CreateDate",
+      SortOrder: "DESC",
+      SearchText: searchText,
+    },
   });
   return response.data;
 };
@@ -204,7 +218,7 @@ const stockPicking = {
   validate,
   createStockPickingDeliveryOrder,
   updateStockPickingDeliveryOrder,
-  validateDeliveryOrder
+  validateDeliveryOrder,
 };
 
 export default stockPicking;

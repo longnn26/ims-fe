@@ -9,17 +9,19 @@ import dynamic from "next/dynamic";
 import React, { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import BreadcrumbComponent from "@components/breadcrumb/BreadcrumbComponent";
-import { Divider, message, Pagination, Select } from "antd";
+import { Divider, Input, message, Pagination, Select } from "antd";
 import stockPickingIncoming, {
-  getStockPickingIncomings,
+  setSearchText,
   setPageIndex,
-} from "@slices/stockPickingIncoming";
+  setPageSize,
+} from "@slices/stockPickingOutgoing";
 import CreateButton from "@components/button/CreateButton";
 import StockPickingIncomingTable from "@components/stockPicking/StockPickingIncomingTable";
 import stockWarehouseServices from "@services/stockWarehouse";
 import { StockWarehouseInfo } from "@models/stockWarehouse";
 import { getStockPickingOutgoings } from "@slices/stockPickingOutgoing";
 import StockPickingOutgoingTable from "@components/stockPicking/StockPickingOutgoingTable";
+import { FaSearch } from "react-icons/fa";
 const { Option } = Select;
 
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
@@ -35,7 +37,7 @@ const StockPickingOutgoingPage: React.FC<Props> = (props) => {
   const router = useRouter();
   const dispatch = useDispatch();
   const { warehouseId, accessToken, itemBrs } = props;
-  const { data, pageIndex, pageSize, totalSize } = useSelector(
+  const { data, pageIndex, pageSize, totalSize, searchText } = useSelector(
     (state) => state.stockPickingOutgoing
   );
   const [stockWarehouseInfo, setStockWarehouseInfo] =
@@ -60,7 +62,7 @@ const StockPickingOutgoingPage: React.FC<Props> = (props) => {
       })
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pageIndex]);
+  }, [pageIndex, pageSize, searchText]);
 
   useEffect(() => {
     fetchStockWarehouseInfoData();
@@ -81,9 +83,22 @@ const StockPickingOutgoingPage: React.FC<Props> = (props) => {
           <Divider orientation="left" orientationMargin="0">
             {`${stockWarehouseInfo?.name} - Delivery Orders`}
           </Divider>
+          <div className="flex justify-center">
+            <Input
+              prefix={<FaSearch />}
+              className="input-search"
+              placeholder="Search Reference"
+              defaultValue={searchText}
+              onPressEnter={(event) => {
+                dispatch(setSearchText(event.target["value"]));
+              }}
+            />
+          </div>
           <div className="mt-3 mb-3">
             <CreateButton
-              onSave={() => router.push(`/overview/${warehouseId}/outgoing/new`)}
+              onSave={() =>
+                router.push(`/overview/${warehouseId}/outgoing/new`)
+              }
             />
           </div>
           <StockPickingOutgoingTable
@@ -96,6 +111,10 @@ const StockPickingOutgoingPage: React.FC<Props> = (props) => {
               current={pageIndex}
               pageSize={pageSize}
               total={totalSize}
+              showSizeChanger
+              onShowSizeChange={(current, pageSize) => {
+                dispatch(setPageSize(pageSize));
+              }}
               onChange={(page) => {
                 dispatch(setPageIndex(page));
               }}

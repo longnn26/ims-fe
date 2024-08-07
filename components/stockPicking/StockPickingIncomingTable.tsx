@@ -9,6 +9,7 @@ import {
   Popconfirm,
   Tag,
   Select,
+  Button,
 } from "antd";
 import { Table } from "antd";
 import useDispatch from "@hooks/use-dispatch";
@@ -16,7 +17,11 @@ import stockPickingServices from "@services/stockPicking";
 import { useEffect, useState } from "react";
 import { AiFillDelete } from "react-icons/ai";
 import { StockPickingInfo } from "@models/stockPicking";
-import { getStockPickingIncomings } from "@slices/stockPickingIncoming";
+import {
+  getStockPickingIncomings,
+  setSearchText,
+  setPageSize,
+} from "@slices/stockPickingIncoming";
 import { StockLocation } from "@models/stockLocation";
 import { useRouter } from "next/router";
 import { getStockPickingTagColor, getStockPickingTitle } from "@utils/helpers";
@@ -50,9 +55,12 @@ const StockPickingIncomingTable: React.FC<Props> = (props) => {
   const dispatch = useDispatch();
   const router = useRouter();
   const { accessToken, warehouseId } = props;
-  const { data: stockPickingIncomingData, loading } = useSelector(
-    (state) => state.stockPickingIncoming
-  );
+  const {
+    data: stockPickingIncomingData,
+    loading,
+    searchText,
+    pageSize,
+  } = useSelector((state) => state.stockPickingIncoming);
   const [data, setData] = useState<DataType[]>([]);
 
   const deletetockPicking = async (record: DataType) => {

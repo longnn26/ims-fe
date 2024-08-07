@@ -52,6 +52,7 @@ import StockMoveTable from "@components/stockPicking/StockMoveTable";
 import { setPageIndex } from "@slices/stockMove";
 import { PlusOutlined } from "@ant-design/icons";
 import { StockMoveCreate } from "@models/stockMove";
+import { setSearchText } from "@slices/stockPickingIncoming";
 
 const { Option } = Select;
 const { TextArea } = Input;

@@ -10,6 +10,7 @@ interface State {
   pageSize: number;
   totalPage: number;
   totalSize: number;
+  searchText: string;
   loading: boolean;
 }
 
@@ -20,6 +21,7 @@ const initialState: State = {
   pageSize: 10,
   totalPage: 0,
   totalSize: 10,
+  searchText: "",
   loading: false,
 };
 
@@ -33,14 +35,16 @@ const getStockPickingIncomings = createAsyncThunk(
       arg.token,
       arg.warehouseId,
       state.stockPickingIncoming.pageIndex,
-      state.stockPickingIncoming.pageSize
+      state.stockPickingIncoming.pageSize,
+      state.stockPickingIncoming.searchText
     );
     if (result.pageIndex > result.totalPage) {
       result = await stockPickingService.getStockPickingIncomings(
         arg.token,
         arg.warehouseId,
         1,
-        state.stockPickingIncoming.pageSize
+        state.stockPickingIncoming.pageSize,
+        state.stockPickingIncoming.searchText
       );
     }
     return result;
@@ -56,6 +60,9 @@ const slice = createSlice({
     },
     setPageSize: (state, action) => {
       state.pageSize = action.payload;
+    },
+    setSearchText: (state, action) => {
+      state.searchText = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -83,6 +90,6 @@ const slice = createSlice({
 });
 
 export { getStockPickingIncomings };
-export const { setPageIndex, setPageSize } = slice.actions;
+export const { setPageIndex, setPageSize, setSearchText } = slice.actions;
 
 export default slice.reducer;
