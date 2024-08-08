@@ -13,6 +13,8 @@ interface State {
   pageIndex: number;
   pageSize: number;
   totalPage: number;
+  totalSize: number;
+  searchText: string;
   loading: boolean;
 }
 
@@ -22,6 +24,8 @@ const initialState: State = {
   pageIndex: 1,
   pageSize: 10,
   totalPage: 0,
+  totalSize: 10,
+  searchText: "",
   loading: false,
 };
 
@@ -31,11 +35,20 @@ const getProductTemplates = createAsyncThunk(
   `${TYPE_PREFIX}/get`,
   async (arg: { token: string }, { getState }) => {
     const state = getState() as AppState;
-    const result = await productTemplateService.getProductTemplates(
+    let result = await productTemplateService.getProductTemplates(
       arg.token,
       state.productTemplate.pageIndex,
-      state.productTemplate.pageSize
+      state.productTemplate.pageSize,
+      state.productTemplate.searchText
     );
+    if (result.pageIndex > result.totalPage) {
+      result = await productTemplateService.getProductTemplates(
+        arg.token,
+        1,
+        state.productTemplate.pageSize,
+        state.productTemplate.searchText
+      );
+    }
     return result;
   }
 );
@@ -49,6 +62,9 @@ const slice = createSlice({
     },
     setPageSize: (state, action) => {
       state.pageSize = action.payload;
+    },
+    setSearchText: (state, action) => {
+      state.searchText = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -72,6 +88,6 @@ const slice = createSlice({
 });
 
 export { getProductTemplates };
-export const { setPageIndex, setPageSize } = slice.actions;
+export const { setPageIndex, setPageSize, setSearchText } = slice.actions;
 
 export default slice.reducer;

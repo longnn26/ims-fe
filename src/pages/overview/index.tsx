@@ -11,7 +11,7 @@ import {
   setPageIndex,
 } from "@slices/stockPickingType";
 import { Pagination } from "antd";
-import StockPickingTypeTable from "@components/stockPickingType/StockPickingTypeTable";
+import StockPickingTypeKanban from "@components/stockPickingType/StockPickingTypeKanban";
 
 interface Props {
   accessToken: string;
@@ -57,7 +57,7 @@ const Overview: React.FC<Props> = (props) => {
     <AntdLayoutNoSSR
       content={
         <>
-          <StockPickingTypeTable accessToken={accessToken} />
+          <StockPickingTypeKanban accessToken={accessToken} />
           {data?.length > 0 && (
             <Pagination
               className="text-end m-4"

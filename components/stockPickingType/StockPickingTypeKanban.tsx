@@ -31,7 +31,7 @@ interface DataType {
   totalPickingReady: number;
 }
 
-const StockPickingTypeTable: React.FC<Props> = (props) => {
+const StockPickingTypeKanban: React.FC<Props> = (props) => {
   const router = useRouter();
   const dispatch = useDispatch();
   const { accessToken } = props;
@@ -106,4 +106,4 @@ const StockPickingTypeTable: React.FC<Props> = (props) => {
   );
 };
 
-export default StockPickingTypeTable;
+export default StockPickingTypeKanban;

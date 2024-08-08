@@ -15,12 +15,19 @@ import httpClient from "@utils/http-client";
 const getProductTemplates = async (
   token?: string,
   pageIndex?: number,
-  pageSize?: number
+  pageSize?: number,
+  searchText?: string
 ): Promise<ProductTemplatePaging> => {
   const response = await httpClient.get({
     token: token,
     url: apiLinks.productTemplate.get,
-    params: { pageIndex, pageSize, SortKey: "Name", SortOrder: "ASC" },
+    params: {
+      pageIndex,
+      pageSize,
+      SortKey: "Name",
+      SortOrder: "ASC",
+      SearchText: searchText,
+    },
   });
   return response.data;
 };
@@ -117,14 +124,14 @@ const createProductVariant = async (
   const response = await httpClient.post({
     token: token,
     url: `${apiLinks.productTemplate.createProductVariant}`,
-    data: data
+    data: data,
   });
   return response.data;
 };
 
 const getProductVariantForSelect = async (
   token?: string,
-  productTmplId?: string,
+  productTmplId?: string
 ): Promise<ProductProduct[]> => {
   const response = await httpClient.get({
     token: token,
@@ -143,7 +150,7 @@ const productTemplate = {
   suggestProductVariants,
   createProductVariant,
   getStockQuants,
-  getProductVariantForSelect
+  getProductVariantForSelect,
 };
 
 export default productTemplate;
