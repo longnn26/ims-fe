@@ -61,7 +61,7 @@ const Products: React.FC<Props> = (props) => {
             <Input
               className="input-search"
               prefix={<FaSearch />}
-              placeholder="Search Reference"
+              placeholder="Search Product Name"
               defaultValue={searchText}
               onPressEnter={(event) => {
                 dispatch(setSearchText(event.target["value"]));
