@@ -261,6 +261,26 @@ const ProductInfoPage: React.FC<Props> = (props) => {
       });
   };
 
+  const updateImage = async () => {
+    var data = new FormData();
+    data.append("File", fileInspectionReport[0].originFileObj!);
+    // setLoadingUploadDocument(true);
+    await productTemplateServices
+      .updateImage(accessToken, productId, data)
+      .then((res) => {
+        message.success("Update Image successfully!");
+        fetchProductTemplateInfoData();
+      })
+      .catch((errors) => {
+        message.error(errors.response.data);
+      })
+      .finally(() => {
+        setLoadingUploadDocument(false);
+        setFileInspectionReport([]);
+        setFileReceiptOfRecipient([]);
+      });
+  };
+
   const fetchProductTemplateAttributeLineData = useCallback(() => {
     dispatch(
       getProductTemplateAttributeLines({
