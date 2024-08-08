@@ -59,6 +59,7 @@ const apiLinks = {
     getStockQuant: `${url}/api/ProductTemplate/StockQuant`,
     getForSelect: `${url}/api/ProductTemplate/Select`,
     updateImage: `${url}/api/ProductTemplate/Image`,
+    deleteImage: `${url}/api/ProductTemplate/Image`,
   },
 
   productCategory: {

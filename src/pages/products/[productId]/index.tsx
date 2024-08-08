@@ -33,6 +33,8 @@ import {
   Image,
   Space,
   Upload,
+  UploadFile,
+  Popconfirm,
 } from "antd";
 import BreadcrumbComponent from "@components/breadcrumb/BreadcrumbComponent";
 import FlexButtons from "@components/button/FlexButtons";
@@ -261,10 +263,9 @@ const ProductInfoPage: React.FC<Props> = (props) => {
       });
   };
 
-  const updateImage = async () => {
+  const updateImage = async (file) => {
     var data = new FormData();
-    data.append("File", fileInspectionReport[0].originFileObj!);
-    // setLoadingUploadDocument(true);
+    data.append("File", file);
     await productTemplateServices
       .updateImage(accessToken, productId, data)
       .then((res) => {
@@ -273,11 +274,17 @@ const ProductInfoPage: React.FC<Props> = (props) => {
       })
       .catch((errors) => {
         message.error(errors.response.data);
+      });
+  };
+
+  const deleteImage = async () => {
+    await productTemplateServices
+      .deleteImage(accessToken, productId)
+      .then(() => {
+        fetchProductTemplateInfoData();
       })
-      .finally(() => {
-        setLoadingUploadDocument(false);
-        setFileInspectionReport([]);
-        setFileReceiptOfRecipient([]);
+      .catch((error) => {
+        message.error(error?.response?.data);
       });
   };
 
@@ -367,15 +374,28 @@ const ProductInfoPage: React.FC<Props> = (props) => {
                     : `${imageNotFound}`
                 }`}
               />
-              <Upload className=" absolute bottom-0 left-0 z-20">
+              <Upload
+                showUploadList={false}
+                className=" absolute bottom-0 left-0 z-20"
+                beforeUpload={(file) => {
+                  updateImage(file);
+                }}
+              >
                 <Button shape="circle" type="dashed">
                   <MdEdit className="cursor-pointer"></MdEdit>
                 </Button>
               </Upload>
               <div className=" absolute bottom-0 right-0 z-20">
-                <Button shape="circle" type="dashed">
-                  <MdDelete className="cursor-pointer"></MdDelete>
-                </Button>
+                <Popconfirm
+                  title="Sure to delete image?"
+                  onConfirm={() => {
+                    deleteImage();
+                  }}
+                >
+                  <Button shape="circle" type="dashed">
+                    <MdDelete className="cursor-pointer"></MdDelete>
+                  </Button>
+                </Popconfirm>
               </div>
             </div>
             <Form

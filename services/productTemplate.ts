@@ -154,6 +154,14 @@ const updateImage = async (
   return response.data;
 };
 
+const deleteImage = async (token?: string, id?: string): Promise<any> => {
+  const response = await httpClient.delete({
+    token: token,
+    url: `${apiLinks.productTemplate.deleteImage}/${id}`,
+  });
+  return response.data;
+};
+
 const productTemplate = {
   getProductTemplates,
   getProductTemplateInfo,
@@ -165,7 +173,8 @@ const productTemplate = {
   createProductVariant,
   getStockQuants,
   getProductVariantForSelect,
-  updateImage
+  updateImage,
+  deleteImage
 };
 
 export default productTemplate;
