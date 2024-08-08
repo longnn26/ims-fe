@@ -9,6 +9,7 @@ export interface ProductTemplate {
   tracking: string;
   description: string;
   active: boolean;
+  imageUrl: string;
 }
 
 export interface ProductTemplateInfo extends ProductTemplate {

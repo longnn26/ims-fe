@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/alt-text */
 "use client";
 import { handleBreadCumb } from "@utils/helpers";
 import { ItemType } from "antd/es/breadcrumb/Breadcrumb";
@@ -29,6 +30,9 @@ import {
   Select,
   Tabs,
   Tag,
+  Image,
+  Space,
+  Upload,
 } from "antd";
 import BreadcrumbComponent from "@components/breadcrumb/BreadcrumbComponent";
 import FlexButtons from "@components/button/FlexButtons";
@@ -50,6 +54,11 @@ import {
 import { PlusOutlined } from "@ant-design/icons";
 import { PiTreeStructureFill, PiX } from "react-icons/pi";
 import { FaBoxes } from "react-icons/fa";
+import { url } from "@utils/api-links";
+import { imageNotFound } from "@utils/constants";
+import { relative } from "path";
+import { MdEdit } from "react-icons/md";
+import { MdDelete } from "react-icons/md";
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -326,6 +335,29 @@ const ProductInfoPage: React.FC<Props> = (props) => {
             onReload={fetchProductTemplateInfoData}
           />
           <Card style={{ borderWidth: "5px" }}>
+            <div className="absolute right-5 z-10">
+              <Image
+                style={{
+                  width: "100px",
+                  height: "100px",
+                }}
+                src={`${
+                  productTemplateInfo?.imageUrl
+                    ? `${url}/${productTemplateInfo?.imageUrl}`
+                    : `${imageNotFound}`
+                }`}
+              />
+              <Upload className=" absolute bottom-0 left-0 z-20">
+                <Button shape="circle" type="dashed">
+                  <MdEdit className="cursor-pointer"></MdEdit>
+                </Button>
+              </Upload>
+              <div className=" absolute bottom-0 right-0 z-20">
+                <Button shape="circle" type="dashed">
+                  <MdDelete className="cursor-pointer"></MdDelete>
+                </Button>
+              </div>
+            </div>
             <Form
               onValuesChange={(value: FormName) => {
                 setIsChanged(true);
