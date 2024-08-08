@@ -165,6 +165,7 @@ const productTemplate = {
   createProductVariant,
   getStockQuants,
   getProductVariantForSelect,
+  updateImage
 };
 
 export default productTemplate;
