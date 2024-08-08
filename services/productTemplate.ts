@@ -140,6 +140,20 @@ const getProductVariantForSelect = async (
   return response.data;
 };
 
+const updateImage = async (
+  token: string,
+  id: string,
+  data: FormData
+): Promise<any> => {
+  const response = await httpClient.put({
+    contentType: "multipart/form-data",
+    url: `${apiLinks.productTemplate.updateImage}/${id}`,
+    token: token,
+    data: data,
+  });
+  return response.data;
+};
+
 const productTemplate = {
   getProductTemplates,
   getProductTemplateInfo,
