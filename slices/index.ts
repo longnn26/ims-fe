@@ -16,6 +16,8 @@ import stockQuantProduct from "@slices/stockQuantProduct";
 import stockMoveLine from "@slices/stockMoveLine";
 import stockPickingIncoming from "@slices/stockPickingIncoming";
 import stockPickingOutgoing from "@slices/stockPickingOutgoing";
+import stockPickingInternal from "@slices/stockPickingInternal";
+import stockQuantLocation from "@slices/stockQuantLocation";
 import stockMove from "@slices/stockMove";
 
 // eslint-disable-next-line import/no-anonymous-default-export
@@ -38,5 +40,7 @@ export default {
   stockMoveLine,
   stockPickingIncoming,
   stockPickingOutgoing,
-  stockMove
+  stockPickingInternal,
+  stockMove,
+  stockQuantLocation
 };

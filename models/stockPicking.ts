@@ -77,3 +77,22 @@ export interface StockPickingDeliveryOrderUpdate {
   note?: string;
   dateDeadline?: string;
 }
+
+export interface StockPickingInternalTransfer {
+  locationId?: string;
+  locationDestId?: string;
+  partnerId?: string;
+  scheduledDate?: string;
+  pickingTypeId?: string;
+  name: string;
+  note?: string;
+  dateDeadline?: string;
+}
+
+export interface StockPickingInternalTransferUpdate {
+  locationId?: string;
+  locationDestId?: string;
+  scheduledDate?: string;
+  note?: string;
+  dateDeadline?: string;
+}

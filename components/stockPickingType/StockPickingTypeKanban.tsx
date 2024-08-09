@@ -67,6 +67,9 @@ const StockPickingTypeKanban: React.FC<Props> = (props) => {
       case "Outgoing":
         router.push(`/overview/${data.warehouse.id}/outgoing`);
         break;
+      case "Internal":
+        router.push(`/overview/${data.warehouse.id}/internal`);
+        break;
       default:
         break;
     }

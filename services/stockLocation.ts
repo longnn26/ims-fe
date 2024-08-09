@@ -3,6 +3,7 @@ import {
   StockLocationPaging,
   StockLocationInfo,
 } from "@models/stockLocation";
+import { StockQuantPaging } from "@models/stockQuant";
 import apiLinks from "@utils/api-links";
 import httpClient from "@utils/http-client";
 
@@ -62,12 +63,28 @@ const getInternalLocations = async (
   return response.data;
 };
 
+const getStockQuants = async (
+  token?: string,
+  locationId?: string,
+  pageIndex?: number,
+  pageSize?: number,
+  searchText?: string,
+): Promise<StockQuantPaging> => {
+  const response = await httpClient.get({
+    token: token,
+    url: `${apiLinks.stockLocation.getStockQuant}/${locationId}`,
+    params: { pageIndex, pageSize, SortKey: "CreateDate", SortOrder: "ASC", SearchText: searchText },
+  });
+  return response.data;
+};
+
 const stockLocation = {
   getStockLocations,
   getStockLocationInfo,
   getForSelectParent,
   getInternalLocations,
   deleteStockLocation,
+  getStockQuants,
 };
 
 export default stockLocation;

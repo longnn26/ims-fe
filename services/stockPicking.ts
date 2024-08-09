@@ -4,6 +4,8 @@ import {
   StockPickingDeliveryOrder,
   StockPickingDeliveryOrderUpdate,
   StockPickingInfo,
+  StockPickingInternalTransfer,
+  StockPickingInternalTransferUpdate,
   StockPickingPaging,
   StockPickingReceipt,
   StockPickingReceiptUpdate,
@@ -36,7 +38,8 @@ const getStockPickingInternals = async (
   token?: string,
   warehouseId?: string,
   pageIndex?: number,
-  pageSize?: number
+  pageSize?: number,
+  searchText?: string,
 ): Promise<StockPickingPaging> => {
   const response = await httpClient.get({
     token: token,
@@ -146,6 +149,30 @@ const updateStockPickingDeliveryOrder = async (
   return response.data;
 };
 
+const createStockPickingInternalTransfer = async (
+  token?: string,
+  data?: StockPickingInternalTransfer
+): Promise<any> => {
+  const response = await httpClient.post({
+    token: token,
+    url: `${apiLinks.stockPicking.createInternalTransfer}`,
+    data: data,
+  });
+  return response.data;
+};
+
+const updateStockPickingInternalTransfer = async (
+  token?: string,
+  data?: StockPickingInternalTransferUpdate
+): Promise<any> => {
+  const response = await httpClient.put({
+    token: token,
+    url: `${apiLinks.stockPicking.updateInternalTransfer}`,
+    data: data,
+  });
+  return response.data;
+};
+
 const getStockMoves = async (
   token?: string,
   id?: string,
@@ -219,6 +246,8 @@ const stockPicking = {
   createStockPickingDeliveryOrder,
   updateStockPickingDeliveryOrder,
   validateDeliveryOrder,
+  createStockPickingInternalTransfer,
+  updateStockPickingInternalTransfer
 };
 
 export default stockPicking;

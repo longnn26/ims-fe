@@ -122,6 +122,7 @@ const apiLinks = {
     delete: `${url}/api/StockLocation`,
     getSelectParent: `${url}/api/StockLocation/SelectParent`,
     getInternal: `${url}/api/StockLocation/Internal`,
+    getStockQuant: `${url}/api/StockLocation/StockQuant`,
   },
 
   stockPickingType: {
@@ -137,6 +138,8 @@ const apiLinks = {
     updateReceipt: `${url}/api/StockPicking/Receipt`,
     createDeliveryOrder: `${url}/api/StockPicking/DeliveryOrder`,
     updateDeliveryOrder: `${url}/api/StockPicking/DeliveryOrder`,
+    createInternalTransfer: `${url}/api/StockPicking/InternalTransfer`,
+    updateInternalTransfer: `${url}/api/StockPicking/InternalTransfer`,
     delete: `${url}/api/StockPicking`,
     getInfo: `${url}/api/StockPicking/Info`,
     getStockMove: `${url}/api/StockPicking/StockMove`,
