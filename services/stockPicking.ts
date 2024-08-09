@@ -44,7 +44,7 @@ const getStockPickingInternals = async (
   const response = await httpClient.get({
     token: token,
     url: `${apiLinks.stockPicking.getInternal}/${warehouseId}`,
-    params: { pageIndex, pageSize, SortKey: "CreateDate", SortOrder: "DESC" },
+    params: { pageIndex, pageSize, SortKey: "CreateDate", SortOrder: "DESC", SearchText: searchText },
   });
   return response.data;
 };
@@ -230,6 +230,17 @@ const validateDeliveryOrder = async (
   });
   return response.data;
 };
+
+const validateInternalTransfer = async (
+  token?: string,
+  id?: string
+): Promise<StockMovePaging> => {
+  const response = await httpClient.put({
+    token: token,
+    url: `${apiLinks.stockPicking.validateInternalTransfer}/${id}`,
+  });
+  return response.data;
+};
 const stockPicking = {
   getStockPickingIncomings,
   getStockPickingInternals,
@@ -247,7 +258,8 @@ const stockPicking = {
   updateStockPickingDeliveryOrder,
   validateDeliveryOrder,
   createStockPickingInternalTransfer,
-  updateStockPickingInternalTransfer
+  updateStockPickingInternalTransfer,
+  validateInternalTransfer
 };
 
 export default stockPicking;

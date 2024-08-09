@@ -53,6 +53,7 @@ const StockQuantLocationTable: React.FC<Props> = (props) => {
     loading,
     pageIndex,
     pageSize,
+    searchText,
   } = useSelector((state) => state.stockQuantLocation);
   const [data, setData] = useState<DataType[]>([]);
   const [countedQuantity, setCountedQuantity] = useState<{
@@ -139,7 +140,7 @@ const StockQuantLocationTable: React.FC<Props> = (props) => {
       })
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pageIndex, locationId]);
+  }, [pageIndex, locationId, searchText]);
 
   useEffect(() => {
     fetchStocQuantLocationData();
@@ -273,7 +274,7 @@ const StockQuantLocationTable: React.FC<Props> = (props) => {
   ];
 
   useEffect(() => {
-    if (stockQuantData) {
+    if (stockQuantData.length > 0) {
       const data: DataType[] = [];
       for (let i = 0; i < stockQuantData?.length; ++i) {
         data.push({
@@ -293,6 +294,9 @@ const StockQuantLocationTable: React.FC<Props> = (props) => {
         setData(data);
         setCountedQuantity(countedQuantity);
       }
+    } else {
+      setData([]);
+      setCountedQuantity({});
     }
   }, [stockQuantData]);
   return (
@@ -305,7 +309,6 @@ const StockQuantLocationTable: React.FC<Props> = (props) => {
             },
           };
         }}
-        className="custom-table"
         loading={loading}
         columns={columns}
         dataSource={data}

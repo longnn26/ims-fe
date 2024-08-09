@@ -43,8 +43,8 @@ const getStockQuants = createAsyncThunk(
         arg.token,
         arg.locationId,
         1,
-        state.stockPickingInternal.pageSize,
-        state.stockPickingInternal.searchText
+        state.stockQuantLocation.pageSize,
+        state.stockQuantLocation.searchText
       );
     }
     return result;
@@ -61,14 +61,8 @@ const slice = createSlice({
     setPageSize: (state, action) => {
       state.pageSize = action.payload;
     },
-    resetData: (state) => {
-      state.data = [];
-      state.paging = {} as StockQuantPaging;
-      state.data = [];
-      state.pageIndex = 1;
-      state.pageSize = 10;
-      state.totalPage = 0;
-      state.totalSize = 0;
+    setSearchText: (state, action) => {
+      state.searchText = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -93,6 +87,6 @@ const slice = createSlice({
 });
 
 export { getStockQuants };
-export const { setPageIndex, setPageSize, resetData } = slice.actions;
+export const { setPageIndex, setPageSize, setSearchText } = slice.actions;
 
 export default slice.reducer;

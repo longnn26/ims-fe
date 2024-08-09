@@ -28,6 +28,8 @@ import {
   Select,
   Tabs,
   InputNumber,
+  Drawer,
+  Tooltip,
 } from "antd";
 import BreadcrumbComponent from "@components/breadcrumb/BreadcrumbComponent";
 import FlexButtons from "@components/button/FlexButtons";
@@ -55,6 +57,13 @@ import StockMoveTable from "@components/stockPicking/StockMoveTable";
 import { setPageIndex } from "@slices/stockMove";
 import { PlusOutlined } from "@ant-design/icons";
 import { StockMoveCreate } from "@models/stockMove";
+import { FaBoxes, FaSearch } from "react-icons/fa";
+import StockQuantLocationTable from "@components/stockLocation/StockQuantLocationTable";
+import {
+  setPageIndex as setPageIndexStockQuantLocation,
+  setPageSize as setPageSizeStockQuantLocation,
+  setSearchText as setSearchTextStockQuantLocation,
+} from "@slices/stockQuantLocation";
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -96,6 +105,14 @@ const ProductInfoPage: React.FC<Props> = (props) => {
     (state) => state.stockMove
   );
 
+  const {
+    data: dataStockQuantLocation,
+    pageIndex: pageIndexStockQuantLocation,
+    pageSize: pageSizeStockQuantLocation,
+    totalSize: totalSizeStockQuantLocation,
+    searchText: searchTextStockQuantLocation,
+  } = useSelector((state) => state.stockQuantLocation);
+
   const [formStockPicking] = Form.useForm<FormStockPicking>();
   const [formStockMove] = Form.useForm<FormStockMove>();
   const [stockPickingInfo, setStockPickingInfo] = useState<StockPickingInfo>();
@@ -105,6 +122,10 @@ const ProductInfoPage: React.FC<Props> = (props) => {
   const [dateDeadline, setDateDeadline] = useState<string>();
   const [isChanged, setIsChanged] = useState(false);
   const [openAddStockMove, setOpenAddStockMove] = useState(false);
+
+  const [stockQuantLocationId, setStockQuantLocationId] = useState<
+    string | undefined
+  >();
 
   const [internalLocationOptions, setInternalLocationOptions] = useState<
     OptionType[]
@@ -538,6 +559,25 @@ const ProductInfoPage: React.FC<Props> = (props) => {
                         ))}
                       </Select>
                     </Form.Item>
+                    {Boolean(stockPickingInfo?.locationId) ? (
+                      <Tooltip
+                        key="variant"
+                        title={`View Stock Quantity`}
+                        className="absolute top-0 right-16"
+                      >
+                        <Button
+                          shape="circle"
+                          type="dashed"
+                          onClick={() => {
+                            setStockQuantLocationId(
+                              stockPickingInfo?.locationId
+                            );
+                          }}
+                        >
+                          <FaBoxes />
+                        </Button>
+                      </Tooltip>
+                    ) : undefined}
                   </Col>
                   <Col span={12}>
                     <Form.Item
@@ -761,6 +801,48 @@ const ProductInfoPage: React.FC<Props> = (props) => {
               />
             </Card>
           </Badge.Ribbon>
+          <Drawer
+            width={850}
+            closable
+            destroyOnClose
+            title={<p>Stock Quantity</p>}
+            placement="right"
+            open={Boolean(stockQuantLocationId)}
+            onClose={() => setStockQuantLocationId(undefined)}
+          >
+            <div className="flex justify-start">
+              <Input
+                prefix={<FaSearch />}
+                className="input-search-drawer"
+                placeholder="Search Product does not contain words in brackets"
+                defaultValue={searchTextStockQuantLocation}
+                onPressEnter={(event) => {
+                  dispatch(
+                    setSearchTextStockQuantLocation(event.target["value"])
+                  );
+                }}
+              />
+            </div>
+            <StockQuantLocationTable
+              locationId={stockQuantLocationId!}
+              accessToken={accessToken}
+            />
+            {dataStockQuantLocation?.length > 0 && (
+              <Pagination
+                className="text-end m-4"
+                current={pageIndexStockQuantLocation}
+                pageSize={pageSizeStockQuantLocation}
+                total={totalSizeStockQuantLocation}
+                showSizeChanger
+                onShowSizeChange={(current, pageSize) => {
+                  dispatch(setPageIndexStockQuantLocation(pageSize));
+                }}
+                onChange={(page) => {
+                  dispatch(setPageSizeStockQuantLocation(page));
+                }}
+              />
+            )}
+          </Drawer>
         </>
       }
     />

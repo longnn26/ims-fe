@@ -14,13 +14,11 @@ import stockPickingIncoming, {
   setSearchText,
   setPageIndex,
   setPageSize,
-} from "@slices/stockPickingOutgoing";
+} from "@slices/stockPickingInternal";
 import CreateButton from "@components/button/CreateButton";
-import StockPickingIncomingTable from "@components/stockPicking/StockPickingIncomingTable";
 import stockWarehouseServices from "@services/stockWarehouse";
 import { StockWarehouseInfo } from "@models/stockWarehouse";
 import { getStockPickingInternals } from "@slices/stockPickingInternal";
-import StockPickingOutgoingTable from "@components/stockPicking/StockPickingOutgoingTable";
 import { FaSearch } from "react-icons/fa";
 import StockPickingInternalTable from "@components/stockPicking/StockPickingInternalTable";
 const { Option } = Select;

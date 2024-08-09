@@ -59,6 +59,7 @@ import { getStockMoves } from "@slices/stockMove";
 import {
   setPageIndex as setPageIndexStockQuantLocation,
   setPageSize as setPageSizeStockQuantLocation,
+  setSearchText as setSearchTextStockQuantLocation,
 } from "@slices/stockQuantLocation";
 import StockMoveTable from "@components/stockPicking/StockMoveTable";
 import { setPageIndex } from "@slices/stockMove";
@@ -67,7 +68,7 @@ import { StockMoveCreate } from "@models/stockMove";
 import { getStockQuants } from "@slices/stockQuantLocation";
 import StockQuantLocationTable from "@components/stockLocation/StockQuantLocationTable";
 import { RiStockLine } from "react-icons/ri";
-import { FaBoxes } from "react-icons/fa";
+import { FaBoxes, FaSearch } from "react-icons/fa";
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -115,6 +116,7 @@ const ProductInfoPage: React.FC<Props> = (props) => {
     pageIndex: pageIndexStockQuantLocation,
     pageSize: pageSizeStockQuantLocation,
     totalSize: totalSizeStockQuantLocation,
+    searchText: searchTextStockQuantLocation,
   } = useSelector((state) => state.stockQuantLocation);
 
   const [formStockPicking] = Form.useForm<FormStockPicking>();
@@ -139,8 +141,6 @@ const ProductInfoPage: React.FC<Props> = (props) => {
   >([]);
 
   const [uomUomOptions, setUomUomOptions] = useState<OptionType[]>([]);
-
-  const [openStockQuant, setOpenStockQuant] = useState<boolean>(false);
 
   const handleScheduledDateChange = (date) => {
     date
@@ -233,9 +233,9 @@ const ProductInfoPage: React.FC<Props> = (props) => {
       });
   };
 
-  const validateDeliveryOrder = async () => {
+  const validateInternalTransfer = async () => {
     await stockLPickingServices
-      .validateDeliveryOrder(accessToken, stockPickingId)
+      .validateInternalTransfer(accessToken, stockPickingId)
       .then((res) => {
         fetchStockMoveData();
         fetchStockPickingInfoData();
@@ -385,7 +385,7 @@ const ProductInfoPage: React.FC<Props> = (props) => {
                 type="primary"
                 className="mr-1"
                 onClick={() => {
-                  validateDeliveryOrder();
+                  validateInternalTransfer();
                 }}
               >
                 Validate
@@ -519,17 +519,20 @@ const ProductInfoPage: React.FC<Props> = (props) => {
                     {Boolean(stockPickingInfo?.locationId) ? (
                       <Tooltip
                         key="variant"
-                        title={`Stock Quantity`}
-                        className="absolute top-0 right-20"
+                        title={`View Stock Quantity`}
+                        className="absolute top-0 right-16"
                       >
-                        <FaBoxes
-                          className="cursor-pointer"
+                        <Button
+                          shape="circle"
+                          type="dashed"
                           onClick={() => {
                             setStockQuantLocationId(
                               stockPickingInfo?.locationId
                             );
                           }}
-                        />
+                        >
+                          <FaBoxes />
+                        </Button>
                       </Tooltip>
                     ) : undefined}
                   </Col>
@@ -594,17 +597,20 @@ const ProductInfoPage: React.FC<Props> = (props) => {
                     {Boolean(stockPickingInfo?.locationDestId) ? (
                       <Tooltip
                         key="variant"
-                        title={`Stock Quantity`}
-                        className="absolute top-0 right-20"
+                        title={`View Stock Quantity`}
+                        className="absolute top-0 right-16"
                       >
-                        <FaBoxes
-                          className="cursor-pointer"
+                        <Button
+                          shape="circle"
+                          type="dashed"
                           onClick={() => {
                             setStockQuantLocationId(
                               stockPickingInfo?.locationDestId
                             );
                           }}
-                        />
+                        >
+                          <FaBoxes />
+                        </Button>
                       </Tooltip>
                     ) : undefined}
                   </Col>
@@ -839,6 +845,19 @@ const ProductInfoPage: React.FC<Props> = (props) => {
             open={Boolean(stockQuantLocationId)}
             onClose={() => setStockQuantLocationId(undefined)}
           >
+            <div className="flex justify-start">
+              <Input
+                prefix={<FaSearch />}
+                className="input-search-drawer"
+                placeholder="Search Product does not contain words in brackets"
+                defaultValue={searchTextStockQuantLocation}
+                onPressEnter={(event) => {
+                  dispatch(
+                    setSearchTextStockQuantLocation(event.target["value"])
+                  );
+                }}
+              />
+            </div>
             <StockQuantLocationTable
               locationId={stockQuantLocationId!}
               accessToken={accessToken}

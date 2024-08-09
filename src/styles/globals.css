@@ -86,3 +86,9 @@
     margin-bottom: 2px !important;
     width: 50% !important;
 }
+
+.input-search-drawer {
+    border: 2px solid var(--bg-color) !important;
+    margin-bottom: 10px !important;
+    width: 100% !important;
+}

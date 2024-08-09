@@ -147,6 +147,7 @@ const apiLinks = {
     cancel: `${url}/api/StockPicking/Cancel`,
     validate: `${url}/api/StockPicking/Validate`,
     validateDeliveryOrder: `${url}/api/StockPicking/Validate/DeliveryOrder`,
+    validateInternalTransfer: `${url}/api/StockPicking/Validate/InternalTransfer`,
   },
 
   stockQuant: {
