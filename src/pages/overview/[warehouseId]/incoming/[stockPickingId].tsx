@@ -22,6 +22,7 @@ import {
   Drawer,
   Form,
   Input,
+  InputNumber,
   message,
   Modal,
   Pagination,
@@ -771,7 +772,7 @@ const ProductInfoPage: React.FC<Props> = (props) => {
                                   },
                                 ]}
                               >
-                                <Input />
+                                <InputNumber variant="filled" />
                               </Form.Item>
                               <Form.Item
                                 hidden={true}
