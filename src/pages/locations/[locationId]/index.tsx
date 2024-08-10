@@ -16,7 +16,12 @@ import {
 import FlexButtons from "@components/button/FlexButtons";
 import { OptionType } from "@models/base";
 import stockLocationServices from "@services/stockLocation";
-import { StockLocationInfo } from "@models/stockLocation";
+import {
+  StockLocationCreate,
+  StockLocationInfo,
+  StockLocationUpdate,
+  StockLocationUpdateParent,
+} from "@models/stockLocation";
 const { Option } = Select;
 
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
@@ -27,40 +32,123 @@ interface Props {
   accessToken: string;
   itemBrs: ItemType[];
 }
+
+interface FormStockLocation {
+  name: string;
+  usage: string;
+}
+
 const StockLocationInfoPage: React.FC<Props> = (props) => {
   const router = useRouter();
   const { locationId, accessToken, itemBrs } = props;
   const [options, setOptions] = useState<OptionType[]>([]);
   const [stockLocationInfo, setStockLocationInfo] =
     useState<StockLocationInfo>();
-
+  const [formStockLocation] = Form.useForm<FormStockLocation>();
+  const [parentStockLocationId, setParentStockLocationId] = useState<string>();
   const [isChanged, setIsChanged] = useState(false);
 
+  const handleSelectParentChange = (value: string) => {
+    setParentStockLocationId(value);
+    setIsChanged(true);
+  };
+
+  const onSave = async () => {
+    await formStockLocation.validateFields();
+    if (locationId === "new") {
+      const data = formStockLocation.getFieldsValue() as StockLocationCreate;
+      await stockLocationServices
+        .createStockLocation(accessToken, {
+          ...data,
+          locationId: parentStockLocationId!,
+        })
+        .then((res) => {
+          router.push(`/locations/${res?.id}`).then(() => {
+            router.reload();
+          });
+        })
+        .catch((error) => {
+          message.error(error?.response?.data);
+        });
+    } else {
+      if (parentStockLocationId != stockLocationInfo?.parentLocation?.id) {
+        await stockLocationServices
+          .updateStockLocationParent(accessToken, {
+            id: locationId,
+            parentId: parentStockLocationId,
+          } as StockLocationUpdateParent)
+          .then(() => {})
+          .catch((error) => {})
+          .finally(() => {
+            fetchStockLocationInfoData();
+          });
+      }
+      await stockLocationServices
+        .updateStockLocation(accessToken, {
+          id: stockLocationInfo?.id,
+          name: formStockLocation.getFieldsValue().name,
+          usage: formStockLocation.getFieldsValue().usage,
+        } as StockLocationUpdate)
+        .then(() => {})
+        .catch((error) => {
+          message.error(error?.response?.data);
+        })
+        .finally(() => {
+          fetchStockLocationInfoData();
+        });
+    }
+  };
+
   const fetchStockLocationInfoData = useCallback(async () => {
-    await stockLocationServices
-      .getStockLocationInfo(accessToken, locationId)
-      .then((res) => {
-        setStockLocationInfo({ ...res });
-      })
-      .catch((error) => {
-        message.error(error?.response?.data);
-      });
+    if (locationId !== "new") {
+      await stockLocationServices
+        .getStockLocationInfo(accessToken, locationId)
+        .then((res) => {
+          formStockLocation.setFieldsValue({
+            usage: res.usage,
+            name: res.name,
+          });
+          setParentStockLocationId(res?.parentLocation?.id);
+          setStockLocationInfo({ ...res });
+        })
+        .catch((error) => {
+          message.error(error?.response?.data);
+        });
+    } else {
+      formStockLocation.resetFields();
+    }
+    setIsChanged(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const fetchForSelectParent = async () => {
-    await stockLocationServices
-      .getForSelectParent(accessToken, locationId)
-      .then((res) => {
-        const options: OptionType[] = res.map((item) => ({
-          value: item.id,
-          label: item.completeName,
-        })) as any;
-        setOptions(options);
-      })
-      .catch((error) => {
-        message.error(error?.response?.data);
-      });
+    if (locationId !== "new" && locationId) {
+      await stockLocationServices
+        .getForSelectParent(accessToken, locationId)
+        .then((res) => {
+          const options: OptionType[] = res.map((item) => ({
+            value: item.id,
+            label: item.completeName,
+          })) as any;
+          setOptions(options);
+        })
+        .catch((error) => {
+          // message.error(error?.response?.data);
+        });
+    } else {
+      await stockLocationServices
+        .getForSelectParent(accessToken)
+        .then((res) => {
+          const options: OptionType[] = res.map((item) => ({
+            value: item.id,
+            label: item.completeName,
+          })) as any;
+          setOptions(options);
+        })
+        .catch((error) => {
+          // message.error(error?.response?.data);
+        });
+    }
   };
 
   useEffect(() => {
@@ -77,12 +165,20 @@ const StockLocationInfoPage: React.FC<Props> = (props) => {
           <BreadcrumbComponent itemBreadcrumbs={itemBrs} />
           <FlexButtons
             isChanged={isChanged}
-            onSave={() => {}}
+            onSave={onSave}
             onReload={fetchStockLocationInfoData}
           />
           <Card style={{ borderWidth: "5px" }}>
-            <Form wrapperCol={{ span: 12 }} layout="vertical">
+            <Form
+              wrapperCol={{ span: 12 }}
+              layout="vertical"
+              form={formStockLocation}
+              onValuesChange={(value: any) => {
+                setIsChanged(true);
+              }}
+            >
               <Form.Item
+                name="name"
                 label={
                   <p style={{ fontSize: "14px", fontWeight: "500" }}>
                     Location Name
@@ -90,13 +186,14 @@ const StockLocationInfoPage: React.FC<Props> = (props) => {
                 }
               >
                 <Input
-                  placeholder="Category"
+                  placeholder="Name"
                   variant="filled"
-                  value={stockLocationInfo?.name}
-                  readOnly={true}
+                  // value={stockLocationInfo?.name}
+                  // readOnly={true}
                 />
               </Form.Item>
               <Form.Item
+                // name="locationId"
                 label={
                   <p style={{ fontSize: "14px", fontWeight: "500" }}>
                     Parent Location
@@ -106,8 +203,9 @@ const StockLocationInfoPage: React.FC<Props> = (props) => {
                 <Select
                   style={{ width: "100%" }}
                   variant="filled"
-                  value={stockLocationInfo?.parentLocation?.id}
-                  disabled
+                  onChange={handleSelectParentChange}
+                  value={parentStockLocationId}
+                  // disabled
                 >
                   {options.map((option) => (
                     <Option key={option.value} value={option.value}>
@@ -117,18 +215,34 @@ const StockLocationInfoPage: React.FC<Props> = (props) => {
                 </Select>
               </Form.Item>
               <Form.Item
+                name="usage"
                 label={
                   <p style={{ fontSize: "14px", fontWeight: "500" }}>
                     Location Type
                   </p>
                 }
               >
-                <Input
-                  placeholder="Category"
+                <Select
+                  className="custom-select"
+                  style={{ width: "100%" }}
                   variant="filled"
-                  value={stockLocationInfo?.usage}
-                  readOnly={true}
-                />
+                  options={[
+                    {
+                      value: "View",
+                      label: "View",
+                    },
+                    {
+                      value: "Internal",
+                      label: "Internal",
+                    },
+                    // {
+                    //   value: "product",
+                    //   label: "Storable Product",
+                    // },
+                  ]}
+                  // value={productTemplateDetailedType}
+                  // onChange={handleProductTemplateDetailedTypeChange}
+                ></Select>
               </Form.Item>
             </Form>
           </Card>

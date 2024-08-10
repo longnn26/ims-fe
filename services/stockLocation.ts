@@ -2,6 +2,9 @@ import {
   StockLocation,
   StockLocationPaging,
   StockLocationInfo,
+  StockLocationCreate,
+  StockLocationUpdateParent,
+  StockLocationUpdate,
 } from "@models/stockLocation";
 import { StockQuantPaging } from "@models/stockQuant";
 import apiLinks from "@utils/api-links";
@@ -10,12 +13,19 @@ import httpClient from "@utils/http-client";
 const getStockLocations = async (
   token?: string,
   pageIndex?: number,
-  pageSize?: number
+  pageSize?: number,
+  searchText?: string
 ): Promise<StockLocationPaging> => {
   const response = await httpClient.get({
     token: token,
     url: apiLinks.stockLocation.get,
-    params: { pageIndex, pageSize, SortKey: "CompleteName", SortOrder: "ASC" },
+    params: {
+      pageIndex,
+      pageSize,
+      SortKey: "CompleteName",
+      SortOrder: "ASC",
+      SearchText: searchText,
+    },
   });
   return response.data;
 };
@@ -37,7 +47,9 @@ const getForSelectParent = async (
 ): Promise<StockLocation[]> => {
   const response = await httpClient.get({
     token: token,
-    url: `${apiLinks.stockLocation.getSelectParent}/${id}`,
+    url: id
+      ? `${apiLinks.stockLocation.getSelectParent}/${id}`
+      : `${apiLinks.stockLocation.getSelectParent}`,
   });
   return response.data;
 };
@@ -68,12 +80,54 @@ const getStockQuants = async (
   locationId?: string,
   pageIndex?: number,
   pageSize?: number,
-  searchText?: string,
+  searchText?: string
 ): Promise<StockQuantPaging> => {
   const response = await httpClient.get({
     token: token,
     url: `${apiLinks.stockLocation.getStockQuant}/${locationId}`,
-    params: { pageIndex, pageSize, SortKey: "CreateDate", SortOrder: "ASC", SearchText: searchText },
+    params: {
+      pageIndex,
+      pageSize,
+      SortKey: "CreateDate",
+      SortOrder: "ASC",
+      SearchText: searchText,
+    },
+  });
+  return response.data;
+};
+
+const updateStockLocation = async (
+  token?: string,
+  data?: StockLocationUpdate
+): Promise<any> => {
+  const response = await httpClient.put({
+    token: token,
+    url: `${apiLinks.stockLocation.update}`,
+    data: data,
+  });
+  return response.data;
+};
+
+const createStockLocation = async (
+  token?: string,
+  data?: StockLocationCreate
+): Promise<StockLocation> => {
+  const response = await httpClient.post({
+    token: token,
+    url: `${apiLinks.stockLocation.create}`,
+    data: data,
+  });
+  return response.data;
+};
+
+const updateStockLocationParent = async (
+  token?: string,
+  data?: StockLocationUpdateParent
+): Promise<any> => {
+  const response = await httpClient.put({
+    token: token,
+    url: `${apiLinks.stockLocation.updateParent}`,
+    data: data,
   });
   return response.data;
 };
@@ -85,6 +139,9 @@ const stockLocation = {
   getInternalLocations,
   deleteStockLocation,
   getStockQuants,
+  updateStockLocation,
+  createStockLocation,
+  updateStockLocationParent,
 };
 
 export default stockLocation;

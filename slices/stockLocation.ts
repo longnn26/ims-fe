@@ -15,6 +15,7 @@ interface State {
   totalPage: number;
   totalSize: number;
   loading: boolean;
+  searchText: string;
 }
 
 const initialState: State = {
@@ -25,6 +26,7 @@ const initialState: State = {
   totalPage: 0,
   totalSize: 10,
   loading: false,
+  searchText: "",
 };
 
 const TYPE_PREFIX = "stockLocation";
@@ -36,13 +38,15 @@ const getStockLocations = createAsyncThunk(
     let result = await stockLocationService.getStockLocations(
       arg.token,
       state.stockLocation.pageIndex,
-      state.stockLocation.pageSize
+      state.stockLocation.pageSize,
+      state.stockLocation.searchText
     );
     if (result.pageIndex > result.totalPage) {
       result = await stockLocationService.getStockLocations(
         arg.token,
         1,
-        state.stockLocation.pageSize
+        state.stockLocation.pageSize,
+        state.stockLocation.searchText
       );
     }
     return result;
@@ -58,6 +62,9 @@ const slice = createSlice({
     },
     setPageSize: (state, action) => {
       state.pageSize = action.payload;
+    },
+    setSearchText: (state, action) => {
+      state.searchText = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -84,6 +91,6 @@ const slice = createSlice({
 });
 
 export { getStockLocations };
-export const { setPageIndex, setPageSize } = slice.actions;
+export const { setPageIndex, setPageSize, setSearchText } = slice.actions;
 
 export default slice.reducer;

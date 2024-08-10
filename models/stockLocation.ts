@@ -20,3 +20,19 @@ export interface StockLocationPaging extends PagingModel {
   totalPage: number;
   data: StockLocationInfo[];
 }
+
+export interface StockLocationUpdate {
+  name: string;
+  usage: string;
+}
+
+export interface StockLocationCreate {
+  name: string;
+  locationId: string;
+  usage: string;
+}
+
+export interface StockLocationUpdateParent {
+  id: string;
+  parentId: string;
+}

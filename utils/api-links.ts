@@ -123,6 +123,7 @@ const apiLinks = {
     getSelectParent: `${url}/api/StockLocation/SelectParent`,
     getInternal: `${url}/api/StockLocation/Internal`,
     getStockQuant: `${url}/api/StockLocation/StockQuant`,
+    updateParent: `${url}/api/StockLocation/Parent`,
   },
 
   stockPickingType: {
