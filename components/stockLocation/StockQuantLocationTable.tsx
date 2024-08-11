@@ -147,20 +147,20 @@ const StockQuantLocationTable: React.FC<Props> = (props) => {
   }, [fetchStocQuantLocationData]);
   const columns: TableColumnsType<DataType> = [
     {
+      title: "Location",
+      render: (record: DataType) => (
+        <>
+          <p>{record.stockLocation?.completeName}</p>
+        </>
+      ),
+    },
+    {
       title: "Product Variant",
       render: (record: DataType) => (
         <>
           <p>{`${record.productProduct.name} (${record.productProduct.pvcs
             .map((pvc) => `${pvc.value}`)
             .join(", ")})`}</p>
-        </>
-      ),
-    },
-    {
-      title: "Location",
-      render: (record: DataType) => (
-        <>
-          <p>{record.stockLocation?.completeName}</p>
         </>
       ),
     },

@@ -48,9 +48,7 @@ const StockQuantPage: React.FC<Props> = (props) => {
   );
   const [form] = Form.useForm();
   const [open, setOpen] = useState(false);
-  const [internalLocationOptions, setInternalLocationOptions] = useState<
-    OptionType[]
-  >([]);
+  const [locationOptions, setLocationOptions] = useState<OptionType[]>([]);
   const [productVariantOptions, setProductVarianOptions] = useState<
     OptionType[]
   >([]);
@@ -77,15 +75,15 @@ const StockQuantPage: React.FC<Props> = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pageIndex]);
 
-  const fetchInternalLocations = async () => {
+  const fetchLocations = async () => {
     await stockLocationServices
-      .getInternalLocations(accessToken)
+      .getForSelect(accessToken)
       .then((res) => {
         const options: OptionType[] = res.map((item) => ({
           value: item.id,
           label: item.completeName,
         })) as any;
-        setInternalLocationOptions(options);
+        setLocationOptions(options);
       })
       .catch((error) => {
         message.error(error?.response?.data);
@@ -110,7 +108,7 @@ const StockQuantPage: React.FC<Props> = (props) => {
   };
 
   useEffect(() => {
-    fetchInternalLocations();
+    fetchLocations();
     fetchProductVariantForSelect();
   }, []);
 
@@ -195,7 +193,7 @@ const StockQuantPage: React.FC<Props> = (props) => {
               ]}
             >
               <Select style={{ width: "100%" }} variant="filled">
-                {internalLocationOptions.map((option) => (
+                {locationOptions.map((option) => (
                   <Option key={option.value} value={option.value}>
                     {option.label}
                   </Option>

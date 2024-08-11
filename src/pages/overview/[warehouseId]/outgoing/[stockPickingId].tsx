@@ -127,9 +127,7 @@ const ProductInfoPage: React.FC<Props> = (props) => {
     string | undefined
   >();
 
-  const [internalLocationOptions, setInternalLocationOptions] = useState<
-    OptionType[]
-  >([]);
+  const [locationOptions, setLocationOptions] = useState<OptionType[]>([]);
 
   const [productVariantOptions, setProductVarianOptions] = useState<
     OptionType[]
@@ -273,15 +271,15 @@ const ProductInfoPage: React.FC<Props> = (props) => {
     setIsChanged(false);
   };
 
-  const fetchInternalLocations = async () => {
+  const fetchLocations = async () => {
     await stockLocationServices
-      .getInternalLocations(accessToken)
+      .getLocationWarehouse(accessToken, warehouseId)
       .then((res) => {
         const options: OptionType[] = res.map((item) => ({
           value: item.id,
           label: item.completeName,
         })) as any;
-        setInternalLocationOptions(options);
+        setLocationOptions(options);
       })
       .catch((error) => {
         message.error(error?.response?.data);
@@ -332,7 +330,7 @@ const ProductInfoPage: React.FC<Props> = (props) => {
 
   useEffect(() => {
     fetchStockWarehouseInfoData();
-    fetchInternalLocations();
+    fetchLocations();
     fetchStockPickingInfoData();
   }, []);
 
@@ -435,6 +433,9 @@ const ProductInfoPage: React.FC<Props> = (props) => {
                       }
                     >
                       <Select
+                        showSearch
+                        optionFilterProp="children"
+                        dropdownMatchSelectWidth={false}
                         style={{ width: "100%" }}
                         variant="filled"
                       ></Select>
@@ -489,6 +490,9 @@ const ProductInfoPage: React.FC<Props> = (props) => {
                       }
                     >
                       <Select
+                        showSearch
+                        optionFilterProp="children"
+                        dropdownMatchSelectWidth={false}
                         style={{ width: "100%" }}
                         variant="filled"
                         disabled={Boolean(stockPickingId !== "new")}
@@ -551,8 +555,14 @@ const ProductInfoPage: React.FC<Props> = (props) => {
                         </p>
                       }
                     >
-                      <Select style={{ width: "100%" }} variant="filled">
-                        {internalLocationOptions.map((option) => (
+                      <Select
+                        showSearch
+                        optionFilterProp="children"
+                        dropdownMatchSelectWidth={false}
+                        style={{ width: "100%" }}
+                        variant="filled"
+                      >
+                        {locationOptions.map((option) => (
                           <Option key={option.value} value={option.value}>
                             {option.label}
                           </Option>
@@ -717,6 +727,9 @@ const ProductInfoPage: React.FC<Props> = (props) => {
                                 ]}
                               >
                                 <Select
+                                  showSearch
+                                  optionFilterProp="children"
+                                  dropdownMatchSelectWidth={false}
                                   style={{ width: "100%" }}
                                   variant="filled"
                                   onChange={(value) =>
@@ -744,6 +757,9 @@ const ProductInfoPage: React.FC<Props> = (props) => {
                                 ]}
                               >
                                 <Select
+                                  showSearch
+                                  optionFilterProp="children"
+                                  dropdownMatchSelectWidth={false}
                                   style={{ width: "100%" }}
                                   variant="filled"
                                 >

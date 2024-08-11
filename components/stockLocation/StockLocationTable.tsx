@@ -1,7 +1,17 @@
 "use client";
 
 import useSelector from "@hooks/use-selector";
-import { Button, message, Popconfirm, Space, TableColumnsType } from "antd";
+import {
+  Button,
+  Drawer,
+  Input,
+  message,
+  Pagination,
+  Popconfirm,
+  Space,
+  TableColumnsType,
+  Tooltip,
+} from "antd";
 import { Table } from "antd";
 import { useRouter } from "next/router";
 import { AiFillDelete } from "react-icons/ai";
@@ -9,7 +19,14 @@ import stockLocationServices from "@services/stockLocation";
 import useDispatch from "@hooks/use-dispatch";
 import { getProductCategories } from "@slices/productCategory";
 import { getStockLocations } from "@slices/stockLocation";
-
+import { FaBoxes, FaSearch } from "react-icons/fa";
+import { useState } from "react";
+import StockQuantLocationTable from "./StockQuantLocationTable";
+import {
+  setPageIndex as setPageIndexStockQuantLocation,
+  setPageSize as setPageSizeStockQuantLocation,
+  setSearchText as setSearchTextStockQuantLocation,
+} from "@slices/stockQuantLocation";
 interface Props {
   accessToken: string;
 }
@@ -20,6 +37,7 @@ interface DataType {
   name: string;
   completeName: string;
   usage: string;
+  hasStockQuant?: boolean;
 }
 
 const StockLocationTable: React.FC<Props> = (props) => {
@@ -29,6 +47,17 @@ const StockLocationTable: React.FC<Props> = (props) => {
   const { data: stockLocationData, loading } = useSelector(
     (state) => state.stockLocation
   );
+
+  const {
+    data: dataStockQuantLocation,
+    pageIndex: pageIndexStockQuantLocation,
+    pageSize: pageSizeStockQuantLocation,
+    totalSize: totalSizeStockQuantLocation,
+    searchText: searchTextStockQuantLocation,
+  } = useSelector((state) => state.stockQuantLocation);
+  const [stockQuantLocationId, setStockQuantLocationId] = useState<
+    string | undefined
+  >();
   const deleteStockLocation = async (record: DataType) => {
     await stockLocationServices
       .deleteStockLocation(accessToken, record.id)
@@ -58,6 +87,7 @@ const StockLocationTable: React.FC<Props> = (props) => {
     },
     {
       title: "Location Type",
+      align: "center",
       render: (record: DataType) => (
         <span
           className={`${
@@ -69,7 +99,31 @@ const StockLocationTable: React.FC<Props> = (props) => {
       ),
     },
     {
+      // title: "Location Type",
+      align: "center",
+      render: (record: DataType) => (
+        <>
+          {Boolean(record.hasStockQuant) ? (
+            <Space wrap onClick={(e) => e.stopPropagation()}>
+              <Tooltip key="variant" title={`View Stock Quantity`}>
+                <Button
+                  shape="circle"
+                  type="dashed"
+                  onClick={() => {
+                    setStockQuantLocationId(record?.id);
+                  }}
+                >
+                  <FaBoxes />
+                </Button>
+              </Tooltip>
+            </Space>
+          ) : undefined}
+        </>
+      ),
+    },
+    {
       key: "operation",
+      align: "center",
       width: "15%",
       render: (record: DataType) => (
         <Space wrap onClick={(e) => e.stopPropagation()}>
@@ -93,6 +147,7 @@ const StockLocationTable: React.FC<Props> = (props) => {
       name: stockLocationData[i].name,
       completeName: stockLocationData[i].completeName,
       usage: stockLocationData[i].usage,
+      hasStockQuant: stockLocationData[i].hasStockQuant,
     });
   }
   return (
@@ -113,6 +168,46 @@ const StockLocationTable: React.FC<Props> = (props) => {
         // scroll={{ x: 1300 }}
         pagination={false}
       />
+      <Drawer
+        width={850}
+        closable
+        destroyOnClose
+        title={<p>Stock Quantity</p>}
+        placement="right"
+        open={Boolean(stockQuantLocationId)}
+        onClose={() => setStockQuantLocationId(undefined)}
+      >
+        <div className="flex justify-start">
+          <Input
+            prefix={<FaSearch />}
+            className="input-search-drawer"
+            placeholder="Search Product does not contain words in brackets"
+            defaultValue={searchTextStockQuantLocation}
+            onPressEnter={(event) => {
+              dispatch(setSearchTextStockQuantLocation(event.target["value"]));
+            }}
+          />
+        </div>
+        <StockQuantLocationTable
+          locationId={stockQuantLocationId!}
+          accessToken={accessToken}
+        />
+        {dataStockQuantLocation?.length > 0 && (
+          <Pagination
+            className="text-end m-4"
+            current={pageIndexStockQuantLocation}
+            pageSize={pageSizeStockQuantLocation}
+            total={totalSizeStockQuantLocation}
+            showSizeChanger
+            onShowSizeChange={(current, pageSize) => {
+              dispatch(setPageIndexStockQuantLocation(pageSize));
+            }}
+            onChange={(page) => {
+              dispatch(setPageSizeStockQuantLocation(page));
+            }}
+          />
+        )}
+      </Drawer>
     </>
   );
 };

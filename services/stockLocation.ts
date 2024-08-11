@@ -65,12 +65,12 @@ const deleteStockLocation = async (
   return response.data;
 };
 
-const getInternalLocations = async (
+const getForSelect = async (
   token?: string
 ): Promise<StockLocation[]> => {
   const response = await httpClient.get({
     token: token,
-    url: `${apiLinks.stockLocation.getInternal}`,
+    url: `${apiLinks.stockLocation.getForSelect}`,
   });
   return response.data;
 };
@@ -132,16 +132,28 @@ const updateStockLocationParent = async (
   return response.data;
 };
 
+const getLocationWarehouse = async (
+  token?: string,
+  warehouseId?: string
+): Promise<StockLocation[]> => {
+  const response = await httpClient.get({
+    token: token,
+    url: `${apiLinks.stockLocation.getLocationWarehouse}/${warehouseId}`,
+  });
+  return response.data;
+};
+
 const stockLocation = {
   getStockLocations,
   getStockLocationInfo,
   getForSelectParent,
-  getInternalLocations,
+  getForSelect,
   deleteStockLocation,
   getStockQuants,
   updateStockLocation,
   createStockLocation,
   updateStockLocationParent,
+  getLocationWarehouse,
 };
 
 export default stockLocation;

@@ -7,6 +7,7 @@ export interface StockLocation {
   parentPath: string;
   barcode: string;
   usage: string;
+  hasStockQuant?: boolean;
 }
 
 
