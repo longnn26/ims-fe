@@ -201,6 +201,9 @@ const StockLocationInfoPage: React.FC<Props> = (props) => {
                 }
               >
                 <Select
+                  showSearch
+                  optionFilterProp="children"
+                  dropdownMatchSelectWidth={false}
                   style={{ width: "100%" }}
                   variant="filled"
                   onChange={handleSelectParentChange}
