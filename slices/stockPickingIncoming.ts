@@ -1,6 +1,10 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import stockPickingService from "@services/stockPicking";
-import { StockPickingInfo, StockPickingPaging } from "@models/stockPicking";
+import {
+  StockPickingInfo,
+  StockPickingPaging,
+  StockPickingSearch,
+} from "@models/stockPicking";
 import { AppState } from "@store/index";
 
 interface State {
@@ -11,6 +15,8 @@ interface State {
   totalPage: number;
   totalSize: number;
   searchText: string;
+  locationName?: string;
+  locationDestName?: string;
   loading: boolean;
 }
 
@@ -22,6 +28,8 @@ const initialState: State = {
   totalPage: 0,
   totalSize: 10,
   searchText: "",
+  locationName: "",
+  locationDestName: "",
   loading: false,
 };
 
@@ -36,7 +44,9 @@ const getStockPickingIncomings = createAsyncThunk(
       arg.warehouseId,
       state.stockPickingIncoming.pageIndex,
       state.stockPickingIncoming.pageSize,
-      state.stockPickingIncoming.searchText
+      state.stockPickingIncoming.searchText,
+      state.stockPickingIncoming.locationName,
+      state.stockPickingIncoming.locationDestName
     );
     if (result.pageIndex > result.totalPage) {
       result = await stockPickingService.getStockPickingIncomings(
@@ -44,7 +54,9 @@ const getStockPickingIncomings = createAsyncThunk(
         arg.warehouseId,
         1,
         state.stockPickingIncoming.pageSize,
-        state.stockPickingIncoming.searchText
+        state.stockPickingIncoming.searchText,
+        state.stockPickingIncoming.locationName,
+        state.stockPickingIncoming.locationDestName
       );
     }
     return result;
@@ -63,6 +75,12 @@ const slice = createSlice({
     },
     setSearchText: (state, action) => {
       state.searchText = action.payload;
+    },
+    setLocationName: (state, action) => {
+      state.locationName = action.payload;
+    },
+    setLocationDestName: (state, action) => {
+      state.locationDestName = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -90,6 +108,12 @@ const slice = createSlice({
 });
 
 export { getStockPickingIncomings };
-export const { setPageIndex, setPageSize, setSearchText } = slice.actions;
+export const {
+  setPageIndex,
+  setPageSize,
+  setSearchText,
+  setLocationName,
+  setLocationDestName,
+} = slice.actions;
 
 export default slice.reducer;

@@ -10,6 +10,7 @@ import {
   Tag,
   Select,
   Button,
+  Tooltip,
 } from "antd";
 import { Table } from "antd";
 import useDispatch from "@hooks/use-dispatch";
@@ -21,6 +22,8 @@ import {
   getStockPickingIncomings,
   setSearchText,
   setPageSize,
+  setLocationName,
+  setLocationDestName,
 } from "@slices/stockPickingIncoming";
 import { StockLocation } from "@models/stockLocation";
 import { useRouter } from "next/router";
@@ -29,6 +32,7 @@ import { dateAdvFormat } from "@utils/constants";
 import moment from "moment";
 import dayjs from "dayjs";
 import { RiBatteryShareLine } from "react-icons/ri";
+import { FaSearch } from "react-icons/fa";
 
 const { Option } = Select;
 
@@ -60,6 +64,8 @@ const StockPickingIncomingTable: React.FC<Props> = (props) => {
     loading,
     searchText,
     pageSize,
+    locationName,
+    locationDestName,
   } = useSelector((state) => state.stockPickingIncoming);
   const [data, setData] = useState<DataType[]>([]);
 
@@ -83,6 +89,23 @@ const StockPickingIncomingTable: React.FC<Props> = (props) => {
       title: "Reference",
       width: "20%",
       fixed: "left",
+      filterIcon: (filtered) => (
+        <Tooltip title="Click to search">
+          <FaSearch style={{ color: searchText ? "#daa50f" : undefined }} />
+        </Tooltip>
+      ),
+      filterDropdown: ({}) => (
+        <div style={{ padding: 8 }}>
+          <Input
+            prefix={<FaSearch />}
+            placeholder="Search Reference"
+            defaultValue={searchText}
+            onPressEnter={(event) => {
+              dispatch(setSearchText(event.target["value"]));
+            }}
+          />
+        </div>
+      ),
       render: (record: DataType) => (
         <>
           <p>{record.name}</p>
@@ -91,6 +114,23 @@ const StockPickingIncomingTable: React.FC<Props> = (props) => {
     },
     {
       title: "From",
+      filterIcon: (filtered) => (
+        <Tooltip title="Click to search">
+          <FaSearch style={{ color: locationName ? "#daa50f" : undefined }} />
+        </Tooltip>
+      ),
+      filterDropdown: ({}) => (
+        <div style={{ padding: 8 }}>
+          <Input
+            prefix={<FaSearch />}
+            placeholder="Search Location From"
+            defaultValue={locationName}
+            onPressEnter={(event) => {
+              dispatch(setLocationName(event.target["value"]));
+            }}
+          />
+        </div>
+      ),
       render: (record: DataType) => (
         <>
           <p>{record.location.completeName}</p>
@@ -99,6 +139,25 @@ const StockPickingIncomingTable: React.FC<Props> = (props) => {
     },
     {
       title: "To",
+      filterIcon: (filtered) => (
+        <Tooltip title="Click to search">
+          <FaSearch
+            style={{ color: locationDestName ? "#daa50f" : undefined }}
+          />
+        </Tooltip>
+      ),
+      filterDropdown: ({}) => (
+        <div style={{ padding: 8 }}>
+          <Input
+            prefix={<FaSearch />}
+            placeholder="Search Location To"
+            defaultValue={locationDestName}
+            onPressEnter={(event) => {
+              dispatch(setLocationDestName(event.target["value"]));
+            }}
+          />
+        </div>
+      ),
       render: (record: DataType) => (
         <>
           <p>{record.locationDest.completeName}</p>
@@ -150,6 +209,7 @@ const StockPickingIncomingTable: React.FC<Props> = (props) => {
     },
     {
       title: "Status",
+      fixed: "right",
       render: (record: DataType) => (
         <>
           <Tag color={getStockPickingTagColor(record.state)}>

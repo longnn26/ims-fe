@@ -96,3 +96,9 @@ export interface StockPickingInternalTransferUpdate {
   note?: string;
   dateDeadline?: string;
 }
+
+export interface StockPickingSearch {
+  locationName?: string;
+  locationDestName?: string;
+  state?: string;
+}

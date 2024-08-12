@@ -9,6 +9,7 @@ import {
   Popconfirm,
   Tag,
   Select,
+  Tooltip,
 } from "antd";
 import { Table } from "antd";
 import useDispatch from "@hooks/use-dispatch";
@@ -23,7 +24,13 @@ import { dateAdvFormat } from "@utils/constants";
 import moment from "moment";
 import dayjs from "dayjs";
 import { RiBatteryShareLine } from "react-icons/ri";
-import { getStockPickingInternals } from "@slices/stockPickingInternal";
+import {
+  getStockPickingInternals,
+  setLocationName,
+  setLocationDestName,
+  setSearchText,
+} from "@slices/stockPickingInternal";
+import { FaSearch } from "react-icons/fa";
 
 const { Option } = Select;
 
@@ -50,9 +57,13 @@ const StockPickingInternalTable: React.FC<Props> = (props) => {
   const dispatch = useDispatch();
   const router = useRouter();
   const { accessToken, warehouseId } = props;
-  const { data: stockPickingInternalData, loading } = useSelector(
-    (state) => state.stockPickingInternal
-  );
+  const {
+    data: stockPickingInternalData,
+    loading,
+    searchText,
+    locationName,
+    locationDestName,
+  } = useSelector((state) => state.stockPickingInternal);
   const [data, setData] = useState<DataType[]>([]);
 
   const deletetockPicking = async (record: DataType) => {
@@ -75,6 +86,23 @@ const StockPickingInternalTable: React.FC<Props> = (props) => {
       title: "Reference",
       width: "20%",
       fixed: "left",
+      filterIcon: (filtered) => (
+        <Tooltip title="Click to search">
+          <FaSearch style={{ color: searchText ? "#daa50f" : undefined }} />
+        </Tooltip>
+      ),
+      filterDropdown: ({}) => (
+        <div style={{ padding: 8 }}>
+          <Input
+            prefix={<FaSearch />}
+            placeholder="Search Reference"
+            defaultValue={searchText}
+            onPressEnter={(event) => {
+              dispatch(setSearchText(event.target["value"]));
+            }}
+          />
+        </div>
+      ),
       render: (record: DataType) => (
         <>
           <p>{record.name}</p>
@@ -83,6 +111,23 @@ const StockPickingInternalTable: React.FC<Props> = (props) => {
     },
     {
       title: "From",
+      filterIcon: (filtered) => (
+        <Tooltip title="Click to search">
+          <FaSearch style={{ color: locationName ? "#daa50f" : undefined }} />
+        </Tooltip>
+      ),
+      filterDropdown: ({}) => (
+        <div style={{ padding: 8 }}>
+          <Input
+            prefix={<FaSearch />}
+            placeholder="Search Location From"
+            defaultValue={locationName}
+            onPressEnter={(event) => {
+              dispatch(setLocationName(event.target["value"]));
+            }}
+          />
+        </div>
+      ),
       render: (record: DataType) => (
         <>
           <p>{record.location.completeName}</p>
@@ -91,6 +136,25 @@ const StockPickingInternalTable: React.FC<Props> = (props) => {
     },
     {
       title: "To",
+      filterIcon: (filtered) => (
+        <Tooltip title="Click to search">
+          <FaSearch
+            style={{ color: locationDestName ? "#daa50f" : undefined }}
+          />
+        </Tooltip>
+      ),
+      filterDropdown: ({}) => (
+        <div style={{ padding: 8 }}>
+          <Input
+            prefix={<FaSearch />}
+            placeholder="Search Location To"
+            defaultValue={locationDestName}
+            onPressEnter={(event) => {
+              dispatch(setLocationDestName(event.target["value"]));
+            }}
+          />
+        </div>
+      ),
       render: (record: DataType) => (
         <>
           <p>{record.locationDest.completeName}</p>

@@ -9,6 +9,7 @@ import {
   Popconfirm,
   Tag,
   Select,
+  Tooltip,
 } from "antd";
 import { Table } from "antd";
 import useDispatch from "@hooks/use-dispatch";
@@ -19,12 +20,21 @@ import { StockPickingInfo } from "@models/stockPicking";
 import { getStockPickingIncomings } from "@slices/stockPickingIncoming";
 import { StockLocation } from "@models/stockLocation";
 import { useRouter } from "next/router";
-import { getStockPickingTagColor, getStockPickingTitle } from "@utils/helpers";
+import {
+  getStockPickingTagColor,
+  getStockPickingTitle,
+} from "@utils/helpers";
 import { dateAdvFormat } from "@utils/constants";
 import moment from "moment";
 import dayjs from "dayjs";
 import { RiBatteryShareLine } from "react-icons/ri";
-import { getStockPickingOutgoings } from "@slices/stockPickingOutgoing";
+import {
+  getStockPickingOutgoings,
+  setSearchText,
+  setLocationName,
+  setLocationDestName
+} from "@slices/stockPickingOutgoing";
+import { FaSearch } from "react-icons/fa";
 
 const { Option } = Select;
 
@@ -51,9 +61,13 @@ const StockPickingOutgoingTable: React.FC<Props> = (props) => {
   const dispatch = useDispatch();
   const router = useRouter();
   const { accessToken, warehouseId } = props;
-  const { data: stockPickingOutgoingData, loading } = useSelector(
-    (state) => state.stockPickingOutgoing
-  );
+  const {
+    data: stockPickingOutgoingData,
+    loading,
+    searchText,
+    locationName,
+    locationDestName,
+  } = useSelector((state) => state.stockPickingOutgoing);
   const [data, setData] = useState<DataType[]>([]);
 
   const deletetockPicking = async (record: DataType) => {
@@ -76,6 +90,23 @@ const StockPickingOutgoingTable: React.FC<Props> = (props) => {
       title: "Reference",
       width: "20%",
       fixed: "left",
+      filterIcon: (filtered) => (
+        <Tooltip title="Click to search">
+          <FaSearch style={{ color: searchText ? "#daa50f" : undefined }} />
+        </Tooltip>
+      ),
+      filterDropdown: ({}) => (
+        <div style={{ padding: 8 }}>
+          <Input
+            prefix={<FaSearch />}
+            placeholder="Search Reference"
+            defaultValue={searchText}
+            onPressEnter={(event) => {
+              dispatch(setSearchText(event.target["value"]));
+            }}
+          />
+        </div>
+      ),
       render: (record: DataType) => (
         <>
           <p>{record.name}</p>
@@ -84,6 +115,23 @@ const StockPickingOutgoingTable: React.FC<Props> = (props) => {
     },
     {
       title: "From",
+      filterIcon: (filtered) => (
+        <Tooltip title="Click to search">
+          <FaSearch style={{ color: locationName ? "#daa50f" : undefined }} />
+        </Tooltip>
+      ),
+      filterDropdown: ({}) => (
+        <div style={{ padding: 8 }}>
+          <Input
+            prefix={<FaSearch />}
+            placeholder="Search Location From"
+            defaultValue={locationName}
+            onPressEnter={(event) => {
+              dispatch(setLocationName(event.target["value"]));
+            }}
+          />
+        </div>
+      ),
       render: (record: DataType) => (
         <>
           <p>{record.location.completeName}</p>
@@ -92,6 +140,25 @@ const StockPickingOutgoingTable: React.FC<Props> = (props) => {
     },
     {
       title: "To",
+      filterIcon: (filtered) => (
+        <Tooltip title="Click to search">
+          <FaSearch
+            style={{ color: locationDestName ? "#daa50f" : undefined }}
+          />
+        </Tooltip>
+      ),
+      filterDropdown: ({}) => (
+        <div style={{ padding: 8 }}>
+          <Input
+            prefix={<FaSearch />}
+            placeholder="Search Location To"
+            defaultValue={locationDestName}
+            onPressEnter={(event) => {
+              dispatch(setLocationDestName(event.target["value"]));
+            }}
+          />
+        </div>
+      ),
       render: (record: DataType) => (
         <>
           <p>{record.locationDest.completeName}</p>
@@ -130,7 +197,7 @@ const StockPickingOutgoingTable: React.FC<Props> = (props) => {
       ),
     },
     {
-      title: "Effective Date", 
+      title: "Effective Date",
       render: (record: DataType) => (
         <>
           <p>

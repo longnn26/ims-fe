@@ -36,9 +36,15 @@ const StockPickingIncomingPage: React.FC<Props> = (props) => {
   const router = useRouter();
   const dispatch = useDispatch();
   const { warehouseId, accessToken, itemBrs } = props;
-  const { data, pageIndex, pageSize, totalSize, searchText } = useSelector(
-    (state) => state.stockPickingIncoming
-  );
+  const {
+    data,
+    pageIndex,
+    pageSize,
+    totalSize,
+    searchText,
+    locationName,
+    locationDestName,
+  } = useSelector((state) => state.stockPickingIncoming);
   const [stockWarehouseInfo, setStockWarehouseInfo] =
     useState<StockWarehouseInfo>();
 
@@ -61,7 +67,7 @@ const StockPickingIncomingPage: React.FC<Props> = (props) => {
       })
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pageIndex, pageSize, searchText]);
+  }, [pageIndex, pageSize, searchText, locationName, locationDestName]);
 
   useEffect(() => {
     fetchStockWarehouseInfoData();
@@ -82,17 +88,6 @@ const StockPickingIncomingPage: React.FC<Props> = (props) => {
           <Divider orientation="left" orientationMargin="0">
             {`${stockWarehouseInfo?.name} - Receipts`}
           </Divider>
-          <div className="flex justify-center">
-            <Input
-              className="input-search"
-              prefix={<FaSearch />}
-              placeholder="Search Reference"
-              defaultValue={searchText}
-              onPressEnter={(event) => {
-                dispatch(setSearchText(event.target["value"]));
-              }}
-            />
-          </div>
           <div className="mt-3 mb-3">
             <CreateButton
               onSave={() =>
