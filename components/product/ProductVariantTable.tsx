@@ -10,7 +10,7 @@ import {
   Tag,
   Select,
 } from "antd";
-import { Table } from "antd";
+import { Table, QRCode } from "antd";
 import useDispatch from "@hooks/use-dispatch";
 import productProductServices from "@services/productProduct";
 import { useEffect, useState } from "react";
@@ -109,6 +109,15 @@ const ProductVariantTable: React.FC<Props> = (props) => {
       render: (record: DataType) => (
         <>
           <p>{record.uomUom}</p>
+        </>
+      ),
+    },
+    {
+      title: "QrCode",
+      width: "10%",
+      render: (record: DataType) => (
+        <>
+          <QRCode value={record.id} />
         </>
       ),
     },

@@ -8,11 +8,13 @@ import {
   message,
   Pagination,
   Popconfirm,
+  Popover,
   Space,
   TableColumnsType,
   Tooltip,
 } from "antd";
-import { Table } from "antd";
+import { FaQrcode } from "react-icons/fa";
+import { Table, QRCode } from "antd";
 import { useRouter } from "next/router";
 import { AiFillDelete } from "react-icons/ai";
 import stockLocationServices from "@services/stockLocation";
@@ -118,6 +120,19 @@ const StockLocationTable: React.FC<Props> = (props) => {
               </Tooltip>
             </Space>
           ) : undefined}
+        </>
+      ),
+    },
+    {
+      title: "QrCode",
+      width: "10%",
+      align: "center",
+      render: (record: DataType) => (
+        <>
+          <Popover content={<QRCode value={record.id} bordered={false} />}>
+            {/* <Button type="primary">Show QrCode</Button> */}
+            <FaQrcode />
+          </Popover>{" "}
         </>
       ),
     },
