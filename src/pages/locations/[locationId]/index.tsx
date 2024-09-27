@@ -7,7 +7,7 @@ import { GetServerSideProps } from "next";
 import { handleBreadCumb } from "@utils/helpers";
 import { ItemType } from "antd/es/breadcrumb/Breadcrumb";
 import BreadcrumbComponent from "@components/breadcrumb/BreadcrumbComponent";
-import { Card, Form, Input, message, Select, Space } from "antd";
+import { Card, Form, Input, message, QRCode, Select, Space } from "antd";
 import {
   ProductCategoryInfo,
   ProductCategoryUpdateInfo,
@@ -168,7 +168,12 @@ const StockLocationInfoPage: React.FC<Props> = (props) => {
             onSave={onSave}
             onReload={fetchStockLocationInfoData}
           />
+
           <Card style={{ borderWidth: "5px" }}>
+            <div className="absolute right-5 z-10">
+              <QRCode value={locationId}></QRCode>
+            </div>
+
             <Form
               wrapperCol={{ span: 12 }}
               layout="vertical"
