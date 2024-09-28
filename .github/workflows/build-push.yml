@@ -3,7 +3,7 @@ name: Build-Push Docker Image
 on:
   push:
     branches:
-      - 'wms-develop'
+      - 'wms-develop-new'
 
 jobs:
   docker:
