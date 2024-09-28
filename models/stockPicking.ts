@@ -23,6 +23,7 @@ export interface StockPickingInfo extends StockPicking {
   dateDone: string;
   backorder?: StockPickingInfo;
   backorderId?: string;
+  filePaths?: string[];
 }
 
 export interface StockPickingPaging extends PagingModel {

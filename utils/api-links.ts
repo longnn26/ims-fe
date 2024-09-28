@@ -150,6 +150,8 @@ const apiLinks = {
     validate: `${url}/api/StockPicking/Validate`,
     validateDeliveryOrder: `${url}/api/StockPicking/Validate/DeliveryOrder`,
     validateInternalTransfer: `${url}/api/StockPicking/Validate/InternalTransfer`,
+    uploadFile: `${url}/api/StockPicking/File`,
+    deleteFile: `${url}/api/StockPicking/File`,
   },
 
   stockQuant: {

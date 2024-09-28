@@ -40,3 +40,8 @@ export interface StockMoveQuantityUpdate {
   id: string;
   quantity: number;
 }
+
+export interface DeleteFileModel {
+  id: string;
+  filePath: string;
+}

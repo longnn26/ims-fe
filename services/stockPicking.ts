@@ -1,4 +1,4 @@
-import { StockMovePaging } from "@models/stockMove";
+import { DeleteFileModel, StockMovePaging } from "@models/stockMove";
 import {
   StockPickingCreate,
   StockPickingDeliveryOrder,
@@ -260,6 +260,32 @@ const validateInternalTransfer = async (
   });
   return response.data;
 };
+
+const uploadFile = async (
+  token: string,
+  id: string,
+  data: FormData
+): Promise<any> => {
+  const response = await httpClient.put({
+    contentType: "multipart/form-data",
+    url: `${apiLinks.stockPicking.uploadFile}/${id}`,
+    token: token,
+    data: data,
+  });
+  return response.data;
+};
+
+const deleteFile = async (
+  token?: string,
+  data?: DeleteFileModel
+): Promise<any> => {
+  const response = await httpClient.delete({
+    token: token,
+    url: `${apiLinks.stockPicking.deleteFile}`,
+    data: data,
+  });
+  return response.data;
+};
 const stockPicking = {
   getStockPickingIncomings,
   getStockPickingInternals,
@@ -279,6 +305,8 @@ const stockPicking = {
   createStockPickingInternalTransfer,
   updateStockPickingInternalTransfer,
   validateInternalTransfer,
+  deleteFile,
+  uploadFile
 };
 
 export default stockPicking;

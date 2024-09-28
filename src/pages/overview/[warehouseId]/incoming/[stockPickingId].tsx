@@ -23,6 +23,7 @@ import {
   Form,
   Input,
   InputNumber,
+  List,
   message,
   Modal,
   Pagination,
@@ -30,6 +31,8 @@ import {
   Select,
   Tabs,
   Tooltip,
+  Popconfirm,
+  Upload,
 } from "antd";
 import BreadcrumbComponent from "@components/breadcrumb/BreadcrumbComponent";
 import FlexButtons from "@components/button/FlexButtons";
@@ -54,8 +57,8 @@ import { getStockMoves } from "@slices/stockMove";
 import StockMoveTable from "@components/stockPicking/StockMoveTable";
 import { setPageIndex } from "@slices/stockMove";
 import { PlusOutlined } from "@ant-design/icons";
-import { StockMoveCreate } from "@models/stockMove";
-import { setSearchText } from "@slices/stockPickingIncoming";
+import { DeleteFileModel, StockMoveCreate } from "@models/stockMove";
+import { InboxOutlined } from "@ant-design/icons";
 import { FaBoxes, FaSearch } from "react-icons/fa";
 import StockQuantLocationTable from "@components/stockLocation/StockQuantLocationTable";
 import {
@@ -63,9 +66,14 @@ import {
   setPageSize as setPageSizeStockQuantLocation,
   setSearchText as setSearchTextStockQuantLocation,
 } from "@slices/stockQuantLocation";
+import Link from "next/link";
+import { url } from "@utils/api-links";
+import { AiFillDelete } from "react-icons/ai";
+import { MdEdit } from "react-icons/md";
 
 const { Option } = Select;
 const { TextArea } = Input;
+const { Dragger } = Upload;
 
 const AntdLayoutNoSSR = dynamic(() => import("@layout/AntdLayout"), {
   ssr: false,
@@ -310,6 +318,31 @@ const ProductInfoPage: React.FC<Props> = (props) => {
           label: item.name,
         })) as any;
         setUomUomOptions(options);
+      })
+      .catch((error) => {
+        message.error(error?.response?.data);
+      });
+  };
+
+  const uploadFile = async (file) => {
+    var data = new FormData();
+    data.append("File", file);
+    await stockLPickingServices
+      .uploadFile(accessToken, stockPickingInfo?.id!, data)
+      .then((res) => {
+        message.success("Upload file successfully!");
+        fetchStockPickingInfoData();
+      })
+      .catch((errors) => {
+        message.error(errors.response.data);
+      });
+  };
+
+  const deleteFile = async (data: DeleteFileModel) => {
+    await stockLPickingServices
+      .deleteFile(accessToken, data)
+      .then((res) => {
+        fetchStockPickingInfoData();
       })
       .catch((error) => {
         message.error(error?.response?.data);
@@ -805,6 +838,54 @@ const ProductInfoPage: React.FC<Props> = (props) => {
                             </Modal>
                           </>
                         )}
+                      </>
+                    ),
+                  },
+                  {
+                    label: `Document`,
+                    key: "2",
+                    children: (
+                      <>
+                        <List
+                          size="default"
+                          bordered
+                          dataSource={stockPickingInfo?.filePaths}
+                          footer={
+                            <Dragger
+                              showUploadList={false}
+                              beforeUpload={(file) => {
+                                uploadFile(file);
+                              }}
+                            >
+                              <p className="ant-upload-drag-icon">
+                                <InboxOutlined />
+                              </p>
+                              <p className="ant-upload-text">
+                                Click or drag file to this area to upload
+                              </p>
+                            </Dragger>
+                          }
+                          renderItem={(item) => (
+                            <List.Item
+                              actions={[
+                                <Popconfirm
+                                  key={1}
+                                  title="Sure to delete?"
+                                  onConfirm={() => {
+                                    deleteFile({
+                                      id: stockPickingInfo?.id,
+                                      filePath: item,
+                                    } as DeleteFileModel);
+                                  }}
+                                >
+                                  <AiFillDelete className="cursor-pointer" />
+                                </Popconfirm>,
+                              ]}
+                            >
+                              <a href={`${url}${item}`}>{item.split("/")[3]}</a>
+                            </List.Item>
+                          )}
+                        />
                       </>
                     ),
                   },
