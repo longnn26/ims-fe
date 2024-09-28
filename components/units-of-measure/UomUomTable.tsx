@@ -40,7 +40,7 @@ interface DataType {
   uomType: string;
   rounding: number;
   active: boolean;
-  ratio: number;
+  ratio: number; 
 }
 
 const UomUomTable: React.FC<Props> = (props) => {
