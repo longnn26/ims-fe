@@ -105,6 +105,10 @@ const UomUomTable: React.FC<Props> = (props) => {
     const newValue = event.target.value;
     switch (type) {
       case "name":
+        if (!Boolean(newValue)) {
+          message.error("Please input name of Uom!");
+          return;
+        }
         if (newValue !== record.name) {
           await updateUomUomInfo({
             id: record.id,
